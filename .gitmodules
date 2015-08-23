@@ -1,0 +1,21 @@
+[submodule "vimfiles/bundle/neobundle.vim"]
+	path = vimfiles/bundle/neobundle.vim
+	url = git://github.com/Shougo/neobundle.vim
+[submodule "vimfiles/bundle/gundo.vim"]
+	path = vimfiles/bundle/gundo.vim
+	url = git://github.com/sjl/gundo.vim.git
+[submodule "vimfiles/bundle/jellybeans.vim"]
+	path = vimfiles/bundle/jellybeans.vim
+	url = https://github.com/nanotech/jellybeans.vim.git
+[submodule "vimfiles/bundle/nerdtree"]
+	path = vimfiles/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "vimfiles/bundle/powerline"]
+	path = vimfiles/bundle/powerline
+	url = https://github.com/Lokaltog/powerline.git
+[submodule "vimfiles/bundle/syntastic"]
+	path = vimfiles/bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
+[submodule "vimfiles/bundle/vim-markdown"]
+	path = vimfiles/bundle/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown.git
