@@ -1,0 +1,41 @@
+
+# tap repositories and their packages
+
+## caskroom/cask
+tap caskroom/cask
+brew brew-cask
+cask dropbox
+cask edgeview
+cask google-chrome
+cask mactex
+cask sophos-anti-virus-home-edition
+cask sourcetree
+cask xmind
+
+## homebrew/boneyard
+tap homebrew/boneyard
+
+## homebrew/versions
+tap homebrew/versions
+
+## rcmdnk/file
+tap rcmdnk/file
+brew brew-file
+
+# Other Homebrew packages
+brew git
+brew gmp
+brew libyaml
+brew openssl
+brew pandoc
+brew rbenv
+brew readline
+brew vim
+
+# App Store applications
+appstore Evernote
+appstore iMovie
+appstore Keynote
+appstore Numbers
+appstore Pages
+appstore Xcode

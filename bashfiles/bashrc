@@ -3,6 +3,11 @@ if [ -f /etc/bashrc ]; then
   . /etc/bashrc
 fi
 
+# homebrewで自動的にbrew-fileをアップデートするようにする
+if [ -f $(brew --prefix)/etc/brew-wrap ]; then
+  . $(brew --prefix)/etc/brew-wrap
+fi
+
 
 # プロンプトの表示形式を設定
 PS1="[\u@\h \W]\$"
