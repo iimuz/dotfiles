@@ -30,7 +30,7 @@ brew openssl
 brew pandoc
 brew rbenv
 brew readline
-brew vim
+brew vim --with-lua --with-python3
 
 # App Store applications
 appstore Evernote

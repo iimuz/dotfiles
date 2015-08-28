@@ -22,3 +22,18 @@
 [submodule "vimfiles/bundle/Unite.vim"]
 	path = vimfiles/bundle/Unite.vim
 	url = https://github.com/Shougo/Unite.vim.git
+[submodule "vimfiles/bundle/neocomplcache"]
+	path = vimfiles/bundle/neocomplcache
+	url = https://github.com/Shougo/neocomplcache.git
+[submodule "vimfiles/bundle/neosnippet"]
+	path = vimfiles/bundle/neosnippet
+	url = https://github.com/Shougo/neosnippet.git
+[submodule "vimfiles/bundle/neosnippet-snippets"]
+	path = vimfiles/bundle/neosnippet-snippets
+	url = https://github.com/Shougo/neosnippet-snippets.git
+[submodule "vimfiles/bundle/unite-outline"]
+	path = vimfiles/bundle/unite-outline
+	url = https://github.com/Shougo/unite-outline.git
+[submodule "vimfiles/bundle/vim-hybrid"]
+	path = vimfiles/bundle/vim-hybrid
+	url = https://github.com/w0ng/vim-hybrid.git

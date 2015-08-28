@@ -94,57 +94,68 @@ if 1 && (!exists('g:no_vimrc_example') || g:no_vimrc_example == 0)
   endif
 endif
 
-"---------------------------
+"---------------------------------------------------------------------------
 " Start Neobundle Settings.
-"---------------------------
 " bundleで管理するディレクトリを指定
 if (has('win32') || has('win64'))
   set runtimepath+=./bundle/neobundle.vim/
-  " Required:
   call neobundle#begin(expand('./bundle/'))
 else
   set runtimepath+=~/.vim/bundle/neobundle.vim/
-  " Required:
   call neobundle#begin(expand('~/.vim/bundle/'))
 end
 " neobundle自体をneobundleで管理
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-" 今後このあたりに追加のプラグインをどんどん書いて行きます！！"
 " NERDTreeを設定
 NeoBundle 'scrooloose/nerdtree'
 " いろいろ
 NeoBundle 'scrooloose/syntastic' 
 NeoBundle 'Lokaltog/powerline'
 " シンタックス系プラグイン
-"NeoBundle 'Shougo/neocomplcache'
-"NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
 " 編集履歴管理
 NeoBundle 'sjl/gundo.vim'
 " カラースキーム
 NeoBundle 'nanotech/jellybeans.vim'
+NeoBundle 'w0ng/vim-hybrid'
 " Markdown対応
 NeoBundle 'plasticboy/vim-markdown'
-"NeoBundle 'kannokanno/previm'
-"NeoBundle 'tyru/open-browser.vim'
 " Unite系
 NeoBundle 'Shougo/Unite.vim'
+NeoBundle 'Shougo/unite-outline'
 
 call neobundle#end()
 
-" Required:
 filetype plugin indent on
-
-" 未インストールのプラグインがある場合、インストールするかどうかを尋ねてくれるようにする設定
-" 毎回聞かれると邪魔な場合もあるので、この設定は任意です。
 NeoBundleCheck
 
-"-------------------------
-" End Neobundle Settings.
-"-------------------------
+"---------------------------------------------------------------------------
+" Unite.vim Settings
+" The prefix key.
+nnoremap    [unite]   <Nop>
+nmap    <Space>u [unite]
 
+" unite.vim keymap
+let g:unite_source_history_yank_enable =1
+nnoremap <silent> [unite]f :<C-u>Unite -vertical file<CR>
+nnoremap <silent> [unite]b :<C-u>Unite -vertical buffer<CR>
+nnoremap <silent> [unite]h :<C-u>Unite -vertical history/yank<CR>
+nnoremap <silent> [unite]r :<C-u>Unite -vertical buffer-name=register register<CR>
+nnoremap <silent> [unite]o :<C-u>Unite -vertical -no-quit outline<CR>
 
+let g:vinarise_enable_auto_detect = 1 
+let g:unite_winwidth = 40
 
+"---------------------------------------------------------------------------
+" neosnippet Settings
+let g:neosnippet#snippets_directory = [expand('~/.vim/.bundle/neosnippet-snippets/neosnippets')]
+let g:neocomplcache_enable_at_startup = 1
+" key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 
 "---------------------------------------------------------------------------
 " 検索の挙動に関する設定:
@@ -186,7 +197,7 @@ set number
 " ルーラーを表示 (noruler:非表示)
 set ruler
 " どの文字でタブや改行を表示するかを設定
-"set listchars=tab:>-,extends:<,trail:-,eol:<
+set listchars=tab:>-,extends:<,trail:-,eol:<
 " 長い行を折り返して表示 (nowrap:折り返さない)
 set wrap
 " 常にステータス行を表示 (詳細は:he laststatus)
@@ -197,15 +208,11 @@ set cmdheight=2
 set showcmd
 " タイトルを表示
 set title
-" 画面を黒地に白にする (次行の先頭の " を削除すれば有効になる)
-"colorscheme evening " (Windows用gvim使用時はgvimrcを編集すること)
-
-"---------------------------------------------------------------------------
-" ファイル操作に関する設定:
-"
-" バックアップファイルを作成しない (次行の先頭の " を削除すれば有効になる)
-"set nobackup
-
+" 画面の上下に余裕を持ってスクロールする
+set scrolloff=10
+" カラースキーム
+colorscheme hybrid
+set cursorline
 
 "---------------------------------------------------------------------------
 " ファイル名に大文字小文字の区別がないシステム用の設定:

@@ -2,7 +2,12 @@ Unite.vim
 gundo.vim
 jellybeans.vim
 neobundle.vim
+neocomplcache
+neosnippet
+neosnippet-snippets
 nerdtree
 powerline
 syntastic
+unite-outline
+vim-hybrid
 vim-markdown
