@@ -28,6 +28,7 @@ brew gmp
 brew libyaml
 brew openssl
 brew pandoc
+brew pyenv-virtualenv
 brew rbenv
 brew readline
 brew vim --with-lua --with-python3

@@ -144,7 +144,7 @@ nnoremap <silent> [unite]f :<C-u>Unite -vertical file<CR>
 nnoremap <silent> [unite]b :<C-u>Unite -vertical buffer<CR>
 nnoremap <silent> [unite]h :<C-u>Unite -vertical history/yank<CR>
 nnoremap <silent> [unite]r :<C-u>Unite -vertical buffer-name=register register<CR>
-nnoremap <silent> [unite]o :<C-u>Unite -vertical -no-quit outline<CR>
+nnoremap <silent> [unite]o :<C-u>Unite -vertical outline<CR>
 
 let g:vinarise_enable_auto_detect = 1 
 let g:unite_winwidth = 40
