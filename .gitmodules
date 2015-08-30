@@ -37,3 +37,15 @@
 [submodule "vimfiles/bundle/vim-hybrid"]
 	path = vimfiles/bundle/vim-hybrid
 	url = https://github.com/w0ng/vim-hybrid.git
+[submodule "vimfiles/bundle/jedi-vim"]
+	path = vimfiles/bundle/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
+[submodule "vimfiles/bundle/vim-python-pep8-indent"]
+	path = vimfiles/bundle/vim-python-pep8-indent
+	url = https://github.com/hynek/vim-python-pep8-indent.git
+[submodule "vimfiles/bundle/flake8-vim"]
+	path = vimfiles/bundle/flake8-vim
+	url = https://github.com/andviro/flake8-vim.git
+[submodule "vimfiles/bundle/vim-smartinput"]
+	path = vimfiles/bundle/vim-smartinput
+	url = https://github.com/kana/vim-smartinput.git

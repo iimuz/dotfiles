@@ -110,9 +110,8 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " NERDTreeを設定
 NeoBundle 'scrooloose/nerdtree'
 " いろいろ
-NeoBundle 'scrooloose/syntastic' 
 NeoBundle 'Lokaltog/powerline'
-" シンタックス系プラグイン
+" Snippet
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'Shougo/neosnippet-snippets'
@@ -125,7 +124,14 @@ NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'plasticboy/vim-markdown'
 " Unite系
 NeoBundle 'Shougo/Unite.vim'
-NeoBundle 'Shougo/unite-outline'
+NeoBundle 'Shougo/unite-outline'  " クラスや関数一覧の作成
+" for programming
+NeoBundle 'kana/vim-smartinput'   " 対応するカッコの自動挿入
+NeoBundle 'scrooloose/syntastic'  " 構文チェック
+" for python
+NeoBundle 'davidhalter/jedi-vim'          " オムニ補完
+NeoBundle 'andviro/flake8-vim'            " スタイルチェック
+NeoBundle 'hynek/vim-python-pep8-indent'  " インデントを適切に導入する
 
 call neobundle#end()
 
