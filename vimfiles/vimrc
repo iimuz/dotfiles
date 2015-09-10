@@ -108,9 +108,9 @@ end
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " NERDTreeを設定
-NeoBundle 'scrooloose/nerdtree'
+"NeoBundle 'scrooloose/nerdtree'
 " いろいろ
-NeoBundle 'Lokaltog/powerline'
+"NeoBundle 'Lokaltog/powerline'
 " Snippet
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
@@ -120,18 +120,23 @@ NeoBundle 'sjl/gundo.vim'
 " カラースキーム
 NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'w0ng/vim-hybrid'
-" Markdown対応
-NeoBundle 'plasticboy/vim-markdown'
 " Unite系
 NeoBundle 'Shougo/Unite.vim'
 NeoBundle 'Shougo/unite-outline'  " クラスや関数一覧の作成
 " for programming
 NeoBundle 'kana/vim-smartinput'   " 対応するカッコの自動挿入
 NeoBundle 'scrooloose/syntastic'  " 構文チェック
+" For Markdown
+NeoBundle 'plasticboy/vim-markdown'
 " for python
-NeoBundle 'davidhalter/jedi-vim'          " オムニ補完
-NeoBundle 'andviro/flake8-vim'            " スタイルチェック
-NeoBundle 'hynek/vim-python-pep8-indent'  " インデントを適切に導入する
+NeoBundleLazy 'davidhalter/jedi-vim'          " オムニ補完
+NeoBundleLazy 'andviro/flake8-vim'            " スタイルチェック
+NeoBundleLazy 'hynek/vim-python-pep8-indent'  " インデントを適切に導入する
+" for java
+NeoBundleLazy 'ervandew/eclim', {
+      \ 'build':
+      \   {'mac': 'ant -Declipse.home=/opt/homebrew-cask/Caskroom/eclipse-java/4.5/Eclipse.app/Contents/Eclipse -Dvim.files='.escape(expand('~/.vim/bundle/eclim'), '')},
+      \ }
 
 call neobundle#end()
 
@@ -245,22 +250,5 @@ endif
 if has('mac')
   " Macではデフォルトの'iskeyword'がcp932に対応しきれていないので修正
   set iskeyword=@,48-57,_,128-167,224-235
-endif
-
-"---------------------------------------------------------------------------
-" KaoriYaでバンドルしているプラグインのための設定
-if (has('win32') || has('win64'))
-  " autofmt: 日本語文章のフォーマット(折り返し)プラグイン.
-  set formatexpr=autofmt#japanese#formatexpr()
-
-  " vimdoc-ja: 日本語ヘルプを無効化する.
-  if kaoriya#switch#enabled('disable-vimdoc-ja')
-    let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "[/\\\\]plugins[/\\\\]vimdoc-ja"'), ',')
-  endif
-
-  " vimproc: 同梱のvimprocを無効化する
-  if kaoriya#switch#enabled('disable-vimproc')
-    let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "[/\\\\]plugins[/\\\\]vimproc$"'), ',')
-  endif
 endif
 

@@ -1,4 +1,5 @@
 Unite.vim
+eclim
 flake8-vim
 gundo.vim
 jedi-vim
@@ -7,8 +8,6 @@ neobundle.vim
 neocomplcache
 neosnippet
 neosnippet-snippets
-nerdtree
-powerline
 syntastic
 unite-outline
 vim-hybrid

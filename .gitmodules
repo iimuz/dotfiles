@@ -49,3 +49,6 @@
 [submodule "vimfiles/bundle/vim-smartinput"]
 	path = vimfiles/bundle/vim-smartinput
 	url = https://github.com/kana/vim-smartinput.git
+[submodule "vimfiles/bundle/eclim"]
+	path = vimfiles/bundle/eclim
+	url = https://github.com/ervandew/eclim.git

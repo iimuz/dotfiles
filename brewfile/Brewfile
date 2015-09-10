@@ -5,8 +5,10 @@
 tap caskroom/cask
 brew brew-cask
 cask dropbox
+cask eclipse-java
 cask edgeview
 cask google-chrome
+cask java
 cask mactex
 cask sophos-anti-virus-home-edition
 cask sourcetree
@@ -23,6 +25,7 @@ tap rcmdnk/file
 brew brew-file
 
 # Other Homebrew packages
+brew ant
 brew git
 brew gmp
 brew libyaml
