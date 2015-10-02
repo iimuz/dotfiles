@@ -21,5 +21,5 @@ alias ls='ls -G'  # lsを色付きにする
 ## pandoc
 pandocpdf ()
 {
-  iconv -f UTF-8-MAC -t UTF-8 $1 | pandoc -o $2 -f markdown -V documentclass=ltjarticle --latex-engine=lualatex
+  iconv -f UTF-8-MAC -t UTF-8 -c $1 | pandoc -o $2 -f markdown -V documentclass=ltjarticle --latex-engine=lualatex
 }

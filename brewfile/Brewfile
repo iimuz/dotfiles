@@ -1,9 +1,10 @@
 
 # tap repositories and their packages
 
-## caskroom/cask
-tap caskroom/cask
+## Caskroom/cask
+tap Caskroom/cask
 brew brew-cask
+cask atom
 cask dropbox
 cask eclipse-java
 cask edgeview
@@ -13,6 +14,9 @@ cask mactex
 cask sophos-anti-virus-home-edition
 cask sourcetree
 cask xmind
+
+## caskroom/cask
+tap caskroom/cask
 
 ## homebrew/boneyard
 tap homebrew/boneyard
