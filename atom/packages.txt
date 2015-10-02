@@ -1,0 +1,5 @@
+ex-mode@0.7.0
+file-icons@1.6.9
+japanese-wrap@0.2.7
+vim-mode@0.60.0
+
