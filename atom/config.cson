@@ -1,0 +1,15 @@
+"*":
+  editor:
+    invisibles: {}
+    softWrap: true
+    softWrapAtPreferredLineLength: true
+    preferredLineLength: 100
+  core:
+    themes: [
+      "one-dark-ui"
+      "one-dark-syntax"
+    ]
+  "exception-reporting":
+    userId: "ddf6b86d-49e6-d791-5aa2-78ea097bd61e"
+  welcome:
+    showOnStartup: false
