@@ -23,3 +23,8 @@
 # This file uses CoffeeScript Object Notation (CSON).
 # If you are unfamiliar with CSON, you can read more about it here:
 # https://github.com/bevry/cson#what-is-cson
+
+# For vim-mode
+# Backsapce
+'atom-text-editor.vim-mode.insert-mode':
+  'ctrl-h': 'core:backspace'
