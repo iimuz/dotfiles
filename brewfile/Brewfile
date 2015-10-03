@@ -32,6 +32,7 @@ brew brew-file
 brew ant
 brew git
 brew gmp
+brew gradle
 brew libyaml
 brew openssl
 brew pandoc
