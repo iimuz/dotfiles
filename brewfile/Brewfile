@@ -10,6 +10,7 @@ cask eclipse-java
 cask edgeview
 cask google-chrome
 cask java
+cask kindle
 cask mactex
 cask sophos-anti-virus-home-edition
 cask sourcetree
