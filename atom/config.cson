@@ -4,6 +4,7 @@
     softWrap: true
     softWrapAtPreferredLineLength: true
     preferredLineLength: 100
+    fontSize: 13
   core:
     themes: [
       "one-dark-ui"
@@ -13,3 +14,5 @@
     userId: "ddf6b86d-49e6-d791-5aa2-78ea097bd61e"
   welcome:
     showOnStartup: false
+  "tree-view":
+    hideVcsIgnoredFiles: true
