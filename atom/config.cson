@@ -1,18 +1,23 @@
 "*":
-  editor:
-    invisibles: {}
-    softWrap: true
-    softWrapAtPreferredLineLength: true
-    preferredLineLength: 100
-    fontSize: 13
   core:
     themes: [
       "one-dark-ui"
       "one-dark-syntax"
     ]
+  editor:
+    invisibles: {}
+    preferredLineLength: 100
+    showInvisibles: true
+    softWrap: true
+    softWrapAtPreferredLineLength: true
   "exception-reporting":
     userId: "ddf6b86d-49e6-d791-5aa2-78ea097bd61e"
-  welcome:
-    showOnStartup: false
+  "japanese-wrap":
+    characterWidth: {}
+  linter: {}
+  "linter-flake8":
+    executablePath: "/Users/daisuke/.pyenv/versions/3.4.3/envs/3.4.3-flake8/bin/flake8"
   "tree-view":
     hideVcsIgnoredFiles: true
+  welcome:
+    showOnStartup: false

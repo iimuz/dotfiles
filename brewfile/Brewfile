@@ -13,6 +13,7 @@ cask java
 cask kindle
 cask mactex
 cask minecraft
+cask slack
 cask sophos-anti-virus-home-edition
 cask sourcetree
 cask xmind
