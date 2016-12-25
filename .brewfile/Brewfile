@@ -19,10 +19,13 @@ brew git
 brew libevent
 brew lua
 brew openssl
+brew perl
 brew pkg-config
-brew tmux
-brew vim --with-lua
+brew python
 brew reattach-to-user-namespace
+brew ruby
+brew tmux
+brew vim
 
 tap rcmdnk/file
 brew brew-file
