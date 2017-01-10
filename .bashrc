@@ -1,42 +1,67 @@
+﻿# echo用の色を設定します
+NML_COLOR='\033[1;33m'
+NC='\033[0m'
+
 # OSを特定します
 OS_MAC="Mac"
-OS_WIN="Win"
+OS_WIN="Windows_NT"
 if [ "$(uname)" == 'Darwin' ]; then
+  echo -e "${NML_COLOR}OS is Mac${NC}"
   OS=$OS_MAC
-elif [ "$expr substr $(uname -s) 1 7)" == "MSYS_NT" ]; then
-  OS=$OS_WIN
+elif [ $OS == $OS_WIN ]; then
+  echo -e "${NML_COLOR}OS is Win${NC}"
+  # OS=$OS_WIN
 fi
 
+
 # etcのbashrcを読み込む
-# Mac & Linux
 if [ -f /etc/bashrc ]; then
+  # Mac & Linux
+  echo -e "${NML_COLOR}Load /etc/bashrc${NC}"
   . /etc/bashrc
-fi
-# MSYS2
-if [ $OS == $OS_WIN ]; then
+elif [ $OS == $OS_WIN ]; then
+  # MSYS2
   if [ -f /etc/bash.bashrc ]; then
+    echo -e "${NML_COLOR}Load /etc/bash.bashrc${NC}"
     . /etc/bash.bashrc
   fi
 fi
 
+# windowsの場合にdocker設定スクリプトを実行します
+if [ $OS == $OS_WIN ]; then
+  DOCKER_DIR="/c/Program Files/Docker Toolbox"
+  if [ -d "${DOCKER_DIR}" ]; then
+    echo -e "${NML_COLOR}docker settings for win...${NC}"
 
-# Macの場合にhomebrewで自動的にbrew-fileをアップデートするようにする
+    export PATH="${DOCKER_DIR}:$PATH"
+    cd "${DOCKER_DIR}"
+    DOCKER_MACHINE=./docker-machine.exe
+    VM=default
+    if [ "$($DOCKER_MACHINE status $VM)" != "Running" ]; then
+      echo "Starting machine $VM..."
+      $DOCKER_MACHINE start $VM
+      yes | $DOCKER_MACHINE regenerate-certs $VM
+    fi
+    echo "Setting environment variables for machine $VM..."
+    eval "$($DOCKER_MACHINE env --shell=bash $VM)"
+    cd
+  fi
+fi
+
+# Macの場合にhomebrewで自動的にbrew-fileをアップデートするようにします
 if [ $OS == $OS_MAC ]; then
   if [ -f $(brew --prefix)/etc/brew-wrap ]; then
     . $(brew --prefix)/etc/brew-wrap
   fi
 fi
 
-
 # プロンプトの表示形式を設定
 if [ $OS == $OS_MAC ]; then
   PS1="[\u@\h \W]\$"
 fi
 
-
 # alias
 if [ $OS == $OS_MAC ]; then
   alias ls='ls -G'  # lsを色付きにする
 fi
-
 
