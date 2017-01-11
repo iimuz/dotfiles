@@ -56,6 +56,8 @@ set title
 set cursorline
 " syntax
 syntax enable
+" カラースキームです
+colorscheme elflord
 
 filetype plugin indent on
 

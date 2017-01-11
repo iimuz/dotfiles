@@ -61,7 +61,10 @@ if [ $OS == $OS_MAC ]; then
 fi
 
 # alias
+## lsを色つきにします
 if [ $OS == $OS_MAC ]; then
-  alias ls='ls -G'  # lsを色付きにする
+  alias ls='ls -G'
+elif [ $OS == $OS_WIN ]; then
+  alias ls='ls --color=auto'
 fi
 
