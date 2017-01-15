@@ -68,3 +68,5 @@ elif [ $OS == $OS_WIN ]; then
   alias ls='ls --color=auto'
 fi
 
+## git logのエイリアスを作成します
+alias gitlg='git log --graph --oneline --decorate=full --branches --tags --remotes'
