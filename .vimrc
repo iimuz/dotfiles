@@ -27,7 +27,13 @@ set showcmd
 
 
 " 不可視文字を可視化
-set listchars=tab:>-,extends:<,trail:-,eol:<
+set listchars=nbsp:%,tab:>-,extends:<,trail:-
+set list
+augroup highlightIdegraphicSpace
+  autocmd!
+  autocmd Colorscheme * highlight IdeographicSpace term=underline ctermbg=DarkGreen guibg=DarkGreen
+  autocmd VimEnter,WinEnter * match IdeographicSpace /　/
+augroup END
 " Tab文字を半角スペースにする
 set expandtab
 " 行頭以外のTab文字の表示幅（スペースいくつ分）
