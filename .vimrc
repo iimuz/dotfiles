@@ -18,12 +18,32 @@ set number
 set cursorline
 " 括弧入力時の対応する括弧を表示
 set showmatch
-" ステータスラインを常に表示
-set laststatus=2
 " コマンドラインの補完
 set wildmode=list:longest
 " コマンドをステータス行に表示
 set showcmd
+
+" ファイル名表示
+set statusline=%F
+" 変更チェック表示
+set statusline+=%m
+" 読み込み専用かどうか表示
+set statusline+=%r
+" ヘルプページなら[HELP]と表示
+set statusline+=%h
+" プレビューウインドウなら[Prevew]と表示
+set statusline+=%w
+" これ以降は右寄せ表示
+set statusline+=%=
+" file encoding
+set statusline+=[FMT=%{&ff},\ TYPE=%Y,\ ENC=%{&fileencoding}]
+" 現在行数/全行数
+set statusline+=[LOW=%l/%L]
+" ステータスラインを表示
+" 0:表示しない
+" 1: 2つ以上ウィンドウがある時だけ表示
+" 2: 常に表示
+set laststatus=2
 
 
 " 不可視文字を可視化
