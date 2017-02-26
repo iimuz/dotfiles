@@ -70,3 +70,13 @@ fi
 
 ## git logのエイリアスを作成します
 alias gitlg='git log --graph --oneline --decorate=full --branches --tags --remotes'
+
+
+# function
+## pecoを利用してcdします
+function pcd {
+  local dir="$( ls -1d $WORKPATH/*/*/* | peco )"
+  if [ ! -z "$dir" ] ; then
+    cd "$dir"
+  fi
+}
