@@ -5,35 +5,46 @@ tap argon/mas
 brew mas
 
 tap caskroom/cask
-cask atom
 cask dropbox
-cask edgeview
 cask google-chrome
 cask java
-cask slack
 cask sourcetree
+cask xquartz
+
+tap caskroom/versions
 
 tap homebrew/core
 brew doxygen
+brew fish
+brew gdbm
+brew ghq
 brew git
 brew libevent
+brew libyaml
 brew lua
 brew openssl
+brew pcre2
+brew peco
 brew perl
 brew pkg-config
 brew python
+brew readline
 brew reattach-to-user-namespace
 brew ruby
+brew sqlite
 brew tmux
 brew vim
 
 tap rcmdnk/file
 brew brew-file
 
+# Cask applications
+cask edgeview
+
 # App Store applications
 appstore 406056744 Evernote (6.10)
+appstore 408981434 iMovie (10.1.4)
 appstore 409183694 Keynote (7.0.5)
 appstore 409203825 Numbers (4.0.5)
 appstore 409201541 Pages (6.0.5)
 appstore 497799835 Xcode (8.2.1)
-appstore 408981434 iMovie (10.1.4)

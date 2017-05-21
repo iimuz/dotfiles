@@ -75,7 +75,7 @@ alias gitlg='git log --graph --oneline --decorate=full --branches --tags --remot
 # function
 ## pecoを利用してcdします
 function pcd {
-  local dir="$( ls -1d $WORKPATH/src/*/*/* | peco )"
+  local dir="$(ls -1d $WORKPATH/src/*/*/* | peco )"
   if [ ! -z "$dir" ] ; then
     cd "$dir"
   fi
