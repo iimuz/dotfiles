@@ -8,37 +8,38 @@ tap caskroom/cask
 cask dropbox
 cask google-chrome
 cask java
+cask steam
 
 tap caskroom/versions
 
 tap homebrew/core
-brew fish
-brew gdbm
-brew ghq
 brew git
-brew libevent
+brew ghq
 brew libyaml
-brew lua
+brew python
+brew vim
+brew fish
 brew openssl
-brew pcre2
-brew peco
+brew sqlite
 brew perl
 brew pkg-config
-brew python
-brew readline
+brew lua
 brew reattach-to-user-namespace
-brew ruby
-brew sqlite
 brew tmux
-brew vim
+brew libevent
+brew gdbm
+brew pcre2
+brew ruby
+brew readline
+brew peco
 
 tap rcmdnk/file
 brew brew-file
 
 # App Store applications
-appstore 406056744 Evernote (6.10)
-appstore 408981434 iMovie (10.1.4)
-appstore 409183694 Keynote (7.0.5)
-appstore 409203825 Numbers (4.0.5)
-appstore 409201541 Pages (6.0.5)
-appstore 497799835 Xcode (8.2.1)
+appstore 406056744 Evernote (6.11.1)
+appstore 408981434 iMovie (10.1.6)
+appstore 409183694 Keynote (7.2)
+appstore 409203825 Numbers (4.2)
+appstore 409201541 Pages (6.2)
+appstore 497799835 Xcode (8.3.3)
