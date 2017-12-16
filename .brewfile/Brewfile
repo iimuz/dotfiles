@@ -2,7 +2,6 @@
 # tap repositories and their packages
 
 tap homebrew/core
-brew fish
 brew gdbm
 brew ghq
 brew git
@@ -24,10 +23,10 @@ brew tmux
 brew vim
 
 tap caskroom/cask
+cask karabiner-elements
 cask dropbox
 cask google-chrome
 cask java
-cask karabiner-elements
 
 tap caskroom/versions
 

@@ -1,6 +1,8 @@
 " setting
 "文字コードをUFT-8に設定
 scriptencoding utf-8
+set encoding=utf-8
+set fileencodings=utf-8,sjis
 set fenc=utf-8
 " バックアップファイルを作らない
 set nobackup
@@ -10,7 +12,6 @@ set noswapfile
 set autoread
 " バッファが編集中でもその他のファイルを開けるように
 set hidden
-
 
 " 行番号を表示
 set number
@@ -45,7 +46,6 @@ set statusline+=[LOW=%l/%L]
 " 2: 常に表示
 set laststatus=2
 
-
 " 不可視文字を可視化
 set listchars=nbsp:%,tab:>-,extends:<,trail:-
 set list
@@ -65,7 +65,6 @@ set smartindent
 " バックスペースが効かなくなる問題への対応
 set backspace=indent,eol,start
 
-
 " 検索文字列が小文字の場合は大文字小文字を区別なく検索する
 set ignorecase
 " 検索文字列に大文字が含まれている場合は区別して検索する
@@ -77,11 +76,8 @@ set wrapscan
 " 検索語をハイライト表示
 set hlsearch
 
-
 " タイトルを表示
 set title
-" カーソル行をハイライト表示します
-set cursorline
 " syntax
 syntax enable
 " カラースキームです
