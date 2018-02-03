@@ -10,6 +10,7 @@ brew libyaml
 brew lua
 brew mas
 brew openssl
+brew openssl@1.1
 brew pcre2
 brew peco
 brew perl
@@ -18,14 +19,19 @@ brew python
 brew readline
 brew reattach-to-user-namespace
 brew ruby
+brew socat
 brew sqlite
 brew tmux
 brew vim
 
 tap caskroom/cask
+cask virtualbox
 cask karabiner-elements
 cask dropbox
+cask vagrant
+cask virtualbox-extension-pack
 cask google-chrome
+cask xquartz
 cask java
 
 tap caskroom/versions
