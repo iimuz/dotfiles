@@ -1,4 +1,4 @@
-PS1="[\e[1;32m\]\w\[\e[m\]]$ "
+PS1="[\e[1;32m\]\u@\h:\w\[\e[m\]]\n$ "
 
 # xdg base directory
 export XDG_CACHE_HOME=~/.cache
