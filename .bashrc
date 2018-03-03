@@ -26,6 +26,8 @@ peco-history() {
   fi
 
   local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -E 's/^[0-9]+[[:blank:]]+//' | peco | head -n 1)
+  READLINE_LINE=${CMD}
+  READLINE_POINT=${#CMD}
 
   if [ -n "$CMD" ] ; then
     # Replace the last entry, "peco-history", with $CMD
@@ -40,4 +42,4 @@ peco-history() {
     history -d $((HISTCMD-1))
   fi
 }
-bind '"\C-r":"peco-history\n"'
+bind -x '"\C-r":"peco-history"'
