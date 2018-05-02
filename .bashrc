@@ -15,7 +15,7 @@ alias peco-ghq='cd $(ghq root)/$(ghq list | peco)'
 alias peco-gb='`git branch | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
 # peco docker
 alias peco-dps='docker ps --format "{{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Command}}\t{{.RunningFor}}"'
-alias peco-deb='docker exec -it `dps | peco | cut -f 1` /bin/bash'
+alias peco-deb='docker exec -it `peco-dps | peco | cut -f 1` /bin/bash'
 
 # peco histroy
 export HISTCONTROL="ignoredups"
