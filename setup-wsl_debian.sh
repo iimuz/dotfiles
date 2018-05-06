@@ -53,4 +53,8 @@ sudo apt install -y --no-install-recommends neovim
 mkdir -p ~/.config/nvim
 wget https://raw.githubusercontent.com/iimuz/dotfiles/master/.vimrc -O ~/.config/nvim/init.vim
 
+# install tmux
+sudo apt install -y --no-install-recommends tmux
+wget https://raw.githubusercontent.com/iimuz/dotfiles/master/.tmux.conf -O ~/.tmux.conf
+
 rm -rf .wget-hsts
