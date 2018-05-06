@@ -3,7 +3,7 @@ sudo apt -y update
 sudo apt -y upgrade
 
 # install basic apps
-sudo apt install -y --no-install-recommends ca-certificates curl wget
+sudo apt install -y --no-install-recommends ca-certificates curl make wget
 
 # install japanese
 sudo apt install -y --no-install-recommends task-japanese
