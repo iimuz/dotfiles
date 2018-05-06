@@ -34,7 +34,7 @@ echo "\nif [ -f ~/.bashrc.local ]; then\n  . ~/.bashrc.local\nfi\n" >> ~/.bashrc
 wget --no-check-certificate https://raw.githubusercontent.com/iimuz/dotfiles/master/.bashrc -O ~/.bashrc.local
 
 # install git
-sudo apt install -y --no-install-recommends git
+sudo apt install -y --no-install-recommends git less
 wget --no-check-certificate https://raw.githubusercontent.com/iimuz/dotfiles/master/.gitconfig -O ~/.gitconfig
 
 # install ghq
@@ -48,7 +48,7 @@ echo "[ghq]\n  root = ~/src\n" >> ~/.gitconfig.local
 # install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 yes | ~/.fzf/install
-sudo sed -i 's/peco/fzf/' ~/.bashrc.local
+sed -i 's/peco/fzf/g' ~/.bashrc.local
 
 # install neovim
 sudo apt install -y --no-install-recommends neovim
