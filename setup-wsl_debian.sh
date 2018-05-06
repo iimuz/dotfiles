@@ -1,9 +1,9 @@
 # update
 sudo apt -y update
-sudo apt -y upgrad
+sudo apt -y upgrade
 
 # install basic apps
-sudo apt install -y --no-install-recommends ca-certificates
+sudo apt install -y --no-install-recommends ca-certificates curl wget
 
 # install japanese
 sudo apt install -y --no-install-recommends task-japanese
@@ -11,10 +11,13 @@ sudo sed -i 's/# ja_JP.UTF-8/ja_JP.UTF-8/' /etc/locale.gen
 sudo locale-gen
 sudo update-locale LANG=ja_JP.UTF-8
 
+# bash settings
+echo "\nif [ -f ~/.bashrc.local ]; then\n  . ~/.bashrc.local\nfi\n" >> ~/.bashrc
+wget https://raw.githubusercontent.com/iimuz/dotfiles/master/.bashrc -O ~/.bashrc.local
+
 # install docker
 sudo apt install -y \
   apt-transport-https \
-  curl \
   gnupg2 \
   software-properties-common
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
@@ -27,15 +30,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 sudo mkdir /c
 mount --bind /mnt/c /c
-echo "export DOCKER_HOST='tcp://0.0.0.0:2375'" >> ~/.bashrc
-
-# bash settings
-echo "\nif [ -f ~/.bashrc.local ]; then\n  . ~/.bashrc.local\nfi\n" >> ~/.bashrc
-wget --no-check-certificate https://raw.githubusercontent.com/iimuz/dotfiles/master/.bashrc -O ~/.bashrc.local
+echo "export DOCKER_HOST='tcp://0.0.0.0:2375'" >> ~/.bashrc.local
 
 # install git
-sudo apt install -y --no-install-recommends git less
-wget --no-check-certificate https://raw.githubusercontent.com/iimuz/dotfiles/master/.gitconfig -O ~/.gitconfig
+sudo apt install -y --no-install-recommends git less ssh
+wget https://raw.githubusercontent.com/iimuz/dotfiles/master/.gitconfig -O ~/.gitconfig
 
 # install ghq
 sudo apt install -y --no-install-recommends unzip
@@ -48,11 +47,10 @@ echo "[ghq]\n  root = ~/src\n" >> ~/.gitconfig.local
 # install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 yes | ~/.fzf/install
-sed -i 's/peco/fzf/g' ~/.bashrc.local
 
 # install neovim
 sudo apt install -y --no-install-recommends neovim
 mkdir -p ~/.config/nvim
-wget --no-check-certificate https://raw.githubusercontent.com/iimuz/dotfiles/master/.vimrc -O ~/.config/nvim/init.vim
+wget https://raw.githubusercontent.com/iimuz/dotfiles/master/.vimrc -O ~/.config/nvim/init.vim
 
 rm -rf .wget-hsts
