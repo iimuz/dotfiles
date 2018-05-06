@@ -82,6 +82,8 @@ set title
 syntax enable
 " カラースキームです
 colorscheme elflord
+" マウス操作を無効
+set mouse=
 
 filetype plugin indent on
 
