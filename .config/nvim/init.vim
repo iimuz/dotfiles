@@ -1,4 +1,8 @@
-" setting
+" deinの設定
+if filereadable(expand('~/.config/nvim/dein.vim'))
+  execute 'source' expand('~/.config/nvim/dein.vim')
+endif
+
 "文字コードをUFT-8に設定
 scriptencoding utf-8
 set encoding=utf-8
