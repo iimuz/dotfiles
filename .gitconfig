@@ -14,6 +14,12 @@
 [include]
   path = .gitconfig.local
 
+[includeIf "gitdir:~/src/github.com/"]
+  path = .gitconfig.github
+
+[includeIf "gitdir:~/src/gitlab.com/"]
+  path = .gitconfig.gitlab
+
 [merge]
   tool = vimdiff
 
