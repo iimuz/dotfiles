@@ -1,11 +1,5 @@
-PS1="[\e[1;32m\]\u@\h:\w\[\e[m\]]\n$ "
-
 # xdg base directory
-export XDG_CACHE_HOME=~/.cache
-export XDG_CONFIG_DIRS=/etc/xdg
-export XDG_CONFIG_HOME=~/.config
-export XDG_DATA_DIRS=/usr/local/share:/usr/share
-export XDG_DATA_HOME=~/.local/share
+if [ -f '~/.config/bash/xdg-base.sh' ]; then . '~/.config/bash/xdg-base.sh'; fi
 
 alias ls='ls -G'
 
