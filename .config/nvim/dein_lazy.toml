@@ -1,0 +1,8 @@
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+
+[[plugins]]
+repo = 'tpope/vim-markdown'
+on_ft = 'md'
+
