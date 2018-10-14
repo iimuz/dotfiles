@@ -40,3 +40,26 @@ repo = 'Shougo/neomru.vim'
 [[plugins]]
 repo = 'Shougo/neoinclude.vim'
 
+[[plugins]]
+repo = 'Shougo/unite.vim'
+depends = ['vimproc']
+hook_add = '''
+  let g:unite_enable_start_insert = 0
+  let g:unite_enable_ignore_case = 1
+  let g:unite_enable_smart_case = 1
+  let g:unite_split_rule = 'botright'
+'''
+
+[[plugins]]
+repo = 'Shougo/unite-outline'
+depends = ['unite']
+hook_add = '''
+  nnoremap <silent> [denite]o :Denite unite:outline<CR>
+'''
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+hook_post_update = '''
+  let g:dein#plugin.build = 'make CC=gcc'
+'''
+
