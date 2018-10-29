@@ -12,13 +12,13 @@
   prompt = false
 
 [include]
-  path = .gitconfig.local
+  path = ~/.config/git/local.config
 
 [includeIf "gitdir:~/src/github.com/"]
-  path = .gitconfig.github
+  path = ~/.config/git/github.config
 
 [includeIf "gitdir:~/src/gitlab.com/"]
-  path = .gitconfig.gitlab
+  path = ~/.config/git/gitlab.config
 
 [merge]
   tool = vimdiff

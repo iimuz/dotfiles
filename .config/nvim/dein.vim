@@ -1,7 +1,12 @@
 " プラグインが実際にインストールされるディレクトリ
-let s:dein_dir = expand('~/.cache/dein')
+let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+let s:dein_dir = s:cache_home . '/dein'
+
 " dein.vim 本体
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if !isdirectory(s:dein_repo_dir)
+  call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
+endif
 
 " dein.vim の設定
 if &runtimepath !~# '/dein.vim'
@@ -14,7 +19,7 @@ if dein#load_state(s:dein_dir)
 
   " プラグインリストを収めた TOML ファイル
   " 予め TOML ファイル（後述）を用意しておく
-  let g:rc_dir    = expand('~/.vim/rc')
+  let g:rc_dir    = empty($XDG_CONFIG_HOME) ? expand('~/.config/nvim/rc') : $XDG_CONFIG_HOME . '/nvim'
   let s:toml      = g:rc_dir . '/dein.toml'
   let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
 
@@ -27,4 +32,7 @@ if dein#load_state(s:dein_dir)
   call dein#save_state()
 endif
 
-
+" 不足プラグインのインストール
+if has('vim_starting') && dein#check_install()
+  call dein#install()
+endif

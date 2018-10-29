@@ -1,0 +1,65 @@
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+  map <C-n> :NERDTreeToggle<CR>
+'''
+
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/denite.nvim'
+depends = ['neomru.vim', 'neoinclude.vim']
+hook_add = '''
+  " Use the platinum searcher
+  call denite#custom#var('file_rec', 'command', ['pt', '--follow', '--nocolor', '--nogroup', '--hidden', '-g', ''])
+  call denite#custom#var('grep', 'command', ['pt', '--nogroup', '--nocolor', '--smart-case', '--hidden'])
+  call denite#custom#var('grep', 'default_opts', [])
+  call denite#custom#var('grep', 'recursive_opts', [])
+
+  " Prefix key
+  nnoremap [denite] <Nop>
+  nmap <Space>d [denite]
+
+  nmap <silent> [denite]b :<C-u>Denite buffer -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]g :<C-u>Denite grep -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]h :<C-u>Denite command_history -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]o :<C-u>Denite outline -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]p :<C-u>Denite file_rec -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]r :<C-u>Denite file_mru -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]s :<C-u>Denite -resume<CR>
+  nmap <silent> [denite]/ :<C-u>Denite -buffer-name=search -auto-resize line<CR>
+
+  nmap <silent> [denite]] :<C-u>DeniteCursorWord grep -highlight-mode-insert=Search<CR>
+  nmap <silent> [denite]* :<C-u>DeniteCursorWord -buffer-name=search -auto-resize line<CR>
+'''
+
+[[plugins]]
+repo = 'Shougo/neomru.vim'
+
+[[plugins]]
+repo = 'Shougo/neoinclude.vim'
+
+[[plugins]]
+repo = 'Shougo/unite.vim'
+depends = ['vimproc']
+hook_add = '''
+  let g:unite_enable_start_insert = 0
+  let g:unite_enable_ignore_case = 1
+  let g:unite_enable_smart_case = 1
+  let g:unite_split_rule = 'botright'
+'''
+
+[[plugins]]
+repo = 'Shougo/unite-outline'
+depends = ['unite']
+hook_add = '''
+  nnoremap <silent> [denite]o :Denite unite:outline<CR>
+'''
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+hook_post_update = '''
+  let g:dein#plugin.build = 'make CC=gcc'
+'''
+

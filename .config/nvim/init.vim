@@ -19,10 +19,10 @@ set hidden
 
 " 行番号を表示
 set number
-" 現在の行を強調表示
-set cursorline
+" 現在の行を強調表示しない(全画面の再描画が発生し遅くなる環境があるため)
+set nocursorline
 " 括弧入力時の対応する括弧を表示
-set showmatch
+" set showmatch
 " コマンドラインの補完
 set wildmode=list:longest
 " コマンドをステータス行に表示
