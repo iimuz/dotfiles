@@ -1,0 +1,5 @@
+color = true
+context = 3
+ignore = ['.git']
+color-path = '1;34'
+
