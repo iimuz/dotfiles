@@ -2,12 +2,20 @@
 #
 # Install gcloud
 
+# スクリプトのパスを取得
+cwd=`dirname "${0}"`
+expr "${0}" : "/.*" > /dev/null || cwd=`(cd "${cwd}" && pwd)`
+
+# 設定値
 BASHRC_MAIN=~/.bashrc
 BASHRC_DIR=~/.config/gcloud
-BASHRC_GCLOUD=$BASHRC_DIR/bashrc
+BASH_SRC=`(cd "$cwd/../.config/gcloud" && pwd)`/alias.inc
+BASHRC_GCLOUD=$BASHRC_DIR/`basename $BASH_SRC`
 
-# curl https://sdk.cloud.google.com | bash
+# install gcloud
+curl https://sdk.cloud.google.com | bash
 
+# set gloud bash setting
 cat <<EOF >> $BASHRC_MAIN
 
 # The next line enables shell alias command using gcloud.
@@ -15,12 +23,6 @@ if [ -f '${BASHRC_GCLOUD}' ]; then . '${BASHRC_GCLOUD}'; fi
 EOF
 
 mkdir -p $BASHRC_DIR
-cat <<EOF >> $BASHRC_GCLOUD
-alias glist='gcloud compute instances list'
-alias gstart='gcloud compute instances start'
-alias gstop='gcloud compute instances stop'
-alias gssh='gcloud compute ssh'
-EOF
-
-. $BASHRC_MAIN
+cd $BASHRC_DIR
+ln -s $BASH_SRC
 
