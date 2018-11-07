@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# Install ghq.
 
 VERSION=0.8.0
 ARCH=amd64

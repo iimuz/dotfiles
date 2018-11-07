@@ -23,6 +23,5 @@ if [ -f '${BASHRC_GCLOUD}' ]; then . '${BASHRC_GCLOUD}'; fi
 EOF
 
 mkdir -p $BASHRC_DIR
-cd $BASHRC_DIR
-ln -s $BASH_SRC
+ln -s $BASH_SRC $BASHRC_GCLOUD
 
