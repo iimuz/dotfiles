@@ -3,9 +3,7 @@
 # Install docker ce
 # Reference: https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository
 
-MAIN_BASHRC=~/.bashrc
 DOCKER_COMPOSE_VERSION=1.22.0
-DOCKER_COMPOSE_COMPLETION=~/.config/bash/docker-compose
 
 # update the apk package index.
 sudo -E apt update
@@ -36,12 +34,4 @@ sudo usermod -aG docker $USER
 # install docker-compose.
 sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-
-# install bash completion
-curl -L https://raw.githubusercontent.com/docker/compose/${DOCKER_COMPOSE_VERSION}/contrib/completion/bash/docker-compose -o $DOCKER_COMPOSE_COMPLETION
-cat <<EOF >> $MAIN_BASHRC
-
-# The next line enables docker-compose completion.
-if [ -f '${DOCKER_COMPOSE_COMPLETION}' ]; then . '${DOCKER_COMPOSE_COMPLETION}'; fi
-EOF
 
