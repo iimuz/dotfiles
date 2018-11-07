@@ -1,13 +1,14 @@
 # dotfiles
 
-## Usage
+各種設定ファイルを保存しています。
 
-### setup wsl
+インストールの実行は、 scripts フォルダの下にあるファイルを利用してください。
+インストールおよび設定ファイルのリンクを実行します。
 
-debianを選択した場合に、wslの環境を構築するためのスクリプトです。
-初期状態からは下記のようにして初期化します。
+例えば、下記のように実行すると gcloud のインストールと設定ファイルを追加します。
 
-```bash
-$ sudo apt update && sudo apt upgrade && sudo apt install -y --no-install-recommends ca-certificates curl
-$ curl https://github.com/iimuz/dotfiles/blob/master/setup-wsl_debian.sh | sh
+```sh
+$ sh scripts/gcloud.sh
+$ . ~/.bashrc
 ```
+
