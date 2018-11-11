@@ -18,6 +18,7 @@ sudo mv $UNZIP_DIR/ghq /usr/local/bin/
 rm -rf $UNZIP_DIR $FILENAME
 
 # settings
+mkdir -p $SETTING_DIR
 cat <<EOF >>$SETTING_FILE
 [ghq]
   root = $GHQ_ROOT
