@@ -43,7 +43,7 @@ set statusline+=%=
 " file encoding
 set statusline+=[FMT=%{&ff},\ TYPE=%Y,\ ENC=%{&fileencoding}]
 " 現在行数/全行数
-set statusline+=[LOW=%l/%L]
+set statusline+=[%l/%L,%c]
 " ステータスラインを表示
 " 0:表示しない
 " 1: 2つ以上ウィンドウがある時だけ表示
