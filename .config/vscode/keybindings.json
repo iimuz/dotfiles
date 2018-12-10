@@ -1,3 +1,32 @@
 // Place your key bindings in this file to overwrite the defaults
 [
+    // エディターとエディターの移動
+    {
+        "key": "ctrl+w ctrl+w",
+        "command": "workbench.action.nextEditor",
+        "when": "editorFocus && vim.mode == 'Normal'",
+    },
+    // エディター以外のviewからエディターへの移動
+    {
+        "key": "ctrl+w w",
+        "command": "workbench.action.focusActiveEditorGroup",
+    },
+    // editorからsidebarの移動
+    {
+        "key": "ctrl+w h",
+        "command": "workbench.action.focusSideBar",
+        "when": "editorFocus",
+    },
+    // Sidebar の表示 / 非表示切り替え
+    {
+        "key": "ctrl+n",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "vim.mode == 'Normal'",
+    },
+    // Terminal の表示 / 非表示切り替え
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "vim.mode == 'Normal'",
+    }
 ]
