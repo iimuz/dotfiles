@@ -2,13 +2,16 @@
     "editor.renderWhitespace": "boundary",
     "editor.minimap.enabled": false,
     "editor.fontFamily": "'Ricty Diminished Discord', 'myrica M', Consolas, 'Courier New', monospace",
-    "editor.fontSize": 14,
+    "editor.fontSize": 15,
+    "editor.renderControlCharacters": true,
     "editor.wordWrap": "on",
     "explorer.confirmDelete": false,
     "terminal.integrated.fontFamily": "'Ricty Diminished Discord', 'myrica M', Consolas, 'Courier New', monospace",
+    "terminal.integrated.fontSize": 15,
     "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
     "vim.useSystemClipboard": true,
     "vim.easymotion": true,
     "vim.visualstar": true,
     "vim.useCtrlKeys": true,
+    "workbench.startupEditor": "newUntitledFile"
 }
