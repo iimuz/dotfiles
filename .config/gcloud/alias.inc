@@ -1,4 +1,5 @@
 alias glist='gcloud compute instances list'
+alias gscp='gcloud compute scp'
+alias gssh='gcloud compute ssh'
 alias gstart='gcloud compute instances start'
 alias gstop='gcloud compute instances stop'
-alias gssh='gcloud compute ssh'
