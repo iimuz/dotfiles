@@ -35,7 +35,7 @@ Param(
   [switch]$noClean
 )
 
-$URI = "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2F603408%2Fchrome-win.zip?generation=1540783913134382&alt=media"
+$URI = "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2F624019%2Fchrome-win.zip?generation=1547791276170685&alt=media"
 $DST = (Resolve-Path $dst)
 
 # Download
