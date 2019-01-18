@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-download wsltty installer and run installer.
+download wsltty installer for windows and run installer.
 .DESCRIPTION
-download wsltty installer and run installer.
+download wsltty installer for windows and run installer.
 
 .PARAMETER force
 download installer if file exists.
