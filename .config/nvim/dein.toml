@@ -2,6 +2,9 @@
 repo = 'airblade/vim-gitgutter'
 
 [[plugins]]
+repo = 'raghur/vim-ghost'
+
+[[plugins]]
 repo = 'scrooloose/nerdtree'
 hook_add = '''
   map <C-n> :NERDTreeToggle<CR>
