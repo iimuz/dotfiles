@@ -1,5 +1,5 @@
-# ghq
-alias ffghq='cd $(ghq root)/$(ghq list | peco)'
+# find repositories under golang directory structure
+alias ffghq='cd $(find ~/src -follow  -maxdepth 3 -mindepth 3 -type d | peco)'
 
 # git
 alias ffgb='`git branch | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
