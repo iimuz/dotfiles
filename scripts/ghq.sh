@@ -11,6 +11,9 @@ SETTING_DIR=~/.config/git
 SETTING_FILE=${SETTING_DIR}/local.config
 GHQ_ROOT=~/src
 
+# install prerequests
+sudo -E apt install -y --no-install-recommends unzip
+
 # download ghq
 wget https://github.com/motemen/ghq/releases/download/v${VERSION}/${FILENAME}
 unzip -d $UNZIP_DIR $FILENAME

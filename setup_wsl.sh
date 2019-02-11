@@ -3,6 +3,11 @@
 # wsl ubuntu 環境に必要なパッケージを一括インストールします。
 # インストール済みのパッケージに関しては処理しないようにしています。
 
+sudo apt update
+sudo apt upgrade -y
+sudo apt autoremove -y
+sudo apt clean
+
 # 基本設定を行う
 source $(pwd)/setup.sh
 
