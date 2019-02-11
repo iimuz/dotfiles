@@ -22,7 +22,6 @@ pip install --no-cache neovim==0.2.6
 pip3 install --no-cache setuptools
 pip3 install --no-cache neovim==0.2.6
 
-
 # install pt
 PT_VERSION=2.2.0
 PT_ARCH=amd64
