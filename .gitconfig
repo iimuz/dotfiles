@@ -2,26 +2,27 @@
   lg = log --graph --oneline --decorate=full --branches --tags --remotes
 
 [core]
-  editor = vim
+  editor = nvim
   quotepath = false
 
 [diff]
-  tool = vimdiff
+  tool = nvimdiff
 
 [difftool]
   prompt = false
 
-[include]
-  path = ~/.config/git/local.config
-
-[includeIf "gitdir:~/src/github.com/"]
-  path = ~/.config/git/github.config
-
-[includeIf "gitdir:~/src/gitlab.com/"]
-  path = ~/.config/git/gitlab.config
+[difftool "nvimdiff"]
+  cmd = "nvim -R -d -c \"wincmd l\" -d \"$LOCAL\" \"$REMOTE\""
 
 [merge]
   tool = vimdiff
 
 [mergetool]
   keepBackup = false
+
+[mergetool "nvimdiff"]
+  cmd = "nvim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"  \"$MERGED\""
+
+[include]
+  path = ~/.config/git/local.config
+
