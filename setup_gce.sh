@@ -2,6 +2,11 @@
 #
 # GCE でインスタンスを借りた場合に、環境構築するためのスクリプトです。
 
+sudo apt update
+sudo apt upgrade -y
+sudo apt autoremove -y
+sudo apt clean
+
 source $(pwd)/setup.sh
 
 # docker 環境の構築

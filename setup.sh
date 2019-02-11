@@ -56,7 +56,7 @@ SCRIPT_PATH=$(pwd)/scripts
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
 create_symlink $(pwd)/.inputrc ~/.inputrc
-create_symlink $(pwd)/.tmux.confg ~/.tmux.conf
+create_symlink $(pwd)/.tmux.conf ~/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc
 
 create_symlink $CONFIG_PATH/bash $CONFIG_HOME/bash
