@@ -48,12 +48,17 @@ if [ -f '${filename}' ]; then . '${filename}'; fi
 EOF
 }
 
+# 共通パスの設定
+CONFIG_HOME=~/.config
+CONFIG_PATH=$(pwd)/.config
+SCRIPT_PATH=$(pwd)/scripts
+
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
 create_symlink $(pwd)/.inputrc ~/.inputrc
 create_symlink $(pwd)/.tmux.confg ~/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc
 
-create_symlink $(pwd)/.config/bash ~/.config/bash
-set_bashrc ~/.config/bash/xdg-base.sh
+create_symlink $CONFIG_PATH/bash $CONFIG_HOME/bash
+set_bashrc $CONFIG_HOME/bash/xdg-base.sh
 

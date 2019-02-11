@@ -6,11 +6,6 @@
 # 基本設定を行う
 source $(pwd)/setup.sh
 
-# 共通パスの設定
-CONFIG_HOME=~/.config
-CONFIG_PATH=$(pwd)/.config
-SCRIPT_PATH=$(pwd)/scripts
-
 # gcloud 環境の構築
 install_command gcloud $SCRIPT_PATH/gcloud.sh
 create_symlink $CONFIG_PATH/gcloud/alias.inc $CONFIG_HOME/gcloud/alias.inc
