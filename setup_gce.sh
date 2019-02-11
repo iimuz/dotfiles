@@ -11,6 +11,8 @@ source $(pwd)/setup.sh
 
 # docker 環境の構築
 install_command docker $SCRIPT_PATH/docker-ubuntu.sh
+create_symlink $CONFIG_PATH/docker/alias.sh $CONFIG_HOME/docker/alias.sh
+set_bashrc $CONFIG_HOME/docker/alias.sh
 
 # gcloud 環境の構築
 # gcloud はコマンド自体は docker で行うため、
