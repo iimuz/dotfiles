@@ -8,8 +8,12 @@ alias dgstart='dgcloud compute instances start'
 alias dgstop='dgcloud compute instances stop'
 
 # git
-alias dgit='docker exec -it gitenv su-exec git ash'
+alias dgit='docker run --rm -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) iimuz/git:v1.1.0-gpg1'
+alias dgitexec='docker exec -it gitenv su-exec git ash'
 alias dgitstart='docker start gitenv'
+
+# hugo
+alias dhugo='docker run --rm -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) iimuz/hugo:v0.47.1-1'
 
 # neovim
 alias dnvim='docker run --rm -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) iimuz/neovim:v0.3.0-slim7'
