@@ -2,7 +2,7 @@
 function docker_command {
   image=$1
   command=$2
-  docker run -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $2 ${@:3}
+  docker run --rm -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $2 ${@:3}
 }
 
 # gcloud
@@ -19,6 +19,7 @@ alias dgcstop='dgcloud compute instances stop'
 alias dgit='docker_command iimuz/git:v1.1.0-gpg1 git'
 alias dgitexec='docker exec -it gitenv su-exec git ash'
 alias dgitstart='docker start gitenv'
+alias dgitsvn='docker_command iimuz/git:v1.1.0-svn1 git svn'
 
 # hugo
 alias dhugo='docker_command iimuz/hugo:v0.47.1-1 hugo'
