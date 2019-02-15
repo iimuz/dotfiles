@@ -5,6 +5,14 @@ function docker_command {
   docker run --rm -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $2 ${@:3}
 }
 
+# docker の shell を呼び出しコマンドを実行する
+function docker_shell {
+  image=$1
+  shell=$2
+  command="${@:3}"
+  docker run -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $shell -c "$command"
+}
+
 # gcloud
 alias dgconfig='docker run -it --name gcloud-config -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) localhost:gcloud bash'
 alias dgcloud='docker run --rm -it --volumes-from gcloud-config -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) localhost:gcloud gcloud'
@@ -23,7 +31,7 @@ alias dgitsvn='docker_command iimuz/git:v1.1.0-svn1 git svn'
 
 # hugo
 alias dhugo='docker_command iimuz/hugo:v0.47.1-1 hugo'
-alias dhugos='docker_command iimuz/hugo:v0.47.1-1 ash'
+alias dhugos='docker_shell iimuz/hugo:v0.47.1-1 ash'
 
 # neovim
 alias dnvim='docker_command iimuz/neovim:v0.3.0-slim7 nvim'
