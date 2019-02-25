@@ -1,6 +1,6 @@
 " deinの設定
 let s:config_home = empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME
-let s:dein_config = s:config_home . 'nvim/dein.vim'
+let s:dein_config = s:config_home . '/nvim/dein.vim'
 if filereadable(s:dein_config)
   execute 'source' s:dein_config
 endif
