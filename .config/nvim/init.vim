@@ -1,6 +1,8 @@
 " deinの設定
-if filereadable(expand('~/.config/nvim/dein.vim'))
-  execute 'source' expand('~/.config/nvim/dein.vim')
+let s:config_home = empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME
+let s:dein_config = s:config_home . 'nvim/dein.vim'
+if filereadable(s:dein_config)
+  execute 'source' s:dein_config
 endif
 
 "文字コードをUFT-8に設定
