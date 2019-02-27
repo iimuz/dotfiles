@@ -34,12 +34,13 @@ alias dhugo='docker_command iimuz/hugo:v0.47.1-1 hugo'
 alias dhugos='docker_shell iimuz/hugo:v0.47.1-1 ash'
 
 # neovim
-alias dnvim='docker_command iimuz/neovim:v0.3.0-slim7 nvim'
-alias dnvim-cpp='docker_command iimuz/neovim:v0.3.0-cpp7 nvim'
-alias dnvim-go='docker_command iimuz/neovim:v0.3.0-golang1 nvim'
-alias dnvim-js='docker_command iimuz/neovim:v0.3.0-node1 nvim'
-alias dnvim-md='docker_command iimuz/neovim:v0.3.0-md7 nvim'
-alias dnvim-py='docker_command iimuz/neovim:v0.3.0-py7 nvim'
+alias dnvim_command='docker run --rm -it -v $(pwd):/src:rw -w /src -u $(id -u):$(id -g)'
+alias dnvim='dnvim_command iimuz/neovim:v0.3.1-slim1 nvim'
+alias dnvim_cpp='dnvim_command iimuz/neovim:v0.3.1-cpp1 nvim'
+alias dnvim_go='dnvim_command iimuz/neovim:v0.3.1-golang1 nvim'
+alias dnvim_js='dnvim_command iimuz/neovim:v0.3.1-node1 nvim'
+alias dnvim_md='dnvim_command iimuz/neovim:v0.3.1-md1 nvim'
+alias dnvim_py='dnvim_command iimuz/neovim:v0.3.1-py1 nvim'
 
 # python
 alias dpython='docker_command iimuz/python-dev:v3.7.0-pipenv1 python'
