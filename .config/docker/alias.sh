@@ -44,6 +44,7 @@ alias dnvim_py='dnvim_command iimuz/neovim:v0.3.1-py1 nvim'
 
 # python
 alias dpython='docker_command iimuz/python-dev:v3.7.0-pipenv1 python'
+alias dpythons='docker_shell iimuz/python-dev:v3.7.0-pipenv1 bash'
 
 # travis
 alias dtravis='docker_command iimuz/travis-client:v1.8.9 travis'
