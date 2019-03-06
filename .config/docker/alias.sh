@@ -10,42 +10,50 @@ function docker_shell {
   image=$1
   shell=$2
   command="${@:3}"
-  docker run -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $shell -c "$command"
+  docker run -it -v $(pwd):/src:rw -e http_proxy=http://proxy.canon.co.jp:10080 -e https_proxy=http://proxy.canon.co.jp:10080 -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $shell -c "$command"
+}
+
+# docker run command with user
+function docker_run {
+  envfile=$(pwd)/.env
+  envsetting=''
+  if [ -f $envfile ]; then
+    envsetting="--env-file=$envfile"
+  fi
+  docker run --rm -it $envsetting -v $(pwd):/src:rw -w /src -u $(id -u):$(id -g) $@
 }
 
 # gcloud
-alias dgconfig='docker run -it --name gcloud-config -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) localhost:gcloud bash'
-alias dgcloud='docker run --rm -it --volumes-from gcloud-config -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) localhost:gcloud gcloud'
-alias dgcdel='dgcloud compute instances delete'
-alias dgclist='dgcloud compute instances list'
-alias dgcscp='dgcloud compute scp'
-alias dgcssh='dgcloud compute ssh'
-alias dgcstart='dgcloud compute instances start'
-alias dgcstop='dgcloud compute instances stop'
+alias gconfig='docker_run --name gcloud-config iimuz/gcloud:v237.0.0-1 bash'
+alias gcloud='docker_run --volumes-from gcloud-config iimuz/gcloud:v237.0.0-1 gcloud'
+alias gcdel='gcloud compute instances delete'
+alias gclist='gcloud compute instances list'
+alias gcscp='gcloud compute scp'
+alias gcssh='gcloud compute ssh'
+alias gcstart='gcloud compute instances start'
+alias gcstop='gcloud compute instances stop'
 
 # git
-alias dgit='docker_command iimuz/git:v1.1.0-gpg1 git'
-alias dgitexec='docker exec -it gitenv su-exec git ash'
-alias dgitstart='docker start gitenv'
-alias dgitsvn='docker_command iimuz/git:v1.1.0-svn1 git svn'
+alias git='docker_command iimuz/git:v1.1.0-gpg1 git'
+alias gitexec='docker exec -it gitenv su-exec git ash'
+alias gitstart='docker start gitenv'
+alias gitsvn='docker_command iimuz/git:v1.1.0-svn1 git svn'
 
 # hugo
-alias dhugo='docker_command iimuz/hugo:v0.47.1-1 hugo'
-alias dhugos='docker_shell iimuz/hugo:v0.47.1-1 ash'
+alias hugo='docker_run iimuz/hugo:latest hugo'
 
 # neovim
-alias dnvim_command='docker run --rm -it -v $(pwd):/src:rw -w /src -u $(id -u):$(id -g)'
-alias dnvim='dnvim_command iimuz/neovim:v0.3.1-slim1 nvim'
-alias dnvim_cpp='dnvim_command iimuz/neovim:v0.3.1-cpp1 nvim'
-alias dnvim_go='dnvim_command iimuz/neovim:v0.3.1-golang1 nvim'
-alias dnvim_js='dnvim_command iimuz/neovim:v0.3.1-node1 nvim'
-alias dnvim_md='dnvim_command iimuz/neovim:v0.3.1-md1 nvim'
-alias dnvim_py='dnvim_command iimuz/neovim:v0.3.1-py1 nvim'
+alias nvim='docker_run iimuz/neovim:v0.3.1-slim1 nvim'
+alias nvim_cpp='docker_run iimuz/neovim:v0.3.1-cpp1 nvim'
+alias nvim_go='docker_run iimuz/neovim:v0.3.1-golang1 nvim'
+alias nvim_js='docker_run iimuz/neovim:v0.3.1-node1 nvim'
+alias nvim_md='docker_run iimuz/neovim:v0.3.1-md1 nvim'
+alias nvim_py='docker_run iimuz/neovim:v0.3.1-py1 nvim'
 
 # python
-alias dpython='docker_command iimuz/python-dev:v3.7.0-pipenv1 python'
-alias dpythons='docker_shell iimuz/python-dev:v3.7.0-pipenv1 bash'
+alias python='docker_run iimuz/python-dev:v3.7.2-1 python'
+alias pipenv='docker_run iimuz/python-dev:v3.7.2-1 pipenv'
 
 # travis
-alias dtravis='docker_command iimuz/travis-client:v1.8.9 travis'
+alias travis='docker_command iimuz/travis-client:v1.8.9 travis'
 
