@@ -10,7 +10,7 @@ function docker_shell {
   image=$1
   shell=$2
   command="${@:3}"
-  docker run -it -v $(pwd):/src:rw -e http_proxy=http://proxy.canon.co.jp:10080 -e https_proxy=http://proxy.canon.co.jp:10080 -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $shell -c "$command"
+  docker run -it -v $(pwd):/src:rw -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) $image $shell -c "$command"
 }
 
 # docker run command with user
