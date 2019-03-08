@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker_run_with_mount_current_dir iimuz/hugo:latest hugo $*
+

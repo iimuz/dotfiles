@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker_run \
+  -d \
+  --name gpg_agent \
+  -v ~/.gnupg:/.gnupg:rw \
+  -v gpg_agent_sock:/run/user/$(id -u)/:ro \
+  iimuz/gnupg:v2.2.12-1 \
+  ash -c "gpg-connect-agent /bye"
+

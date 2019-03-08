@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker_run -v $(pwd):/src:rw -w /src $@
+

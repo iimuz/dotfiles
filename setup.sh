@@ -50,8 +50,11 @@ EOF
 
 # 共通パスの設定
 CONFIG_HOME=~/.config
+BIN_HOME=~/bin
+
 CONFIG_PATH=$(pwd)/.config
 SCRIPT_PATH=$(pwd)/scripts
+BIN_PATH=$(pwd)/bin
 
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
@@ -61,4 +64,13 @@ create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc
 
 create_symlink $CONFIG_PATH/bash $CONFIG_HOME/bash
 set_bashrc $CONFIG_HOME/bash/xdg-base.sh
+
+# ユーザ専用の実行ファイルを配置する場所を追加
+mkdir -p $BIN_HOME
+if ! grep "export PATH=\$PATH:$(readlink -f ~/bin)" -l ~/.bashrc > /dev/null 2>&1; then
+  cat <<EOF >> ~/.bashrc
+
+export PATH=\$PATH:$(readlink -f ~/bin)
+EOF
+fi
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+docker run \
+  --rm \
+  -it \
+  -v $(pwd):/src:rw \
+  -e USER_ID=$(id -u) \
+  -e GROUP_ID=$(id -g) \
+  iimuz/travis-client:v1.8.9 \
+  travis $*
+
