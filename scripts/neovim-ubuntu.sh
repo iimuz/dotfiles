@@ -18,17 +18,22 @@ sudo -E apt install -y --no-install-recommends \
 
 # install neovim plugin for python
 pip install --no-cache setuptools
-pip install --no-cache neovim==0.2.6
+pip install --no-cache neovim==0.3.1
 pip3 install --no-cache setuptools
-pip3 install --no-cache neovim==0.2.6
+pip3 install --no-cache neovim==0.3.1
 
 # install pt
 PT_VERSION=2.2.0
 PT_ARCH=amd64
 PT_EXTDIR=pt_linux_${PT_ARCH}
 PT_FILENAME=${PT_EXTDIR}.tar.gz
-
 wget https://github.com/monochromegane/the_platinum_searcher/releases/download/v${PT_VERSION}/${PT_FILENAME}
 tar xvzf $PT_FILENAME
 sudo mv $PT_EXTDIR/pt /usr/local/bin/
 rm -rf $PT_EXTDIR $PT_FILENAME
+
+# install packages for c++
+sudo -E apt install -y --no-install-recommends \
+  ctags \
+  global
+

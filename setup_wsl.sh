@@ -35,6 +35,7 @@ install_command jq $SCRIPT_PATH/jq.sh
 install_command nvim $SCRIPT_PATH/neovim-ubuntu.sh
 create_symlink $CONFIG_PATH/nvim $CONFIG_HOME/nvim
 create_symlink $CONFIG_PATH/pt $CONFIG_HOME/pt
+create_symlink $(pwd)/.globalrc ~/.globalrc
 
 # peco 環境の構築
 install_command peco $SCRIPT_PATH/peco.sh

@@ -3,10 +3,58 @@ repo = 'cespare/vim-toml'
 on_ft = 'toml'
 
 [[plugins]]
+repo = 'ozelentok/denite-gtags'
+on_ft = 'cpp'
+hook_add = '''
+  " Prefix key
+  nnoremap [denite-gtags] <Nop>
+  nmap <space>l [denite-gtags]
+
+  nmap <silent> [denite-gtags]a :<C-u>DeniteCursorWord -buffer-name=gtags_context gtags_context<CR>
+  nmap <silent> [denite-gtags]d :<C-u>DeniteCursorWord -buffer-name=gtags_def gtags_def<CR>
+  nmap <silent> [denite-gtags]r :<C-u>DeniteCursorWord -buffer-name=gtags_ref gtags_ref<CR>
+  nmap <silent> [denite-gtags]g :<C-u>DeniteCursorWord -buffer-name=gtags_grep gtags_grep<CR>
+  nmap <silent> [denite-gtags]t :<C-u>Denite -buffer-name=gtags_completion gtags_completion<CR>
+  nmap <silent> [denite-gtags]f :<C-u>Denite -buffer-name=gtags_file gtags_file<CR>
+  nmap <silent> [denite-gtags]p :<C-u>Denite -buffer-name=gtags_path gtags_path<CR>
+'''
+
+[[plugins]]
 repo = 'PProvost/vim-ps1'
 on_ft = 'ps1'
 
 [[plugins]]
-repo = 'tpope/vim-markdown'
-on_ft = 'md'
+repo = 'plasticboy/vim-markdown'
+on_ft = ['markdown', 'mkd']
+hook_post_update = '''
+  make install
+'''
+hook_source = '''
+  let g:vim_markdown_folding_disabled = 0
+  let g:vim_markdown_folding_level = 6
+  let g:vim_markdown_no_default_key_mappings = 1
+  let g:vim_markdown_toc_autofit = 1
+  let g:vim_markdown_conceal = 1
+  let g:vim_markdown_fenced_languages = [
+    \ 'ini=dosini'
+  \ ]
+  let g:vim_markdown_math = 1
+  let g:vim_markdown_frontmatter = 1
+  let g:vim_markdown_toml_frontmatter = 1
+  let g:vim_markdown_json_frontmatter = 1
+  let g:vim_markdown_strikethrough = 1
+  let g:vim_markdown_new_list_item_indent = 2
+'''
+hook_add = '''
+  " Prefix key
+  nnoremap [markdown] <Nop>
+  nmap <Space>m [markdown]
+
+  nmap <silent> [markdown]n <Plug>Markdown_MoveToNextHeader
+  nmap <silent> [markdown]p <Plug>Markdown_MoveToPreviousHeader
+  nmap <silent> [markdown]c <Plug>Markdown_MoveToCurHeader
+  nmap <silent> [markdown]u <Plug>Markdown_MoveToParentHeader
+  nmap <silent> [markdown]v :<C-u>Tocv<CR>
+  nmap <silent> [markdown]h :<C-u>Toch<CR>
+'''
 
