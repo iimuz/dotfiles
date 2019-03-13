@@ -15,19 +15,21 @@ BASHRC_MAIN=~/.bashrc
 BASHRC_SRC=`(cd "$cwd/../.config/peco" && pwd)`/alias.inc
 BASHRC_DSTDIR=~/.config/peco
 BASHRC_DST=$BASHRC_DSTDIR/`basename $BASHRC_SRC`
+INSTALL_DIR=${1:-~/.local/bin}
 
-# download ghq
+# download peco
 wget https://github.com/peco/peco/releases/download/v${VERSION}/${FILENAME}
 tar xvzf $FILENAME
-sudo mv $FILE_DIR/peco /usr/local/bin/
+sudo mv $FILE_DIR/peco $INSTALL_DIR
 rm -rf $FILE_DIR $FILENAME
 
 # settings
-cat <<EOF >> $BASHRC_MAIN
+# cat <<EOF >> $BASHRC_MAIN
+# 
+# # The next line enables shell alias command using peco.
+# if [ -f '${BASHRC_DST}' ]; then . '${BASHRC_DST}'; fi
+# EOF
+# 
+# mkdir -p $BASHRC_DSTDIR
+# ln -s $BASHRC_SRC $BASHRC_DST
 
-# The next line enables shell alias command using peco.
-if [ -f '${BASHRC_DST}' ]; then . '${BASHRC_DST}'; fi
-EOF
-
-mkdir -p $BASHRC_DSTDIR
-ln -s $BASHRC_SRC $BASHRC_DST

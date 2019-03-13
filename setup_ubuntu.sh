@@ -2,6 +2,15 @@
 #
 # Ubuntu サーバで、環境構築するためのスクリプトです。
 
+# 特定ディレクトリ下のファイルへのシンボリックリンクを張る
+function create_symlink_in_dir() {
+  src_dir=$1
+  dst_dir=$2
+  for file in $(find $src_dir -type f | gawk -F/ '{print $NF}'); do
+    create_symlink $src_dir/$file $dst_dir/$file
+  done
+}
+
 sudo -E apt update
 sudo -E apt upgrade -y
 sudo -E apt autoremove -y
@@ -11,9 +20,7 @@ source $(pwd)/setup.sh
 
 # docker 環境の構築
 install_command docker $SCRIPT_PATH/docker-ubuntu.sh
-for file in $(find $BIN_PATH -type f | gawk -F/ '{print $NF}'); do
-  create_symlink $BIN_PATH/$file $BIN_HOME/$file
-done
+create_symlink_in_dir $BIN_PATH/use_docker $BIN_HOME
 
 # peco 環境の構築
 install_command peco $SCRIPT_PATH/peco.sh
