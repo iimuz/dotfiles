@@ -15,16 +15,14 @@ for file in $(find $BIN_PATH -type f | gawk -F/ '{print $NF}'); do
   create_symlink $BIN_PATH/$file $BIN_HOME/$file
 done
 
-# gcloud 環境の構築
-# gcloud はコマンド自体は docker で行うため、
-# docker gcloud を呼びやすくする alias のみ設定します。
-create_symlink $CONFIG_PATH/gcloud/alias.inc $CONFIG_HOME/gcloud/alias.inc
-set_bashrc $CONFIG_HOME/gcloud/alias.inc
-
 # peco 環境の構築
 install_command peco $SCRIPT_PATH/peco.sh
 create_symlink $CONFIG_PATH/peco/alias.inc $CONFIG_HOME/peco/alias.inc
 set_bashrc $CONFIG_HOME/peco/alias.inc
+
+# jq の環境構築
+install_command jq $SCRIPT_PATH/jq.sh
+mv jq $BIN_HOME/
 
 # tmux の plugin 環境の構築
 if [ ! -d ~/.tmux/plugins ]; then
