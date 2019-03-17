@@ -27,7 +27,7 @@ function install_command() {
   fi
 
   echo "install: $command using $script"
-  bash $script
+  bash $script ${@:3}
 }
 
 # bashrc に追加の設定ファイルを記載する
@@ -54,7 +54,7 @@ BIN_HOME=~/.local/bin
 
 CONFIG_PATH=$(pwd)/.config
 SCRIPT_PATH=$(pwd)/scripts
-BIN_PATH=$(pwd)/bin
+BIN_PATH=$(pwd)/.local/bin
 
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig

@@ -1,13 +1,6 @@
 # find repositories under golang directory structure
 alias ffghq='cd $(find ~/src -follow  -maxdepth 3 -mindepth 3 -type d | peco)'
 
-# git
-alias ffgb='`git branch | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
-
-# gcloud
-alias ffgclist='gcloud compute instances list | cut -d" " -f1 | peco'
-alias ffgproj='gcloud projects list | cut -d" " -f1 | peco'
-
 # history
 export HISTCONTROL="ignoredups"
 peco-history() {
