@@ -14,6 +14,15 @@ function create_symlink() {
   ln -s $src $dst
 }
 
+# 特定ディレクトリ下のファイルへのシンボリックリンクを張る
+function create_symlink_in_dir() {
+  src_dir=$1
+  dst_dir=$2
+  for file in $(find $src_dir -type f | gawk -F/ '{print $NF}'); do
+    create_symlink $src_dir/$file $dst_dir/$file
+  done
+}
+
 # コマンドがインストールされていないときにインストールスクリプトを呼び出す
 # ここでは使っていないが、個別環境での構築で、共通して利用する
 function install_command() {

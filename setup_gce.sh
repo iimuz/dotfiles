@@ -11,9 +11,7 @@ source $(pwd)/setup.sh
 
 # docker 環境の構築
 install_command docker $SCRIPT_PATH/docker-ubuntu.sh
-for file in $(find $BIN_PATH -type f | gawk -F/ '{print $NF}'); do
-  create_symlink $BIN_PATH/$file $BIN_HOME/$file
-done
+create_symlink_in_dir $BIN_PATH/use_docker $BIN_HOME
 
 # peco 環境の構築
 install_command peco $SCRIPT_PATH/peco.sh
