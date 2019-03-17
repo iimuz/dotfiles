@@ -1,0 +1,15 @@
+#!/bin/sh
+
+envfile=$(pwd)/.env
+envsetting=''
+if [ -f $envfile ]; then
+  envsetting="--env-file=$envfile"
+fi
+
+docker run --rm -it $envsetting \
+  -v $(pwd):/src:rw \
+  -w /src \
+  --volumes-from gcloud-config \
+  google/cloud-sdk:238.0.0-alpine \
+  gcloud $*
+
