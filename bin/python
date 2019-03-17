@@ -1,6 +1,6 @@
 #!/bin/bash
 
 docker_run_with_mount_current_dir \
-  iimuz/python-dev:v3.7.2-1 \
+  iimuz/python-dev:v3.7.2-2 \
   python $*
 
