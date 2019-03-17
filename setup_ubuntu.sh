@@ -2,15 +2,6 @@
 #
 # Ubuntu サーバで、環境構築するためのスクリプトです。
 
-# 特定ディレクトリ下のファイルへのシンボリックリンクを張る
-function create_symlink_in_dir() {
-  src_dir=$1
-  dst_dir=$2
-  for file in $(find $src_dir -type f | gawk -F/ '{print $NF}'); do
-    create_symlink $src_dir/$file $dst_dir/$file
-  done
-}
-
 sudo -E apt update
 sudo -E apt upgrade -y
 sudo -E apt autoremove -y
