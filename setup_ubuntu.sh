@@ -18,6 +18,10 @@ install_command peco $SCRIPT_PATH/peco.sh
 create_symlink $CONFIG_PATH/peco/alias.inc $CONFIG_HOME/peco/alias.inc
 set_bashrc $CONFIG_HOME/peco/alias.inc
 
+# jq の環境構築
+install_command jq $SCRIPT_PATH/jq.sh
+mv jq $BIN_HOME/
+
 # tmux の plugin 環境の構築
 if [ ! -d ~/.tmux/plugins ]; then
   echo "install tmux-plugins"
