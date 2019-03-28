@@ -87,7 +87,7 @@ set title
 " syntax
 syntax enable
 " カラースキームです
-colorscheme elflord
+colorscheme pablo
 " マウス操作を無効
 set mouse=
 
