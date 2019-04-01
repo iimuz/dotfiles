@@ -47,6 +47,13 @@ repo = 'Shougo/neomru.vim'
 repo = 'Shougo/neoinclude.vim'
 
 [[plugins]]
+repo = 'tomasr/molokai'
+hook_add = '''
+  set background=dark
+  autocmd! VimEnter * nested colorscheme molokai
+'''
+
+[[plugins]]
 repo = 'tpope/vim-fugitive'
 hook_add = '''
 set diffopt=vertical
