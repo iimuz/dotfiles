@@ -28,5 +28,45 @@
         "key": "ctrl+t",
         "command": "workbench.action.terminal.toggleTerminal",
         "when": "vim.mode == 'Normal'",
-    }
+    },
+    // サジェストの選択
+    {
+        "key": "ctrl+k",
+        "command": "acceptSelectedSuggestion",
+    },
+    // 候補のフォーカスを上下へ移動
+    {
+        "key": "ctrl+p",
+        "command": "selectPrevSuggestion",
+        "when": "editorTextFocus && suggestWidgetMultipleSuggestions && suggestWidgetVisible",
+    },
+    {
+        "key": "ctrl+n",
+        "command": "selectNextSuggestion",
+        "when": "editorTextFocus && suggestWidgetMultipleSuggestions && suggestWidgetVisible",
+    },
+    // ヒントサジェストを下へ移動
+    {
+        "key": "ctrl+n",
+        "command": "showNextParameterHint",
+        "when": "editorTextFocus && parameterHintsMultipleSignatures && parameterHintsVisible",
+    },
+    // リスト系の選択フォーカスを下へ移動
+    {
+        "key": "ctrl+n",
+        "command": "list.focusDown",
+        "when": "listFocus",
+    },
+    // 検索画面の選択のフォーカスを下へ移動
+    {
+        "key": "ctrl+n",
+        "command": "search.focus.nextInputBox",
+        "when": "inputBoxFocus && searchViewletVisible",
+    },
+    // ctrl + j で改行する (vim mode に関係なく改行して挿入モードにしてしまう)
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.insertLineAfter",
+        "when": "editorTextFocus"
+    },
 ]
