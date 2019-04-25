@@ -49,3 +49,9 @@ if [ ! -d ~/.tmux/plugins ]; then
 else
   echo "already installed tmux-plugins"
 fi
+
+# x11 forwarding 用設定を追加
+if ! grep "$(readlink -f ~/.bashrc)" "export DISPLAY=localhost:0.0" > /dev/null 2>&1; then
+  echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+fi
+

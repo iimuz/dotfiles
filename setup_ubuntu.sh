@@ -29,3 +29,4 @@ if [ ! -d ~/.tmux/plugins ]; then
 else
   echo "already installed tmux-plugins"
 fi
+
