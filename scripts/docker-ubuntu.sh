@@ -3,7 +3,7 @@
 # Install docker ce
 # Reference: https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository
 
-DOCKER_COMPOSE_VERSION=1.23.2
+DOCKER_COMPOSE_VERSION=1.24.0
 
 # update the apk package index.
 sudo -E apt update
