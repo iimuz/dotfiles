@@ -39,13 +39,16 @@
     "workbench.editor.showTabs": true,
     "workbench.editor.tabSizing": "shrink",
     "workbench.editor.tabCloseButton": "off",
+    "workbench.sideBar.location": "left",
     "workbench.startupEditor": "newUntitledFile",
     "window.zoomLevel": 0,
     "[markdown]": {
         "editor.tabSize": 4,
     },
-    "workbench.sideBar.location": "left",
     "[python]": {
         "editor.tabSize": 4,
+    },
+    "gitlens.advanced.messages": {
+        "suppressGitVersionWarning": true
     },
 }
