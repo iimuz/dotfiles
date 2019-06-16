@@ -1,0 +1,12 @@
+{
+  "name": "memo",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "extensions": [],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#222266"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+version: "2.4"
+services:
+  vscode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - 127.0.0.1:1313:1313
+    volumes:
+      - ..:/workspace
+    command: sleep infinity

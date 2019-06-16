@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  vscode:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: base
+    volumes:
+      - ..:/workspace
