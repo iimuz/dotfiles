@@ -1,6 +1,6 @@
 {
-    "editor.fontFamily": "'Ricty Diminished Discord', 'myrica M', Consolas, 'Courier New', monospace",
-    "editor.fontSize": 15,
+    "editor.fontFamily": "'myrica M M', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 14,
     "editor.minimap.enabled": false,
     "editor.renderControlCharacters": true,
     "editor.renderWhitespace": "boundary",
@@ -12,8 +12,12 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "scm.alwaysShowProviders": true,
-    "terminal.integrated.fontFamily": "'Ricty Diminished Discord', 'myrica M', Consolas, 'Courier New', monospace",
-    "terminal.integrated.fontSize": 15,
+    "search.exclude": {
+        "**/.git": true,
+    },
+    "search.useIgnoreFilesByDefault": true,
+    "terminal.integrated.fontFamily": "'myrica M M', Consolas, 'Courier New', monospace",
+    "terminal.integrated.fontSize": 14,
     "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
     "vim.easymotion": true,
     "vim.hlsearch": true,
@@ -37,4 +41,11 @@
     "workbench.editor.tabCloseButton": "off",
     "workbench.startupEditor": "newUntitledFile",
     "window.zoomLevel": 0,
+    "[markdown]": {
+        "editor.tabSize": 4,
+    },
+    "workbench.sideBar.location": "left",
+    "[python]": {
+        "editor.tabSize": 4,
+    },
 }
