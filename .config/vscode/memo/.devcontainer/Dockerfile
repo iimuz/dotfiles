@@ -1,19 +1,9 @@
-FROM python:3.7.3-stretch AS base
+FROM jupyter/scipy-notebook:latest AS base
+LABEL maintainer "iimuz"
 
-ENV DEBIAN_FRONTEND noninteractive
-RUN set -x  \
-  && : "Set locale" \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends locales \
-  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-ENV SHELL=/bin/bash \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8
+USER root
 
+COPY requirements.txt /
 RUN set -x \
   && : "Install tools for vscode" \
   && apt-get update \
@@ -21,6 +11,8 @@ RUN set -x \
     git \
     procps \
   && apt-get install -y libicu[0-9][0-9] \
+  && pip install -r /requirements.txt \
+  && rm /requirements.txt \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -46,7 +38,8 @@ RUN set -x \
   && apt-get install -y --no-install-recommends \
     gpg \
     make \
-  && : "Set development environments" \
+  && git --version \
+  && wget https://github.com/git/git/blob/v2.22.0/contrib/credential/netrc/git-credential-netrc -O /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && chsh -s /bin/bash root \
   && apt-get clean \
@@ -54,25 +47,31 @@ RUN set -x \
 COPY .bashrc /root/.bashrc
 COPY .gitconfig /root/.gitconfig
 
-COPY requirements.txt /requirements.txt
 RUN set -x \
-  && : "Install python tools" \
-  && pip3 install -r /requirements.txt \
-  && rm /requirements.txt
+  && : "Install packages for markdown to pdf" \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    libxtst6 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
+USER jovyan
+COPY jupyter_notebook_config.py /home/jovyan/.jupyter/jupyter_notebook_config.py
+WORKDIR /home/jovyan/work
 
 FROM base AS withUser
 
+USER root
+
 ARG GROUP_ID=1000
 ARG USER_ID=1000
-ARG USER_NAME=dev
 RUN set -x \
-  && : "Add user account" \
-  && groupadd -g $GROUP_ID $USER_NAME \
-  && useradd -m -u $USER_ID -g $USER_NAME $USER_NAME \
-  && chsh -s /bin/bash $USER_NAME
+  && : "Change user id" \
+  && groupadd -g $GROUP_ID jovyan \
+  && usermod -u $USER_ID -g jovyan jovyan
 
 USER $USER_NAME
+ENV CONDA_DIR=/opt/conda
+ENV PATH=$CONDA_DIR/bin:$PATH
 COPY .bashrc /home/${USER_NAME}/.bashrc
 COPY .gitconfig /home/${USER_NAME}/.gitconfig

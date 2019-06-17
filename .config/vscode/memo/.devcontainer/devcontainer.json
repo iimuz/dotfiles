@@ -2,11 +2,19 @@
   "name": "memo",
   "dockerComposeFile": "docker-compose.yml",
   "service": "vscode",
-  "workspaceFolder": "/workspace",
-  "extensions": [],
+  "workspaceFolder": "/home/jovyan/work",
+  "extensions": [
+    "donjayamanne.githistory",
+    "eamodio.gitlens",
+    "ms-python.python",
+    "shd101wyy.markdown-preview-enhanced",
+    "yzane.markdown-pdf",
+  ],
   "settings": {
+    "http.proxyStrictSSL": false,
+    "python.dataScience.jupyterServerURI": "http://localhost:8888",
     "workbench.colorCustomizations": {
-      "activityBar.background": "#222266"
-    }
-  }
+        "activityBar.background": "#333366",
+    },
+  },
 }

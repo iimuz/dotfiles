@@ -1,9 +1,27 @@
 {
-	"name": "cpp",
+	"name": "C++",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "vscode",
 	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
 	"extensions": [
-		"ms-vscode.cpptools"
+		"alefragnani.bookmarks",
+		"donjayamanne.githistory",
+		"eamodio.gitlens",
+		"jaycetyle.vscode-gnu-global",
+		"kriegalex.vscode-cudacpp",
+		"ms-vscode.cpptools",
 	],
+	"settings": {
+		"C_Cpp.clang_format_style": "{ BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, AccessModifierOffset: -4, NamespaceIndentation: None, AlignConsecutiveAssignments: true, AlignTrailingComments: true }",
+		"files.associations": {
+			"*.cuh": "cpp",
+			"*.cu": "cpp",
+			"new": "cpp"
+		},
+		"gnuGlobal.autoUpdate": "Enabled",
+		"workbench.colorCustomizations": {
+			"activityBar.background": "#999933"
+		},
+	},
 }
