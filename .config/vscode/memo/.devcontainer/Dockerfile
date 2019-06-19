@@ -67,11 +67,11 @@ ARG GROUP_ID=1000
 ARG USER_ID=1000
 RUN set -x \
   && : "Change user id" \
-  && groupadd -g $GROUP_ID jovyan \
-  && usermod -u $USER_ID -g jovyan jovyan
+  && groupadd -g $GROUP_ID $NB_USER \
+  && usermod -u $USER_ID -g $NB_USER $NB_USER
 
-USER $USER_NAME
+USER $NB_USER
 ENV CONDA_DIR=/opt/conda
 ENV PATH=$CONDA_DIR/bin:$PATH
-COPY .bashrc /home/${USER_NAME}/.bashrc
-COPY .gitconfig /home/${USER_NAME}/.gitconfig
+COPY .bashrc /home/${NB_USER}/.bashrc
+COPY .gitconfig /home/${NB_USER}/.gitconfig

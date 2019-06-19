@@ -11,8 +11,15 @@
     "yzane.markdown-pdf",
   ],
   "settings": {
+		"editor.formatOnSave": true,
     "http.proxyStrictSSL": false,
     "python.dataScience.jupyterServerURI": "http://localhost:8888",
+		"python.formatting.provider": "autopep8",
+		"python.linting.enabled": true,
+		"python.linting.flake8Enabled": true,
+		"python.linting.lintOnSave": true,
+		"python.linting.pylintEnabled": false,
+		"python.pythonPath": "/usr/local/bin/python",
     "workbench.colorCustomizations": {
         "activityBar.background": "#333366",
     },
