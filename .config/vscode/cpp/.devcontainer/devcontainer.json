@@ -13,7 +13,7 @@
 		"ms-vscode.cpptools",
 	],
 	"settings": {
-		"C_Cpp.clang_format_style": "{ BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, AccessModifierOffset: -4, NamespaceIndentation: None, AlignConsecutiveAssignments: true, AlignTrailingComments: true }",
+		"C_Cpp.clang_format_style": "{ BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, AccessModifierOffset: -4, NamespaceIndentation: None, AlignConsecutiveAssignments: true, AlignTrailingComments: true, DerivePointerAlignment: false, PointerAlignment: Left }",
 		"files.associations": {
 			"*.cuh": "cpp",
 			"*.cu": "cpp",
