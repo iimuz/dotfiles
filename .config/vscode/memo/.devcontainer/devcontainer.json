@@ -6,6 +6,7 @@
   "extensions": [
     "donjayamanne.githistory",
     "eamodio.gitlens",
+    "mechatroner.rainbow-csv",
     "ms-python.python",
     "shd101wyy.markdown-preview-enhanced",
     "yzane.markdown-pdf",
@@ -13,6 +14,9 @@
   "settings": {
 		"editor.formatOnSave": true,
     "http.proxyStrictSSL": false,
+    "markdown-preview-enhanced.breakOnSingleNewLine": false,
+    "markdown-preview-enhanced.mermaidTheme": "forest",
+    "markdown-preview-enhanced.previewTheme": "solarized-light.css",
     "python.dataScience.jupyterServerURI": "http://localhost:8888",
 		"python.formatting.provider": "autopep8",
 		"python.linting.enabled": true,
