@@ -15,4 +15,5 @@ services:
       - NB_UID=1001
       - NB_GID=1005
     volumes:
+      - ..:/home/jovyan/work
     working_dir: /home/jovyan/work
