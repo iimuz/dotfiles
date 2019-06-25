@@ -1,3 +1,6 @@
+[core]
+  editor = code --wait
+
 [credential]
   helper = /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
 

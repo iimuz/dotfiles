@@ -1,8 +1,7 @@
-FROM jupyter/scipy-notebook:latest AS base
+FROM python:3.7.3-stretch AS base
 LABEL maintainer "iimuz"
 
-USER root
-
+ENV DEBIAN_FRONTEND=noninteractive
 COPY requirements.txt /
 RUN set -x \
   && : "Install tools for vscode" \
@@ -25,10 +24,14 @@ RUN set -x \
     tar \
   && hugoVersion=0.55.5 \
   && hugoArchive=hugo_${hugoVersion}_Linux-64bit.tar.gz \
+  && hugoWorkdir=/opt/hugo \
+  && mkdir -p $hugoWorkdir \
+  && cd $hugoWorkdir \
   && wget https://github.com/gohugoio/hugo/releases/download/v${hugoVersion}/${hugoArchive} \
   && tar -xvzf $hugoArchive \
   && mv hugo /usr/local/bin/ \
-  && rm $hugoArchive \
+  && cd / \
+  && rm -rf $hugoWorkdir \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -41,37 +44,39 @@ RUN set -x \
   && git --version \
   && wget https://github.com/git/git/blob/v2.22.0/contrib/credential/netrc/git-credential-netrc -O /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
-  && chsh -s /bin/bash root \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 COPY .bashrc /root/.bashrc
 COPY .gitconfig /root/.gitconfig
 
 RUN set -x \
-  && : "Install packages for markdown to pdf" \
+  && : "Install for vscode packages" \
   && apt-get update \
-  && apt-get install -y --no-install-recommends \
-    libxtst6 \
+  && : "Install packages for markdown to pdf" \
+  && apt-get install -y --no-install-recommends libxtst6 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-USER jovyan
-COPY jupyter_notebook_config.py /home/jovyan/.jupyter/jupyter_notebook_config.py
-WORKDIR /home/jovyan/work
+ENV DEBIAN_FRONTEND=dialog \
+  SHELL=/bin/bash \
+  HOME=/root
+WORKDIR /workspace
+CMD ["sleep", "infinity"]
 
 FROM base AS withUser
 
-USER root
+ENV DEBIAN_FRONTEND=noninteractive
 
 ARG GROUP_ID=1000
 ARG USER_ID=1000
+ARG USER_NAME=dev
 RUN set -x \
-  && : "Change user id" \
-  && groupadd -g $GROUP_ID $NB_USER \
-  && usermod -u $USER_ID -g $NB_USER $NB_USER
+  && : "Add user" \
+  && useradd -u $USER_ID -g $USER_NAME $USER_NAME \
+  && groupadd -g $GROUP_ID $USER_NAME
 
-USER $NB_USER
-ENV CONDA_DIR=/opt/conda
-ENV PATH=$CONDA_DIR/bin:$PATH
-COPY .bashrc /home/${NB_USER}/.bashrc
-COPY .gitconfig /home/${NB_USER}/.gitconfig
+USER $USER_NAME
+COPY .bashrc /home/$USER_NAME/.bashrc
+COPY .gitconfig /home/$USER_NAME/.gitconfig
+ENV DEBIAN_FRONTEND=dialog \
+  HOME=/home/$USER_NAME

@@ -1,19 +1,17 @@
-version: "2.4"
+version: "3.7"
 services:
   vscode:
     build:
       context: .
       dockerfile: Dockerfile
-      target: withUser
+      target: base
       args:
-        - USER_ID=1001
-        - GROUP_ID=1005
+        - UESR_NAME=dev
+        - USER_ID=1000
+        - GROUP_ID=1000
+    user: root
     ports:
       - 127.0.0.1:1313:1313
-    environment:
-      - HOME=/home/jovyan
-      - NB_UID=1001
-      - NB_GID=1005
     volumes:
-      - ..:/home/jovyan/work
-    working_dir: /home/jovyan/work
+      - ..:/workspace
+    working_dir: /workspace
