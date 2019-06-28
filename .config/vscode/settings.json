@@ -40,10 +40,10 @@
     "workbench.editor.tabSizing": "shrink",
     "workbench.editor.tabCloseButton": "off",
     "workbench.sideBar.location": "left",
-    "workbench.startupEditor": "newUntitledFile",
+    "workbench.startupEditor": "none",
     "window.zoomLevel": 0,
     "[markdown]": {
-        "editor.tabSize": 4,
+        "editor.tabSize": 2,
     },
     "[python]": {
         "editor.tabSize": 4,
