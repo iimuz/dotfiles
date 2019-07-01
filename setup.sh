@@ -67,6 +67,8 @@ BIN_PATH=$(pwd)/.local/bin
 
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
+sudo chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
+
 create_symlink $(pwd)/.inputrc ~/.inputrc
 create_symlink $(pwd)/.tmux.conf ~/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc
