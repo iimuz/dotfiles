@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  vscode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+      args:
+        - UESR_NAME=dev
+        - USER_ID=1000
+        - GROUP_ID=1000
+    user: root
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace

@@ -1,0 +1,11 @@
+[core]
+  editor = code --wait
+
+[credential]
+  helper = /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
+
+[alias]
+  lg = log --graph --oneline --decorate=full --branches --tags --remotes
+
+[include]
+  path = ~/.config/git/local.gitconfig
