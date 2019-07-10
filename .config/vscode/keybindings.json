@@ -29,6 +29,18 @@
         "command": "workbench.action.terminal.toggleTerminal",
         "when": "vim.mode == 'Normal'",
     },
+    // Terminalのフォーカスを前に戻す
+    {
+        "key": "ctrl+shift+k",
+        "command": "workbench.action.terminal.focusPrevious",
+        "when": "terminalFocus",
+    },
+    // Terminalのフォーカスを次に移す
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.action.terminal.focusNext",
+        "when": "terminalFocus",
+    },
     // サジェストの選択
     {
         "key": "ctrl+k",
