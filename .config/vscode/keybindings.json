@@ -81,4 +81,35 @@
         "command": "editor.action.insertLineAfter",
         "when": "editorTextFocus"
     },
+    // bookmarks
+    {
+        "key": "m b",
+        "command": "bookmarks.toggle",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m l",
+        "command": "bookmarks.list",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m shift+l",
+        "command": "bookmarks.listFromAllFiles",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m o",
+        "command": "bookmarks.jumpToPrevious",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m i",
+        "command": "bookmarks.jumpToNext",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "bookmarksExplorer.focus",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
 ]
