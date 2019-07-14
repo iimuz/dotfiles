@@ -42,7 +42,7 @@ RUN set -x \
     gpg \
     make \
   && git --version \
-  && wget https://github.com/git/git/blob/v2.22.0/contrib/credential/netrc/git-credential-netrc -O /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
+  && wget https://raw.githubusercontent.com/git/git/v2.22.0/contrib/credential/netrc/git-credential-netrc -O /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
@@ -64,6 +64,7 @@ WORKDIR /workspace
 CMD ["sleep", "infinity"]
 
 FROM base AS withUser
+LABEL maintainer "iimuz"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
