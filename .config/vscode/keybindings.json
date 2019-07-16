@@ -112,4 +112,8 @@
         "command": "bookmarksExplorer.focus",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
+    {
+        "key": "ctrl+shift+a",
+        "command": "workbench.action.toggleMaximizedPanel"
+    },
 ]
