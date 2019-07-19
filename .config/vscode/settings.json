@@ -5,17 +5,20 @@
     "editor.renderControlCharacters": true,
     "editor.renderWhitespace": "boundary",
     "editor.tabSize": 2,
-    "editor.wordWrap": "on",
+    "editor.wordWrap": "off",
     "explorer.confirmDelete": false,
     "explorer.openEditors.visible": 0,
     "files.autoGuessEncoding": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
+    "gitlens.advanced.messages": {
+        "suppressGitVersionWarning": true
+    },
     "scm.alwaysShowProviders": true,
     "search.exclude": {
         "**/.git": true,
     },
-    "search.useIgnoreFilesByDefault": true,
+    "search.useIgnoreFiles": true,
     "terminal.integrated.fontFamily": "'myrica M M', Consolas, 'Courier New', monospace",
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
@@ -47,8 +50,5 @@
     },
     "[python]": {
         "editor.tabSize": 4,
-    },
-    "gitlens.advanced.messages": {
-        "suppressGitVersionWarning": true
     },
 }
