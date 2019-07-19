@@ -27,6 +27,24 @@ RUN set -x \
 COPY .bashrc /root/.bashrc
 COPY .gitconfig /root/.gitconfig
 
+RUN set -x \
+  && : "install packages for markdown preview enhanced." \
+  && apt-get update \
+  && : "install google chrome." \
+  && apt-get install -y --no-install-recommends \
+    curl \
+    gpg-agent \
+    unzip \
+  && wget --no-check-certificate https://dl-ssl.google.com/linux/linux_signing_key.pub \
+  && cat linux_signing_key.pub | apt-key add \
+  && rm linux_signing_key \
+  && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
+  && apt-get update \
+  && apt-get install -y google-chrome-stable \
+  && : "install puppeteer for converting pdf." \
+  && apt-get install -y nodejs npm \
+  && npm install -g puppeteer
+
 ENV DEBIAN_FRONTEND=dialog \
   SHELL=/bin/bash \
   HOME=/root
@@ -42,8 +60,8 @@ ARG USER_ID=1000
 ARG USER_NAME=dev
 RUN set -x \
   && : "Add user" \
-  && useradd -u $USER_ID -g $USER_NAME $USER_NAME \
-  && groupadd -g $GROUP_ID $USER_NAME
+  && groupadd -g $GROUP_ID $USER_NAME \
+  && useradd -u $USER_ID -g $USER_NAME $USER_NAME
 
 USER $USER_NAME
 COPY .bashrc /home/$USER_NAME/.bashrc
