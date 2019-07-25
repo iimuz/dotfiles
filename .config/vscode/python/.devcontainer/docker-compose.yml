@@ -4,6 +4,11 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      target: base
+      target: withUser
+      args:
+        - USER_NAME=dev
+        - USER_ID=1000
+        - GROUP_ID=1000
+    user: dev
     volumes:
       - ..:/workspace
