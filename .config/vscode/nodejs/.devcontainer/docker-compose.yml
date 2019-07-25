@@ -6,10 +6,9 @@ services:
       dockerfile: Dockerfile
       target: withUser
       args:
-        - USER_NAME=dev
         - USER_ID=1000
         - GROUP_ID=1000
-    user: dev
+    user: node
     ports:
       - 127.0.0.1:8080:8080
     volumes:

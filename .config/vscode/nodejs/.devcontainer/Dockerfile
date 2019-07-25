@@ -60,14 +60,13 @@ FROM base AS withUser
 
 ARG GROUP_ID=1000
 ARG USER_ID=1000
-ARG USER_NAME=dev
+ENV USER_NAME=node
 RUN set -x \
   && : "Add user account" \
-  && groupadd -g $GROUP_ID $USER_NAME \
-  && useradd -m -u $USER_ID -g $USER_NAME $USER_NAME \
-  && chsh -s /bin/bash $USER_NAME
+  && groupadd -f -g $GROUP_ID $USER_NAME \
+  && usermod -u $USER_ID -g $USER_NAME $USER_NAME
 
-USER dev
+USER $USER_NAME
 ENV HOME=/home/$USER_NAME
 COPY .bashrc $HOME/.bashrc
 COPY .gitconfig $HOME/.gitconfig
