@@ -1,6 +1,6 @@
 // See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"name": "python",
+	"name": "xgboost-sample",
 	"dockerComposeFile": "docker-compose.yml",
 	"shutdownAction": "stopCompose",
 	"service": "vscode",
