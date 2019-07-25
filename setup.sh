@@ -69,6 +69,7 @@ BIN_PATH=$(pwd)/.local/bin
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
 sudo chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
 
+create_symlink $(pwd)/.config/git/ignore ~/.config/git/ignore
 create_symlink $(pwd)/.inputrc ~/.inputrc
 create_symlink $(pwd)/.tmux.conf ~/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc

@@ -1,0 +1,6 @@
+# vscode editor
+.devcontainer
+.devcontainer/
+.vscode
+.vscode/
+
