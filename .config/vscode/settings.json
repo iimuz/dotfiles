@@ -22,6 +22,20 @@
         "**/.git": true,
     },
     "search.useIgnoreFiles": true,
+    "shellLauncher.shells.windows": [
+        {
+            "shell": "C:\\Windows\\System32\\cmd.exe",
+            "label": "cmd"
+        },
+        {
+            "shell": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "label": "PowerShell"
+        },
+        {
+            "shell": "C:\\Windows\\System32\\bash.exe",
+            "label": "WSL Bash"
+        },
+    ],
     "terminal.integrated.fontFamily": "'myrica M M', Consolas, 'Courier New', monospace",
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",

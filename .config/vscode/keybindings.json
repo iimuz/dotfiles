@@ -116,4 +116,9 @@
         "key": "ctrl+shift+a",
         "command": "workbench.action.toggleMaximizedPanel"
     },
+    // shell
+    {
+        "key": "ctrl+m s",
+        "command": "shellLauncher.launch"
+    },
 ]
