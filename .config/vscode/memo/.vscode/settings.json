@@ -1,4 +1,5 @@
 {
+  "docker.host": "tcp://localhost:2375",
   "workbench.colorCustomizations": {
       "activityBar.background": "#222266"
   }

@@ -9,3 +9,5 @@ alias egrep='egrep --color=auto'
 if [ -f ~/.user.bashrc ]; then
   . ~/.user.bashrc
 fi
+
+export LESSCHARSET=utf-8

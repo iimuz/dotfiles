@@ -71,10 +71,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG GROUP_ID=1000
 ARG USER_ID=1000
 ARG USER_NAME=dev
-RUN set -x \
-  && : "Add user" \
-  && useradd -u $USER_ID -g $USER_NAME $USER_NAME \
-  && groupadd -g $GROUP_ID $USER_NAME
+RUN set -x && \
+  : "Add user account" && \
+  groupadd -g $GROUP_ID $USER_NAME && \
+  useradd -m -u $USER_ID -g $USER_NAME $USER_NAME
 
 USER $USER_NAME
 COPY .bashrc /home/$USER_NAME/.bashrc
