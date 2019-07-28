@@ -35,7 +35,7 @@ RUN set -x && \
   pip install -r requirements.txt && \
   rm requirements.txt*
 
-COPY requirements.txt /
+COPY til/requirements.txt /
 RUN set -x && \
   : "Install pip tools for project" && \
   pip install -r requirements.txt && \
