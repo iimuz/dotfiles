@@ -3,6 +3,18 @@ LABEL maintainer "iimuz"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN set -x \
+  && : "Set locale" \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    locales \
+    locales-all \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+ENV LC_ALL=en_US.UTF-8 \
+  LANG=en_US.UTF-8 \
+  LANGUAGE=en_US:en
+
 RUN set -x && \
   : "Install tools for vscode" && \
   apt-get update && \
