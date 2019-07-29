@@ -112,6 +112,7 @@
         "command": "bookmarksExplorer.focus",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
+    // control panel
     {
         "key": "ctrl+shift+a",
         "command": "workbench.action.toggleMaximizedPanel"
@@ -120,5 +121,35 @@
     {
         "key": "ctrl+m s",
         "command": "shellLauncher.launch"
+    // show hover and peek
+    {
+        "key": "m h",
+        "command": "editor.action.showHover",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m t",
+        "command": "editor.action.peekTypeDefinition",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m c",
+        "command": "editor.action.peekDeclaration",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m d",
+        "command": "editor.action.peekDefinition",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m p",
+        "command": "editor.action.peekImplementation",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m r",
+        "command": "Shift+F12",
+        "when": "editorFocus && vim.mode == 'Normal'"
     },
 ]
