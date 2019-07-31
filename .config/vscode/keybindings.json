@@ -120,7 +120,8 @@
     // shell
     {
         "key": "ctrl+m s",
-        "command": "shellLauncher.launch"
+        "command": "shellLauncher.launch",
+    },
     // show hover and peek
     {
         "key": "m h",
