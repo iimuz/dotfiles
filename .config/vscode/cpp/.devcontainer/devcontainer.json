@@ -1,5 +1,5 @@
 {
-	"name": "C++",
+	"name": "workspace-cpp",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "vscode",
 	"workspaceFolder": "/workspace",
@@ -20,8 +20,5 @@
 			"new": "cpp"
 		},
 		"gnuGlobal.autoUpdate": "Enabled",
-		"workbench.colorCustomizations": {
-			"activityBar.background": "#999933"
-		},
 	},
 }
