@@ -4,12 +4,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: base
+      target: withUser
       args:
-        - UESR_NAME=dev
+        - USER_NAME=dev
         - USER_ID=1000
         - GROUP_ID=1000
-    user: root
+    user: dev
+    cap_add:
+      - SYS_ADMIN
     volumes:
       - ..:/workspace
     working_dir: /workspace

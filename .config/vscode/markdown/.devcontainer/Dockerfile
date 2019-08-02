@@ -37,7 +37,7 @@ RUN set -x \
     unzip \
   && wget --no-check-certificate https://dl-ssl.google.com/linux/linux_signing_key.pub \
   && cat linux_signing_key.pub | apt-key add \
-  && rm linux_signing_key \
+  && rm linux_signing_key.pub \
   && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
   && apt-get update \
   && apt-get install -y google-chrome-stable \
@@ -59,9 +59,10 @@ ARG GROUP_ID=1000
 ARG USER_ID=1000
 ARG USER_NAME=dev
 RUN set -x \
-  && : "Add user" \
+  && : "Add user account" \
   && groupadd -g $GROUP_ID $USER_NAME \
-  && useradd -u $USER_ID -g $USER_NAME $USER_NAME
+  && useradd -m -u $USER_ID -g $USER_NAME $USER_NAME \
+  && chsh -s /bin/bash $USER_NAME
 
 USER $USER_NAME
 COPY .bashrc /home/$USER_NAME/.bashrc
