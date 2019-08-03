@@ -1,6 +1,6 @@
 // See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"name": "python",
+	"name": "til-python",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "vscode",
 	"workspaceFolder": "/workspace",
