@@ -5,27 +5,24 @@
   lg = log --graph --oneline --decorate=full --branches --tags --remotes
 
 [core]
-  editor = nvim
+  editor = vim
   quotepath = false
 
 [diff]
-  tool = nvimdiff
+  tool = vimdiff
 
 [difftool]
   prompt = false
 
-[difftool "nvimdiff"]
-  cmd = "nvim -R -d -c \"wincmd l\" -d \"$LOCAL\" \"$REMOTE\""
+[difftool "vimdiff"]
+  cmd = "vim -R -d -c \"wincmd l\" -d \"$LOCAL\" \"$REMOTE\""
 
 [merge]
-  tool = nvimdiff
+  tool = vimdiff
 
 [mergetool]
   keepBackup = false
 
-[mergetool "nvimdiff"]
-  cmd = "nvim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"  \"$MERGED\""
-
-[include]
-  path = ~/.config/git/local.config
+[mergetool "vimdiff"]
+  cmd = "vim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"  \"$MERGED\""
 
