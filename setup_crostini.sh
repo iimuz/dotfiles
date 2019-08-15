@@ -25,6 +25,7 @@ create_symlink $CONFIG_PATH/peco/alias.inc $CONFIG_HOME/peco/alias.inc
 set_bashrc $CONFIG_HOME/peco/alias.inc
 
 # tmux の plugin 環境の構築
+sudo -E apt-get install -y --no-install-recommends tmux
 if [ ! -d ~/.tmux/plugins ]; then
   echo "install tmux-plugins"
   bash $SCRIPT_PATH/tmux-plugins.sh
