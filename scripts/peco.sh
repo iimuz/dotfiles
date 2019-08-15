@@ -6,7 +6,7 @@ expr "${0}" : "/.*" > /dev/null || cwd=`(cd "${cwd}" && pwd)`
 
 # インストールする peco に関する設定
 VERSION=0.5.3
-ARCH=amd64
+ARCH=${2:-amd64}
 FILE_DIR=peco_linux_${ARCH}
 FILENAME=${FILE_DIR}.tar.gz
 
@@ -22,14 +22,4 @@ wget https://github.com/peco/peco/releases/download/v${VERSION}/${FILENAME}
 tar xvzf $FILENAME
 sudo mv $FILE_DIR/peco $INSTALL_DIR
 rm -rf $FILE_DIR $FILENAME
-
-# settings
-# cat <<EOF >> $BASHRC_MAIN
-# 
-# # The next line enables shell alias command using peco.
-# if [ -f '${BASHRC_DST}' ]; then . '${BASHRC_DST}'; fi
-# EOF
-# 
-# mkdir -p $BASHRC_DSTDIR
-# ln -s $BASHRC_SRC $BASHRC_DST
 
