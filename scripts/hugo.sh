@@ -2,7 +2,7 @@
 #
 # Install hugo
 
-VERSION=0.55.5
+VERSION=0.58.1
 ARCH=64bit
 FILENAME=hugo_${VERSION}_Linux-${ARCH}.tar.gz
 TEMP_DIR=./hugo_expand

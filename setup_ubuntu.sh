@@ -26,3 +26,6 @@ else
   echo "already installed tmux-plugins"
 fi
 
+# hugo のインストール
+install_command hugo $SCRIPT_PATH/hugo.sh
+
