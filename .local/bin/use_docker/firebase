@@ -1,0 +1,9 @@
+#!/bin/bash
+
+docker_run_with_mount_current_dir \
+  -v ~/.config/configstore:/home/node/.config/configstore:rw \
+  -p 5000:5000 \
+  -p 9005:9005 \
+  iimuz/firebase:dev \
+  firebase $*
+
