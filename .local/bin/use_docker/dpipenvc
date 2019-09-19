@@ -3,5 +3,5 @@
 docker_run_with_mount_specific_dir \
   .git \
   iimuz/python-dev:v3.7.2-2 \
-  pipenv $*
+  bash
 
