@@ -16,9 +16,6 @@
 [difftool "codediff"]
   cmd = code --wait --diff $LOCAL $REMOTE
 
-[include]
-  path = ~/.config/git/local.gitconfig
-
 [merge]
   tool = codediff
 

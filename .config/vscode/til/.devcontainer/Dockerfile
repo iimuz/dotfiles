@@ -15,19 +15,33 @@ ENV LC_ALL=en_US.UTF-8 \
   LANG=en_US.UTF-8 \
   LANGUAGE=en_US:en
 
-RUN set -x && \
-  : "Install tools for vscode" && \
-  apt-get update && \
-  apt-get install -y --no-install-recommends \
+RUN set -x \
+  && : "Install tools for vscode" \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    curl \
     git \
+    lsb-release \
     procps \
-    && \
-  : "Install any missing dependencies for enhanced language service" && \
-  apt-get install -y libicu[0-9][0-9] && \
-  chsh -s /bin/bash && \
-  : "Clean" && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+    wget \
+  && chsh -s /bin/bash \
+  && : "Clean" \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN set -x \
+  && : "Install c++" \
+  && apt-get update \
+  && apt-get install -y \
+    build-essential \
+    cmake \
+    cppcheck \
+    ctags \
+    global \
+    valgrind \
+  && apt-get autoremove -y \
+  && apt-get clean -y \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV PIPENV_VENV_IN_PROJECT=true
 COPY requirements.txt /
@@ -39,6 +53,7 @@ RUN set -x \
     python3.7-dev \
     python3-pip \
   && : "Set default python command version" \
+  && unlink /usr/bin/python \
   && ln -s python3.7 /usr/bin/python \
   && : "Install pipenv" \
   && pip3 install pipenv \
@@ -52,9 +67,7 @@ RUN set -x \
   && : "Install other development tools" \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-    curl \
     gpg \
-    wget \
   && wget https://raw.githubusercontent.com/git/git/v2.23.0/contrib/credential/netrc/git-credential-netrc \
   && mv git-credential-netrc /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
   && chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc \
@@ -74,11 +87,11 @@ FROM base AS withUser
 ARG GROUP_ID=1000
 ARG USER_ID=1000
 ARG USER_NAME=dev
-RUN set -x && \
-  : "Add user account" && \
-  groupadd -g $GROUP_ID $USER_NAME && \
-  useradd -m -u $USER_ID -g $USER_NAME $USER_NAME && \
-  chsh -s /bin/bash $USER_NAME
+RUN set -x \
+  && : "Add user account" \
+  && groupadd -g $GROUP_ID $USER_NAME \
+  && useradd -m -u $USER_ID -g $USER_NAME $USER_NAME \
+  && chsh -s /bin/bash $USER_NAME
 
 USER dev
 ENV HOME=/home/$USER_NAME

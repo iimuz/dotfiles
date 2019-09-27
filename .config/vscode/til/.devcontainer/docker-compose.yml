@@ -9,6 +9,10 @@ services:
         - USER_NAME=dev
         - USER_ID=1000
         - GROUP_ID=1000
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     user: dev
     volumes:
       - .:/workspace:rw

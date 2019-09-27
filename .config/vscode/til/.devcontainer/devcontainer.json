@@ -3,22 +3,39 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "vscode",
   "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
   "extensions": [
+    "alefragnani.bookmarks",
+    "eamodio.gitlens",
+    "jaycetyle.vscode-gnu-global",
+    "kriegalex.vscode-cudacpp",
+    "ms-vscode.cpptools",
     "ms-python.python",
     "njpwerner.autodocstring"
   ],
   "settings": {
     "autoDocstring.docstringFormat": "google",
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, UseTab: Never, IndentWidth: 2, TabWidth: 2, AccessModifierOffset: -2, NamespaceIndentation: None, AlignConsecutiveAssignments: true, AlignTrailingComments: true, DerivePointerAlignment: false, PointerAlignment: Left }",
     "editor.formatOnSave": true,
-    "files.exclude": {},
+    "files.associations": {
+      "*.cuh": "cpp",
+      "*.cu": "cpp"
+    },
+    "files.exclude": {
+      "**/.DS_Store": true
+    },
+    "files.insertFinalNewline": true,
     "files.watcherExclude": {
-      "**/.DS_Store": true,
-      "**/.git": true,
+      "**/.git/**": true,
       "**/.mypy_cache/**": true,
       "**/.venv/**": true,
       "**/__pycache__/**": true,
       "**/node_modules/**": true
     },
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gnuGlobal.autoUpdate": "Enabled",
     "python.formatting.provider": "black",
     "python.linting.enabled": true,
     "python.linting.flake8Args": [
