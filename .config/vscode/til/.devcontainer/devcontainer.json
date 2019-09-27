@@ -1,0 +1,47 @@
+{
+  "name": "til",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "extensions": [
+    "ms-python.python",
+    "njpwerner.autodocstring"
+  ],
+  "settings": {
+    "autoDocstring.docstringFormat": "google",
+    "editor.formatOnSave": true,
+    "files.exclude": {},
+    "files.watcherExclude": {
+      "**/.DS_Store": true,
+      "**/.git": true,
+      "**/.mypy_cache/**": true,
+      "**/.venv/**": true,
+      "**/__pycache__/**": true,
+      "**/node_modules/**": true
+    },
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Args": [
+      "--max-complexity",
+      "20",
+      "--max-line-length",
+      "88"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.lintOnSave": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pep8Enabled": false,
+    "python.linting.pylintEnabled": false,
+    "python.pythonPath": "/usr/bin/python",
+    "python.venvpath": ".venv",
+    "search.exclude": {
+      "**/.DS_Store": true,
+      "**/.git": true,
+      "**/.mypy_cache": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+      "**/node_modules": true
+    }
+  }
+}
+
