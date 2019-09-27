@@ -1,0 +1,10 @@
+black
+flake8
+mypy
+numpy
+pandas
+pillow
+pylint
+requests
+toml
+
