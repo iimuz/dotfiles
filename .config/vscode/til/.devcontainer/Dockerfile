@@ -43,6 +43,31 @@ RUN set -x \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
 
+RUN set -x \
+  && : "Install markdown setting" \
+  && apt-get update \
+  && : "install google chrome." \
+  && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gpg-agent \
+    unzip \
+  && : "wget --no-check-certificate https://dl-ssl.google.com/linux/linux_signing_key.pub" \
+  && wget https://dl-ssl.google.com/linux/linux_signing_key.pub \
+  && cat linux_signing_key.pub | apt-key add \
+  && rm linux_signing_key.pub \
+  && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
+  && apt-get update \
+  && apt-get install -y google-chrome-stable \
+  && : "install puppeteer for converting pdf." \
+  && apt-get install -y nodejs npm \
+  && npm install -g puppeteer \
+  && apt-get install -y --no-install-recommends fonts-noto-cjk \
+  && fc-cache -fv \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+COPY style.less /root/.mume/style.less
+
 ENV PIPENV_VENV_IN_PROJECT=true
 COPY requirements.txt /
 RUN set -x \
@@ -94,7 +119,9 @@ RUN set -x \
   && chsh -s /bin/bash $USER_NAME
 
 USER dev
-ENV HOME=/home/$USER_NAME
+ENV DEBIAN_FRONTEND=dialog \
+  HOME=/home/$USER_NAME
 COPY .bashrc $HOME/.bashrc
 COPY .gitconfig $HOME/.gitconfig
+COPY style.less $HOME/.mume/style.less
 
