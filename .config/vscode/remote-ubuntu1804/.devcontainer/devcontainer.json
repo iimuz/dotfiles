@@ -1,9 +1,8 @@
-// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"name": "remote-ubuntu1804",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "vscode",
-	"workspaceFolder": "/workspace",
-	"extensions": [],
-	"settings": {}
+  "name": "remote-ubuntu1804",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "extensions": [],
+  "settings": {}
 }

@@ -1,21 +1,20 @@
-// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-	"name": "Go",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "vscode",
-	"workspaceFolder": "/workspace",
-	"postCreateCommand": "go version",
-	"shutdownAction": "stopCompose",
-	"extensions": [
-		"alefragnani.bookmarks",
-		"donjayamanne.githistory",
-		"eamodio.gitlens",
-		"ms-vscode.go",
-	],
-	"settings": {
-		"go.gopath": "/go",
-		"workbench.colorCustomizations": {
-			"activityBar.background": "#08b8ee"
-		},
-	},
+  "name": "Go",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "go version",
+  "shutdownAction": "stopCompose",
+  "extensions": [
+    "alefragnani.bookmarks",
+    "donjayamanne.githistory",
+    "eamodio.gitlens",
+    "ms-vscode.go"
+  ],
+  "settings": {
+    "go.gopath": "/go",
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#08b8ee"
+    }
+  }
 }

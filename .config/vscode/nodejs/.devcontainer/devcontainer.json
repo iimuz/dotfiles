@@ -1,10 +1,10 @@
 {
-	"name": "node.js",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "vscode",
-	"workspaceFolder": "/workspace",
-	"extensions": [
-		"dbaeumer.vscode-eslint"
-	],
-	"settings": {}
+  "name": "node.js",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "extensions": [
+    "dbaeumer.vscode-eslint"
+  ],
+  "settings": {}
 }

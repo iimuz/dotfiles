@@ -19,7 +19,7 @@
     "gitlens.currentLine.enabled": false,
     "scm.alwaysShowProviders": true,
     "search.exclude": {
-        "**/.git": true,
+        "**/.git": true
     },
     "search.useIgnoreFiles": true,
     "shellLauncher.shells.windows": [
@@ -34,7 +34,7 @@
         {
             "shell": "C:\\Windows\\System32\\bash.exe",
             "label": "WSL Bash"
-        },
+        }
     ],
     "terminal.integrated.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
     "terminal.integrated.fontSize": 15,
@@ -44,7 +44,7 @@
     "vim.leader": "<space>",
     "vim.normalModeKeyBindingsNonRecursive": [
         {"before": ["j"], "after": ["g", "j"]},
-        {"before": ["k"], "after": ["g", "k"]},
+        {"before": ["k"], "after": ["g", "k"]}
     ],
     "vim.useCtrlKeys": true,
     "vim.useSystemClipboard": true,
@@ -63,9 +63,9 @@
     "workbench.startupEditor": "none",
     "window.zoomLevel": 0,
     "[markdown]": {
-        "editor.tabSize": 2,
+        "editor.tabSize": 2
     },
     "[python]": {
-        "editor.tabSize": 4,
-    },
+        "editor.tabSize": 4
+    }
 }
