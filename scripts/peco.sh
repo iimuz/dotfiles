@@ -20,6 +20,5 @@ INSTALL_DIR=${1:-~/.local/bin}
 # download peco
 wget https://github.com/peco/peco/releases/download/v${VERSION}/${FILENAME}
 tar xvzf $FILENAME
-sudo mv $FILE_DIR/peco $INSTALL_DIR
+mv $FILE_DIR/peco $INSTALL_DIR
 rm -rf $FILE_DIR $FILENAME
-
