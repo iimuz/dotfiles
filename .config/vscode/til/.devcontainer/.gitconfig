@@ -5,7 +5,7 @@
   editor = code --wait
 
 [credential]
-  helper = /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
+  helper = /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc -f ~/.netrc.gpg get
 
 [diff]
   tool = codediff
@@ -24,4 +24,3 @@
 
 [mergetool "codediff"]
   cmd = code \"$MERGED\"
-
