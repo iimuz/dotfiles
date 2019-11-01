@@ -1,0 +1,34 @@
+{
+  "name": "dev-basic",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "vscode",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "extensions": [
+    "eamodio.gitlens"
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.DS_Store": true
+    },
+    "files.insertFinalNewline": true,
+    "files.watcherExclude": {
+      "**/.git/**": true,
+      "**/.mypy_cache/**": true,
+      "**/.venv/**": true,
+      "**/__pycache__/**": true,
+      "**/node_modules/**": true
+    },
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "search.exclude": {
+      "**/.DS_Store": true,
+      "**/.git": true,
+      "**/.mypy_cache": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+      "**/node_modules": true
+    }
+  }
+}
