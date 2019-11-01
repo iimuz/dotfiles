@@ -9,4 +9,3 @@ if [ -f $envfile ]; then
 fi
 
 docker run --rm -it $envsetting -u $(id -u):$(id -g) $@
-
