@@ -1,5 +1,5 @@
 [alias]
-  lg = log --graph --oneline --decorate=full --branches --tags --remotes
+  lg = log --color --graph --oneline --decorate=full --branches --tags --remotes
 
 [color]
   ui = auto
