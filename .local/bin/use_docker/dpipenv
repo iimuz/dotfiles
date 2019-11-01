@@ -34,7 +34,8 @@ do
   esac
 done
 
-docker_run_with_mount_current_dir \
+docker_run_with_mount_specific_dir \
+  .git \
   $param_daemon \
   $param_port \
   iimuz/python-dev:v3.7.5-1 \
