@@ -1,6 +1,7 @@
 {
     "editor.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
     "editor.fontSize": 15,
+    "editor.formatOnSave": true,
     "editor.minimap.enabled": false,
     "editor.renderControlCharacters": true,
     "editor.renderWhitespace": "boundary",
@@ -11,6 +12,13 @@
     "files.autoGuessEncoding": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
+    "files.watcherExclude": {
+      "**/.git/**": true,
+      "**/.mypy_cache/**": true,
+      "**/.venv/**": true,
+      "**/__pycache__/**": true,
+      "**/node_modules/**": true
+    },
     "gitlens.advanced.messages": {
         "suppressGitVersionWarning": true
     },
@@ -19,7 +27,12 @@
     "gitlens.currentLine.enabled": false,
     "scm.alwaysShowProviders": true,
     "search.exclude": {
-        "**/.git": true
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.mypy_cache": true,
+        "**/.venv": true,
+        "**/__pycache__": true,
+        "**/node_modules": true
     },
     "search.useIgnoreFiles": true,
     "shellLauncher.shells.windows": [
