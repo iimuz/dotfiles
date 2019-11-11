@@ -89,6 +89,13 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -x \
+  && : "Install R" \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends r-base \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN set -x \
   && : "Install other development tools" \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
