@@ -92,6 +92,9 @@ RUN set -x \
   && : "Install R" \
   && apt-get update \
   && apt-get install -y --no-install-recommends r-base \
+  && : "Install renv" \
+  && R -e "install.packages('remotes', repos = c(CRAN = 'https://cloud.r-project.org'))" \
+  && R -e "remotes::install_github('rstudio/renv')" \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
