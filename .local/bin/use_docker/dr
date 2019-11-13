@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PROGRAM_NAME=$(basename $0)
+
+docker_run_with_mount_current_dir \
+  -v $HOME/.local/share/renv:/home/dev/.local/share/renv:rw \
+  iimuz/r-base:v3.5.2 \
+  R $*
