@@ -1,0 +1,8 @@
+#!/bin/sh
+
+NVIM_SETTING_DIR=$HOME/.config/nvim
+
+export VIRTUAL_ENV=$NVIM_SETTING_DIR/.venv
+export PIPENV_PIPFILE=$NVIM_SETTING_DIR/Pipfile
+pipenv run nvim.appimage $*
+
