@@ -13,7 +13,7 @@ USER_LOCAL=$HOME/.local
 # install tcl
 expand_dir=tcl$TCL_VERSION
 archive_file=${expand_dir}.tar.gz
-wget https://sourceforge.net/projects/tcl/files/${archive_file}/download -O $archive_file
+wget https://sourceforge.net/projects/tcl/files/tcl${TCL_VERSION}-src.tar.gz/download -O $archive_file
 tar xzvf $archive_file
 mkdir $expand_dir/build && pushd $_
 ../unix/configure --prefix=$USER_LOCAL
@@ -26,7 +26,7 @@ rm $archive_file
 # install tk
 expand_dir=tk$TK_VERSION
 archive_file=${expand_dir}.tar.gz
-wget https://sourceforge.net/projects/tcl/files/${archive_file}/download -O $archive_file
+wget https://sourceforge.net/projects/tcl/files/tk${TK_VERSION}-src.tar.gz/download -O $archive_file
 tar xzvf $archive_file
 mkdir $expand_dir/build && pushd $_
 ../unix/configure --prefix=$USER_LOCAL
