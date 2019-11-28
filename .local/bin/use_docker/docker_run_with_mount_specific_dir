@@ -40,3 +40,4 @@ work_dir=$2
 IFS=$old_ifs
 
 docker_run -v $mount_dir:/workspace:rw -w /workspace/$work_dir $command
+
