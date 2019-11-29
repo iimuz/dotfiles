@@ -58,6 +58,38 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'junegunn/fzf'
+build = '''
+  ./install --bin
+'''
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+depends = ['fzf']
+hook_add = '''
+  command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'source': 'pt --follow --nocolor --nogroup --hidden --ignore .git/ -g ""'}), <bang>0)
+
+  " Prefix key
+  nnoremap [fzf] <Nop>
+  nmap <Space>f [fzf]
+
+  nmap <silent> [fzf]b :<C-u>Buffers<CR>
+  nmap <silent> [fzf]c :<C-u>Commands<CR>
+  nmap <silent> [fzf]f :<C-u>Files<CR>
+  nmap <silent> [fzf]h :<C-u>History:<CR>
+  nmap <silent> [fzf]m :<C-u>Marks<CR>
+  nmap <silent> [fzf]p :<C-u>GFiles<CR>
+  nmap <silent> [fzf]t :<C-u>BTags<CR>
+  nmap <silent> [fzf]/ :<C-u>BLines<CR>
+
+  " nmap <silent> [fzf]/ :<C-u>Lines<CR>
+  " nmap <silent> [fzf]o :<C-u>Tags<CR>
+  " nmap <silent> [fzf]h :<C-u>History<CR>
+  " nmap <silent> [fzf]h :<C-u>/History<CR>
+'''
+
+[[plugins]]
 repo = 'Shougo/neomru.vim'
 
 [[plugins]]
