@@ -19,3 +19,4 @@ unzip $archive_file -d $expand_dir
 chmod u+x $expand_dir/bw
 mv $expand_dir/bw $USER_LOCAL/
 rm -r $expand_dir $archive_file
+

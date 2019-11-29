@@ -18,7 +18,7 @@ function create_symlink() {
 function create_symlink_in_dir() {
   src_dir=$1
   dst_dir=$2
-  for file in $(find $src_dir -type f | gawk -F/ '{print $NF}'); do
+  for file in $(find $src_dir -type f | awk -F/ '{print $NF}'); do
     create_symlink $src_dir/$file $dst_dir/$file
   done
 }
@@ -67,7 +67,6 @@ BIN_PATH=$(pwd)/.local/bin
 
 # 基本の設定ファイルのみリンクを作成する
 create_symlink $(pwd)/.gitconfig ~/.gitconfig
-sudo chmod +x /usr/share/doc/git/contrib/credential/netrc/git-credential-netrc
 
 create_symlink $(pwd)/.config/git/ignore ~/.config/git/ignore
 create_symlink $(pwd)/.inputrc ~/.inputrc

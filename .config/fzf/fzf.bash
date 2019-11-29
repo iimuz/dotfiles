@@ -17,4 +17,6 @@ if [ -f $FZF_COMPLETION ]; then . $FZF_COMPLETION 2> /dev/null; fi
 # fzf のキーバインドを利用する
 if [ -f $FZF_KEYBINDINGS ]; then . $FZF_KEYBINDINGS; fi
 
+# find repositories under golang directory structure
+alias ffghq='cd $(find ~/src -follow  -maxdepth 3 -mindepth 3 -type d | fzf)'
 
