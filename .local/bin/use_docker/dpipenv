@@ -1,42 +1,27 @@
 #!/bin/bash
 #
-# コマンド実行例: dpipenv -d -p 127.0.0.1:8888:8888 run python hoge.py
-# dockerコマンドと同一のオプションが必要な場合の例: dpipenv -d run python hoge.py -- -d
-#   単一の '-' または '--' の後に続いたコマンドは docker コマンドとしては処理されない。
+# コマンド実行例: dpipenv run python hoge.py -- -d -p 127.0.0.1:8888:8888
+# '-' またｈ '--' の後に続いたコマンドは docker コマンドとして処理されます。
 
-PROGRAM_NAME=$(basename $0)
-
-param_daemon=""
-param_port=""
-param=""
+param_normal=""
+param_docker=""
 for OPT in "$@"
 do
   case "$OPT" in
-    "-p" | "--port")
-      param_port="-p $2"
-      shift 2
-      ;;
-    "-d" | "--daemon")
-      param_daemon="-d"
-      shift 1
-      ;;
     "--" | "-")
       shift 1
-      param="$param $@"
+      param_docker="$param_docker $@"
       break
       ;;
     *)
-      if [[ -n "$1" ]] && [[ ! "$1" =~ ^-+ ]]; then
-        param="$param $1"
-        shift 1
-      fi
+      param_normal="$param_normal $1"
+      shift 1
       ;;
   esac
 done
 
 docker_run_with_mount_specific_dir \
   .git \
-  $param_daemon \
-  $param_port \
+  $param_docker \
   iimuz/python-dev:v3.7.5-1 \
-  pipenv $param
+  pipenv $param_normal

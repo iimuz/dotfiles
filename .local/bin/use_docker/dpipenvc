@@ -1,6 +1,28 @@
 #!/bin/bash
+#
+# コマンド実行例: dpipenvc -- -p 127.0.0.1:8888:8888
+# '-' またｈ '--' の後に続いたコマンドは docker コマンドとして処理されます。
+
+param_docker=""
+param_normal=""
+for OPT in "$@"
+do
+  case "$OPT" in
+    "--" | "-")
+      shift 1
+      param_docker="$param_docker $@"
+      break
+      ;;
+    *)
+      param_normal="$param_normal $1"
+      shift 1
+      ;;
+  esac
+done
 
 docker_run_with_mount_specific_dir \
   .git \
+  $param_docker \
   iimuz/python-dev:v3.7.5-1 \
-  bash
+  bash $param_normal
+
