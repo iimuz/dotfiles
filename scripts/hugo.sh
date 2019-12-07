@@ -2,9 +2,9 @@
 #
 # Install hugo
 
-VERSION=0.59.1
+VERSION=0.60.1
 ARCH=64bit
-FILENAME=hugo_${VERSION}_Linux-${ARCH}.tar.gz
+FILENAME=hugo_extended_${VERSION}_Linux-${ARCH}.tar.gz
 TEMP_DIR=./hugo_expand
 
 # download hugo
