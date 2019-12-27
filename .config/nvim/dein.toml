@@ -45,7 +45,9 @@ hook_add = '''
   nmap <silent> [fzf]c :<C-u>Commands<CR>
   nmap <silent> [fzf]f :<C-u>Files<CR>
   nmap <silent> [fzf]g :<C-u>Rg<CR>
+  nmap <expr> [fzf]g* ':<C-u>Rg '.expand('<cword>').'<CR>'
   nmap <silent> [fzf]G :<C-u>RgHidden<CR>
+  nmap <expr> [fzf]G* ':<C-u>RgHidden '.expand('<cword>').'<CR>'
   nmap <silent> [fzf]h :<C-u>History<CR>
   nmap <silent> [fzf]H: :<C-u>History:<CR>
   nmap <silent> [fzf]H/ :<C-u>/History<CR>
