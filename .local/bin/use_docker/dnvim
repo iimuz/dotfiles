@@ -2,6 +2,6 @@
 
 docker_run_with_mount_specific_dir \
   .git \
-  iimuz/neovim:v0.4.3-full3 \
+  iimuz/neovim:v0.4.3-full4 \
   nvim $*
 
