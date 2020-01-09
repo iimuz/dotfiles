@@ -20,10 +20,16 @@ do
   esac
 done
 
+gitignore=.config/git/ignore
+gitignore_user=$HOME/$gitignore
+param_gitignore=
+if [ -f $gitignore_user ]; then
+  param_gitignore="-v $gitignore_user:/home/dev/$gitignore"
+fi
 
 docker_run_with_mount_specific_dir \
   .git \
-  nvim $*
+  $param_gitignore \
   $param_docker \
   iimuz/neovim:v0.4.3-full4 \
   nvim $param_normal
