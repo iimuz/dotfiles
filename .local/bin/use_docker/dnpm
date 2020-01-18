@@ -1,0 +1,31 @@
+#!/bin/bash
+
+param_normal=""
+param_docker=""
+for OPT in "$@"
+do
+  case "$OPT" in
+    "--" | "-")
+      shift 1
+      param_docker="$param_docker $@"
+      break
+      ;;
+    *)
+      param_normal="$param_normal $1"
+      shift 1
+      ;;
+  esac
+done
+
+NPM_GLOBAL_DIR=$HOME/.local/share/npm-global
+mount_npm_global_dir=""
+if [ -d $NPM_GLOBAL_DIR ]; then
+  mount_npm_global_dir="-v $NPM_GLOBAL_DIR:/home/dev/.local/share/npm-global:rw"
+fi
+
+docker_run_with_mount_current_dir \
+  $mount_npm_global_dir \
+  $param_docker \
+  iimuz/node:v13.6.0-1 \
+  npm $param_normal
+
