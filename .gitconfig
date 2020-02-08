@@ -4,6 +4,9 @@
 [alias]
   lg = log --graph --oneline --decorate=full --branches --tags --remotes
 
+[color]
+  ui = auto
+
 [core]
   editor = vim
   quotepath = false
