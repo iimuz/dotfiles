@@ -1,84 +1,71 @@
 {
-    "editor.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
-    "editor.fontSize": 15,
-    "editor.formatOnSave": true,
-    "editor.minimap.enabled": false,
-    "editor.renderControlCharacters": true,
-    "editor.renderWhitespace": "boundary",
-    "editor.tabSize": 2,
-    "editor.wordWrap": "off",
-    "explorer.confirmDelete": false,
-    "explorer.openEditors.visible": 0,
-    "files.autoGuessEncoding": true,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
-    "files.watcherExclude": {
-      "**/.git/**": true,
-      "**/.mypy_cache/**": true,
-      "**/.venv/**": true,
-      "**/__pycache__/**": true,
-      "**/node_modules/**": true
-    },
-    "gitlens.advanced.messages": {
-        "suppressGitVersionWarning": true
-    },
-    "gitlens.codeLens.authors.enabled": false,
-    "gitlens.codeLens.recentChange.enabled": false,
-    "gitlens.currentLine.enabled": false,
-    "scm.alwaysShowProviders": true,
-    "search.exclude": {
-        "**/.DS_Store": true,
-        "**/.git": true,
-        "**/.mypy_cache": true,
-        "**/.venv": true,
-        "**/__pycache__": true,
-        "**/node_modules": true
-    },
-    "search.useIgnoreFiles": true,
-    "shellLauncher.shells.windows": [
-        {
-            "shell": "C:\\Windows\\System32\\cmd.exe",
-            "label": "cmd"
-        },
-        {
-            "shell": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-            "label": "PowerShell"
-        },
-        {
-            "shell": "C:\\Windows\\System32\\bash.exe",
-            "label": "WSL Bash"
-        }
-    ],
-    "terminal.integrated.fontFamily": "'MyricaM M', Consolas, 'Courier New', monospace",
-    "terminal.integrated.fontSize": 15,
-    "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "vim.easymotion": true,
-    "vim.hlsearch": true,
-    "vim.leader": "<space>",
-    "vim.normalModeKeyBindingsNonRecursive": [
-        {"before": ["j"], "after": ["g", "j"]},
-        {"before": ["k"], "after": ["g", "k"]}
-    ],
-    "vim.useCtrlKeys": true,
-    "vim.useSystemClipboard": true,
-    "vim.visualstar": true,
-    "workbench.activityBar.visible": true,
-    "workbench.colorTheme": "Monokai",
-    "workbench.editor.enablePreview": true,
-    "workbench.editor.enablePreviewFromQuickOpen": true,
-    "workbench.editor.highlightModifiedTabs": true,
-    "workbench.editor.labelFormat": "short",
-    "workbench.editor.showIcons": true,
-    "workbench.editor.showTabs": true,
-    "workbench.editor.tabSizing": "shrink",
-    "workbench.editor.tabCloseButton": "off",
-    "workbench.sideBar.location": "left",
-    "workbench.startupEditor": "none",
-    "window.zoomLevel": 0,
-    "[markdown]": {
-        "editor.tabSize": 2
-    },
-    "[python]": {
-        "editor.tabSize": 4
-    }
+  "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
+  "editor.fontSize": 14,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
+  "editor.renderControlCharacters": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.tabSize": 2,
+  "editor.wordWrap": "off",
+  "explorer.confirmDelete": false,
+  "explorer.openEditors.visible": 0,
+  "files.autoGuessEncoding": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/.mypy_cache/**": true,
+    "**/.venv/**": true,
+    "**/__pycache__/**": true,
+    "**/node_modules/**": true
+  },
+  "gitlens.advanced.messages": {
+    "suppressGitVersionWarning": true
+  },
+  "gitlens.codeLens.authors.enabled": false,
+  "gitlens.codeLens.recentChange.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "scm.alwaysShowProviders": true,
+  "search.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.mypy_cache": true,
+    "**/.venv": true,
+    "**/__pycache__": true,
+    "**/node_modules": true
+  },
+  "search.useIgnoreFiles": true,
+  "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "vim.easymotion": true,
+  "vim.hlsearch": true,
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindingsNonRecursive": [],
+  "vim.useCtrlKeys": true,
+  "vim.useSystemClipboard": true,
+  "vim.visualstar": true,
+  "workbench.activityBar.visible": false,
+  "workbench.colorTheme": "Monokai",
+  "workbench.editor.enablePreview": true,
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.labelFormat": "short",
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.perEditorGroup": false,
+  "workbench.editor.limit.value": 8,
+  "workbench.editor.showIcons": true,
+  "workbench.editor.showTabs": false,
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.editor.tabCloseButton": "off",
+  "workbench.sideBar.location": "left",
+  "workbench.startupEditor": "none",
+  "workbench.view.experimental.allowMovingToNewContainer": true,
+  "window.zoomLevel": 0,
+  "[markdown]": {
+    "editor.tabSize": 2
+  },
+  "[python]": {
+    "editor.tabSize": 4
+  }
 }
