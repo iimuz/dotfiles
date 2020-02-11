@@ -25,6 +25,18 @@
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
+  "remote.SSH.defaultExtensions": [
+    "alefragnani.bookmarks",
+    "davidanson.vscode-markdownlint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "jsynowiec.vscode-insertdatestring",
+    "mechatroner.rainbow-csv",
+    "ms-python.python",
+    "njpwerner.autodocstring",
+    "shd101wyy.markdown-preview-enhanced",
+    "shuworks.vscode-table-formatter"
+  ],
   "scm.alwaysShowProviders": true,
   "search.exclude": {
     "**/.DS_Store": true,
