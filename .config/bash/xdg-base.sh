@@ -18,3 +18,10 @@ if [ -d $local_lib ]; then
   fi
 fi
 
+local_lib=$HOME/.local/lib
+if [ -d $local_lib ]; then
+  if [[ ":$LD_LIBRARY_PATH:" != *":$local_lib:"* ]]; then
+    export LD_LIBRARY_PATH=$local_lib:$LD_LIBRARY_PATH
+  fi
+fi
+
