@@ -23,5 +23,5 @@ done
 docker_run_with_mount_specific_dir \
   .git \
   $param_docker \
-  iimuz/python-dev:v3.7.5-1 \
+  iimuz/python:v3.7.5-1 \
   pipenv $param_normal
