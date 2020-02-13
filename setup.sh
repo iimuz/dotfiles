@@ -75,6 +75,7 @@ create_symlink $(pwd)/.config/nvim/init.vim ~/.vimrc
 
 create_symlink $CONFIG_PATH/bash $CONFIG_HOME/bash
 set_bashrc $CONFIG_HOME/bash/xdg-base.sh
+set_bashrc $CONFIG_HOME/bash/settings.sh
 
 # ユーザ専用の実行ファイルを配置する場所を追加
 mkdir -p $BIN_HOME
