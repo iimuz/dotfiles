@@ -117,10 +117,9 @@
         "key": "ctrl+shift+a",
         "command": "workbench.action.toggleMaximizedPanel"
     },
-    // shell
     {
-        "key": "ctrl+m s",
-        "command": "shellLauncher.launch",
+        "key": "ctrl+shift+o",
+        "command": "outline.focus"
     },
     // show hover and peek
     {
