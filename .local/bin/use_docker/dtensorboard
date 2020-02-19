@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# コマンド実行例: dtensorboard --port 6006 --logdir . --host 127.0.0.1
+# '-' または '--' の後に続いたコマンドは docker コマンドとして処理されます。
+
+param_normal=""
+param_docker=""
+for OPT in "$@"
+do
+  case "$OPT" in
+    "--" | "-")
+      shift 1
+      param_docker="$param_docker $@"
+      break
+      ;;
+    *)
+      param_normal="$param_normal $1"
+      shift 1
+      ;;
+  esac
+done
+
+docker_run_with_mount_specific_dir \
+  .git \
+  $param_docker \
+  tensorflow/tensorflow:2.1.0-py3 \
+  tensorboard $param_normal
