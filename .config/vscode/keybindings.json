@@ -152,4 +152,8 @@
         "command": "Shift+F12",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
+    {
+        "key": "ctrl+j",
+        "command": "-workbench.action.togglePanel"
+    },
 ]
