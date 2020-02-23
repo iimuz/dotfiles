@@ -8,7 +8,6 @@
 例えば、下記のように実行すると gcloud のインストールと設定ファイルを追加します。
 
 ```sh
-$ sh scripts/gcloud.sh
-$ . ~/.bashrc
+sh scripts/gcloud.sh
+. ~/.bashrc
 ```
-
