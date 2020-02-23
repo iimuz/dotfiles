@@ -71,9 +71,10 @@ create_symlink $(pwd)/.config/git/ignore $HOME/.config/git/ignore
 create_symlink $(pwd)/.inputrc $HOME/.inputrc
 create_symlink $(pwd)/.tmux.conf $HOME/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim $HOME/.vimrc
-create_symlink $CONFIG_PATH/bash $CONFIG_HOME/bash
-set_bashrc $CONFIG_HOME/bash/xdg-base.sh
+create_symlink $CONFIG_PATH/bash/settings.sh $CONFIG_HOME/bash/settings.sh
 set_bashrc $CONFIG_HOME/bash/settings.sh
+create_symlink $CONFIG_PATH/bash/xdg-base.sh $CONFIG_HOME/bash/xdg-base.sh
+set_bashrc $CONFIG_HOME/bash/xdg-base.sh
 
 # tmux の plugin 環境の構築
 if [ ! -d ~/.tmux/plugins ]; then
