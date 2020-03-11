@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker_run -v $(pwd):/workspace:rw -w /workspace $@

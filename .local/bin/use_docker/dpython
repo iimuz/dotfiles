@@ -1,5 +1,0 @@
-#!/bin/bash
-
-docker_run_with_mount_current_dir \
-  iimuz/python:v3.7.5-1 \
-  python $*

@@ -1,6 +1,8 @@
 #!/bin/bash
+#
+# Setup script.
 
-# symlink 先がない場合のみ作成する
+# Create symlink if link does not exist.
 function create_symlink() {
   src=$1
   dst=$2
@@ -12,15 +14,6 @@ function create_symlink() {
   echo "symlink $1 to $2"
   mkdir -p $(dirname "$dst")
   ln -s $src $dst
-}
-
-# 特定ディレクトリ下のファイルへのシンボリックリンクを張る
-function create_symlink_in_dir() {
-  src_dir=$1
-  dst_dir=$2
-  for file in $(find $src_dir -type f | awk -F/ '{print $NF}'); do
-    create_symlink $src_dir/$file $dst_dir/$file
-  done
 }
 
 # コマンドがインストールされていないときにインストールスクリプトを呼び出す
@@ -39,83 +32,46 @@ function install_command() {
   bash $script ${@:3}
 }
 
-# bashrc に追加の設定ファイルを記載する
+# Add loading file in .bashrc.
 function set_bashrc() {
-  filename=$1
+  filename="$1"
 
-  # 既に設定ファイルが存在する場合は何もしない
-  if grep $filename -l ~/.bashrc > /dev/null 2>&1; then
+  # if setting exits in .bashrc, do nothing.
+  if grep $filename -l $HOME/.bashrc > /dev/null 2>&1; then
     echo "already setting in bashrc: $filename"
     return 0
   fi
 
-  # 設定ファイルに読み込みようパスを追記
+  # Add file path.
   echo "set load setting in bashrc: $filename"
-  cat <<EOF >> ~/.bashrc
-
-if [ -f '${filename}' ]; then . '${filename}'; fi
-EOF
+  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $HOME/.bashrc
 }
 
 # 共通パスの設定
-CONFIG_HOME=$HOME/.config
-BIN_HOME=$HOME/.local/bin
-
 CONFIG_PATH=$(pwd)/.config
 SCRIPT_PATH=$(pwd)/scripts
-BIN_PATH=$(pwd)/.local/bin
 
-# 基本の設定ファイルのみリンクを作成する
+# 場所が固定されている基本設定ファイルを設置
 create_symlink $(pwd)/.gitconfig $HOME/.gitconfig
 create_symlink $(pwd)/.config/git/ignore $HOME/.config/git/ignore
 create_symlink $(pwd)/.inputrc $HOME/.inputrc
 create_symlink $(pwd)/.tmux.conf $HOME/.tmux.conf
 create_symlink $(pwd)/.config/nvim/init.vim $HOME/.vimrc
-create_symlink $CONFIG_PATH/bash/settings.sh $CONFIG_HOME/bash/settings.sh
-set_bashrc $CONFIG_HOME/bash/settings.sh
-create_symlink $CONFIG_PATH/bash/xdg-base.sh $CONFIG_HOME/bash/xdg-base.sh
-set_bashrc $CONFIG_HOME/bash/xdg-base.sh
 
-# tmux の plugin 環境の構築
-if [ ! -d ~/.tmux/plugins ]; then
-  echo "install tmux-plugins"
-  bash $SCRIPT_PATH/tmux-plugins.sh
-else
-  echo "already installed tmux-plugins"
-fi
+# .bashrc から読み込む設定ファイルの親を設定
+set_bashrc $CONFIG_PATH/bash/settings.sh
 
 # シングルバイナリコマンド
+install_command bat $SCRIPT_PATH/bat.sh
+install_command bw $SCRIPT_PATH/bitwarden.sh
 install_command docui $SCRIPT_PATH/docui.sh
+install_command exa $SCRIPT_PATH/exa.sh
+install_command fd $SCRIPT_PATH/fd.sh
+install_command fzf $SCRIPT_PATH/fzf.sh
 install_command gotop $SCRIPT_PATH/gotop.sh
 install_command hugo $SCRIPT_PATH/hugo.sh
+install_command jq $SCRIPT_PATH/jq.sh
 install_command lazygit $SCRIPT_PATH/lazygit.sh
+install_command procs $SCRIPT_PATH/procs.sh
 install_command rg $SCRIPT_PATH/ripgrep.sh
 
-install_command bw $SCRIPT_PATH/bitwarden.sh
-create_symlink $(pwd)/.local/bin/git-credential-bw $BIN_HOME/git-credential-bw
-create_symlink $(pwd)/.config/bitwarden/settings.sh $CONFIG_HOME/bitwarden/settings.sh
-set_bashrc $CONFIG_HOME/bitwarden/settings.sh
-
-install_command fzf $SCRIPT_PATH/fzf.sh
-create_symlink $(pwd)/.config/fzf/fzf.bash $CONFIG_HOME/fzf/fzf.bash
-set_bashrc $CONFIG_HOME/fzf/fzf.bash
-
-# neovim
-install_command nvim $SCRIPT_PATH/neovim-ubuntu.sh
-create_symlink $CONFIG_PATH/nvim $CONFIG_HOME/nvim
-create_symlink $CONFIG_PATH/pt $CONFIG_HOME/pt
-create_symlink $(pwd)/.globalrc ~/.globalrc
-
-# gcloud
-install_command gcloud $SCRIPT_PATH/gcloud.sh
-create_symlink $CONFIG_PATH/gcloud/alias.inc $CONFIG_HOME/gcloud/alias.inc
-set_bashrc $CONFIG_HOME/gcloud/alias.inc
-
-# docker 環境の構築
-install_command docker $SCRIPT_PATH/docker-ubuntu.sh
-create_symlink_in_dir $BIN_PATH/use_docker $BIN_HOME
-
-# x11 forwarding 用設定を追加
-if ! grep "$(readlink -f ~/.bashrc)" "export DISPLAY=localhost:0.0" > /dev/null 2>&1; then
-  echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
-fi

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-docker_run_with_mount_current_dir \
-  --volumes-from gpg_agent \
-  -v ~/.netrc.gpg:/.netrc.gpg:ro \
-  iimuz/git:gpg \
-  ash
-

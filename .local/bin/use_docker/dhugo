@@ -1,4 +1,0 @@
-#!/bin/bash
-
-docker_run_with_mount_current_dir iimuz/hugo:v0.63.1-1 hugo $*
-

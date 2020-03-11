@@ -1,9 +1,0 @@
-#!/bin/bash
-
-docker_run_with_mount_specific_dir \
-  .git \
-  --volumes-from gpg_agent \
-  -v ~/.netrc.gpg:/.netrc.gpg:ro \
-  iimuz/git:gpg \
-  git $*
-

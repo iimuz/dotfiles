@@ -1,7 +1,0 @@
-#/bin/bash
-
-docker_run_with_mount_specific_dir \
-  .git \
-  iimuz/neovim:v0.4.3-golang2 \
-  nvim $*
-
