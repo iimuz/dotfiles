@@ -77,7 +77,7 @@ function _docker_run_mount_specific_dir() {
 
   work_base="/workspace"
   _docker_run \
-    --mount "source=${mount_dir},target=${wark_base},type=bind,consistency=cached" \
+    --mount "source=${mount_dir},target=${work_base},type=bind,consistency=cached" \
     -w "$work_base/$work_dir" \
     $command
 }
@@ -122,9 +122,8 @@ alias dnvim_slim="_docker_run_mount_specific_dir .git $(_get_mount_command .conf
 alias dpipenv="_docker_run_mount_specific_dir .git iimuz/python:v3.7.5-1 pipenv"
 alias dpipenvc="_docker_run_mount_specific_dir .git iimuz/python:v3.7.5-1"
 alias dpoetry="_docker_run_mount_specific_dir .git iimuz/python:v3.7.5-1 poetry"
-alias dpoetry="_docker_run_mount_specific_dir .git --gpus all iimuz/python:v3.7.5-cuda10.1-cudnn7-1 poetry"
+alias dpoetry-cuda="_docker_run_mount_specific_dir .git --gpus all iimuz/python:v3.7.5-cuda10.1-cudnn7-1 poetry"
 alias dpsql="_docker_run_mount_current_dir postgres:12.2 psql"
-alias dpoetry="_docker_run_mount_current_dir iimuz/python:v3.7.5-1 python"
 alias dr="_docker_run_mount_current_dir $(_get_mount_command .local/share/renv) iimuz/r-base:v3.5.2 R"
 alias dr-pipenv="_docker_run_mount_current_dir $(_get_mount_command .local/share/renv) iimuz/r-python:v3.5.2 pipenv"
 alias dstack="_docker_run_mount_current_dir $(_get_mount_command .stack /) haskell:8.6.5 stack"
