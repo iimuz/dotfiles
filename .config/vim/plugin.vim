@@ -1,3 +1,7 @@
+if empty(globpath(&rtp, 'autoload/plug.vim'))
+  finish
+endif
+
 " プラグインの読み込み
 let g:plug_shallow = 0
 call plug#begin('~/.vim/plugged')
