@@ -34,7 +34,7 @@ function _docker_run() {
 
 # Run using current user and mount current pwd.
 function _docker_run_mount_current_dir() {
-  workdir="/workspace"
+  workdir=$(pwd)
   _docker_run \
     --mount "source=$(pwd),target=${workdir},type=bind,consistency=cached" \
     -w "$workdir" \
@@ -75,10 +75,9 @@ function _docker_run_mount_specific_dir() {
   work_dir=$2
   IFS=$old_ifs
 
-  work_base="/workspace"
   _docker_run \
-    --mount "source=${mount_dir},target=${work_base},type=bind,consistency=cached" \
-    -w "$work_base/$work_dir" \
+    --mount "source=${mount_dir},target=${mount_dir},type=bind,consistency=cached" \
+    -w "$mount_dir/$work_dir" \
     $command
 }
 
@@ -129,4 +128,3 @@ alias dr-pipenv="_docker_run_mount_current_dir $(_get_mount_command .local/share
 alias dstack="_docker_run_mount_current_dir $(_get_mount_command .stack /) haskell:8.6.5 stack"
 alias dtensorboard="_docker_run_mount_specific_dir .git tensorflow/tensorflow:2.1.0-py3 tensorboard"
 alias dtravis="_docker_run_mount_current_dir iimuz/travis-client:v1.8.9 travis"
-

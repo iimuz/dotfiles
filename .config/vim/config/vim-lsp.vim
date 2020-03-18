@@ -58,4 +58,3 @@ let g:asyncomplete_auto_popup = 0
 let g:asyncomplete_auto_completeopt = 0
 let g:asyncomplete_popup_delay = 200
 let g:lsp_text_edit_enabled = 1
-

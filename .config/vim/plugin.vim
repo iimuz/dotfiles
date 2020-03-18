@@ -26,4 +26,3 @@ Plug 'mattn/vim-lsp-icons'
 " Plug 'hrsh7th/vim-vsnip'
 " Plug 'hrsh7th/vim-vsnip-integ'
 call plug#end()
-
