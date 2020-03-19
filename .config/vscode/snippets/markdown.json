@@ -27,5 +27,16 @@
 			"{{< key-link ${1:key name} >}}"
 		],
 		"description": "hugo custom shortcode for key link."
+	},
+	"hugo table of contents": {
+		"prefix": [
+			"hugo",
+			"toc"
+		],
+		"body": [
+			"Table of Contents",
+			"{{< toc >}}{{< /toc >}}"
+		],
+		"description": "hugo table of contents."
 	}
 }
