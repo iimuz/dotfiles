@@ -71,7 +71,6 @@ create_symlink $(pwd)/.gitconfig $HOME/.gitconfig
 create_symlink $(pwd)/.config/git/ignore $HOME/.config/git/ignore
 create_symlink $(pwd)/.inputrc $HOME/.inputrc
 create_symlink $(pwd)/.tmux.conf $HOME/.tmux.conf
-create_symlink $(pwd)/.config/nvim/init.vim $HOME/.vimrc
 
 # .bashrc から読み込む設定ファイルの親を設定
 set_bashrc $CONFIG_PATH/bash/settings.sh
