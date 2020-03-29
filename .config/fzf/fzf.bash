@@ -21,17 +21,6 @@ if [ -f $FZF_KEYBINDINGS ]; then . $FZF_KEYBINDINGS; fi
 # Find repositories under golang directory structure
 alias ffghq='cd $(find ${SOURCE_ROOT:-$HOME/src} -follow  -maxdepth 3 -mindepth 3 -type d | fzf)'
 
-# Open the selected file with the default editor
-# Ref: https://github.com/junegunn/fzf/wiki/examples#opening-files
-fo() (
-  IFS=$'\n' out=("$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)")
-  key=$(head -1 <<< "$out")
-  file=$(head -2 <<< "$out" | tail -1)
-  if [ -n "$file" ]; then
-    [ "$key" = ctrl-o ] && open "$file" || ${EDITOR:-vim} "$file"
-  fi
-)
-
 # using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
 # Ref: https://github.com/junegunn/fzf/wiki/examples#searching-file-contents
@@ -41,12 +30,28 @@ fif() {
 }
 
 # find in file with hidden files.
+# find-in-file-with-hidden-file - usage: fifh <searchTerm>
 fifh() {
   if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
   rg --hidden --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
+# Open the selected file with the default editor
+fo() {
+  local file
+  file=$(fif "")
+  if [ -n "$file" ]; then ${EDITOR:-vim} $file; fi
+}
+
+# Find file with hidden, and open the selected file with the default editor
+foh() {
+  local file
+  file=$(fifh "")
+  if [ -n "$file" ]; then ${EDITOR:-vim} $file; fi
+}
+
 # combine find in file and file open.
+# find-in-file-and-open-it - usage: fog <searchTerm>
 fog() {
   if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
 
@@ -56,6 +61,7 @@ fog() {
 }
 
 # combine find in file and file open.
+# find-in-file-with-hidden-file-and-open-it - usage: fog <searchTerm>
 fogh() {
   if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
 
