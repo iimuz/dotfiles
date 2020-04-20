@@ -94,7 +94,7 @@ function _get_mount_command() {
     mount_command="--mount source=${h_mount},target=${r_mount},type=bind,consistency=cached"
   fi
 
-  return $mount_command
+  echo "$mount_command"
 }
 
 # GCloud command.
