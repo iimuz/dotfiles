@@ -125,6 +125,7 @@ alias dpoetry-cuda="_docker_run_mount_specific_dir .git --gpus all iimuz/python:
 alias dpsql="_docker_run_mount_current_dir postgres:12.2 psql"
 alias dr="_docker_run_mount_current_dir $(_get_mount_command .local/share/renv) iimuz/r-base:v3.5.2 R"
 alias dr-pipenv="_docker_run_mount_current_dir $(_get_mount_command .local/share/renv) iimuz/r-python:v3.5.2 pipenv"
+alias dsqlcmd="_docker_run_mount_current_dir mcr.microsoft.com/mssql-tools:latest /opt/mssql-tools/bin/sqlcmd"
 alias dstack="_docker_run_mount_current_dir $(_get_mount_command .stack /) haskell:8.6.5 stack"
 alias dtensorboard="_docker_run_mount_specific_dir .git tensorflow/tensorflow:2.1.0-py3 tensorboard"
 alias dtravis="_docker_run_mount_current_dir iimuz/travis-client:v1.8.9 travis"
