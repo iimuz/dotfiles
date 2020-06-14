@@ -90,4 +90,3 @@ install_command jq $SCRIPT_PATH/jq.sh
 install_command lazygit $SCRIPT_PATH/lazygit.sh
 install_command procs $SCRIPT_PATH/procs.sh
 install_command rg $SCRIPT_PATH/ripgrep.sh
-
