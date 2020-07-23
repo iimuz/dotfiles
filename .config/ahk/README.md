@@ -8,5 +8,9 @@
 下記リポジトリの場合、単一の左または右 ALT です。
 
 - GitHub [karakaram/alt-ime-ahk][karakaram]
+- その他の参考資料
+  - 2016.2.13 [Windows10 64bit で Alt+Space による全角/半角切り替え][mocas_lab]
+    - ALT + Space で切り替えられるが、トグルキーでしかないため、目的を満たさなかった。
 
 [karakaram]: https://github.com/karakaram/alt-ime-ahk
+[mocas_lab]: https://blog.goo.ne.jp/mocas_lab/e/3d1238365a243bb4614587076e159998
