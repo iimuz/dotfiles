@@ -25,6 +25,8 @@
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
+  "python.dataScience.askForKernelRestart": false,
+  "python.languageServer": "Pylance",
   "remote.SSH.defaultExtensions": [
     "alefragnani.bookmarks",
     "davidanson.vscode-markdownlint",
