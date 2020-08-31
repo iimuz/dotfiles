@@ -75,13 +75,6 @@
         "command": "search.focus.nextInputBox",
         "when": "inputBoxFocus && searchViewletVisible",
     },
-    // ctrl + j で改行する (vim mode に関係なく改行して挿入モードにしてしまう)
-    {
-        "key": "ctrl+j",
-        "command": "editor.action.insertLineAfter",
-        "when": "editorTextFocus"
-    },
-    // bookmarks
     {
         "key": "m b",
         "command": "bookmarks.toggle",
@@ -108,7 +101,17 @@
         "when": "editorFocus && vim.mode == 'Normal'"
     },
     {
-        "key": "ctrl+shift+l",
+        "key": "m c",
+        "command": "bookmarks.clearFromFile",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m shift+c",
+        "command": "bookmarks.clearFromAllFiles",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "m f",
         "command": "bookmarksExplorer.focus",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
@@ -143,17 +146,32 @@
         "when": "editorFocus && vim.mode == 'Normal'"
     },
     {
+        "key": "m shift+d",
+        "command": "editor.action.revealDefinition",
+        "when": "editorFocus && vim.mode == 'Normal'"
+    },
+    {
         "key": "m p",
         "command": "editor.action.peekImplementation",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
     {
         "key": "m r",
-        "command": "Shift+F12",
+        "command": "editor.action.goToReferences",
         "when": "editorFocus && vim.mode == 'Normal'"
     },
     {
         "key": "ctrl+j",
         "command": "-workbench.action.togglePanel"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.insertLineAfter",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-editor.action.insertLineAfter",
+        "when": "editorTextFocus && !editorReadonly"
     },
 ]

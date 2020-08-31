@@ -1,7 +1,8 @@
 {
   "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "editor.fontSize": 14,
+  "editor.fontSize": 16,
   "editor.formatOnSave": true,
+  "editor.largeFileOptimizations": false,
   "editor.minimap.enabled": false,
   "editor.renderControlCharacters": true,
   "editor.renderWhitespace": "boundary",
@@ -10,6 +11,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
+  "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "files.watcherExclude": {
@@ -19,14 +21,13 @@
     "**/__pycache__/**": true,
     "**/node_modules/**": true
   },
+  "git.ignoreLegacyWarning": true,
   "gitlens.advanced.messages": {
     "suppressGitVersionWarning": true
   },
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
-  "python.dataScience.askForKernelRestart": false,
-  "python.languageServer": "Pylance",
   "remote.SSH.defaultExtensions": [
     "alefragnani.bookmarks",
     "davidanson.vscode-markdownlint",
@@ -50,7 +51,7 @@
   },
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontSize": 16,
   "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
   "vim.camelCaseMotion.enable": true,
   "vim.easymotion": true,
@@ -63,27 +64,25 @@
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
+  "window.menuBarVisibility": "toggle",
+  "window.zoomLevel": 0,
   "workbench.activityBar.visible": false,
-  "workbench.colorTheme": "Monokai",
+  "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.labelFormat": "short",
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.perEditorGroup": false,
-  "workbench.editor.limit.value": 8,
+  "workbench.editor.limit.value": 16,
   "workbench.editor.showIcons": true,
   "workbench.editor.showTabs": false,
   "workbench.editor.tabSizing": "shrink",
   "workbench.editor.tabCloseButton": "off",
+  "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
-  "workbench.view.experimental.allowMovingToNewContainer": true,
-  "window.zoomLevel": 0,
   "[markdown]": {
     "editor.tabSize": 2
-  },
-  "[python]": {
-    "editor.tabSize": 4
   }
 }
