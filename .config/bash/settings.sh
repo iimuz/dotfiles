@@ -48,5 +48,8 @@ if [ -f "$poetry_path" ]; then source "$poetry_path"; fi
 pipenv_path="$dotconfig_dir/python/pipenv.sh"
 if [ -f "$pipenv_path" ]; then source "$pipenv_path"; fi
 
+node_path="$dotconfig_dir/js/node.sh"
+if [ -f "$node_path" ]; then source "$node_path"; fi
+
 vscode_path="$dotconfig_dir/vscode/vscode.sh"
 if [ -f "$vscode_path" ]; then source "$vscode_path"; fi
