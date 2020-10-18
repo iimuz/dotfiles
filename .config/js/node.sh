@@ -6,4 +6,4 @@
 if ! type npm > /dev/null 2>&1; then return 0; fi
 
 # Change default npm directory.
-export PATH=$PATH:~/.npm-global/bin
+export PATH=$PATH:$HOME/.npm-global/bin
