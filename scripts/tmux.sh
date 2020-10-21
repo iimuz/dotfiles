@@ -46,7 +46,7 @@ wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/$archive_fil
 tar zxvf $archive_file
 pushd $expand_dir
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$USER_LOCAL/lib
-./configure --prefix=$USER_LOCAL CFLAGS="-I$USER_LOCAL/include" LDFLAGS="-L$USER_LOCAL/lib"
+./configure --prefix=$USER_LOCAL CFLAGS="-I$USER_LOCAL/include -I$USER_LOCAL/include/ncurses" LDFLAGS="-L$USER_LOCAL/lib"
 make
 make install
 popd
