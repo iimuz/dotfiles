@@ -15,7 +15,7 @@ git clone --depth 1 $GIT_REPOSITORY
 
 # download binary
 pushd $GIT_DIR
-./install --bin --64
+./install --bin
 popd
 
 # settings
