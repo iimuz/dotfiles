@@ -14,3 +14,11 @@
 
 [karakaram]: https://github.com/karakaram/alt-ime-ahk
 [mocas_lab]: https://blog.goo.ne.jp/mocas_lab/e/3d1238365a243bb4614587076e159998
+
+## loop ctrl shift
+
+4分に1回 Ctrl, Shift を繰り返す処理を行います。
+
+## loop mouse move
+
+4分に1回マウス位置が上下左右に移動して、元の位置に戻る。
