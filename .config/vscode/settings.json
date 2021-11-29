@@ -1,12 +1,19 @@
 {
+  "diffEditor.renderSideBySide": false,
+  "files.autoSave": "afterDelay",
+  "editor.accessibilitySupport": "off",
+  "editor.cursorStyle": "line",
   "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "editor.fontSize": 16,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
+  "editor.insertSpaces": false,
   "editor.largeFileOptimizations": false,
+  "editor.lineNumbers": "on",
   "editor.minimap.enabled": false,
   "editor.renderControlCharacters": true,
   "editor.renderWhitespace": "boundary",
   "editor.tabSize": 2,
+  "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
@@ -22,12 +29,14 @@
     "**/node_modules/**": true
   },
   "git.ignoreLegacyWarning": true,
+  "git.terminalAuthentication": false,
   "gitlens.advanced.messages": {
     "suppressGitVersionWarning": true
   },
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
+  "remote.containers.gitCredentialHelperConfigLocation": "none",
   "remote.SSH.defaultExtensions": [
     "alefragnani.bookmarks",
     "davidanson.vscode-markdownlint",
@@ -35,12 +44,9 @@
     "esbenp.prettier-vscode",
     "jsynowiec.vscode-insertdatestring",
     "mechatroner.rainbow-csv",
-    "ms-python.python",
-    "njpwerner.autodocstring",
     "shd101wyy.markdown-preview-enhanced",
     "shuworks.vscode-table-formatter"
   ],
-  "scm.alwaysShowProviders": true,
   "search.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
@@ -49,24 +55,24 @@
     "**/__pycache__": true,
     "**/node_modules": true
   },
+  "search.mode": "reuseEditor",
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
-  "vim.camelCaseMotion.enable": true,
   "vim.easymotion": true,
   "vim.foldfix": true,
   "vim.hlsearch": true,
-  "vim.ignorecase": true,
-  "vim.incsearch": true,
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [],
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
   "window.menuBarVisibility": "toggle",
-  "window.zoomLevel": 0,
   "workbench.activityBar.visible": false,
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -82,7 +88,44 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
+  // json
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // jupyter
+  "jupyter.askForKernelRestart": false,
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  // markdown
   "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.detectIndentation": false,
     "editor.tabSize": 2
+  },
+  // python
+  "autoDocstring.docstringFormat": "numpy",
+  "python.formatting.provider": "black",
+  "python.linting.pycodestyleEnabled": false,
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.pylintEnabled": false,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4
+  },
+  // typescript
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
