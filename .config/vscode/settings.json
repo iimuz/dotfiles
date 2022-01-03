@@ -71,9 +71,6 @@
   "vim.visualstar": true,
   "window.menuBarVisibility": "toggle",
   "workbench.activityBar.visible": false,
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter-notebook"
-  },
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -89,6 +86,7 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
+  "workbench.view.experimental.allowMovingToNewContainer": true,
   // json
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -102,6 +100,9 @@
     "default": "right",
     "jupyter-notebook": "left"
   },
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
   // markdown
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -109,7 +110,9 @@
   },
   // python
   "autoDocstring.docstringFormat": "numpy",
+  "python.dataScience.askForKernelRestart": false,
   "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
   "python.linting.pycodestyleEnabled": false,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
