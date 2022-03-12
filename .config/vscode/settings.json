@@ -1,6 +1,5 @@
 {
   "diffEditor.renderSideBySide": false,
-  "files.autoSave": "afterDelay",
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
@@ -19,6 +18,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
+  "files.autoSave": "afterDelay",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -44,9 +44,7 @@
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
     "jsynowiec.vscode-insertdatestring",
-    "mechatroner.rainbow-csv",
-    "shd101wyy.markdown-preview-enhanced",
-    "shuworks.vscode-table-formatter"
+    "mechatroner.rainbow-csv"
   ],
   "search.exclude": {
     "**/.DS_Store": true,
@@ -58,9 +56,9 @@
   },
   "search.mode": "reuseEditor",
   "search.useIgnoreFiles": true,
+  "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
-  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
   "vim.easymotion": true,
   "vim.foldfix": true,
   "vim.hlsearch": true,
@@ -86,7 +84,6 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
-  "workbench.view.experimental.allowMovingToNewContainer": true,
   // html
   "[html]": {
     "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
@@ -98,6 +95,9 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  // julia
+  "julia.symbolCacheDownload": true,
+  "julia.enableTelemetry": false,
   // jupyter
   "jupyter.askForKernelRestart": false,
   "notebook.cellToolbarLocation": {
@@ -131,6 +131,11 @@
   },
   // reStructuredText
   "[reStructerdText]": {},
+  // rust
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust",
+    "editor.tabSize": 4
+  },
   // tex
   "[tex]": {
     "editor.suggest.snippetsPreventQuickSuggestions": false,
