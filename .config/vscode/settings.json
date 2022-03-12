@@ -84,6 +84,10 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
+  // html
+  "[html]": {
+    "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
+  },
   // json
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -110,6 +114,8 @@
   },
   // python
   "autoDocstring.docstringFormat": "numpy",
+  "jupyter.generateSVGPlots": true,
+  "notebook.lineNumbers": "on",
   "python.dataScience.askForKernelRestart": false,
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
@@ -123,11 +129,67 @@
     "editor.defaultFormatter": "ms-python.python",
     "editor.tabSize": 4
   },
+  // reStructuredText
+  "[reStructerdText]": {},
   // rust
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust",
     "editor.tabSize": 4
   },
+  // tex
+  "[tex]": {
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.tabSize": 2
+  },
+  "[latex]": {
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.tabSize": 2
+  },
+  "[bibtex]": {
+    "editor.tabSize": 2
+  },
+  "latex-workshop.chktex.enabled": true,
+  "latex-workshop.chktex.run": "onSave",
+  "latex-workshop.intellisense.package.enabled": true,
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.blg",
+    "*.idx",
+    "*.ind",
+    "*.lof",
+    "*.lot",
+    "*.out",
+    "*.toc",
+    "*.acn",
+    "*.acr",
+    "*.alg",
+    "*.glg",
+    "*.glo",
+    "*.gls",
+    "*.ist",
+    "*.fls",
+    "*.log",
+    "*.fdb_latexmk",
+    "*.snm",
+    "*.nav",
+    "*.dvi",
+    "*.synctex.gz"
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk",
+      "tools": ["latexmk"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": ["-silent", "-outdir=%OUTDIR%", "%DOC%"]
+    }
+  ],
+  "latex-workshop.view.pdf.viewer": "tab",
   // typescript
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
