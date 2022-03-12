@@ -174,4 +174,9 @@
         "command": "-editor.action.insertLineAfter",
         "when": "editorTextFocus && !editorReadonly"
     },
+    {
+        "key": "ctrl+shift+n",
+        "command": "workbench.action.toggleAuxiliaryBar",
+        "when": "vim.mode == 'Normal'"
+    },
 ]
