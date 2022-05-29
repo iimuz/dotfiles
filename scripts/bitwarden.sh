@@ -2,7 +2,7 @@
 #
 # Install bitwarden CLI.
 
-VERSION=1.8.0
+VERSION=1.22.1
 ARCH=linux
 USER_LOCAL=$HOME/.local/bin
 
