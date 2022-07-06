@@ -1,38 +1,4 @@
 [
-  // エディターとエディターの移動
-  {
-    "key": "ctrl+w ctrl+w",
-    "command": "workbench.action.nextEditor",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  // エディター以外のviewからエディターへの移動
-  {
-    "key": "ctrl+w w",
-    "command": "workbench.action.focusActiveEditorGroup"
-  },
-  // editorからsidebarの移動
-  {
-    "key": "ctrl+w h",
-    "command": "workbench.action.focusSideBar",
-    "when": "editorFocus"
-  },
-  // Sidebar の表示 / 非表示切り替え
-  {
-    "key": "ctrl+n",
-    "command": "workbench.action.toggleSidebarVisibility",
-    "when": "vim.mode == 'Normal'"
-  },
-  {
-    "key": "ctrl+shift+n",
-    "command": "workbench.action.toggleAuxiliaryBar",
-    "when": "vim.mode == 'Normal'"
-  },
-  // Terminal の表示 / 非表示切り替え
-  {
-    "key": "ctrl+t",
-    "command": "workbench.action.terminal.toggleTerminal",
-    "when": "vim.mode == 'Normal'"
-  },
   // Terminalのフォーカスを前に戻す
   {
     "key": "ctrl+shift+k",
@@ -45,40 +11,7 @@
     "command": "workbench.action.terminal.focusNext",
     "when": "terminalFocus"
   },
-  // サジェストの選択
-  {
-    "key": "ctrl+k",
-    "command": "acceptSelectedSuggestion"
-  },
-  // 候補のフォーカスを上下へ移動
-  {
-    "key": "ctrl+p",
-    "command": "selectPrevSuggestion",
-    "when": "editorTextFocus && suggestWidgetMultipleSuggestions && suggestWidgetVisible"
-  },
-  {
-    "key": "ctrl+n",
-    "command": "selectNextSuggestion",
-    "when": "editorTextFocus && suggestWidgetMultipleSuggestions && suggestWidgetVisible"
-  },
-  // ヒントサジェストを下へ移動
-  {
-    "key": "ctrl+n",
-    "command": "showNextParameterHint",
-    "when": "editorTextFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
-  },
-  // リスト系の選択フォーカスを下へ移動
-  {
-    "key": "ctrl+n",
-    "command": "list.focusDown",
-    "when": "listFocus"
-  },
-  // 検索画面の選択のフォーカスを下へ移動
-  {
-    "key": "ctrl+n",
-    "command": "search.focus.nextInputBox",
-    "when": "inputBoxFocus && searchViewletVisible"
-  },
+  // bookmark extension
   {
     "key": "m b",
     "command": "bookmarks.toggle",
@@ -87,21 +20,6 @@
   {
     "key": "m l",
     "command": "bookmarks.list",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m shift+l",
-    "command": "bookmarks.listFromAllFiles",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m o",
-    "command": "bookmarks.jumpToPrevious",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m i",
-    "command": "bookmarks.jumpToNext",
     "when": "editorFocus && vim.mode == 'Normal'"
   },
   {
@@ -124,46 +42,7 @@
     "key": "ctrl+shift+a",
     "command": "workbench.action.toggleMaximizedPanel"
   },
-  {
-    "key": "ctrl+shift+o",
-    "command": "outline.focus"
-  },
-  // show hover and peek
-  {
-    "key": "m h",
-    "command": "editor.action.showHover",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m t",
-    "command": "editor.action.peekTypeDefinition",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m c",
-    "command": "editor.action.peekDeclaration",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m d",
-    "command": "editor.action.peekDefinition",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m shift+d",
-    "command": "editor.action.revealDefinition",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m p",
-    "command": "editor.action.peekImplementation",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m r",
-    "command": "editor.action.goToReferences",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
+  // new line
   {
     "key": "ctrl+j",
     "command": "-workbench.action.togglePanel"
@@ -173,19 +52,123 @@
     "command": "editor.action.insertLineAfter",
     "when": "editorTextFocus && !editorReadonly"
   },
+  // extension vspacecode
   {
-    "key": "ctrl+enter",
-    "command": "-editor.action.insertLineAfter",
-    "when": "editorTextFocus && !editorReadonly"
+    "key": "space",
+    "command": "vspacecode.space",
+    "when": "activeEditorGroupEmpty && focusedView == '' && !whichkeyActive && !inputFocus"
   },
   {
-    "key": "ctrl+alt+j",
-    "command": "-bookmarks.jumpToPrevious",
-    "when": "editorTextFocus"
+    "key": "space",
+    "command": "vspacecode.space",
+    "when": "sideBarFocus && !inputFocus && !whichkeyActive"
   },
   {
-    "key": "ctrl+alt+j",
-    "command": "editor.action.insertSnippet",
-    "when": "editorTextFocus"
+    "key": "tab",
+    "command": "extension.vim_tab",
+    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
+  },
+  {
+    "key": "tab",
+    "command": "-extension.vim_tab",
+    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
+  },
+  {
+    "key": "x",
+    "command": "magit.discard-at-point",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "k",
+    "command": "-magit.discard-at-point"
+  },
+  {
+    "key": "-",
+    "command": "magit.reverse-at-point",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "v",
+    "command": "-magit.reverse-at-point"
+  },
+  {
+    "key": "shift+-",
+    "command": "magit.reverting",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "shift+v",
+    "command": "-magit.reverting"
+  },
+  {
+    "key": "shift+o",
+    "command": "magit.resetting",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
+    "key": "shift+x",
+    "command": "-magit.resetting"
+  },
+  {
+    "key": "x",
+    "command": "-magit.reset-mixed"
+  },
+  {
+    "key": "ctrl+u x",
+    "command": "-magit.reset-hard"
+  },
+  {
+    "key": "y",
+    "command": "-magit.show-refs"
+  },
+  {
+    "key": "y",
+    "command": "vspacecode.showMagitRefMenu",
+    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode == 'Normal'"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "workbench.action.quickOpenSelectNext",
+    "when": "inQuickOpen"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "workbench.action.quickOpenSelectPrevious",
+    "when": "inQuickOpen"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "selectNextSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "selectPrevSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "key": "ctrl+l",
+    "command": "acceptSelectedSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "showNextParameterHint",
+    "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "showPrevParameterHint",
+    "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
+  },
+  {
+    "key": "ctrl+h",
+    "command": "file-browser.stepOut",
+    "when": "inFileBrowser"
+  },
+  {
+    "key": "ctrl+l",
+    "command": "file-browser.stepIn",
+    "when": "inFileBrowser"
   }
 ]

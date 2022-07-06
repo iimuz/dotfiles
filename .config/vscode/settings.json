@@ -65,12 +65,44 @@
   "vim.easymotion": true,
   "vim.foldfix": true,
   "vim.hlsearch": true,
-  "vim.leader": "<space>",
-  "vim.normalModeKeyBindingsNonRecursive": [],
+  "vim.leader": ",",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": ["-"],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": ["-"],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    }
+  ],
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
   "window.menuBarVisibility": "toggle",
+  "workbench.activityBar.visible": false,
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -112,6 +144,7 @@
   // jupyter
   "jupyter.askForKernelRestart": false,
   "jupyter.generateSVGPlots": true,
+  "jupyter.interactiveWindowMode": "perFile",
   "notebook.cellToolbarLocation": {
     "default": "right",
     "jupyter-notebook": "left"
