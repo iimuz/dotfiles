@@ -1,4 +1,5 @@
 {
+  "editor.rulers": [79, 88, 100],  // pep8: 79, black: 88
   "diffEditor.renderSideBySide": false,
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
@@ -18,7 +19,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
-  "files.autoSave": "afterDelay",
+  "files.autoSave": "onFocusChange",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -102,7 +103,6 @@
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
   "window.menuBarVisibility": "toggle",
-  "workbench.activityBar.visible": false,
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
