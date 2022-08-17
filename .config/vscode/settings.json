@@ -1,4 +1,5 @@
 {
+  "editor.rulers": [79, 88, 100],  // pep8: 79, black: 88
   "diffEditor.renderSideBySide": false,
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
@@ -18,7 +19,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
-  "files.autoSave": "afterDelay",
+  "files.autoSave": "onFocusChange",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -44,7 +45,9 @@
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
     "jsynowiec.vscode-insertdatestring",
-    "mechatroner.rainbow-csv"
+    "mechatroner.rainbow-csv",
+    "shd101wyy.markdown-preview-enhanced",
+    "shuworks.vscode-table-formatter"
   ],
   "search.exclude": {
     "**/.DS_Store": true,
@@ -56,19 +59,50 @@
   },
   "search.mode": "reuseEditor",
   "search.useIgnoreFiles": true,
-  "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
+  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "vim.autoindent": true,
   "vim.easymotion": true,
   "vim.foldfix": true,
   "vim.hlsearch": true,
-  "vim.leader": "<space>",
-  "vim.normalModeKeyBindingsNonRecursive": [],
+  "vim.leader": ",",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": ["-"],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": ["-"],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    }
+  ],
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
   "window.menuBarVisibility": "toggle",
-  "workbench.activityBar.visible": false,
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -84,38 +118,51 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
+  "workbench.view.experimental.allowMovingToNewContainer": true,
   // html
   "[html]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
   },
   // json
   "[json]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // julia
-  "julia.symbolCacheDownload": true,
   "julia.enableTelemetry": false,
+  "julia.symbolCacheDownload": true,
+  "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
+  "[julia]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
   // jupyter
   "jupyter.askForKernelRestart": false,
+  "jupyter.generateSVGPlots": true,
+  "jupyter.interactiveWindowMode": "perFile",
   "notebook.cellToolbarLocation": {
     "default": "right",
     "jupyter-notebook": "left"
   },
+  "notebook.lineNumbers": "on",
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"
   },
   // markdown
+  "markdown-preview-enhanced.breakOnSingleNewLine": false,
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
   "[markdown]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   // python
   "autoDocstring.docstringFormat": "numpy",
-  "jupyter.generateSVGPlots": true,
-  "notebook.lineNumbers": "on",
   "python.dataScience.askForKernelRestart": false,
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
@@ -127,6 +174,7 @@
   "python.linting.pylintEnabled": false,
   "[python]": {
     "editor.defaultFormatter": "ms-python.python",
+    "editor.insertSpaces": true,
     "editor.tabSize": 4
   },
   // reStructuredText
@@ -138,14 +186,17 @@
   },
   // tex
   "[tex]": {
+    "editor.insertSpaces": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.tabSize": 2
   },
   "[latex]": {
+    "editor.insertSpaces": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.tabSize": 2
   },
   "[bibtex]": {
+    "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "latex-workshop.chktex.enabled": true,
@@ -192,9 +243,11 @@
   "latex-workshop.view.pdf.viewer": "tab",
   // typescript
   "[typescript]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
