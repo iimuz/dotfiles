@@ -4,7 +4,7 @@
 
 set -eu
 
-GIT_VERSION=2.24.0
+GIT_VERSION=2.36.1
 USER_LOCAL=~/.local
 
 EXPAND_DIR=git-${GIT_VERSION}
@@ -21,3 +21,7 @@ popd
 rm -r $EXPAND_DIR
 rm $ARCHIVE_FILE
 
+# git completion
+COMPLETION_FILE=git-completion.bash
+wget https://raw.githubusercontent.com/git/git/master/contrib/completion/$COMPLETION_FILE
+mv $COMPLETION_FILE ~/.config/git/
