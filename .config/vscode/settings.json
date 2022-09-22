@@ -1,5 +1,5 @@
 {
-  "editor.rulers": [79, 88, 100],  // pep8: 79, black: 88
+  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "diffEditor.renderSideBySide": false,
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
@@ -13,13 +13,14 @@
   "editor.minimap.enabled": false,
   "editor.renderControlCharacters": true,
   "editor.renderWhitespace": "boundary",
+  "editor.suggest.matchOnWordStartOnly": false,
   "editor.tabSize": 2,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
-  "files.autoSave": "onFocusChange",
+  "files.autoSave": "onWindowChange",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -57,7 +58,6 @@
     "**/__pycache__": true,
     "**/node_modules": true
   },
-  "search.mode": "reuseEditor",
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
@@ -81,7 +81,9 @@
           "args": "m"
         }
       ]
-    }
+    },
+    { "before": ["j"], "after": ["g", "j"] },
+    { "before": ["k"], "after": ["g", "k"] }
   ],
   "vim.visualModeKeyBindingsNonRecursive": [
     {
@@ -102,7 +104,6 @@
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "vim.visualstar": true,
-  "window.menuBarVisibility": "toggle",
   "workbench.colorTheme": "GitHub Dark",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -156,6 +157,7 @@
   // markdown
   "markdown-preview-enhanced.breakOnSingleNewLine": false,
   "markdown-preview-enhanced.previewTheme": "github-dark.css",
+  "markdown-preview-enhanced.scrollSync": false,
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
