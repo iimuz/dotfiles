@@ -11,6 +11,12 @@
     "command": "workbench.action.terminal.focusNext",
     "when": "terminalFocus"
   },
+  // Outlineにフォーカスを異動する
+  {
+    "key": "ctrl+shift+o",
+    "command": "outline.focus",
+    "when": "editorFocus && vim.mode == 'Normal'"
+  },
   // bookmark extension
   {
     "key": "m b",

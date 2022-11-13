@@ -25,6 +25,7 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "files.watcherExclude": {
+    "**/.bundle": true,
     "**/.git/**": true,
     "**/.mypy_cache/**": true,
     "**/.venv/**": true,
@@ -51,6 +52,7 @@
     "shuworks.vscode-table-formatter"
   ],
   "search.exclude": {
+    "**/.bundle": true,
     "**/.DS_Store": true,
     "**/.git": true,
     "**/.mypy_cache": true,
