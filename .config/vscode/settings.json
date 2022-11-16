@@ -163,7 +163,14 @@
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "editor.rulers": [100],
+    // 折り返し有効時には、rulerの位置で折り返す
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.wrappingIndent": "indent",
+    // 範囲選択 + 'gq' で強制的に折り返す処理をするための設定(vim拡張が必要)
+    "vim.textwidth": 100
   },
   // python
   "autoDocstring.docstringFormat": "numpy",
@@ -179,7 +186,8 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.python",
     "editor.insertSpaces": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "editor.rulers": [79, 88] // pep8: 79, black: 88
   },
   // reStructuredText
   "[reStructerdText]": {},
