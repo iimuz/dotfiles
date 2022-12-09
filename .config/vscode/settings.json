@@ -17,6 +17,17 @@
   "editor.tabSize": 2,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
+  "explorer.autoReveal": true,
+  "explorer.autoRevealExclude": {
+    "**/.bundle": true,
+    "**/.git/**": true,
+    "**/.mypy_cache": true,
+    "**/.venv": true,
+    "**/.vscode": true,
+    "**/__pycache__/**": true,
+    "**/node_modules": true,
+    "**/bower_components": true
+  },
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
@@ -184,6 +195,7 @@
   "python.linting.mypyEnabled": true,
   "python.linting.pylintEnabled": false,
   "[python]": {
+    "outline.showVariables": false,
     "editor.defaultFormatter": "ms-python.python",
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
@@ -261,5 +273,9 @@
   "[typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "sqltools.useNodeRuntime": true,
+  "remote.SSH.remotePlatform": {
+    "ftd-dev": "linux"
   }
 }
