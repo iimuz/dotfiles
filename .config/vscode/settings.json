@@ -17,6 +17,17 @@
   "editor.tabSize": 2,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
+  "explorer.autoReveal": true,
+  "explorer.autoRevealExclude": {
+    "**/.bundle": true,
+    "**/.git/**": true,
+    "**/.mypy_cache": true,
+    "**/.venv": true,
+    "**/.vscode": true,
+    "**/__pycache__/**": true,
+    "**/node_modules": true,
+    "**/bower_components": true
+  },
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
   "files.autoGuessEncoding": true,
@@ -163,7 +174,14 @@
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "editor.rulers": [100],
+    // 折り返し有効時には、rulerの位置で折り返す
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.wrappingIndent": "indent",
+    // 範囲選択 + 'gq' で強制的に折り返す処理をするための設定(vim拡張が必要)
+    "vim.textwidth": 100
   },
   // python
   "autoDocstring.docstringFormat": "numpy",
@@ -177,9 +195,11 @@
   "python.linting.mypyEnabled": true,
   "python.linting.pylintEnabled": false,
   "[python]": {
+    "outline.showVariables": false,
     "editor.defaultFormatter": "ms-python.python",
     "editor.insertSpaces": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "editor.rulers": [79, 88] // pep8: 79, black: 88
   },
   // reStructuredText
   "[reStructerdText]": {},
@@ -253,5 +273,9 @@
   "[typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "sqltools.useNodeRuntime": true,
+  "remote.SSH.remotePlatform": {
+    "ftd-dev": "linux"
   }
 }
