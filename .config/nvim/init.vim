@@ -1,9 +1,9 @@
 " deinの設定
-let s:config_home = empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME
-let s:dein_config = s:config_home . '/nvim/dein.vim'
-if filereadable(s:dein_config)
-  execute 'source' s:dein_config
-endif
+" let s:config_home = empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME
+" let s:dein_config = s:config_home . '/nvim/dein.vim'
+" if filereadable(s:dein_config)
+  " execute 'source' s:dein_config
+" endif
 
 "文字コードをUFT-8に設定
 scriptencoding utf-8
@@ -90,6 +90,29 @@ syntax enable
 colorscheme pablo
 " マウス操作を無効
 set mouse=
+
+let mapleader = "\<Space>"
+" if exists('g:vscode')
+  " VSCode extension
+  call plug#begin()
+  Plug 'asvetliakov/vim-easymotion'  " カーソル移動を快適
+  Plug 'tpope/vim-surround'  " visual modeで選択した文字列を囲む
+  " Plug 'tpope/vim-commentary'  " コメントアウト -> 動かない
+  " Plug 'preservim/nerdcommenter'  " コメントアウト
+  call plug#end()
+
+  " Easy-Motion settings
+  map <Leader> <Plug>(easymotion-prefix)
+  let g:EasyMotion_do_mapping = 0 " Disable default mappings
+  let g:EasyMotion_smartcase = 1
+  " Move to word
+  map  <Leader>f <Plug>(easymotion-bd-f)
+  map  <Leader>w <Plug>(easymotion-bd-w)
+  " Move to line
+  map <Leader>l <Plug>(easymotion-bd-jk)
+  " set clipboard=unnmaed,unnmaedplus
+" endif
+set clipboard+=unnamedplus
 
 filetype plugin indent on
 
