@@ -1,180 +1,182 @@
 [
-  // Terminalのフォーカスを前に戻す
+  // === Termnal settings
   {
+    // Terminalのフォーカスを前に戻す
     "key": "ctrl+shift+k",
     "command": "workbench.action.terminal.focusPrevious",
     "when": "terminalFocus"
   },
-  // Terminalのフォーカスを次に移す
   {
+    // Terminalのフォーカスを次に移す
     "key": "ctrl+shift+j",
     "command": "workbench.action.terminal.focusNext",
     "when": "terminalFocus"
   },
-  // Outlineにフォーカスを異動する
+  // === Outline settings
   {
+    // Outlineにフォーカスを移動する
     "key": "ctrl+shift+o",
     "command": "outline.focus",
-    "when": "editorFocus && vim.mode == 'Normal'"
+    "when": "editorFocus"
   },
-  // bookmark extension
-  {
-    "key": "m b",
-    "command": "bookmarks.toggle",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m l",
-    "command": "bookmarks.list",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m c",
-    "command": "bookmarks.clearFromFile",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m shift+c",
-    "command": "bookmarks.clearFromAllFiles",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  {
-    "key": "m f",
-    "command": "bookmarksExplorer.focus",
-    "when": "editorFocus && vim.mode == 'Normal'"
-  },
-  // control panel
+  // === Control panel
   {
     "key": "ctrl+shift+a",
     "command": "workbench.action.toggleMaximizedPanel"
   },
   // new line
-  {
-    "key": "ctrl+j",
-    "command": "-workbench.action.togglePanel"
-  },
-  {
-    "key": "ctrl+j",
-    "command": "editor.action.insertLineAfter",
-    "when": "editorTextFocus && !editorReadonly"
-  },
-  // extension vspacecode
-  {
-    "key": "space",
-    "command": "vspacecode.space",
-    "when": "activeEditorGroupEmpty && focusedView == '' && !whichkeyActive && !inputFocus"
-  },
-  {
-    "key": "space",
-    "command": "vspacecode.space",
-    "when": "sideBarFocus && !inputFocus && !whichkeyActive"
-  },
-  {
-    "key": "tab",
-    "command": "extension.vim_tab",
-    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
-  },
-  {
-    "key": "tab",
-    "command": "-extension.vim_tab",
-    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
-  },
-  {
-    "key": "x",
-    "command": "magit.discard-at-point",
-    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
-  },
-  {
-    "key": "k",
-    "command": "-magit.discard-at-point"
-  },
-  {
-    "key": "-",
-    "command": "magit.reverse-at-point",
-    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
-  },
-  {
-    "key": "v",
-    "command": "-magit.reverse-at-point"
-  },
-  {
-    "key": "shift+-",
-    "command": "magit.reverting",
-    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
-  },
-  {
-    "key": "shift+v",
-    "command": "-magit.reverting"
-  },
-  {
-    "key": "shift+o",
-    "command": "magit.resetting",
-    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
-  },
-  {
-    "key": "shift+x",
-    "command": "-magit.resetting"
-  },
-  {
-    "key": "x",
-    "command": "-magit.reset-mixed"
-  },
-  {
-    "key": "ctrl+u x",
-    "command": "-magit.reset-hard"
-  },
-  {
-    "key": "y",
-    "command": "-magit.show-refs"
-  },
-  {
-    "key": "y",
-    "command": "vspacecode.showMagitRefMenu",
-    "when": "editorTextFocus && editorLangId == 'magit' && vim.mode == 'Normal'"
-  },
-  {
-    "key": "ctrl+j",
-    "command": "workbench.action.quickOpenSelectNext",
-    "when": "inQuickOpen"
-  },
-  {
-    "key": "ctrl+k",
-    "command": "workbench.action.quickOpenSelectPrevious",
-    "when": "inQuickOpen"
-  },
-  {
-    "key": "ctrl+j",
-    "command": "selectNextSuggestion",
-    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-  },
-  {
-    "key": "ctrl+k",
-    "command": "selectPrevSuggestion",
-    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-  },
-  {
-    "key": "ctrl+l",
-    "command": "acceptSelectedSuggestion",
-    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-  },
-  {
-    "key": "ctrl+j",
-    "command": "showNextParameterHint",
-    "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
-  },
-  {
-    "key": "ctrl+k",
-    "command": "showPrevParameterHint",
-    "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
-  },
-  {
-    "key": "ctrl+h",
-    "command": "file-browser.stepOut",
-    "when": "inFileBrowser"
-  },
-  {
-    "key": "ctrl+l",
-    "command": "file-browser.stepIn",
-    "when": "inFileBrowser"
-  }
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "-workbench.action.togglePanel"
+  // },
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "editor.action.insertLineAfter",
+  //   "when": "editorTextFocus && !editorReadonly"
+  // },
+  // === bookmark extension
+  // {
+  //   "key": "m b",
+  //   "command": "bookmarks.toggle",
+  //   "when": "editorFocus && vim.mode == 'Normal'"
+  // },
+  // {
+  //   "key": "m l",
+  //   "command": "bookmarks.list",
+  //   "when": "editorFocus && vim.mode == 'Normal'"
+  // },
+  // {
+  //   "key": "m c",
+  //   "command": "bookmarks.clearFromFile",
+  //   "when": "editorFocus && vim.mode == 'Normal'"
+  // },
+  // {
+  //   "key": "m shift+c",
+  //   "command": "bookmarks.clearFromAllFiles",
+  //   "when": "editorFocus && vim.mode == 'Normal'"
+  // },
+  // {
+  //   "key": "m f",
+  //   "command": "bookmarksExplorer.focus",
+  //   "when": "editorFocus && vim.mode == 'Normal'"
+  // },
+  // === vspacecode extension
+  // {
+  //   "key": "space",
+  //   "command": "vspacecode.space",
+  //   "when": "activeEditorGroupEmpty && focusedView == '' && !whichkeyActive && !inputFocus"
+  // },
+  // {
+  //   "key": "space",
+  //   "command": "vspacecode.space",
+  //   "when": "sideBarFocus && !inputFocus && !whichkeyActive"
+  // },
+  // {
+  //   "key": "tab",
+  //   "command": "extension.vim_tab",
+  //   "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
+  // },
+  // {
+  //   "key": "tab",
+  //   "command": "-extension.vim_tab",
+  //   "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
+  // },
+  // {
+  //   "key": "x",
+  //   "command": "magit.discard-at-point",
+  //   "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  // },
+  // {
+  //   "key": "k",
+  //   "command": "-magit.discard-at-point"
+  // },
+  // {
+  //   "key": "-",
+  //   "command": "magit.reverse-at-point",
+  //   "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  // },
+  // {
+  //   "key": "v",
+  //   "command": "-magit.reverse-at-point"
+  // },
+  // {
+  //   "key": "shift+-",
+  //   "command": "magit.reverting",
+  //   "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  // },
+  // {
+  //   "key": "shift+v",
+  //   "command": "-magit.reverting"
+  // },
+  // {
+  //   "key": "shift+o",
+  //   "command": "magit.resetting",
+  //   "when": "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  // },
+  // {
+  //   "key": "shift+x",
+  //   "command": "-magit.resetting"
+  // },
+  // {
+  //   "key": "x",
+  //   "command": "-magit.reset-mixed"
+  // },
+  // {
+  //   "key": "ctrl+u x",
+  //   "command": "-magit.reset-hard"
+  // },
+  // {
+  //   "key": "y",
+  //   "command": "-magit.show-refs"
+  // },
+  // {
+  //   "key": "y",
+  //   "command": "vspacecode.showMagitRefMenu",
+  //   "when": "editorTextFocus && editorLangId == 'magit' && vim.mode == 'Normal'"
+  // },
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "workbench.action.quickOpenSelectNext",
+  //   "when": "inQuickOpen"
+  // },
+  // {
+  //   "key": "ctrl+k",
+  //   "command": "workbench.action.quickOpenSelectPrevious",
+  //   "when": "inQuickOpen"
+  // },
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "selectNextSuggestion",
+  //   "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  // },
+  // {
+  //   "key": "ctrl+k",
+  //   "command": "selectPrevSuggestion",
+  //   "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  // },
+  // {
+  //   "key": "ctrl+l",
+  //   "command": "acceptSelectedSuggestion",
+  //   "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  // },
+  // {
+  //   "key": "ctrl+j",
+  //   "command": "showNextParameterHint",
+  //   "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
+  // },
+  // {
+  //   "key": "ctrl+k",
+  //   "command": "showPrevParameterHint",
+  //   "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible"
+  // },
+  // {
+  //   "key": "ctrl+h",
+  //   "command": "file-browser.stepOut",
+  //   "when": "inFileBrowser"
+  // },
+  // {
+  //   "key": "ctrl+l",
+  //   "command": "file-browser.stepIn",
+  //   "when": "inFileBrowser"
+  // }
 ]
