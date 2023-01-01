@@ -45,7 +45,9 @@ else
 endif
 
 " プラグイン設定
-" nvimより先にvscodeを判定しないと、vscode neovimを利用しているためnvim側で判定してしまう。
+" - pluginの設定には [vim-plug](https://github.com/junegunn/vim-plug) を利用する。
+"   - 各環境でのvim-plugのインストール方法は公式ドキュメントを参照のこと。
+" - nvimより先にvscodeを判定しないと、vscode neovimを利用しているためnvim側で判定してしまう。
 if exists('g:vscode')
   " vscode neovimで利用するプラグイン
   call plug#begin()
@@ -57,6 +59,8 @@ if exists('g:vscode')
   call s:source_rc('easymotion-vscode.rc.vim')
 elseif has('nvim')
   " neovimで利用するプラグイン
+  " なるべく素で利用するように注意する。多くのプラグインを入れ込まないように注意。
 else
   " vimで利用するプラグイン
+  " なるべく素で利用するように注意する。多くのプラグインを入れ込まないように注意。
 endif
