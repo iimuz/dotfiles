@@ -1,95 +1,82 @@
-" deinの設定
-let s:config_home = empty($XDG_CONFIG_HOME) ? expand('~/.config') : $XDG_CONFIG_HOME
-let s:dein_config = s:config_home . '/nvim/dein.vim'
-if filereadable(s:dein_config)
-  execute 'source' s:dein_config
+" vim/neovimのベースとなる設定ファイル。
+" 本ファイルをvim/neovim用にリンクを生成することを想定している。
+" 例えば、vimであれば下記のように実施する。
+" `ln -s /path/to/.config/nvim/init.vim ~/.vimrc`
+" neovimの場合はフォルダごとシンボリックリンクを設定する。
+" `ln -s /path/to/.config/nvim ~/.config/nvim`
+
+" 対象のOSを判定して設定ファイルのベースパスを決定
+if has('win32')
+  " windows
+  let g:config_dir = expand('~/AppData/Local')
+elseif has('mac')
+  " mac
+  let g:config_dir = expand('~/.config')
+else
+  " linux
+  let g:config_dir = expand('~/.config')
 endif
 
-"文字コードをUFT-8に設定
-scriptencoding utf-8
-set encoding=utf-8
-set fileencodings=utf-8,sjis
-set fenc=utf-8
-" バックアップファイルを作らない
-set nobackup
-" スワップファイルを作らない
-set noswapfile
-" 編集中のファイルが変更されたら自動で読み直す
-set autoread
-" バッファが編集中でもその他のファイルを開けるように
-set hidden
+" 設定ファイルの場所をvim/neovim/vscode neovimで分けて設定
+" rcフォルダの下に分割した設定ファイルがある前提で分割した設定ファイルを読み込む。
+" nvimより先にvscodeを判定しないと、vscode neovimを利用しているためnvim側で判定してしまう。
+if exists('g:vscode')
+  " vscode neovim extension設定
+  " g:vim_home に対してjunktionを設定することを想定している。
+  " 例えば、g:vim_home = ~/AppData/Local/nvim の場合は下記のようなコマンドを実施する。
+  " `New-Item -ItemType Junction -Path ~/AppData/Local/nvim -Target /path/to/.config/nvim`
+  let g:vim_home = expand(g:config_dir . '/nvim')
+  let g:rc_dir = expand(g:vim_home . '/rc')
+elseif has('nvim')
+  " neovim設定
+  " g:vim_home に対してsymlinkを設定することを想定している。
+  " 例えば、g:vim_home = ~/.config/nvim の場合は下記のようなコマンドを実施する。
+  " `ln -s /path/to/.config/nvim ~/.config/nvim`
+  let g:vim_home = expand(g:config_dir . '/nvim')
+  let g:rc_dir = expand(g:vim_home . '/rc')
+else
+  " vim設定
+  " g:vim_home に対してsymlinkを設定することを想定している。
+  " 例えば、g:vim_home = ~/.config/vim の場合は下記のようなコマンドを実施する。
+  " `ln -s /path/to/.config/nvim ~/.config/vim`
+  let g:vim_home = expand(g:config_dir . '/vim')
+  let g:rc_dir = expand(g:vim_home . '/rc')
+endif
 
-" 行番号を表示
-set number
-" 現在の行を強調表示しない(全画面の再描画が発生し遅くなる環境があるため)
-set nocursorline
-" 括弧入力時の対応する括弧を表示
-" set showmatch
-" コマンドラインの補完
-set wildmode=list:longest
-" コマンドをステータス行に表示
-set showcmd
+" rcファイル読み込み関数
+function! s:source_rc(rc_file_name)
+  let rc_file = expand(g:rc_dir . '/' . a:rc_file_name)
+  if filereadable(rc_file)
+    execute 'source' rc_file
+  endif
+endfunction
 
-" ファイル名表示
-set statusline=%F
-" 変更チェック表示
-set statusline+=%m
-" 読み込み専用かどうか表示
-set statusline+=%r
-" ヘルプページなら[HELP]と表示
-set statusline+=%h
-" プレビューウインドウなら[Prevew]と表示
-set statusline+=%w
-" これ以降は右寄せ表示
-set statusline+=%=
-" file encoding
-set statusline+=[FMT=%{&ff},\ TYPE=%Y,\ ENC=%{&fileencoding}]
-" 現在行数/全行数
-set statusline+=[%l/%L,%c]
-" ステータスラインを表示
-" 0:表示しない
-" 1: 2つ以上ウィンドウがある時だけ表示
-" 2: 常に表示
-set laststatus=2
+" 基本設定
+if exists('g:vscode')
+  " vscode neovimの場合は行数表示などをvscodeに任せるため設定が異なる。
+  call s:source_rc('vscode.rc.vim')
+else
+  " vim or neovim
+  call s:source_rc('base.rc.vim')
+endif
 
-" 不可視文字を可視化
-set listchars=nbsp:%,tab:>-,extends:<,trail:-
-set list
-augroup highlightIdegraphicSpace
-  autocmd!
-  autocmd Colorscheme * highlight IdeographicSpace term=underline ctermbg=DarkGreen guibg=DarkGreen
-  autocmd VimEnter,WinEnter * match IdeographicSpace /　/
-augroup END
-" Tab文字を半角スペースにする
-set expandtab
-" 行頭以外のTab文字の表示幅（スペースいくつ分）
-set tabstop=2
-" 行頭でのTab文字の表示幅
-set shiftwidth=2
-" インデントはスマートインデント
-set smartindent
-" バックスペースが効かなくなる問題への対応
-set backspace=indent,eol,start
+" プラグイン設定
+" - pluginの設定には [vim-plug](https://github.com/junegunn/vim-plug) を利用する。
+"   - 各環境でのvim-plugのインストール方法は公式ドキュメントを参照のこと。
+" - nvimより先にvscodeを判定しないと、vscode neovimを利用しているためnvim側で判定してしまう。
+if exists('g:vscode')
+  " vscode neovimで利用するプラグイン
+  call plug#begin()
+  Plug 'asvetliakov/vim-easymotion'  " カーソル移動をラベルで行う(vscode neovim版)
+  Plug 'tpope/vim-surround'  " visual modeで選択した文字列を囲む
+  call plug#end()
 
-" 検索文字列が小文字の場合は大文字小文字を区別なく検索する
-set ignorecase
-" 検索文字列に大文字が含まれている場合は区別して検索する
-set smartcase
-" 検索文字列入力時に順次対象文字列にヒットさせる
-set incsearch
-" 検索時に最後まで行ったら最初に戻る
-set wrapscan
-" 検索語をハイライト表示
-set hlsearch
-
-" タイトルを表示
-set title
-" syntax
-syntax enable
-" カラースキームです
-colorscheme pablo
-" マウス操作を無効
-set mouse=
-
-filetype plugin indent on
-
+  " pluginのための設定
+  call s:source_rc('easymotion-vscode.rc.vim')
+elseif has('nvim')
+  " neovimで利用するプラグイン
+  " なるべく素で利用するように注意する。多くのプラグインを入れ込まないように注意。
+else
+  " vimで利用するプラグイン
+  " なるべく素で利用するように注意する。多くのプラグインを入れ込まないように注意。
+endif

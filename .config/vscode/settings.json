@@ -13,6 +13,7 @@
   "editor.minimap.enabled": false,
   "editor.renderControlCharacters": true,
   "editor.renderWhitespace": "boundary",
+  "editor.stickyScroll.enabled": true,
   "editor.suggest.matchOnWordStartOnly": false,
   "editor.tabSize": 2,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
@@ -45,23 +46,6 @@
   },
   "git.ignoreLegacyWarning": true,
   "git.terminalAuthentication": false,
-  "gitlens.advanced.messages": {
-    "suppressGitVersionWarning": true
-  },
-  "gitlens.codeLens.authors.enabled": false,
-  "gitlens.codeLens.recentChange.enabled": false,
-  "gitlens.currentLine.enabled": false,
-  "remote.containers.gitCredentialHelperConfigLocation": "none",
-  "remote.SSH.defaultExtensions": [
-    "alefragnani.bookmarks",
-    "davidanson.vscode-markdownlint",
-    "eamodio.gitlens",
-    "esbenp.prettier-vscode",
-    "jsynowiec.vscode-insertdatestring",
-    "mechatroner.rainbow-csv",
-    "shd101wyy.markdown-preview-enhanced",
-    "shuworks.vscode-table-formatter"
-  ],
   "search.exclude": {
     "**/.bundle": true,
     "**/.DS_Store": true,
@@ -74,50 +58,7 @@
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
-  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
-  "vim.autoindent": true,
-  "vim.easymotion": true,
-  "vim.foldfix": true,
-  "vim.hlsearch": true,
-  "vim.leader": ",",
-  "vim.normalModeKeyBindingsNonRecursive": [
-    {
-      "before": ["<space>"],
-      "commands": ["vspacecode.space"]
-    },
-    {
-      "before": ["-"],
-      "commands": [
-        "vspacecode.space",
-        {
-          "command": "whichkey.triggerKey",
-          "args": "m"
-        }
-      ]
-    },
-    { "before": ["j"], "after": ["g", "j"] },
-    { "before": ["k"], "after": ["g", "k"] }
-  ],
-  "vim.visualModeKeyBindingsNonRecursive": [
-    {
-      "before": ["<space>"],
-      "commands": ["vspacecode.space"]
-    },
-    {
-      "before": ["-"],
-      "commands": [
-        "vspacecode.space",
-        {
-          "command": "whichkey.triggerKey",
-          "args": "m"
-        }
-      ]
-    }
-  ],
-  "vim.useCtrlKeys": true,
-  "vim.useSystemClipboard": true,
-  "vim.visualstar": true,
-  "workbench.colorTheme": "GitHub Dark",
+  "workbench.colorTheme": "GitHub Dark Default",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.highlightModifiedTabs": true,
@@ -133,12 +74,101 @@
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
   "workbench.view.experimental.allowMovingToNewContainer": true,
-  // html
+  // === remote development
+  "remote.containers.gitCredentialHelperConfigLocation": "none",
+  // === gitlens extension
+  "gitlens.advanced.messages": {
+    "suppressGitVersionWarning": true
+  },
+  "gitlens.codeLens.authors.enabled": false,
+  "gitlens.codeLens.recentChange.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  // === neovim extension
+  "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
+  "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
+  "vscode-neovim.useCtrlKeysForInsertMode": false,  // insert modeは完全にvscodeの挙動
+  "vscode-neovim.useCtrlKeysForNormalMode": true,  // normal modeはnevom挙動
+  // === sqltools extension
+  "sqltools.useNodeRuntime": true,
+  // === vim + vspacecode extension
+  // "vim.autoindent": true,
+  // "vim.easymotion": true,
+  // "vim.foldfix": true,
+  // "vim.hlsearch": true,
+  // "vim.leader": ",",
+  // "vim.normalModeKeyBindingsNonRecursive": [
+  //   {
+  //     "before": ["<space>"],
+  //     "commands": ["vspacecode.space"]
+  //   },
+  //   {
+  //     "before": ["-"],
+  //     "commands": [
+  //       "vspacecode.space",
+  //       {
+  //         "command": "whichkey.triggerKey",
+  //         "args": "m"
+  //       }
+  //     ]
+  //   },
+  //   { "before": ["j"], "after": ["g", "j"] },
+  //   { "before": ["k"], "after": ["g", "k"] }
+  // ],
+  // "vim.visualModeKeyBindingsNonRecursive": [
+  //   {
+  //     "before": ["<space>"],
+  //     "commands": ["vspacecode.space"]
+  //   },
+  //   {
+  //     "before": ["-"],
+  //     "commands": [
+  //       "vspacecode.space",
+  //       {
+  //         "command": "whichkey.triggerKey",
+  //         "args": "m"
+  //       }
+  //     ]
+  //   }
+  // ],
+  // "vim.useCtrlKeys": true,
+  // "vim.useSystemClipboard": true,
+  // "vim.visualstar": true,
+  // === yaml extension
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  // === html
   "[html]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
   },
-  // json
+  // === json
   "[json]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -147,7 +177,7 @@
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  // julia
+  // === julia
   "julia.enableTelemetry": false,
   "julia.symbolCacheDownload": true,
   "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
@@ -155,7 +185,7 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4
   },
-  // jupyter
+  // === jupyter
   "jupyter.askForKernelRestart": false,
   "jupyter.generateSVGPlots": true,
   "jupyter.interactiveWindowMode": "perFile",
@@ -167,7 +197,7 @@
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"
   },
-  // markdown
+  // === markdown
   "markdown-preview-enhanced.breakOnSingleNewLine": false,
   "markdown-preview-enhanced.previewTheme": "github-dark.css",
   "markdown-preview-enhanced.scrollSync": false,
@@ -179,11 +209,11 @@
     // 折り返し有効時には、rulerの位置で折り返す
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
-    "editor.wrappingIndent": "indent",
+    "editor.wrappingIndent": "indent"
     // 範囲選択 + 'gq' で強制的に折り返す処理をするための設定(vim拡張が必要)
-    "vim.textwidth": 100
+    // "vim.textwidth": 100
   },
-  // python
+  // === python
   "autoDocstring.docstringFormat": "numpy",
   "python.dataScience.askForKernelRestart": false,
   "python.formatting.provider": "black",
@@ -201,14 +231,14 @@
     "editor.tabSize": 4,
     "editor.rulers": [79, 88] // pep8: 79, black: 88
   },
-  // reStructuredText
+  // === reStructuredText
   "[reStructerdText]": {},
-  // rust
+  // === rust
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust",
     "editor.tabSize": 4
   },
-  // tex
+  // === tex
   "[tex]": {
     "editor.insertSpaces": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -265,7 +295,7 @@
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
-  // typescript
+  // === typescript
   "[typescript]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -273,9 +303,5 @@
   "[typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "sqltools.useNodeRuntime": true,
-  "remote.SSH.remotePlatform": {
-    "ftd-dev": "linux"
   }
 }
