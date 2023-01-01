@@ -85,4 +85,3 @@ colorscheme pablo
 set mouse=
 
 filetype plugin indent on
-

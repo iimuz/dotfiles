@@ -60,4 +60,3 @@ elseif has('nvim')
 else
   " vimで利用するプラグイン
 endif
-

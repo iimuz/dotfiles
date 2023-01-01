@@ -47,4 +47,3 @@ set hlsearch
 let mapleader = "\<Space>"
 " クリップボードを共有
 set clipboard+=unnamedplus
-

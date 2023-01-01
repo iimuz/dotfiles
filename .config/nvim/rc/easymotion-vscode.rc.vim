@@ -7,4 +7,3 @@ map  <Leader>f <Plug>(easymotion-bd-f)
 map  <Leader>w <Plug>(easymotion-bd-w)
 " Move to line
 map <Leader>l <Plug>(easymotion-bd-jk)
-
