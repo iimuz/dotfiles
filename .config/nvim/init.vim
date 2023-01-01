@@ -1,3 +1,10 @@
+" vim/neovimのベースとなる設定ファイル。
+" 本ファイルをvim/neovim用にリンクを生成することを想定している。
+" 例えば、vimであれば下記のように実施する。
+" `ln -s /path/to/.config/nvim/init.vim ~/.vimrc`
+" neovimの場合はフォルダごとシンボリックリンクを設定する。
+" `ln -s /path/to/.config/nvim ~/.config/nvim`
+
 " 対象のOSを判定して設定ファイルのベースパスを決定
 if has('win32')
   " windows
@@ -11,18 +18,27 @@ else
 endif
 
 " 設定ファイルの場所をvim/neovim/vscode neovimで分けて設定
-" rcフォルダの下に分割した設定ファイルがある前提で分割した設定ファイルを読み込む
+" rcフォルダの下に分割した設定ファイルがある前提で分割した設定ファイルを読み込む。
 " nvimより先にvscodeを判定しないと、vscode neovimを利用しているためnvim側で判定してしまう。
 if exists('g:vscode')
   " vscode neovim extension設定
+  " g:vim_home に対してjunktionを設定することを想定している。
+  " 例えば、g:vim_home = ~/AppData/Local/nvim の場合は下記のようなコマンドを実施する。
+  " `New-Item -ItemType Junction -Path ~/AppData/Local/nvim -Target /path/to/.config/nvim`
   let g:vim_home = expand(g:config_dir . '/nvim')
   let g:rc_dir = expand(g:vim_home . '/rc')
 elseif has('nvim')
   " neovim設定
+  " g:vim_home に対してsymlinkを設定することを想定している。
+  " 例えば、g:vim_home = ~/.config/nvim の場合は下記のようなコマンドを実施する。
+  " `ln -s /path/to/.config/nvim ~/.config/nvim`
   let g:vim_home = expand(g:config_dir . '/nvim')
   let g:rc_dir = expand(g:vim_home . '/rc')
 else
   " vim設定
+  " g:vim_home に対してsymlinkを設定することを想定している。
+  " 例えば、g:vim_home = ~/.config/vim の場合は下記のようなコマンドを実施する。
+  " `ln -s /path/to/.config/nvim ~/.config/vim`
   let g:vim_home = expand(g:config_dir . '/vim')
   let g:rc_dir = expand(g:vim_home . '/rc')
 endif
@@ -37,7 +53,7 @@ endfunction
 
 " 基本設定
 if exists('g:vscode')
-  " vscode neovimの場合は行数表示などをvscodeに任せるため設定が異なる
+  " vscode neovimの場合は行数表示などをvscodeに任せるため設定が異なる。
   call s:source_rc('vscode.rc.vim')
 else
   " vim or neovim
