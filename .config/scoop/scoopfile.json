@@ -1,0 +1,68 @@
+{
+    "buckets": [
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras",
+            "Updated": {
+                "value": "\/Date(1672576180000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2023年1月1日 21:29:40"
+            },
+            "Manifests": 1754
+        },
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main",
+            "Updated": {
+                "value": "\/Date(1672576209000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2023年1月1日 21:30:09"
+            },
+            "Manifests": 1136
+        }
+    ],
+    "apps": [
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "7zip",
+            "Version": "22.01",
+            "Updated": "\/Date(1671244022669)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "git",
+            "Version": "2.39.0.windows.2",
+            "Updated": "\/Date(1671784767243)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "googlechrome",
+            "Version": "107.0.5304.107",
+            "Updated": "\/Date(1671339863777)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "neovim",
+            "Version": "0.8.2",
+            "Updated": "\/Date(1672577450921)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vscode",
+            "Version": "1.74.2",
+            "Updated": "\/Date(1671784776701)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "windows-terminal",
+            "Version": "1.15.3465.0",
+            "Updated": "\/Date(1671244224643)\/"
+        }
+    ]
+}
