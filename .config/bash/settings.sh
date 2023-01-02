@@ -33,9 +33,6 @@ if [ -f "$x11_path" ]; then source "$x11_path"; fi
 bw_path="$dotconfig_dir/bitwarden/settings.sh"
 if [ -f "$bw_path" ]; then source "$bw_path"; fi
 
-dcmd_path="$dotconfig_dir/docker/commands.sh"
-if [ -f "$dcmd_path" ]; then source "$dcmd_path"; fi
-
 fzf_path="$dotconfig_dir/fzf/fzf.bash"
 if [ -f "$fzf_path" ]; then source "$fzf_path"; fi
 
