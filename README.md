@@ -14,6 +14,13 @@ sh scripts/gcloud.sh
 
 ## 環境構築
 
+各環境での構築はインストールスクリプトを利用して下記のように実行します。
+
+- Linux/Mac: `bash setup.sh`
+- Windows: TBD
+
+各環境におけるパッケージ管理について下記に記載します。
+
 ### Linux/Mac
 
 [homebrew](https://brew.sh/)を利用してソフトウェアのインストールを行います。
