@@ -45,6 +45,9 @@ if [ -f "$gcloud_path" ]; then source "$gcloud_path"; fi
 git_path="$dotconfig_dir/.git/settings.sh"
 if [ -f "$git_path" ]; then source "$git_path"; fi
 
+homebrew_path="$dotconfig_dir/homebrew/homebrew-bundle.sh"
+if [ -f "$homebrew_path" ]; then source "$homebrew_path"; fi
+
 poetry_path="$dotconfig_dir/python/poetry.sh"
 if [ -f "$poetry_path" ]; then source "$poetry_path"; fi
 
