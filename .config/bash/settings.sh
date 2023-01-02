@@ -36,20 +36,11 @@ if [ -f "$bw_path" ]; then source "$bw_path"; fi
 fzf_path="$dotconfig_dir/fzf/fzf.bash"
 if [ -f "$fzf_path" ]; then source "$fzf_path"; fi
 
-gcloud_path="$dotconfig_dir/gcloud/gcloud.sh"
-if [ -f "$gcloud_path" ]; then source "$gcloud_path"; fi
-
-git_path="$dotconfig_dir/.git/settings.sh"
+git_path="$dotconfig_dir/git/settings.sh"
 if [ -f "$git_path" ]; then source "$git_path"; fi
 
 homebrew_path="$dotconfig_dir/homebrew/homebrew-bundle.sh"
 if [ -f "$homebrew_path" ]; then source "$homebrew_path"; fi
-
-poetry_path="$dotconfig_dir/python/poetry.sh"
-if [ -f "$poetry_path" ]; then source "$poetry_path"; fi
-
-pipenv_path="$dotconfig_dir/python/pipenv.sh"
-if [ -f "$pipenv_path" ]; then source "$pipenv_path"; fi
 
 node_path="$dotconfig_dir/npm/npm.sh"
 if [ -f "$node_path" ]; then source "$node_path"; fi
