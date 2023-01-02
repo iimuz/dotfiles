@@ -50,21 +50,6 @@ function set_bashrc() {
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $HOME/.bashrc
 }
 
-# Add loading file in .vimrc.
-function set_vimrc() {
-  local readonly search_dir="$1"
-
-  # if setting exits in .bashrc, do nothing.
-  if grep $search_dir -l $HOME/.vimrc > /dev/null 2>&1; then
-    echo "already setting in vimrc: $search_dir"
-    return 0
-  fi
-
-  # Add file path.
-  echo "set load setting in vimrc: $search_dir"
-  echo -e "call map(sort(split(globpath(\"$search_dir\", \".vimrc\"))), {->[execute('exec \"so\" v:val')]})\n" >> $HOME/.vimrc
-}
-
 # 共通パスの設定
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 CONFIG_PATH=$SCRIPT_DIR/.config
@@ -81,8 +66,6 @@ create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
 
 # .bashrc から読み込む設定ファイルの親を設定
 set_bashrc $CONFIG_PATH/bash/settings.sh
-
-set_vimrc $CONFIG_PATH/vim
 
 # シングルバイナリコマンド
 install_command bat $SCRIPT_PATH/bat.sh
