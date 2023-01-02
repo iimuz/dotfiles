@@ -21,19 +21,19 @@ function create_symlink() {
 
 # コマンドがインストールされていないときにインストールスクリプトを呼び出す
 # ここでは使っていないが、個別環境での構築で、共通して利用する
-function install_command() {
-  local readonly command=$1
-  local readonly script=$2
+# function install_command() {
+#   local readonly command=$1
+#   local readonly script=$2
 
-  # コマンドがインストール済みの場合は終了
-  if type $command > /dev/null 2>&1; then
-    echo "already installed: $command"
-    return 0
-  fi
+#   # コマンドがインストール済みの場合は終了
+#   if type $command > /dev/null 2>&1; then
+#     echo "already installed: $command"
+#     return 0
+#   fi
 
-  echo "install: $command using $script"
-  bash $script ${@:3}
-}
+#   echo "install: $command using $script"
+#   bash $script ${@:3}
+# }
 
 # Add loading file in .bashrc.
 function set_bashrc() {
@@ -51,12 +51,9 @@ function set_bashrc() {
 }
 
 # 共通パスの設定
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
+SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE:-0}); pwd)
 CONFIG_PATH=$SCRIPT_DIR/.config
 SCRIPT_PATH=$SCRIPT_DIR/scripts
-
-# 出力用ディレクトリの作成
-mkdir -p $HOME/.local/bin
 
 # 場所が固定されている基本設定ファイルを設置
 create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
@@ -66,14 +63,3 @@ create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
 
 # .bashrc から読み込む設定ファイルの親を設定
 set_bashrc $CONFIG_PATH/bash/settings.sh
-
-# シングルバイナリコマンド
-install_command bat $SCRIPT_PATH/bat.sh
-install_command bw $SCRIPT_PATH/bitwarden.sh
-install_command exa $SCRIPT_PATH/exa.sh
-install_command fd $SCRIPT_PATH/fd.sh
-install_command fzf $SCRIPT_PATH/fzf.sh
-install_command hugo $SCRIPT_PATH/hugo.sh
-install_command jq $SCRIPT_PATH/jq.sh
-install_command procs $SCRIPT_PATH/procs.sh
-install_command rg $SCRIPT_PATH/ripgrep.sh
