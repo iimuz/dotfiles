@@ -14,6 +14,31 @@ sh scripts/gcloud.sh
 
 ## 環境構築
 
+### Linux/Mac
+
+[homebrew](https://brew.sh/)を利用してソフトウェアのインストールを行います。
+また、インストールしたソフトウェアの一覧などの管理は [homebrew-bundle](https://github.com/Homebrew/homebrew-bundle) を利用します。
+homebrew + homebrew bundleを利用した環境構築方法を下記に記載します。
+
+```sh
+# install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# homebrew buundleを利用してソフトウェアを一括でインストール
+# homebrew bundleは関連コマンドを実行した初回に自動でインストールされるので明示的に実施しない
+brew bundle
+```
+
+インストールするソフトウェアおよび各ソフトウェアのTipsは下記になります。
+
+- [bat](https://github.com/sharkdp/bat)
+- [bitwarden-cli](https://github.com/bitwarden/clients)
+- [exa](https://github.com/ogham/exa)
+- [fd](https://github.com/sharkdp/fd)
+- [fzf](https://github.com/junegunn/fzf)
+- [git](https://github.com/git/git): [tips](https://iimuz.github.io/scrapbook/zettelkasten/scrapbook-20221127091453/)
+- [ripgrep](https://github.com/BurntSushi/ripgrep)
+- [tmux](https://github.com/tmux/tmux)
+
 ### Windows
 
 [scoop](https://scoop.sh/)を利用してソフトウェアのインストールを行います。
