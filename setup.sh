@@ -19,22 +19,6 @@ function create_symlink() {
   ln -s $src $dst
 }
 
-# コマンドがインストールされていないときにインストールスクリプトを呼び出す
-# ここでは使っていないが、個別環境での構築で、共通して利用する
-# function install_command() {
-#   local readonly command=$1
-#   local readonly script=$2
-
-#   # コマンドがインストール済みの場合は終了
-#   if type $command > /dev/null 2>&1; then
-#     echo "already installed: $command"
-#     return 0
-#   fi
-
-#   echo "install: $command using $script"
-#   bash $script ${@:3}
-# }
-
 # Add loading file in .bashrc.
 function set_bashrc() {
   local readonly filename="$1"
@@ -51,15 +35,28 @@ function set_bashrc() {
 }
 
 # 共通パスの設定
-SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE:-0}); pwd)
-CONFIG_PATH=$SCRIPT_DIR/.config
-SCRIPT_PATH=$SCRIPT_DIR/scripts
+readonly SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE:-0}); pwd)
+readonly CONFIG_PATH=$SCRIPT_DIR/.config
+readonly SCRIPT_PATH=$SCRIPT_DIR/scripts
 
-# 場所が固定されている基本設定ファイルを設置
-create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
-create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
-create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
-create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
-
-# .bashrc から読み込む設定ファイルの親を設定
-set_bashrc $CONFIG_PATH/bash/settings.sh
+# 各種設定ファイルの配置もしくは読み込み設定
+# 特定の場所に配置する必要のない設定ファイルは、 `bash/settings.sh` から読み込み設定を記述
+# === bash
+if type bash > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/bash/settings.sh
+  create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
+fi
+# === git
+if type git > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
+  create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
+fi
+# === tmux
+if type tmux > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
+fi
+# === vim
+if type vim > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/nvim/init.vim $HOME/.vimrc
+  create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/vim
+fi
