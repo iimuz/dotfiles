@@ -13,3 +13,6 @@ save_history="history -n; history -w; history -c; history -r"
 if [[ ";$PROMPT_COMMAND;" != *";$save_history;"* ]]; then
   export PROMPT_COMMAND="$save_history; $PROMPT_COMMAND"
 fi
+
+# Set DOTFILES variables.
+export DOTFILES=$(cd $(dirname ${BASH_SOURCE:-0})/../..; pwd)
