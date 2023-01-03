@@ -19,22 +19,6 @@ function create_symlink() {
   ln -s $src $dst
 }
 
-# コマンドがインストールされていないときにインストールスクリプトを呼び出す
-# ここでは使っていないが、個別環境での構築で、共通して利用する
-function install_command() {
-  local readonly command=$1
-  local readonly script=$2
-
-  # コマンドがインストール済みの場合は終了
-  if type $command > /dev/null 2>&1; then
-    echo "already installed: $command"
-    return 0
-  fi
-
-  echo "install: $command using $script"
-  bash $script ${@:3}
-}
-
 # Add loading file in .bashrc.
 function set_bashrc() {
   local readonly filename="$1"
@@ -50,47 +34,61 @@ function set_bashrc() {
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $HOME/.bashrc
 }
 
-# Add loading file in .vimrc.
-function set_vimrc() {
-  local readonly search_dir="$1"
+# === 共通パスの設定
+readonly SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE:-0}); pwd)
+readonly CONFIG_PATH=$SCRIPT_DIR/.config
+readonly SCRIPT_PATH=$SCRIPT_DIR/scripts
 
-  # if setting exits in .bashrc, do nothing.
-  if grep $search_dir -l $HOME/.vimrc > /dev/null 2>&1; then
-    echo "already setting in vimrc: $search_dir"
-    return 0
-  fi
+# === Install [homebrew](https://brew.sh/index_ja)
+if ! type brew > /dev/null 2>&1; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 
-  # Add file path.
-  echo "set load setting in vimrc: $search_dir"
-  echo -e "call map(sort(split(globpath(\"$search_dir\", \".vimrc\"))), {->[execute('exec \"so\" v:val')]})\n" >> $HOME/.vimrc
-}
+# === Install softwaare
+# homebrewを利用するための設定を追記して再読み込み
+set_bashrc $CONFIG_PATH/homebrew/homebrew-bundle.sh
+source ~/.bashrc
+# homebrewを利用して各種ソフトウェアをインストール
+brew bundle
 
-# 共通パスの設定
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
-CONFIG_PATH=$SCRIPT_DIR/.config
-SCRIPT_PATH=$SCRIPT_DIR/scripts
-
-# 出力用ディレクトリの作成
-mkdir -p $HOME/.local/bin
-
-# 場所が固定されている基本設定ファイルを設置
-create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
-create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
-create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
-create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
-
-# .bashrc から読み込む設定ファイルの親を設定
-set_bashrc $CONFIG_PATH/bash/settings.sh
-
-set_vimrc $CONFIG_PATH/vim
-
-# シングルバイナリコマンド
-install_command bat $SCRIPT_PATH/bat.sh
-install_command bw $SCRIPT_PATH/bitwarden.sh
-install_command exa $SCRIPT_PATH/exa.sh
-install_command fd $SCRIPT_PATH/fd.sh
-install_command fzf $SCRIPT_PATH/fzf.sh
-install_command hugo $SCRIPT_PATH/hugo.sh
-install_command jq $SCRIPT_PATH/jq.sh
-install_command procs $SCRIPT_PATH/procs.sh
-install_command rg $SCRIPT_PATH/ripgrep.sh
+# 各種設定ファイルの配置もしくは読み込み設定
+# 特定の場所に配置する必要のない設定ファイルは、 `bash/settings.sh` から読み込み設定を記述
+# === bash
+if type bash > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
+  set_bashrc $CONFIG_PATH/bash/settings.sh
+  set_bashrc $CONFIG_PATH/bash/aliases.sh
+  set_bashrc $CONFIG_PATH/bash/x11.sh
+  set_bashrc $CONFIG_PATH/bash/xdg-base.sh
+fi
+# === bitwarden
+if type bw > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/bitwarden/settings.sh
+fi
+# === fzf
+if type fzf > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/fzf/fzf.bash
+fi
+# === git
+if type git > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
+  create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
+  set_bashrc $CONFIG_PATH/git/settings.sh
+fi
+# === npm
+if type npm > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/npm/npm.sh
+fi
+# === tmux
+if type tmux > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
+fi
+# === vim
+if type vim > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/nvim/init.vim $HOME/.vimrc
+  create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/vim
+fi
+# === vscode
+if type code > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/vscode/vscode.sh
+fi

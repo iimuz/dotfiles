@@ -1,0 +1,13 @@
+tap "homebrew/bundle"
+tap "homebrew/core"
+
+brew "gcc"
+brew "bat"
+brew "bitwarden-cli"
+brew "exa"
+brew "fd"
+brew "fzf"
+brew "git"
+brew "ripgrep"
+brew "tmux"
+
