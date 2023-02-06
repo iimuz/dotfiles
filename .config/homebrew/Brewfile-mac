@@ -8,6 +8,9 @@ cask "appcleaner"
 # === desktop management
 cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 
+# === drone
+cask "qgroundcontrol"  # QGC app
+
 # === fonts
 tap "homebrew/cask-fonts"
 cask "font-cica"
