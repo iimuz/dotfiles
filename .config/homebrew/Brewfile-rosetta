@@ -1,3 +1,15 @@
+# === C
 brew "gcc"
+
+# === python
 brew "pyenv"
 
+# === python - pillow
+brew "libjpeg"
+brew "libtiff"
+brew "little-cms2"
+brew "webp" 
+
+# === python - scipy
+brew "openblas"
+brew "lapack"
