@@ -1,5 +1,3 @@
-#!/bin/bash
-#
 # Setup script.
 
 set -eu
@@ -19,19 +17,27 @@ function create_symlink() {
   ln -s $src $dst
 }
 
-# Add loading file in .bashrc.
+# Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
   local readonly filename="$1"
 
-  # if setting exits in .bashrc, do nothing.
-  if grep $filename -l $HOME/.bashrc > /dev/null 2>&1; then
-    echo "already setting in bashrc: $filename"
+  if [[ "$SHELL" == *zsh* ]]; then
+    # zshを利用しているので設定ファイルが異なる
+    local readonly rcfile="$HOME/.zshrc"
+  else
+    # bashを想定している
+    local readonly rcfile="$HOME/.bashrc"
+  fi
+
+  # if setting exits in rc file, do nothing.
+  if grep $filename -l $rcfile > /dev/null 2>&1; then
+    echo "already setting in $rcfile: $filename"
     return 0
   fi
 
   # Add file path.
-  echo "set load setting in bashrc: $filename"
-  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $HOME/.bashrc
+  echo "set load setting in $rcfile: $filename"
+  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $rcfile
 }
 
 # === 共通パスの設定
@@ -47,7 +53,15 @@ fi
 # === Install softwaare
 # homebrewを利用するための設定を追記して再読み込み
 set_bashrc $CONFIG_PATH/homebrew/homebrew-bundle.sh
-source ~/.bashrc
+if [[ "$SHELL" == *zsh* ]]; then
+  # zshを利用しているので設定ファイルが異なる
+  echo "Use zsh"
+  source ~/.zshrc
+else
+  echo "Use bash"
+  # bashを想定している
+  source ~/.bashrc
+fi
 # homebrewを利用して各種ソフトウェアをインストール
 brew bundle
 
@@ -58,6 +72,7 @@ if type bash > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
   set_bashrc $CONFIG_PATH/bash/settings.sh
   set_bashrc $CONFIG_PATH/bash/aliases.sh
+  set_bashrc $CONFIG_PATH/bash/command.sh
   set_bashrc $CONFIG_PATH/bash/x11.sh
   set_bashrc $CONFIG_PATH/bash/xdg-base.sh
 fi
@@ -78,6 +93,10 @@ fi
 # === npm
 if type npm > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/npm/npm.sh
+fi
+# === neovim
+if type nvim > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
 fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
