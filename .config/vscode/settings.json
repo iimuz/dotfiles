@@ -16,6 +16,7 @@
   "editor.stickyScroll.enabled": true,
   "editor.suggest.matchOnWordStartOnly": false,
   "editor.tabSize": 2,
+  "editor.unicodeHighlight.ambiguousCharacters": false,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
   "explorer.autoReveal": true,
@@ -58,7 +59,7 @@
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
-  "workbench.colorTheme": "GitHub Dark Default",
+  "workbench.colorTheme": "GitHub Dark Dimmed",
   "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.highlightModifiedTabs": true,
@@ -86,8 +87,8 @@
   // === neovim extension
   "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
   "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
-  "vscode-neovim.useCtrlKeysForInsertMode": false,  // insert modeは完全にvscodeの挙動
-  "vscode-neovim.useCtrlKeysForNormalMode": true,  // normal modeはnevom挙動
+  "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
+  "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
   // === sqltools extension
   "sqltools.useNodeRuntime": true,
   // === vim + vspacecode extension
