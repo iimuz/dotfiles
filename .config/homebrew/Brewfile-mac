@@ -36,6 +36,7 @@ brew "pwgen"
 brew "pyenv"
 
 # === programming tools
+brew "direnv"
 cask "rancher"  # dockerd
 cask "visual-studio-code"
 

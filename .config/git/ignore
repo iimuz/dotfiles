@@ -1,6 +1,10 @@
-# vscode editor
+# === vscode editor
 .devcontainer
 .devcontainer/
 .vscode
 .vscode/
 
+# === env
+.env
+# direnv
+.envrc
