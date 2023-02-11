@@ -46,6 +46,7 @@
     "**/node_modules/**": true
   },
   "git.ignoreLegacyWarning": true,
+  "git.openRepositoryInParentFolders": "always",
   "git.terminalAuthentication": false,
   "search.exclude": {
     "**/.bundle": true,
