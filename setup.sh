@@ -52,18 +52,18 @@ fi
 
 # === Install softwaare
 # homebrewを利用するための設定を追記して再読み込み
-set_bashrc $CONFIG_PATH/homebrew/homebrew-bundle.sh
-if [[ "$SHELL" == *zsh* ]]; then
-  # zshを利用しているので設定ファイルが異なる
-  echo "Use zsh"
-  source ~/.zshrc
-else
-  echo "Use bash"
-  # bashを想定している
-  source ~/.bashrc
-fi
-# homebrewを利用して各種ソフトウェアをインストール
-brew bundle
+# set_bashrc $CONFIG_PATH/homebrew/homebrew-bundle.sh
+# if [[ "$SHELL" == *zsh* ]]; then
+#   # zshを利用しているので設定ファイルが異なる
+#   echo "Use zsh"
+#   source ~/.zshrc
+# else
+#   echo "Use bash"
+#   # bashを想定している
+#   source ~/.bashrc
+# fi
+# # homebrewを利用して各種ソフトウェアをインストール
+# brew bundle
 
 # 各種設定ファイルの配置もしくは読み込み設定
 # 特定の場所に配置する必要のない設定ファイルは、 `bash/settings.sh` から読み込み設定を記述
@@ -101,6 +101,10 @@ fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
+fi
+# === pyenv
+if type pyenv > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/pyenv/pyenv-settings.sh
 fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
