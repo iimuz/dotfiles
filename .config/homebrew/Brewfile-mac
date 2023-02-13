@@ -28,17 +28,22 @@ cask "google-chrome"
 cask "microsoft-edge"
 cask "slack"
 
+# === node.js
+brew "nvm"
+
 # === project
 brew "bash"
 brew "jq"
-brew "nvm"
 brew "pwgen"
-brew "pyenv"
 
 # === programming tools
 brew "direnv"
 cask "rancher"  # dockerd
 cask "visual-studio-code"
+
+# === python
+brew "pipx"
+brew "pyenv"
 
 # === recording
 brew "ffmpeg"

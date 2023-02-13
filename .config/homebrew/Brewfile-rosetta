@@ -4,8 +4,11 @@ tap "homebrew/core"
 # === C
 brew "gcc"
 
-# === python
+# === node.js
 brew "nvm"
+
+# === python
+brew "pipx"
 brew "pyenv"
 
 # === python - pillow
