@@ -8,3 +8,8 @@
 .env
 # direnv
 .envrc
+
+# === temporary files and folders
+tmp_*
+tmp_*/
+
