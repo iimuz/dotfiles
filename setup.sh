@@ -94,13 +94,16 @@ if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
   set_bashrc $CONFIG_PATH/git/settings.sh
 fi
-# === npm
-if type npm > /dev/null 2>&1; then
-  set_bashrc $CONFIG_PATH/node/npm.sh
-fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
+fi
+# === node
+if type npm > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/node/npm.sh
+fi
+if [ -s "$(brew --prefix)/opt/nvm/nvm.sh"  ]; then
+  set_bashrc $CONFIG_PATH/node/nvm-settings.sh
 fi
 # === pyenv
 if type pyenv > /dev/null 2>&1; then
