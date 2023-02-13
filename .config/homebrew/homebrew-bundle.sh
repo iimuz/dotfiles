@@ -6,7 +6,17 @@
 # Gurad if command does not exist.
 if ! type direnv > /dev/null 2>&1; then return 0; fi
 
-# Brewfileの場所を設定
+# === mac環境においてarm版とrosetta版を実行環境で切り替える
+# ref: <https://qiita.com/tamachan210/items/b253ced93425d7cc0f1f>
+if [ "$(uname)" = "Darwin" ]; then  # MacOS
+  if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else  # Intel
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
+
+# === Brewfileの場所を設定
 if [ "$(uname)" = "Darwin" ]; then  # MacOS
   if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
     export HOMEBREW_BUNDLE_FILE="$(cd $(dirname ${(%):-%N}); pwd)/Brewfile-mac"
@@ -18,15 +28,4 @@ elif [ "$(uname)" = "Linux" ]; then  # Linux
     export HOMEBREW_BUNDLE_FILE="$(cd $(dirname ${(%):-%N}); pwd)/Brewfile-wsl"
   fi
 fi
-
-# mac環境においてarm版とrosetta版を実行環境で切り替える
-# ref: <https://qiita.com/tamachan210/items/b253ced93425d7cc0f1f>
-if [ "$(uname)" = "Darwin" ]; then  # MacOS
-  if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  else  # Intel
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
-fi
-
 
