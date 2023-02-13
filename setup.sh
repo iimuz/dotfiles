@@ -109,9 +109,12 @@ fi
 if [ -s "$(brew --prefix)/opt/nvm/nvm.sh"  ]; then
   set_bashrc $CONFIG_PATH/node/nvm-settings.sh
 fi
-# === pyenv
+# === python
 if type pyenv > /dev/null 2>&1; then
-  set_bashrc $CONFIG_PATH/pyenv/pyenv-settings.sh
+  set_bashrc $CONFIG_PATH/python/pyenv-settings.sh
+fi
+if type pipx > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/python/pipx-settings.sh
 fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
