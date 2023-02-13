@@ -96,7 +96,7 @@ if type git > /dev/null 2>&1; then
 fi
 # === npm
 if type npm > /dev/null 2>&1; then
-  set_bashrc $CONFIG_PATH/npm/npm.sh
+  set_bashrc $CONFIG_PATH/node/npm.sh
 fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
