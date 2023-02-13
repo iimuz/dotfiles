@@ -80,6 +80,10 @@ fi
 if type bw > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/bitwarden/settings.sh
 fi
+# === direnv
+if type direnv > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/direnv/direnv-settings.sh
+fi
 # === fzf
 if type fzf > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/fzf/fzf.bash
