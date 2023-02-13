@@ -1,7 +1,11 @@
+tap "homebrew/bundle"
+tap "homebrew/core"
+
 # === C
 brew "gcc"
 
 # === python
+brew "nvm"
 brew "pyenv"
 
 # === python - pillow
