@@ -51,6 +51,7 @@ brew "exa"
 brew "fd"
 brew "fzf"
 brew "gcc"
+brew "gh"
 brew "git"
 brew "git-lfs"
 brew "neovim"  # vscode neovim extension
