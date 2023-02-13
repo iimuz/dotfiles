@@ -66,7 +66,11 @@ fi
 # brew bundle
 
 # 各種設定ファイルの配置もしくは読み込み設定
-# 特定の場所に配置する必要のない設定ファイルは、 `bash/settings.sh` から読み込み設定を記述
+# === zsh
+# .zshrcのトップ近くに配置しておきたいので、先頭に記載
+if [[ "$SHELL" == *zsh* ]]; then
+  set_bashrc $CONFIG_PATH/zsh/zsh-settings.sh
+fi
 # === bash
 if type bash > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
