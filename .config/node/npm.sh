@@ -14,9 +14,9 @@ export NPM_USER_INIT=${XDG_CONFIG_HOM}/npm/config/npm-init.js
 if [ "$(uname)" = "Darwin" ]; then  # MacOS
   # MacOSの場合のみarm64/rosettaを切り替える
   if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
-    export NPM_USER_PREFIX=${XDG_DATA_HOME}/npm
-    export NPM_USER_CACHE=${XDG_CACHE_HOME}/npm
-    export NPM_USER_INIT=${XDG_CONFIG_HOME}/npm/config/npm-init.js
+    export NPM_USER_PREFIX=${XDG_DATA_HOME}/npm-arm64
+    export NPM_USER_CACHE=${XDG_CACHE_HOME}/npm-arm64
+    export NPM_USER_INIT=${XDG_CONFIG_HOME}/npm-arm64/config/npm-init.js
   else  # Intel
     export NPM_USER_PREFIX=${XDG_DATA_HOME}/npm-x64
     export NPM_USER_CACHE=${XDG_CACHE_HOME}/npm-x64
@@ -38,3 +38,5 @@ function _change_default_npm_directory() {
 
 _change_default_npm_directory "${BASH_SOURCE:-$0}"
 
+#=== npmのglobalインストールの先をbinに追加
+export PATH=$(npm config get prefix)/bin:$PATH
