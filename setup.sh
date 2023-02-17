@@ -77,6 +77,7 @@ if type bash > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/bash/settings.sh
   set_bashrc $CONFIG_PATH/bash/aliases.sh
   set_bashrc $CONFIG_PATH/bash/command.sh
+  set_bashrc $CONFIG_PATH/bash/path-settings.sh
   set_bashrc $CONFIG_PATH/bash/x11.sh
   set_bashrc $CONFIG_PATH/bash/xdg-base.sh
 fi
@@ -129,3 +130,8 @@ fi
 if type code > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/vscode/vscode.sh
 fi
+# === 環境変数などの後始末ようなので最後に追加
+if type bash > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/bash/path-post-settings.sh
+fi
+

@@ -5,6 +5,12 @@
 # Gurad if command does not exist.
 if [ ! -s "$(brew --prefix)/opt/nvm/nvm.sh" ]; then return 0; fi
 
+# === nvmが既に有効化されている場合にPATHを削除
+# nvmを検出できなかったため、NVM_DIRを検出し、NVM_DIRを含むフォルダを一括削除
+if [ -n "$NVM_DIR" ]; then
+  export PATH=$(echo $PATH | sed "s;$NVM_DIR/[^:]*:;;g")
+fi
+
 # === nvmの保存先設定
 export NVM_DIR="$HOME/.nvm"
 if [ "$(uname)" = "Darwin" ]; then  # MacOS

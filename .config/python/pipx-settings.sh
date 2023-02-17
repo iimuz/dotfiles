@@ -5,6 +5,12 @@
 # Gurad if command does not exist.
 if ! type pipx > /dev/null 2>&1; then return 0; fi
 
+# === 既に設定がある場合は、PATHから削除
+# MacOSでarchを切り替える際などに以前の設定が残っていると反対のarchのツールが動くため削除
+if [ -n "$PIPX_BIN_DIR" ]; then
+  remove_path "$PIPX_BIN_DIR"
+fi
+
 # === pipxの環境変数設定
 export PIPX_BIN_DIR="$HOME/.local/pipx/bin"
 export PIPX_HOME="$HOME/.local/pipx/pipx"
