@@ -4,6 +4,11 @@ tap "homebrew/core"
 # === C
 brew "gcc"
 
+# === docker
+brew "docker"  # docker cli
+# docker composeは.docker/cli-pluginsにsymlinkを設定するためarm版を利用
+# brew "docker-compose"
+
 # === node.js
 brew "nvm"
 
@@ -23,7 +28,7 @@ brew "pwgen"
 brew "libjpeg"
 brew "libtiff"
 brew "little-cms2"
-brew "webp" 
+brew "webp"
 
 # === python - scipy
 brew "openblas"

@@ -8,6 +8,16 @@ cask "appcleaner"
 # === desktop management
 cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 
+# === docker
+# cask "rancher"  # dockerd
+brew "colima"  # dockerd
+brew "docker"  # docker cli
+# 追加で下記コマンドが必要
+# ref: <https://formulae.brew.sh/formula/docker-compose>
+# mkdir -p ~/.docker/cli-plugins
+# ln -sfn $HOMEBREW_PREFIX/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+brew "docker-compose"  # docker compose
+
 # === drone
 cask "qgroundcontrol"  # QGC app
 
@@ -38,7 +48,6 @@ brew "pwgen"
 
 # === programming tools
 brew "direnv"
-cask "rancher"  # dockerd
 cask "visual-studio-code"
 
 # === python
