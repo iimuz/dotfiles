@@ -89,6 +89,10 @@ fi
 if type direnv > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/direnv/direnv-settings.sh
 fi
+# === docker
+if type colima > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/docker/colima-settings.sh
+fi
 # === fzf
 if type fzf > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/fzf/fzf.bash
