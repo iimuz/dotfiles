@@ -81,6 +81,10 @@ if type bash > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/bash/x11.sh
   set_bashrc $CONFIG_PATH/bash/xdg-base.sh
 fi
+# === asdf
+if [ -s "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]; then
+  set_bashrc $CONFIG_PATH/asdf/asdf-settings.sh
+fi
 # === bitwarden
 if type bw > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/bitwarden/settings.sh

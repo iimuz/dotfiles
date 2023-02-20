@@ -14,7 +14,7 @@ brew "nvm"
 
 # === python
 brew "pipx"
-brew "pyenv"
+brew "pyenv"  # プロジェクトで利用するためasdfではなくpyenvを利用
 
 # === programming tools
 brew "direnv"
