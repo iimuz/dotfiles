@@ -40,9 +40,6 @@ cask "google-chrome"
 cask "microsoft-edge"
 cask "slack"
 
-# === node.js
-brew "nvm"
-
 # === project
 brew "bash"
 brew "jq"
