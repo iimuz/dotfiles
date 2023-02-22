@@ -24,5 +24,4 @@ if [ "$(uname)" = "Darwin" ]; then  # MacOS
   fi
 fi
 export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 

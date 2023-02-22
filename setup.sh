@@ -112,11 +112,10 @@ if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
 fi
 # === node
-if type npm > /dev/null 2>&1; then
-  set_bashrc $CONFIG_PATH/node/npm.sh
-fi
+# nvmでバージョン管理を設定してから他の設定を行う
 if [ -s "$(brew --prefix)/opt/nvm/nvm.sh"  ]; then
   set_bashrc $CONFIG_PATH/node/nvm-settings.sh
+  set_bashrc $CONFIG_PATH/node/npm.sh
 fi
 # === python
 if type pyenv > /dev/null 2>&1; then
