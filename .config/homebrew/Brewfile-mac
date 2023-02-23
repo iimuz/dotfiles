@@ -1,0 +1,74 @@
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+
+# === application management
+cask "appcleaner"
+
+# === desktop management
+cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
+
+# === docker
+cask "rancher"  # dockerd
+# ==== colimaの場合はdocker cli, docker composeを別に導入する必要がある
+# ただし、 2023-02-19 の時点でネットワークの問題で適切に利用できなかったので利用をやめた。
+# brew "colima"  # dockerd
+# brew "docker"  # docker cli
+# 追加で下記コマンドが必要
+# ref: <https://formulae.brew.sh/formula/docker-compose>
+# mkdir -p ~/.docker/cli-plugins
+# ln -sfn $HOMEBREW_PREFIX/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+# brew "docker-compose"  # docker compose
+
+# === drone
+cask "qgroundcontrol"  # QGC app
+
+# === fonts
+tap "homebrew/cask-fonts"
+cask "font-cica"
+
+# === key management
+brew "stoken"
+cask "bitwarden"
+
+# === keyboard, mouse and trackpad management
+cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
+cask "scroll-reverser"  # マウスのみスクロール方向を逆転
+
+# === communication tools
+cask "google-chrome"
+cask "microsoft-edge"
+cask "slack"
+
+# === project
+brew "bash"
+brew "jq"
+brew "pwgen"
+
+# === programming tools
+brew "asdf"
+brew "direnv"
+cask "visual-studio-code"
+
+# === python
+brew "pipx"
+# brew "pyenv"  # asdfと重複するので削除
+
+# === recording
+brew "ffmpeg"
+cask "obs"
+
+# === terminal
+brew "bat"
+brew "bitwarden-cli"
+brew "exa"
+brew "fd"
+brew "fzf"
+brew "gcc"
+brew "gh"
+brew "git"
+brew "git-lfs"
+brew "neovim"  # vscode neovim extension
+brew "ripgrep"
+brew "tmux"
+

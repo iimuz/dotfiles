@@ -1,6 +1,15 @@
-# vscode editor
+# === vscode editor
 .devcontainer
 .devcontainer/
 .vscode
 .vscode/
+
+# === env
+.env
+# direnv
+.envrc
+
+# === temporary files and folders
+tmp_*
+tmp_*/
 

@@ -1,0 +1,41 @@
+tap "homebrew/bundle"
+tap "homebrew/core"
+
+# === C
+brew "gcc"
+
+# === docker
+brew "docker"  # docker cli
+# docker composeは.docker/cli-pluginsにsymlinkを設定するためarm版を利用
+# brew "docker-compose"
+
+# === node.js
+brew "nvm"
+
+# === python
+brew "pipx"
+brew "pyenv"  # プロジェクトで利用するためasdfではなくpyenvを利用
+
+# === programming tools
+brew "direnv"
+
+# === project
+brew "bash"
+brew "jq"
+brew "pwgen"
+
+# === python - pillow
+brew "libjpeg"
+brew "libtiff"
+brew "little-cms2"
+brew "webp"
+
+# === python - scipy
+brew "openblas"
+brew "lapack"
+
+# === terminal
+brew "fzf"
+brew "git"
+brew "git-lfs"
+
