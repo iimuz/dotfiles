@@ -9,8 +9,15 @@ brew "docker"  # docker cli
 # docker composeは.docker/cli-pluginsにsymlinkを設定するためarm版を利用
 # brew "docker-compose"
 
+# === make tool
+brew "ninja"
+
 # === node.js
 brew "nvm"
+
+# === plantuml
+brew "java"
+brew "plantuml"
 
 # === python
 brew "pipx"
