@@ -16,6 +16,7 @@ brew "ninja"
 brew "nvm"
 
 # === plantuml
+brew "graphviz"
 brew "java"
 brew "plantuml"
 
