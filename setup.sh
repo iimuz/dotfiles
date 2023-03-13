@@ -124,6 +124,9 @@ fi
 if type pipx > /dev/null 2>&1; then
   set_bashrc $CONFIG_PATH/python/pipx-settings.sh
 fi
+if type poetry > /dev/null 2>&1; then
+  set_bashrc $CONFIG_PATH/python/poetry-settings.sh
+fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
