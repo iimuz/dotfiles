@@ -15,11 +15,6 @@ brew "ninja"
 # === node.js
 brew "nvm"
 
-# === plantuml
-brew "graphviz"
-brew "java"
-brew "plantuml"
-
 # === python
 brew "pipx"
 brew "pyenv"  # プロジェクトで利用するためasdfではなくpyenvを利用
