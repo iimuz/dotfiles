@@ -41,6 +41,9 @@ brew "git"
 brew "git-lfs"
 cask "git-credential-manager-core"
 
+# === hugo
+brew "hugo"
+
 # === key management
 brew "stoken"
 cask "bitwarden"
