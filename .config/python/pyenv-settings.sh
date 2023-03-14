@@ -23,5 +23,5 @@ if [ "$(uname)" = "Darwin" ]; then  # MacOS
     export PYENV_ROOT="$HOME/.pyenv_x64"
   fi
 fi
-export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
