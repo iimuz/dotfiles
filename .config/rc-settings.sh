@@ -30,6 +30,8 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 # 環境構築
 . "$_DOTFILES_CONFIG_DIR/asdf/asdf-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/direnv/direnv-settings.sh"
+# java
+. "$_DOTFILES_CONFIG_DIR/java/java-asdf-settings.sh"
 # nodejs
 . "$_DOTFILES_CONFIG_DIR/node/nvm-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/node/npm.sh"
