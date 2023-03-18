@@ -86,7 +86,8 @@
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
   // === neovim extension
-  "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
+  // リモートのneovimを利用する際に有効化する。通常は向こうで良い。
+  // "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
   "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
   "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
   "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
@@ -231,7 +232,11 @@
     "editor.defaultFormatter": "ms-python.python",
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
-    "editor.rulers": [79, 88] // pep8: 79, black: 88
+    "editor.rulers": [
+      79,
+      88
+    ],
+    "editor.formatOnType": true // pep8: 79, black: 88
   },
   // === reStructuredText
   "[reStructerdText]": {},
