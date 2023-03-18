@@ -3,7 +3,14 @@ tap "homebrew/cask"
 tap "homebrew/core"
 
 # === application management
+brew "mas"
 cask "appcleaner"
+
+# === communication tools
+cask "google-chrome"
+cask "microsoft-edge"
+cask "slack"
+mas "velja", id: 1607635845
 
 # === desktop management
 cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
@@ -22,10 +29,20 @@ cask "rancher"  # dockerd
 
 # === drone
 cask "qgroundcontrol"  # QGC app
+cask "google-earth-pro"
 
 # === fonts
 tap "homebrew/cask-fonts"
 cask "font-cica"
+
+# === git
+tap "microsoft/git"
+brew "git"
+brew "git-lfs"
+cask "git-credential-manager-core"
+
+# === hugo
+brew "hugo"
 
 # === key management
 brew "stoken"
@@ -35,10 +52,10 @@ cask "bitwarden"
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 
-# === communication tools
-cask "google-chrome"
-cask "microsoft-edge"
-cask "slack"
+# === plantuml
+brew "graphviz"
+# brew "java"  # javaはasdfなどを利用してバージョン管理しつつ導入する
+brew "plantuml"
 
 # === project
 brew "bash"
@@ -66,8 +83,6 @@ brew "fd"
 brew "fzf"
 brew "gcc"
 brew "gh"
-brew "git"
-brew "git-lfs"
 brew "neovim"  # vscode neovim extension
 brew "ripgrep"
 brew "tmux"
