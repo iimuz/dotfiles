@@ -41,6 +41,10 @@ brew "git"
 brew "git-lfs"
 cask "git-credential-manager-core"
 
+
+# === golang
+brew "go"
+
 # === hugo
 brew "hugo"
 
