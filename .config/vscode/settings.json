@@ -1,6 +1,6 @@
 {
-  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "diffEditor.renderSideBySide": false,
+  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
@@ -75,68 +75,56 @@
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
-  "workbench.view.experimental.allowMovingToNewContainer": true,
-  // === remote development
-  "remote.containers.gitCredentialHelperConfigLocation": "none",
-  // === gitlens extension
+  // === Extension: autoTimeStamp(lpubsppop01.vscode-auto-timestamp)
+  "lpubsppop01.autoTimeStamp.filenamePattern": ".(md|adoc)",
+  "lpubsppop01.autoTimeStamp.lineLimit": 10,
+  "lpubsppop01.autoTimeStamp.modifiedTimeStart": "lastmod: ",
+  "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH:mm:ss+09:00",
+  // === Extension: frontMatter(eliostruyf.vscode-front-matter)
+  "frontMatter.content.autoUpdateDate": false, // autoTimeStamp拡張を利用する
+  "frontMatter.content.fmHighlight": false,
+  "frontMatter.dashboard.openOnStart": false,
+  // === Extension: github PR(GitHub.vscode-pull-request-github)
+  "githubPullRequests.queries": [
+    {
+      "label": "Waiting For My Review",
+      "query": "is:open review-requested:${user}"
+    },
+    {
+      "label": "Assigned To Me",
+      "query": "is:open assignee:${user}"
+    },
+    {
+      "label": "Created By Me",
+      "query": "is:open author:${user}"
+    }
+  ],
+  "githubPullRequests.pullBranch": "never",
+  // === Extension: gitlens(eamodio.gitlens)
   "gitlens.advanced.messages": {
     "suppressGitVersionWarning": true
   },
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
-  // === neovim extension
-  // リモートのneovimを利用する際に有効化する。通常は向こうで良い。
+  // === Extension: insertDateString(jsynowiec.vscode-insertdatestring)
+  "insertDateString.format": "YYYY-MM-DD hh:mm:ss",
+  "insertDateString.formatDate": "YYYY-MM-DD",
+  "insertDateString.formatTime": "hh:mm",
+  // === Extension: neovim(asvetliakov.vscode-neovim)
+  // リモートのneovimを利用する際に有効化する。通常は無効で良い。
   // "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
   "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
   "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
   "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
-  // === sqltools extension
+  // === Extension: pasteImage (拡張機能を無効化中)
+  // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
+  // "pasteImage.basePath": "${projectRoot}",
+  // === Extension: remote development(ms-vscode-remote.vscode-remote-extensionpack)
+  // "remote.containers.gitCredentialHelperConfigLocation": "none",  // gredential managerに移行したので不要になったはず。暫定で消す。
+  // === Extension: sqltools(mtxr.sqltools)
   "sqltools.useNodeRuntime": true,
-  // === vim + vspacecode extension
-  // "vim.autoindent": true,
-  // "vim.easymotion": true,
-  // "vim.foldfix": true,
-  // "vim.hlsearch": true,
-  // "vim.leader": ",",
-  // "vim.normalModeKeyBindingsNonRecursive": [
-  //   {
-  //     "before": ["<space>"],
-  //     "commands": ["vspacecode.space"]
-  //   },
-  //   {
-  //     "before": ["-"],
-  //     "commands": [
-  //       "vspacecode.space",
-  //       {
-  //         "command": "whichkey.triggerKey",
-  //         "args": "m"
-  //       }
-  //     ]
-  //   },
-  //   { "before": ["j"], "after": ["g", "j"] },
-  //   { "before": ["k"], "after": ["g", "k"] }
-  // ],
-  // "vim.visualModeKeyBindingsNonRecursive": [
-  //   {
-  //     "before": ["<space>"],
-  //     "commands": ["vspacecode.space"]
-  //   },
-  //   {
-  //     "before": ["-"],
-  //     "commands": [
-  //       "vspacecode.space",
-  //       {
-  //         "command": "whichkey.triggerKey",
-  //         "args": "m"
-  //       }
-  //     ]
-  //   }
-  // ],
-  // "vim.useCtrlKeys": true,
-  // "vim.useSystemClipboard": true,
-  // "vim.visualstar": true,
-  // === yaml extension
+  // === Extension: yaml(redhat.vscode-yaml)
   "yaml.customTags": [
     "!And",
     "!And sequence",
@@ -166,21 +154,29 @@
     "!Split",
     "!Split sequence"
   ],
-  // === html
+  // === Language: asciidoc
+  "asciidoc.use_asciidoctor_js": true,
+  "asciidoc.preview.useEditorStyle": false,
+  "[asciidoc]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.rulers": [100],
+    // 折り返し有効時には、rulerの位置で折り返す
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.wrappingIndent": "indent"
+  },
+  // === Language: html
   "[html]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
   },
-  // === json
-  "[json]": {
+  // === Language: json
+  "[json][jsonc]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[jsonc]": {
-    "editor.insertSpaces": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  // === julia
+  // === Language: julia
   "julia.enableTelemetry": false,
   "julia.symbolCacheDownload": true,
   "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
@@ -188,10 +184,9 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4
   },
-  // === jupyter
+  // === Language(?): jupyter
   "jupyter.askForKernelRestart": false,
-  "jupyter.generateSVGPlots": true,
-  "jupyter.interactiveWindowMode": "perFile",
+  "jupyter.interactiveWindow.creationMode": "perFile",
   "notebook.cellToolbarLocation": {
     "default": "right",
     "jupyter-notebook": "left"
@@ -200,7 +195,7 @@
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"
   },
-  // === markdown
+  // === Language: markdown
   "markdown-preview-enhanced.breakOnSingleNewLine": false,
   "markdown-preview-enhanced.previewTheme": "github-dark.css",
   "markdown-preview-enhanced.scrollSync": false,
@@ -213,12 +208,9 @@
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
     "editor.wrappingIndent": "indent"
-    // 範囲選択 + 'gq' で強制的に折り返す処理をするための設定(vim拡張が必要)
-    // "vim.textwidth": 100
   },
-  // === python
+  // === Language: python
   "autoDocstring.docstringFormat": "numpy",
-  "python.dataScience.askForKernelRestart": false,
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
   "python.linting.pycodestyleEnabled": false,
@@ -232,26 +224,18 @@
     "editor.defaultFormatter": "ms-python.python",
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
-    "editor.rulers": [
-      79,
-      88
-    ],
-    "editor.formatOnType": true // pep8: 79, black: 88
+    "editor.rulers": [79, 88],
+    "editor.formatOnType": true
   },
-  // === reStructuredText
+  // === Language: reStructuredText
   "[reStructerdText]": {},
-  // === rust
+  // === Language: rust
   "[rust]": {
-    "editor.defaultFormatter": "rust-lang.rust",
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.tabSize": 4
   },
-  // === tex
-  "[tex]": {
-    "editor.insertSpaces": true,
-    "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.tabSize": 2
-  },
-  "[latex]": {
+  // === Language: tex
+  "[tex][latex]": {
     "editor.insertSpaces": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.tabSize": 2
@@ -302,12 +286,8 @@
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
-  // === typescript
-  "[typescript]": {
-    "editor.insertSpaces": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
+  // === Language: typescript
+  "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
