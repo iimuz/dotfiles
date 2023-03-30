@@ -41,7 +41,6 @@ brew "git"
 brew "git-lfs"
 cask "git-credential-manager-core"
 
-
 # === golang
 brew "go"
 
@@ -69,6 +68,7 @@ brew "pwgen"
 # === programming tools
 brew "asdf"
 brew "direnv"
+cask "postman"
 cask "visual-studio-code"
 
 # === python
