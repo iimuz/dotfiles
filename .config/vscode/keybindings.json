@@ -34,6 +34,11 @@
     "command": "-frontMatter.insertSnippet",
     "when": "editorTextFocus"
   },
+  {
+    "key": "shift+cmd+v",
+    "command": "-frontMatter.insertSnippet",
+    "when": "editorTextFocus"
+  }
   // === bookmark extension
   // {
   //   "key": "m b",
