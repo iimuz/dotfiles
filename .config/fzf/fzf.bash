@@ -5,9 +5,18 @@
 # Gurad if command does not exist.
 if ! type fzf > /dev/null 2>&1; then return 0; fi
 
-FZF_CONFIG=$HOME/.config/fzf
-FZF_COMPLETION=$FZF_CONFIG/completion.bash
-FZF_KEYBINDINGS=$FZF_CONFIG/key-bindings.bash
+if type brew > /dev/null 2>&1; then
+  FZF_CONFIG=${HOMEBREW_PREFIX}/opt/fzf/shell
+else
+  FZF_CONFIG=$HOME/.config/fzf
+fi
+if [[ "$SHELL" == *zsh* ]]; then
+  FZF_COMPLETION="$FZF_CONFIG/completion.zsh"
+  FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.zsh"
+else
+  FZF_COMPLETION="$FZF_CONFIG/completion.bash"
+  FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
+fi
 
 # Use tmux for selecting window if tmux exists..
 if type tmux > /dev/null 2>&1; then export FZF_TMUX=1; fi
