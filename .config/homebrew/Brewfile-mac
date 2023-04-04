@@ -48,11 +48,12 @@ brew "go"
 brew "hugo"
 
 # === key management
-brew "stoken"
-cask "bitwarden"
+brew "stoken"  # pass generateor
+cask "bitwarden"  # password manager
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
+cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 
 # === plantuml
