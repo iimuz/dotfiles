@@ -1,6 +1,9 @@
 {
-  "diffEditor.renderSideBySide": false,
-  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
+  "editor.rulers": [
+    79,
+    88,
+    100
+  ], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
