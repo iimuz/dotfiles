@@ -19,7 +19,12 @@ else
 fi
 
 # Use tmux for selecting window if tmux exists..
-if type tmux > /dev/null 2>&1; then export FZF_TMUX=1; fi
+# tmuxがない場合は明示的に無効化する。macなどでarm64, amd64の切り替えをするときに環境がないのに有効化される。
+if type tmux > /dev/null 2>&1; then
+  export FZF_TMUX=1
+else
+  export FZF_TMUX=0
+fi
 
 # Use fzf completion.
 if [ -f $FZF_COMPLETION ]; then . $FZF_COMPLETION 2> /dev/null; fi
