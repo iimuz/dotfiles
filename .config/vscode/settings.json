@@ -1,9 +1,5 @@
 {
-  "editor.rulers": [
-    79,
-    88,
-    100
-  ], // pep8: 79, black: 88
+  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
@@ -123,6 +119,8 @@
   // === Extension: pasteImage (拡張機能を無効化中)
   // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
   // "pasteImage.basePath": "${projectRoot}",
+  // === Extension: RedHat
+  "redhat.telemetry.enabled": false, // 情報を送らない
   // === Extension: remote development(ms-vscode-remote.vscode-remote-extensionpack)
   // "remote.containers.gitCredentialHelperConfigLocation": "none",  // gredential managerに移行したので不要になったはず。暫定で消す。
   // === Extension: sqltools(mtxr.sqltools)
@@ -168,6 +166,12 @@
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
     "editor.wrappingIndent": "indent"
+  },
+  // === Language: docker-compose
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   // === Language: html
   "[html]": {
@@ -216,11 +220,11 @@
   "autoDocstring.docstringFormat": "numpy",
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
-  "python.linting.pycodestyleEnabled": false,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
   "python.linting.lintOnSave": true,
   "python.linting.mypyEnabled": true,
+  "python.linting.pycodestyleEnabled": false,
   "python.linting.pylintEnabled": false,
   "[python]": {
     "outline.showVariables": false,
