@@ -7,10 +7,11 @@ brew "mas"
 cask "appcleaner"
 
 # === communication tools
+cask "firefox"
 cask "google-chrome"
 cask "microsoft-edge"
 cask "slack"
-mas "velja", id: 1607635845
+mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
 # === desktop management
 cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
@@ -49,7 +50,7 @@ brew "hugo"
 
 # === key management
 brew "stoken"  # pass generateor
-cask "bitwarden"  # password manager
+mas "bitwarden", id: 1352778147  # password manager(app store版を利用しないとブラウザの生体認証が利用できない)
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
@@ -79,6 +80,9 @@ brew "pipx"
 # === recording
 brew "ffmpeg"
 cask "obs"
+
+# === rust
+brew "rustup-init"
 
 # === terminal
 brew "bat"
