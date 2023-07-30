@@ -52,6 +52,7 @@ function! s:source_rc(rc_file_name)
 endfunction
 
 " 基本設定
+let mapleader = "\<Space>"  " leaderキーは共通で設定
 if exists('g:vscode')
   " vscode neovimの場合は行数表示などをvscodeに任せるため設定が異なる。
   call s:source_rc('vscode.rc.vim')
@@ -67,12 +68,26 @@ endif
 if exists('g:vscode')
   " vscode neovimで利用するプラグイン
   call plug#begin()
-  Plug 'asvetliakov/vim-easymotion'  " カーソル移動をラベルで行う(vscode neovim版)
-  Plug 'tpope/vim-surround'  " visual modeで選択した文字列を囲む
+    " カーソル移動をラベルで行う(vscode neovim版)
+    " - vscode neovim v0.4.0 にてeasy motionのサポートが廃止されたため利用不可
+    "   - <https://github.com/vscode-neovim/vscode-neovim/releases/tag/v0.4.0>
+    " Plug 'asvetliakov/vim-easymotion'
+
+    " カーソル移動をラベルで行う(easymotionの代替)
+    " - neovimでは十分な速度で動作するがvscode上だとラベル表示が非常に遅いので使えなかった。
+    " Plug 'phaazon/hop.nvim'
+
+    " カーソル移動をラベルで行う(easymotionの代替)
+    " - ライン移動ができないのと1文字で移動する時にラベルをつけてくれないが、動作するので利用中。
+    Plug 'ggandor/lightspeed.nvim'
+
+    Plug 'tpope/vim-surround'  " visual modeで選択した文字列を囲む
   call plug#end()
 
   " pluginのための設定
-  call s:source_rc('easymotion-vscode.rc.vim')
+  " call s:source_rc('easymotion-vscode.rc.vim')  " pluginを無効化しているので削除
+  " call s:source_rc('hop-vscode.rc.vim')  " pluginを無効化しているので削除
+  call s:source_rc('lightspeed-vscode.rc.vim')
 elseif has('nvim')
   " neovimで利用するプラグイン
   " なるべく素で利用するように注意する。多くのプラグインを入れ込まないように注意。
