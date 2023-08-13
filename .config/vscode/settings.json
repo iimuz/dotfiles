@@ -173,15 +173,23 @@
     "editor.tabSize": 2,
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
+  // === Language: go
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
+  },
   // === Language: html
   "[html]": {
     "editor.insertSpaces": true,
-    "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
+    "editor.defaultFormatter": "Glavin001.unibeautify-vscode",
+    "editor.tabSize": 2
   },
   // === Language: json
   "[json][jsonc]": {
     "editor.insertSpaces": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
   },
   // === Language: julia
   "julia.enableTelemetry": false,
@@ -201,6 +209,11 @@
   "notebook.lineNumbers": "on",
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"
+  },
+  // === Language: makefile
+  "[makefile]": {
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
   },
   // === Language: markdown
   "markdown-preview-enhanced.breakOnSingleNewLine": false,
