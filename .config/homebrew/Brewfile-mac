@@ -70,6 +70,8 @@ brew "pwgen"
 # === programming tools
 brew "asdf"
 brew "direnv"
+brew "dprint"
+cask "obsidian"
 cask "postman"
 cask "visual-studio-code"
 

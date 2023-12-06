@@ -25,11 +25,14 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 . "$_DOTFILES_CONFIG_DIR/fzf/fzf.bash"
 . "$_DOTFILES_CONFIG_DIR/git/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/vscode/vscode.sh"
+. "$_DOTFILES_CONFIG_DIR/xcode/xcode-settings.sh"
 
 # プログラミング言語設定
 # 環境構築
 . "$_DOTFILES_CONFIG_DIR/asdf/asdf-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/direnv/direnv-settings.sh"
+# go lang
+. "$_DOTFILES_CONFIG_DIR/go/go-settings.sh"
 # java
 . "$_DOTFILES_CONFIG_DIR/java/java-asdf-settings.sh"
 # nodejs
