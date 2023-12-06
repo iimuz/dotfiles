@@ -1,10 +1,11 @@
 {
+  "diffEditor.renderSideBySide": false,
   "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
   "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "editor.fontSize": 16,
+  "editor.fontSize": 15,
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
   "editor.largeFileOptimizations": false,
@@ -30,7 +31,7 @@
     "**/bower_components": true
   },
   "explorer.confirmDelete": false,
-  "explorer.openEditors.visible": 0,
+  "explorer.openEditors.visible": 1,
   "files.autoGuessEncoding": true,
   "files.autoSave": "onWindowChange",
   "files.insertFinalNewline": true,
@@ -58,9 +59,9 @@
   },
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontSize": 15,
+  "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
-  "workbench.editor.enablePreview": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.labelFormat": "short",
@@ -68,7 +69,7 @@
   "workbench.editor.limit.perEditorGroup": false,
   "workbench.editor.limit.value": 16,
   "workbench.editor.showIcons": true,
-  "workbench.editor.showTabs": false,
+  "workbench.editor.showTabs": "single",
   "workbench.editor.tabSizing": "shrink",
   "workbench.editor.tabCloseButton": "off",
   "workbench.iconTheme": "material-icon-theme",
@@ -79,9 +80,12 @@
   "lpubsppop01.autoTimeStamp.lineLimit": 10,
   "lpubsppop01.autoTimeStamp.modifiedTimeStart": "lastmod: ",
   "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH:mm:ss+09:00",
+  // === Extension: draw.io
+  "hediet.vscode-drawio.resizeImages": null,
   // === Extension: frontMatter(eliostruyf.vscode-front-matter)
   "frontMatter.content.autoUpdateDate": false, // autoTimeStamp拡張を利用する
   "frontMatter.content.fmHighlight": false,
+  "frontMatter.dashboard.content.pagination": 52, // dashboardで1ページあたりの表示数を最大にする
   "frontMatter.dashboard.openOnStart": false,
   // === Extension: github PR(GitHub.vscode-pull-request-github)
   "githubPullRequests.queries": [
@@ -111,8 +115,8 @@
   "insertDateString.formatDate": "YYYY-MM-DD",
   "insertDateString.formatTime": "hh:mm",
   // === Extension: neovim(asvetliakov.vscode-neovim)
-  // リモートのneovimを利用する際に有効化する。通常は無効で良い。
-  // "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
+  // リモートのneovimを利用する際に有効化する。通常は無効で良いのだが、通常利用でも設定を勧められたので有効化してみる。
+  "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
   "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
   "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
   "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
@@ -173,15 +177,24 @@
     "editor.tabSize": 2,
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
+  // === Language: go
+  "go.toolsManagement.autoUpdate": true,
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
+  },
   // === Language: html
   "[html]": {
     "editor.insertSpaces": true,
-    "editor.defaultFormatter": "Glavin001.unibeautify-vscode"
+    "editor.defaultFormatter": "Glavin001.unibeautify-vscode",
+    "editor.tabSize": 2
   },
   // === Language: json
   "[json][jsonc]": {
     "editor.insertSpaces": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
   },
   // === Language: julia
   "julia.enableTelemetry": false,
@@ -202,10 +215,16 @@
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"
   },
+  // === Language: makefile
+  "[makefile]": {
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
+  },
   // === Language: markdown
   "markdown-preview-enhanced.breakOnSingleNewLine": false,
-  "markdown-preview-enhanced.previewTheme": "github-dark.css",
+  "markdown-preview-enhanced.previewTheme": "github-light.css",
   "markdown-preview-enhanced.scrollSync": false,
+  "markdown-preview-github-styles.colorTheme": "light",
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
