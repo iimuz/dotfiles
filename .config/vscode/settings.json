@@ -110,6 +110,16 @@
   "gitlens.codeLens.authors.enabled": false,
   "gitlens.codeLens.recentChange.enabled": false,
   "gitlens.currentLine.enabled": false,
+  // === Extension: indent-rainbow(oderwat.indent-rainbow)
+  "indentRainbow.indicatorStyle": "light",
+  "indentRainbow.lightIndicatorStyleLineWidth": 1,
+  // indicatorStyleを"light"にする場合は、設定した方が見やすい
+  "indentRainbow.colors": [
+    "rgba(255,255,64,0.3)",
+    "rgba(127,255,127,0.3)",
+    "rgba(255,127,255,0.3)",
+    "rgba(79,236,236,0.3)"
+  ],
   // === Extension: insertDateString(jsynowiec.vscode-insertdatestring)
   "insertDateString.format": "YYYY-MM-DD hh:mm:ss",
   "insertDateString.formatDate": "YYYY-MM-DD",
