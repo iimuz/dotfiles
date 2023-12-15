@@ -7,6 +7,8 @@ brew "mas"
 cask "appcleaner"
 
 # === communication tools
+cask "arc"
+cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
 cask "microsoft-edge"
