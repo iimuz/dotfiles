@@ -1,5 +1,5 @@
 tap "homebrew/bundle"
-tap "homebrew/core"
+# tap "homebrew/core"  # 明示する必要がなくなたので削除
 
 # === C
 brew "gcc"
@@ -50,4 +50,3 @@ brew "gfortran"
 brew "fzf"
 brew "git"
 brew "git-lfs"
-
