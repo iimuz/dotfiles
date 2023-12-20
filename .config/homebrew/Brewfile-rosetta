@@ -29,6 +29,7 @@ brew "pyenv"  # プロジェクトで利用するためasdfではなくpyenvを�
 
 # === programming tools
 brew "direnv"
+brew "gh"
 
 # === project
 brew "bash"
