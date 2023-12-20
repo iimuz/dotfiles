@@ -60,6 +60,7 @@
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 15,
+  "window.commandCenter": 1,
   "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
   "workbench.editor.enablePreviewFromQuickOpen": true,
@@ -70,11 +71,14 @@
   "workbench.editor.limit.value": 16,
   "workbench.editor.showIcons": true,
   "workbench.editor.showTabs": "single",
+  "workbench.editor.tabActionCloseVisibility": false,
   "workbench.editor.tabSizing": "shrink",
   "workbench.editor.tabCloseButton": "off",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
+  "workbench.tree.enableStickyScroll": true,
+  "workbench.tree.stickyScrollMaxItemCount": 7,
   // === Extension: autoTimeStamp(lpubsppop01.vscode-auto-timestamp)
   "lpubsppop01.autoTimeStamp.filenamePattern": ".(md|adoc)",
   "lpubsppop01.autoTimeStamp.lineLimit": 10,
@@ -133,6 +137,9 @@
   // === Extension: pasteImage (拡張機能を無効化中)
   // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
   // "pasteImage.basePath": "${projectRoot}",
+  // === Extension: Project Manager
+  "projectManager.git.baseFolders": ["$home/src"],
+  "projectManager.git.maxDepthRecursion": 3,
   // === Extension: RedHat
   "redhat.telemetry.enabled": false, // 情報を送らない
   // === Extension: remote development(ms-vscode-remote.vscode-remote-extensionpack)
