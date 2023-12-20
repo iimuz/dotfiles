@@ -9,9 +9,9 @@ cask "appcleaner"
 # === communication tools
 cask "arc"
 cask "brave-browser"
-cask "firefox"
+# cask "firefox"
 cask "google-chrome"
-cask "microsoft-edge"
+# cask "microsoft-edge"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
@@ -31,8 +31,8 @@ cask "rancher"  # dockerd
 # brew "docker-compose"  # docker compose
 
 # === drone
-cask "qgroundcontrol"  # QGC app
-cask "google-earth-pro"
+# cask "qgroundcontrol"  # QGC app
+# cask "google-earth-pro"
 
 # === fonts
 tap "homebrew/cask-fonts"
@@ -41,8 +41,9 @@ cask "font-cica"
 # === git
 tap "microsoft/git"
 brew "git"
+brew "git-filter-repo"  # gitの履歴抽出
 brew "git-lfs"
-cask "git-credential-manager-core"
+# cask "git-credential-manager-core"
 
 # === golang
 brew "go"
@@ -73,7 +74,7 @@ brew "pwgen"
 brew "asdf"
 brew "direnv"
 brew "dprint"
-cask "obsidian"
+# cask "obsidian"
 cask "postman"
 cask "visual-studio-code"
 
@@ -90,7 +91,7 @@ brew "rustup-init"
 
 # === terminal
 brew "bat"
-brew "bitwarden-cli"
+# brew "bitwarden-cli"
 brew "exa"
 brew "fd"
 brew "fzf"
@@ -99,4 +100,3 @@ brew "gh"
 brew "neovim"  # vscode neovim extension
 brew "ripgrep"
 brew "tmux"
-
