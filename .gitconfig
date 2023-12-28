@@ -33,13 +33,13 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
 
-
 [credential]
   helper = manager
 
 [credential "https://github.com"]
 	helper =
 	helper = !gh auth git-credential
+
 [credential "https://gist.github.com"]
 	helper =
 	helper = !gh auth git-credential
