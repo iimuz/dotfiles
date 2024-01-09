@@ -191,9 +191,9 @@
   },
   // === Language: docker-compose
   "[dockercompose]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker",
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   // === Language: go
   "go.toolsManagement.autoUpdate": true,
@@ -204,14 +204,14 @@
   },
   // === Language: html
   "[html]": {
-    "editor.insertSpaces": true,
     "editor.defaultFormatter": "Glavin001.unibeautify-vscode",
+    "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   // === Language: json
-  "[json][jsonc]": {
-    "editor.insertSpaces": true,
+  "[json][jsonc][jsonl]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   // === Language: julia
@@ -257,12 +257,16 @@
   "autoDocstring.docstringFormat": "numpy",
   "python.languageServer": "Pylance",
   "[python]": {
-    "outline.showVariables": false,
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnType": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "editor.rulers": [79, 88],
-    "editor.formatOnType": true
+    "outline.showVariables": false,
   },
   // === Language: reStructuredText
   "[reStructerdText]": {},
@@ -323,6 +327,11 @@
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
+  // === Language: toml
+  "[toml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
   // === Language: typescript
   "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
