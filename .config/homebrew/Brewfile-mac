@@ -14,21 +14,13 @@ cask "google-chrome"
 # cask "microsoft-edge"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
+mas "MuteKey", id: 1509590766  # Micのミュート操作用
 
 # === desktop management
 cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 
 # === docker
 cask "rancher"  # dockerd
-# ==== colimaの場合はdocker cli, docker composeを別に導入する必要がある
-# ただし、 2023-02-19 の時点でネットワークの問題で適切に利用できなかったので利用をやめた。
-# brew "colima"  # dockerd
-# brew "docker"  # docker cli
-# 追加で下記コマンドが必要
-# ref: <https://formulae.brew.sh/formula/docker-compose>
-# mkdir -p ~/.docker/cli-plugins
-# ln -sfn $HOMEBREW_PREFIX/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-# brew "docker-compose"  # docker compose
 
 # === drone
 # cask "qgroundcontrol"  # QGC app
@@ -69,11 +61,13 @@ brew "plantuml"
 brew "bash"
 brew "jq"
 brew "pwgen"
+brew "licensed"
 
 # === programming tools
 brew "asdf"
 brew "direnv"
 brew "dprint"
+brew "go-task"
 # cask "obsidian"
 cask "postman"
 cask "visual-studio-code"
@@ -90,6 +84,7 @@ cask "obs"
 brew "rustup-init"
 
 # === terminal
+# brew "awscli"  # asdfで管理する
 brew "bat"
 # brew "bitwarden-cli"
 brew "exa"
