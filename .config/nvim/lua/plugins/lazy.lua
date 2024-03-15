@@ -24,12 +24,18 @@ end
 
 -- プラグインの設定、それぞれのpluginの設定は別ファイルに記載する
 require("lazy").setup {
+  -- git操作
+  {
+    "dinhhuy258/git.nvim",
+    cond = only_neovim,
+    config = function() require("plugins/git") end,
+  },
   -- カーソル移動をラベルで行う(easymotionの代替)
   -- ライン移動ができないのと1文字で移動する時にラベルをつけてくれないが、動作するので利用中。
   {
     "ggandor/lightspeed.nvim",
     cond = only_vscode,
-    config = function() require("plugins/lightspeed") end
+    config = function() require("plugins/lightspeed") end,
   },
   -- gitの変更点を可視化
   {
@@ -49,7 +55,7 @@ require("lazy").setup {
       -- nvim-treesitterを利用するとエラーが発生するため無効化
       -- see: <https://github.com/nvim-treesitter/nvim-treesitter/issues/5536>
       -- "nvim-treesitter/nvim-treesitter"
-    }
+    },
   },
   -- visual modeで選択した文字列を囲む
   {"tpope/vim-surround"},

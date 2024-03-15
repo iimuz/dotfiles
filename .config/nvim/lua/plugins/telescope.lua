@@ -18,6 +18,16 @@ vim.keymap.set(
   {desc = "⭐︎Open command palet."}
 )
 
+-- コマンドパレットでの検索用のコマンド登録
+vim.keymap.set(
+  "n",
+  "<Plug>(telescope.grep)",
+  function()
+    require("telescope.builtin").live_grep()
+  end,
+  {desc = "⭐︎Search"}
+)
+
 -- Telescopeのkeymapsで参照できるようにするため
 -- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
 for k, v in pairs(require("telescope.builtin")) do
