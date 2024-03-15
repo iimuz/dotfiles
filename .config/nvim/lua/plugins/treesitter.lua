@@ -1,0 +1,50 @@
+-- nvim-treesitter
+-- see: <https://github.com/nvim-treesitter/nvim-treesitter>
+local configs = require("nvim-treesitter.configs")
+
+configs.setup(
+  {
+    ensure_installed = {
+      "bash",
+      "c",
+      "comment",
+      "cpp",
+      "css",
+      "csv",
+      "cuda",
+      "diff",
+      "dockerfile",
+      "git_config",
+      "git_rebase",
+      "gitattributes",
+      "gitcommit",
+      "gitignore",
+      "go",
+      "gomod",
+      "gosum",
+      "gowork",
+      "html",
+      "ini",
+      "javascript",
+      "jq",
+      "jsdoc",
+      "json",
+      "jsonc",
+      "lua",
+      "make",
+      "markdown_inline",
+      "mermaid",
+      "python",
+      "rust",
+      "toml",
+      "typescript",
+      "vim",
+      "vimdoc",
+      "xml",
+      "yaml",
+    },
+    sync_install = false,
+    highlight = { enable = true },
+    indent = { enable = true },
+  }
+)
