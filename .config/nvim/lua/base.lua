@@ -34,7 +34,7 @@ vim.opt.statusline = string.format(
 vim.opt.laststatus = 2
 
 --g 不可視文字を可視化
-vim.opt.listchars = 'nbsp:%,tab:>-,extends:<,trail:-'
+vim.opt.listchars = {nbsp = '%', tab = '>-', extends = '<', trail = '-'}
 vim.opt.list = true
 vim.api.nvim_exec([[
 augroup highlightIdegraphicSpace

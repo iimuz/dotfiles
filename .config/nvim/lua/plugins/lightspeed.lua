@@ -1,7 +1,6 @@
 -- lightspeedの設定
 --
 -- line移動のコマンドが存在しないので、行末に移動するのであれば `Enter` で指定できる。
-print("lightspeed")
 local opts = { noremap = true, silent = true }
 
 -- lightspeedのデフォルトのキーバインドを全て無効化
