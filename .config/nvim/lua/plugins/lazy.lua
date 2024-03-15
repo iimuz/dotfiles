@@ -12,3 +12,35 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- どこからneovimを利用しているかによって有効化するpluginを変更するためのフラグ
+-- only_neovim: Trueの場合は、vscodeの拡張機能から起動した場合は利用しない
+-- only_vscode: Trueの場合は、vscodeの拡張機能から起動した場合のみ利用する
+local only_neovim = true
+local only_vscode = false
+if vim.g.vscode ~= nil then -- vscodeから利用している
+  only_neovim = false
+  only_vscode = true
+end
+print(vim.g.vscode, only_neovim, only_vscode)
+
+-- プラグインの設定、それぞれのpluginの設定は別ファイルに記載する
+require('lazy').setup {
+  {
+    "nvim-telescope/telescope.nvim",
+    cond = only_neovim,
+    config = function() require("plugins/telescope") end
+  },
+  -- カーソル移動をラベルで行う(easymotionの代替)
+  -- ライン移動ができないのと1文字で移動する時にラベルをつけてくれないが、動作するので利用中。
+  {
+    'ggandor/lightspeed.nvim',
+    cond = only_vscode,
+    config = function() require("plugins/lightspeed") end
+  },
+  -- visual modeで選択した文字列を囲む
+  {
+    'tpope/vim-surround',
+    cond = only_vscode,
+  }
+}
+

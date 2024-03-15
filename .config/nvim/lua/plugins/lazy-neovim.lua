@@ -1,2 +1,0 @@
-require("lazy").setup {}
-
