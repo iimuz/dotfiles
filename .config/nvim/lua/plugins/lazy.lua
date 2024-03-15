@@ -24,6 +24,20 @@ end
 
 -- プラグインの設定、それぞれのpluginの設定は別ファイルに記載する
 require("lazy").setup {
+  -- カーソル移動をラベルで行う(easymotionの代替)
+  -- ライン移動ができないのと1文字で移動する時にラベルをつけてくれないが、動作するので利用中。
+  {
+    "ggandor/lightspeed.nvim",
+    cond = only_vscode,
+    config = function() require("plugins/lightspeed") end
+  },
+  -- gitの変更点を可視化
+  {
+    "lewis6991/gitsigns.nvim",
+    cond = only_neovim,
+    config = function() require("plugins/gitsigns") end,
+  },
+  -- fuzzy finder
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.6",
@@ -37,17 +51,7 @@ require("lazy").setup {
       -- "nvim-treesitter/nvim-treesitter"
     }
   },
-  -- カーソル移動をラベルで行う(easymotionの代替)
-  -- ライン移動ができないのと1文字で移動する時にラベルをつけてくれないが、動作するので利用中。
-  {
-    "ggandor/lightspeed.nvim",
-    cond = only_vscode,
-    config = function() require("plugins/lightspeed") end
-  },
   -- visual modeで選択した文字列を囲む
-  {
-    "tpope/vim-surround",
-    cond = only_vscode,
-  }
+  {"tpope/vim-surround"},
 }
 

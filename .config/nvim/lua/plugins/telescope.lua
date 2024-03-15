@@ -19,6 +19,7 @@ vim.keymap.set(
 )
 
 -- Telescopeのkeymapsで参照できるようにするため
+-- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
 for k, v in pairs(require("telescope.builtin")) do
   if type(v) == "function" then
     vim.keymap.set('n', '<Plug>(telescope.' .. k .. ')', v)
