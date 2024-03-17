@@ -2,7 +2,7 @@
 -- 複数のプラグインが依存するためLSP関連をまとめて記述
 
 -- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode ~= nil
+local condition = vim.g.vscode == nil
 
 -- Neovim builtin LSP
 return {
