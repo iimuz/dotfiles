@@ -11,7 +11,7 @@ return {
     "neovim/nvim-lspconfig",
     cond = condition,
   },
-  -- LSP manager
+  -- LSP manager - mason
   {
     "williamboman/mason.nvim",
     cond = condition,
@@ -19,16 +19,18 @@ return {
       require("mason").setup()
     end,
   },
+  -- mason-lspconfigの設定
+  -- see: <https://github.com/williamboman/mason-lspconfig.nvim>
   {
-    -- mason-lspconfigの設定
-    -- see: <https://github.com/williamboman/mason-lspconfig.nvim>
     "williamboman/mason-lspconfig.nvim",
     cond = condition,
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",  -- capabilityを設定
+    },
     config = function()
       require("mason-lspconfig").setup {
         -- よく使うLSPはインストールしておく
         ensure_installed = {
-          "dprint",  -- Markdown, json, toml formatter
           "marksman",  -- Markdown LSP
         },
       }
@@ -43,9 +45,45 @@ return {
         end,
       }
     end,
+  },
+  -- Formatter, Linter用の設定
+  {
+    -- see: <https://github.com/jay-babu/mason-null-ls.nvim>
+    "jay-babu/mason-null-ls.nvim",
+    cond = condition,
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",  -- capabilityを設定
+      "williamboman/mason.nvim",
+      "nvimtools/none-ls.nvim",
     },
+    config = function()
+      local mason_null_ls = require("mason-null-ls")
+      mason_null_ls.setup ({
+          ensure_installed = {
+            -- Opt to list sources here, when available in mason.
+            "dprint",  -- Markdown, json, toml formatter
+          },
+          automatic_installation = true,
+          handlers = {},
+      })
+      -- mason_null_ls.check_install(true)
+    end,
+  },
+  {
+    -- see: <https://github.com/nvimtools/none-ls.nvim>
+    -- [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)は、
+    -- 2023-08-12にArchivedされており、後継となるnone-ls.nvimを利用する
+    "nvimtools/none-ls.nvim",
+    cond = condition,
+    config = function()
+      require("null-ls").setup(
+        {
+          sources = {
+            -- Anything not supported by mason.
+          },
+        }
+      )
+    end,
   },
 }
 

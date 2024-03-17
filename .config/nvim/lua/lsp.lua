@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd(
         "gD",
         "<cmd>lua vim.lsp.buf.declaration()<CR>",
         {
-          buffer = true,
+          buffer = ctx.buff,
           desc = "⭐︎LSP: Go to declaration.",
         }
       )
@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd(
         "gd",
         "<cmd>lua vim.lsp.buf.definition()<CR>",
         {
-          buffer = true,
+          buffer = ctx.buff,
           desc = "⭐︎LSP: Go to definition.",
         }
       )
@@ -152,7 +152,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>f",
-        "<cmd>lua vim.lsp.buf.formatting()<CR>",
+        "<cmd>lua vim.lsp.buf.format()<CR>",
         {
           buffer = true,
           desc = "⭐︎LSP: Formatting.",
