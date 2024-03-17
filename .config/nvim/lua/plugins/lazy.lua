@@ -86,12 +86,32 @@ require("lazy").setup {
     "williamboman/mason-lspconfig.nvim",
     cond = only_neovim,
     config = function() require("plugins/mason-lspconfig") end,
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",  -- capabilityを設定
+    },
   },
   -- Colorscheme - Iceberg
   {
     "cocopon/iceberg.vim",
     cond = only_neovim,
     config = function() require("plugins/iceberg") end,
+  },
+  -- Completion
+  {
+    "hrsh7th/nvim-cmp",
+    -- event = 'VimEnter',
+    cond = only_neovim,
+    enabled = true,
+    config = function() require("plugins/nvim-cmp") end,
+    dependencies = {
+      { "hrsh7th/cmp-buffer" },  -- 開いているバッファからのキーワード補完
+      { "hrsh7th/cmp-nvim-lsp" },  -- LSPからの補完
+      { "hrsh7th/cmp-path" },  -- パス補完
+      -- { "petertriho/cmp-git" },  -- git issueなどの補完
+      -- { "hrsh7th/cmp-emoji" },
+      -- { "hrsh7th/cmp-vsnip" },
+      -- { "onsails/lspkind.nvim" },
+    },
   },
 }
 
