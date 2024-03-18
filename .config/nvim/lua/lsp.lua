@@ -4,11 +4,12 @@ vim.api.nvim_create_autocmd(
   "LspAttach",
   {
     callback = function(ctx)
+      -- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
       local set = vim.keymap.set
       set(
         "n",
         "gD",
-        "<cmd>lua vim.lsp.buf.declaration()<CR>",
+        vim.lsp.buf.declaration,
         {
           buffer = ctx.buff,
           desc = "⭐︎LSP: Go to declaration.",
@@ -17,7 +18,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "gd",
-        "<cmd>lua vim.lsp.buf.definition()<CR>",
+        vim.lsp.buf.definition,
         {
           buffer = ctx.buff,
           desc = "⭐︎LSP: Go to definition.",
@@ -26,7 +27,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "K",
-        "<cmd>lua vim.lsp.buf.hover()<CR>",
+        vim.lsp.buf.hover,
         {
           buffer = true,
           desc = "⭐︎LSP: Show hover.",
@@ -35,7 +36,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "gi",
-        "<cmd>lua vim.lsp.buf.implementation()<CR>",
+        vim.lsp.buf.implementation,
         {
           buffer = true,
           desc = "⭐︎LSP: Go to implementation.",
@@ -44,7 +45,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<C-k>",
-        "<cmd>lua vim.lsp.buf.signature_help()<CR>",
+        vim.lsp.buf.signature_help,
         {
           buffer = true,
           desc = "⭐︎LSP: Show signature help.",
@@ -53,7 +54,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>wa",
-        "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>",
+        vim.lsp.buf.add_workspace_folder,
         {
           buffer = true,
           desc = "LSP: Add workspace folder.",
@@ -62,7 +63,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>wr",
-        "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>",
+        vim.lsp.buf.remove_workspace_folder,
         {
           buffer = true,
           desc = "LSP: Remove workspace folder.",
@@ -71,7 +72,9 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>wl",
-        "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
+        function()
+          print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end,
         {
           buffer = true,
           desc = "LSP: List workspace folders.",
@@ -80,7 +83,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>D",
-        "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+        vim.lsp.buf.type_definition,
         {
           buffer = true,
           desc = "⭐︎LSP: Type definition.",
@@ -89,7 +92,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>rn",
-        "<cmd>lua vim.lsp.buf.rename()<CR>",
+        vim.lsp.buf.rename,
         {
           buffer = true,
           desc = "⭐︎LSP: Rename.",
@@ -98,7 +101,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>ca",
-        "<cmd>lua vim.lsp.buf.code_action()<CR>",
+        vim.lsp.buf.code_action,
         {
           buffer = true,
           desc = "⭐︎LSP: Code action.",
@@ -107,7 +110,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "gr",
-        "<cmd>lua vim.lsp.buf.references()<CR>",
+        vim.lsp.buf.references,
         {
           buffer = true,
           desc = "⭐︎LSP: Show references.",
@@ -116,7 +119,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>e",
-        "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>",
+        vim.diagnostic.open_float,
         {
           buffer = true,
           desc = "⭐︎LSP: Show line diagnostics.",
@@ -125,7 +128,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "[d",
-        "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>",
+        vim.diagnostic.goto_prev,
         {
           buffer = true,
           desc = "⭐︎LSP: Go to previous diagnostics.",
@@ -134,7 +137,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "]d",
-        "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>",
+        vim.diagnostic.goto_next,
         {
           buffer = true,
           desc = "⭐︎LSP: Go to next diagnostics.",
@@ -143,7 +146,7 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>q",
-        "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>",
+        vim.diagnostic.setloclist,
         {
           buffer = true,
           desc = "LSP: Set loclist diagnostics.",
@@ -152,7 +155,9 @@ vim.api.nvim_create_autocmd(
       set(
         "n",
         "<space>f",
-        "<cmd>lua vim.lsp.buf.format()<CR>",
+        function()
+          vim.lsp.buf.format { async = true }
+        end,
         {
           buffer = true,
           desc = "⭐︎LSP: Formatting.",
@@ -162,3 +167,10 @@ vim.api.nvim_create_autocmd(
   }
 )
 
+-- Telescopeでのコマンド検索用
+vim.keymap.set(
+  "n",
+  "<Plug>lsp.info",
+  "<cmd>LspInfo<CR>",
+  { desc = "LSP: Show lsp info." }
+)
