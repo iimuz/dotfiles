@@ -1,3 +1,4 @@
+tap "homebrew/cask"  # 利用していないがエラーが出る場合があるので追加
 tap "homebrew/bundle"
 # tap "homebrew/core"  # 明示する必要がなくなたので削除
 
