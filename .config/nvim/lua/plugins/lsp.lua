@@ -10,6 +10,24 @@ return {
   {
     "neovim/nvim-lspconfig",
     cond = condition,
+    config = function()
+      -- ruffとpyrightなどを併用する場合
+      -- see: <https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#example-neovim>
+      require("lspconfig").ruff_lsp.setup {
+        init_options = {
+          settings = {
+            -- Any extra CLI arguments for "ruff" go here.
+            args = {}
+          },
+        },
+        on_attach = function(client, _)
+          if client.name == 'ruff_lsp' then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+          end
+        end,
+      }
+    end,
   },
   -- LSP manager - mason
   {
@@ -25,13 +43,14 @@ return {
     "williamboman/mason-lspconfig.nvim",
     cond = condition,
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",  -- capabilityを設定
+      "hrsh7th/cmp-nvim-lsp", -- capabilityを設定
     },
     config = function()
       require("mason-lspconfig").setup {
         -- よく使うLSPはインストールしておく
         ensure_installed = {
-          "marksman",  -- Markdown LSP
+          "marksman", -- Markdown LSP
+          "pyright",  -- Python LSP
         },
       }
 
@@ -58,13 +77,14 @@ return {
     },
     config = function()
       local mason_null_ls = require("mason-null-ls")
-      mason_null_ls.setup ({
-          ensure_installed = {
-            -- Opt to list sources here, when available in mason.
-            "dprint",  -- Markdown, json, toml formatter
-          },
-          automatic_installation = true,
-          handlers = {},
+      mason_null_ls.setup({
+        ensure_installed = {
+          -- Opt to list sources here, when available in mason.
+          "dprint",   -- Markdown, json, toml formatter
+          "ruff",     -- Python linter, formatter
+        },
+        automatic_installation = true,
+        handlers = {},
       })
       -- mason_null_ls.check_install(true)
     end,
@@ -86,4 +106,3 @@ return {
     end,
   },
 }
-
