@@ -130,6 +130,13 @@ return {
       end,
       {desc = "Telescope: Show vim options."}
     )
+    -- TelescopeでLSPコマンド
+    vim.keymap.set(
+      "n",
+      "<Plug>(telescope.show_referneces)",
+      require("telescope.builtin").lsp_references,
+      {desc = "Telescope: Show lsp referneces."}
+    )
   end,
 }
 

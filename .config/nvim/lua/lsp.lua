@@ -149,7 +149,7 @@ vim.api.nvim_create_autocmd(
         vim.diagnostic.setloclist,
         {
           buffer = true,
-          desc = "LSP: Set loclist diagnostics.",
+          desc = "⭐︎LSP: Set loclist diagnostics.",
         }
       )
       set(
