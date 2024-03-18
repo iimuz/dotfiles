@@ -20,9 +20,8 @@ return {
     cond = condition,
     dependencies = {
       "nvim-lua/plenary.nvim",
-      -- nvim-treesitterを利用するとエラーが発生するため無効化
-      -- see: <https://github.com/nvim-treesitter/nvim-treesitter/issues/5536>
-      -- "nvim-treesitter/nvim-treesitter"
+      'nvim-tree/nvim-web-devicons',
+      "nvim-treesitter/nvim-treesitter",
     },
     config = function()
       -- `<Leader>p`でファイル一覧を表示
@@ -160,7 +159,7 @@ return {
         "n",
         "<Plug>telescope.file_browser.open",
         "<cmd>Telescope file_browser<CR>",
-        {desc = "⭐︎Telescope FileBrowser: Open file browser."}
+        { desc = "⭐︎Telescope FileBrowser: Open file browser." }
       )
     end,
   },
