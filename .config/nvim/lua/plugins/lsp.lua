@@ -35,6 +35,14 @@ return {
     cond = condition,
     config = function()
       require("mason").setup()
+
+      -- Telescope検索用コマンドの登録
+      vim.keymap.set(
+        "n",
+        "<Plug>mason.ui",
+        "<cmd>Mason<CR>",
+        { desc = "Mason: Show Mason UI." }
+      )
     end,
   },
   -- mason-lspconfigの設定
@@ -49,6 +57,7 @@ return {
       require("mason-lspconfig").setup {
         -- よく使うLSPはインストールしておく
         ensure_installed = {
+          "gopls", -- Go lang LSP
           "marksman", -- Markdown LSP
           "pyright",  -- Python LSP
         },
@@ -80,8 +89,8 @@ return {
       mason_null_ls.setup({
         ensure_installed = {
           -- Opt to list sources here, when available in mason.
-          "dprint",   -- Markdown, json, toml formatter
-          "ruff",     -- Python linter, formatter
+          "dprint", -- Markdown, json, toml formatter
+          "ruff",   -- Python linter, formatter
         },
         automatic_installation = true,
         handlers = {},
