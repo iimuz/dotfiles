@@ -152,9 +152,8 @@ return {
       "nvim-lua/plenary.nvim"
     },
     config = function()
-      require("telescope").load_extension "file_browser"
+      require("telescope").load_extension("file_browser")
 
-      local actions = require("telescope").extensions.file_browser.actions
       vim.keymap.set(
         "n",
         "<Plug>telescope.file_browser.open",

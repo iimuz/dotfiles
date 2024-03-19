@@ -14,11 +14,12 @@ return {
       {
         -- 設定例としては下記を参考にしている
         -- see: <https://zenn.dev/kenkenlysh/articles/6c93a4dbfeb2e2>
-        trigger_evnets = {
-          -- "InsertLeave",  -- 文字入力の完了では保存しない
-          "BufLeave",
+        -- trigger_evnets = {
+          -- "InsertLeave",
+          -- "TextChanged",
           "FocusLost",
-        },
+        -- },
+        trigger_events = nil,
       }
     )
   end,

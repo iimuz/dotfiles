@@ -41,6 +41,7 @@ return {
           "jsonc",
           "lua",
           "make",
+          "markdown",
           "markdown_inline",
           "mermaid",
           "python",
