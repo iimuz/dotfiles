@@ -34,13 +34,13 @@ return {
       "n",
       "<Plug>aerial.open",
       "<cmd>AerialOpen!<CR>",
-      {desc = "⭐︎Aerial: Open outline window."}
+      {desc = "Aerial: Open outline window."}
     )
     set(
       "n",
       "<Plug>aerial.close",
       "<cmd>AerialClose<CR>",
-      {desc = "⭐︎Aerial: Close outline window."}
+      {desc = "Aerial: Close outline window."}
     )
     set(
       "n",
@@ -52,7 +52,7 @@ return {
       "n",
       "<Plug>aerial.nav.close",
       "<cmd>AerialNavClos<CR>",
-      {desc = "⭐︎Aerial: Close outline navigation."}
+      {desc = "Aerial: Close outline navigation."}
     )
 
     -- Telescope拡張
