@@ -6,9 +6,18 @@
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
 
+local set = vim.keymap.set
+set(
+  "n",
+  "<Plug>octo.load",
+  "<cmd>Octo<CR>",
+  { desc = "⭐︎Octo: Load octo plugin." }
+)
+
 return {
   "pwntester/octo.nvim",
   cond = condition,
+  cmd = { "Octo" },
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
