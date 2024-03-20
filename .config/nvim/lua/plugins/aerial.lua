@@ -3,9 +3,20 @@
 --
 -- Outline表示
 
+-- vscodeから呼び出す場合は利用しない
+local condition = vim.g.vscode == nil
+
+-- 起動用のキーマッピング
+vim.keymap.set(
+  "n",
+  "<Plug>aerial.load",
+  "<cmd>AerialNavOpen<CR>",
+  {desc = "⭐︎Aerial: Load aerial(Outline plugin)."}
+)
+
 return {
   'stevearc/aerial.nvim',
-  opts = {},
+  cond = condition,
   cmd = {
     "AerialToggle",
     "AerialOpen",
@@ -15,6 +26,7 @@ return {
      "nvim-treesitter/nvim-treesitter",
      "nvim-tree/nvim-web-devicons"
   },
+  opts = {},
   config = function()
     local set = vim.keymap.set
     require("aerial").setup({
