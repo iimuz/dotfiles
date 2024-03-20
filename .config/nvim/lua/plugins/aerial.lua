@@ -6,6 +6,11 @@
 return {
   'stevearc/aerial.nvim',
   opts = {},
+  cmd = {
+    "AerialToggle",
+    "AerialOpen",
+    "AerialNavOpen",
+  },
   dependencies = {
      "nvim-treesitter/nvim-treesitter",
      "nvim-tree/nvim-web-devicons"
@@ -51,7 +56,7 @@ return {
     set(
       "n",
       "<Plug>aerial.nav.close",
-      "<cmd>AerialNavClos<CR>",
+      "<cmd>AerialNavClose<CR>",
       {desc = "Aerial: Close outline navigation."}
     )
 
