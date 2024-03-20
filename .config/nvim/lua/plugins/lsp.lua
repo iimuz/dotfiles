@@ -4,44 +4,71 @@
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
 
--- Neovim builtin LSP
+-- ruffとpyrightなどを併用する場合
+-- see: <https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#example-neovim>
+local function lspRuffPyright()
+  require("lspconfig").ruff_lsp.setup {
+    init_options = {
+      settings = {
+        -- Any extra CLI arguments for "ruff" go here.
+        args = {}
+      },
+    },
+    on_attach = function(client, _)
+      if client.name == 'ruff_lsp' then
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+      end
+    end,
+  }
+end
+
+-- 起動用のキーマッピング
+local set = vim.keymap.set
+set(
+  "n",
+  "<Plug>(mason.loading)",
+  "<cmd>Mason<CR>",
+  { desc = "⭐︎Mason: Load." }
+)
+set(
+  "n",
+  "<Plug>(mason.update)",
+  "<cmd>MasonUpdate<CR>",
+  { desc = "Mason: update." }
+)
+
+-- Neovim builtin LSPを利用する前提
 return {
   -- Builtin LSPのconfiguration
   {
     "neovim/nvim-lspconfig",
     cond = condition,
+    event = { "InsertEnter" },
     config = function()
-      -- ruffとpyrightなどを併用する場合
-      -- see: <https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#example-neovim>
-      require("lspconfig").ruff_lsp.setup {
-        init_options = {
-          settings = {
-            -- Any extra CLI arguments for "ruff" go here.
-            args = {}
-          },
-        },
-        on_attach = function(client, _)
-          if client.name == 'ruff_lsp' then
-            -- Disable hover in favor of Pyright
-            client.server_capabilities.hoverProvider = false
-          end
-        end,
-      }
+      lspRuffPyright()
     end,
   },
   -- LSP manager - mason
   {
     "williamboman/mason.nvim",
     cond = condition,
+    cmd = { "Mason" },
     config = function()
       require("mason").setup()
 
       -- Telescope検索用コマンドの登録
       vim.keymap.set(
         "n",
-        "<Plug>mason.ui",
+        "<Plug>(mason.ui)",
         "<cmd>Mason<CR>",
         { desc = "Mason: Show Mason UI." }
+      )
+      vim.keymap.set(
+        "n",
+        "<Plug>(mason.log)",
+        "<cmd>MasonLog<CR>",
+        { desc = "Mason: Show log." }
       )
     end,
   },
@@ -50,6 +77,7 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     cond = condition,
+    event = { "InsertEnter" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp", -- capabilityを設定
     },
@@ -57,7 +85,7 @@ return {
       require("mason-lspconfig").setup {
         -- よく使うLSPはインストールしておく
         ensure_installed = {
-          "gopls", -- Go lang LSP
+          "gopls",    -- Go lang LSP
           "marksman", -- Markdown LSP
           "pyright",  -- Python LSP
         },
@@ -104,6 +132,7 @@ return {
     -- 2023-08-12にArchivedされており、後継となるnone-ls.nvimを利用する
     "nvimtools/none-ls.nvim",
     cond = condition,
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("null-ls").setup(
         {
