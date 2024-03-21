@@ -32,8 +32,6 @@ return {
     config = function()
       require("mason").setup()
 
-      -- mason-lspconfigで設定できないツールのインストール
-
       -- Telescope検索用コマンドの登録
       vim.keymap.set(
         "n",
@@ -54,9 +52,10 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     cond = condition,
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "VimEnter" },
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp", -- capabilityを設定
+      "hrsh7th/cmp-nvim-lsp",                      -- capabilityを設定
+      "WhoIsSethDaniel/mason-tool-installer.nvim", -- masonでensure_installedできないツールの対応
     },
     config = function()
       require("mason-lspconfig").setup {
@@ -66,14 +65,23 @@ return {
         -- - formatter: stevearc/conform.nvim
         -- - linter: mfussenegger/nvim-lint
         ensure_installed = {
-          "cspell", -- spell checker
           "gopls",    -- Go lang LSP
           "marksman", -- Markdown LSP
           "pyright",  -- Python LSP
-          "dprint", -- Markdown, json, toml formatter
-          "ruff",   -- Python linter, formatter
+          "dprint",   -- Markdown, json, toml formatter
         },
       }
+
+      require("mason-tool-installer").setup(
+        {
+          ensure_installed = {
+            "cspell",   -- spell checker(linter)
+            "prettier", -- formatter
+            "ruff",     -- Python linter, formatter
+            "stylua",   -- lua formatter
+          },
+        }
+      )
 
       -- Setup lspconfig to nvim-cmp
       local capabilities = require('cmp_nvim_lsp').default_capabilities()

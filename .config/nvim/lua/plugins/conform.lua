@@ -1,5 +1,5 @@
 -- stevearc/conform.nvim
--- see: <>
+-- see: <https://github.com/stevearc/conform.nvim>
 --
 -- formatterの管理
 -- 設定の参考例
