@@ -4,25 +4,6 @@
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
 
--- ruffとpyrightなどを併用する場合
--- see: <https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#example-neovim>
-local function lspRuffPyright()
-  require("lspconfig").ruff_lsp.setup {
-    init_options = {
-      settings = {
-        -- Any extra CLI arguments for "ruff" go here.
-        args = {}
-      },
-    },
-    on_attach = function(client, _)
-      if client.name == 'ruff_lsp' then
-        -- Disable hover in favor of Pyright
-        client.server_capabilities.hoverProvider = false
-      end
-    end,
-  }
-end
-
 -- 起動用のキーマッピング
 local set = vim.keymap.set
 set(
@@ -40,22 +21,18 @@ set(
 
 -- Neovim builtin LSPを利用する前提
 return {
-  -- Builtin LSPのconfiguration
-  {
-    "neovim/nvim-lspconfig",
-    cond = condition,
-    event = { "InsertEnter" },
-    config = function()
-      lspRuffPyright()
-    end,
-  },
   -- LSP manager - mason
   {
     "williamboman/mason.nvim",
     cond = condition,
-    cmd = { "Mason" },
+    cmd = { "Mason", "MasonUpdate" },
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+    },
     config = function()
       require("mason").setup()
+
+      -- mason-lspconfigで設定できないツールのインストール
 
       -- Telescope検索用コマンドの登録
       vim.keymap.set(
@@ -77,17 +54,24 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     cond = condition,
-    event = { "InsertEnter" },
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp", -- capabilityを設定
     },
     config = function()
       require("mason-lspconfig").setup {
-        -- よく使うLSPはインストールしておく
+        -- よく使うLSPはインストールしておく。
+        -- formatter, linterについては下記のpluginを利用する。
+        -- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
+        -- - formatter: stevearc/conform.nvim
+        -- - linter: mfussenegger/nvim-lint
         ensure_installed = {
+          "cspell", -- spell checker
           "gopls",    -- Go lang LSP
           "marksman", -- Markdown LSP
           "pyright",  -- Python LSP
+          "dprint", -- Markdown, json, toml formatter
+          "ruff",   -- Python linter, formatter
         },
       }
 
@@ -100,47 +84,6 @@ return {
           }
         end,
       }
-    end,
-  },
-  -- Formatter, Linter用の設定
-  {
-    -- see: <https://github.com/jay-babu/mason-null-ls.nvim>
-    "jay-babu/mason-null-ls.nvim",
-    cond = condition,
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "williamboman/mason.nvim",
-      "nvimtools/none-ls.nvim",
-    },
-    config = function()
-      local mason_null_ls = require("mason-null-ls")
-      mason_null_ls.setup({
-        ensure_installed = {
-          -- Opt to list sources here, when available in mason.
-          "dprint", -- Markdown, json, toml formatter
-          "ruff",   -- Python linter, formatter
-        },
-        automatic_installation = true,
-        handlers = {},
-      })
-      -- mason_null_ls.check_install(true)
-    end,
-  },
-  {
-    -- see: <https://github.com/nvimtools/none-ls.nvim>
-    -- [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)は、
-    -- 2023-08-12にArchivedされており、後継となるnone-ls.nvimを利用する
-    "nvimtools/none-ls.nvim",
-    cond = condition,
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      require("null-ls").setup(
-        {
-          sources = {
-            -- Anything not supported by mason.
-          },
-        }
-      )
     end,
   },
 }
