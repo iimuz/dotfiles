@@ -11,7 +11,7 @@ vim.keymap.set(
   "n",
   "<Plug>aerial.load",
   "<cmd>AerialNavOpen<CR>",
-  {desc = "⭐︎Aerial: Load aerial(Outline plugin)."}
+  { desc = "⭐︎Aerial: Load aerial(Outline plugin)." }
 )
 
 return {
@@ -23,8 +23,8 @@ return {
     "AerialNavOpen",
   },
   dependencies = {
-     "nvim-treesitter/nvim-treesitter",
-     "nvim-tree/nvim-web-devicons"
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-tree/nvim-web-devicons"
   },
   opts = {},
   config = function()
@@ -45,31 +45,31 @@ return {
       "n",
       "<Plug>aerial.toggl",
       "<cmd>AerialToggle!<CR>",
-      {desc = "Aerial: Toggle outline window."}
+      { desc = "Aerial: Toggle outline window." }
     )
     set(
       "n",
       "<Plug>aerial.open",
       "<cmd>AerialOpen!<CR>",
-      {desc = "Aerial: Open outline window."}
+      { desc = "⭐︎Aerial: Open outline window." }
     )
     set(
       "n",
       "<Plug>aerial.close",
       "<cmd>AerialClose<CR>",
-      {desc = "Aerial: Close outline window."}
+      { desc = "Aerial: Close outline window." }
     )
     set(
       "n",
       "<Plug>aerial.nav.open",
       "<cmd>AerialNavOpen<CR>",
-      {desc = "⭐︎Aerial: Open outline navigation."}
+      { desc = "⭐︎Aerial: Open outline navigation." }
     )
     set(
       "n",
       "<Plug>aerial.nav.close",
       "<cmd>AerialNavClose<CR>",
-      {desc = "Aerial: Close outline navigation."}
+      { desc = "Aerial: Close outline navigation." }
     )
 
     -- Telescope拡張
@@ -78,7 +78,7 @@ return {
       "n",
       "<Plug>aerial.telescope",
       "<cmd>Telescope aerial<CR>",
-      {desc = "Aerial: Show outline using Telescope"}
+      { desc = "Aerial: Show outline using Telescope" }
     )
   end,
 }
