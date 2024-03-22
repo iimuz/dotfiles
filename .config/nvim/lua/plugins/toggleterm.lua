@@ -59,11 +59,38 @@ return {
     function _LazygitToggle()
       lazygit:toggle()
     end
+
     set(
       "n",
       "<Plug>(toggleterm.layzgit)",
       "<cmd>lua _LazygitToggle()<CR>",
-      { desc = "⭐︎ToggleTerm: Opne lazygit." }
+      { desc = "⭐︎ToggleTerm: Open lazygit." }
+    )
+
+    -- vifm
+    -- see: <https://www.reddit.com/r/neovim/comments/r5i9zi/toggle_term_vifm_best_way_to_file_explore_in_vim/>
+    local Path = require("plenary.path")
+    local path = vim.fn.tempname()
+    local Vifm = Terminal:new {
+      cmd = ('vifm . . --choose-files "%s"'):format(path),
+      direction = "float",
+      close_on_exit = true,
+      on_close = function()
+        local data = Path:new(path):read()
+        vim.schedule(function()
+          vim.cmd('e ' .. data)
+        end)
+      end
+    }
+    function _VifmToggle()
+      Vifm:toggle()
+    end
+
+    set(
+      "n",
+      "<Plug>(toggleterm.vifm)",
+      "<cmd>lua _VifmToggle()<CR>",
+      { desc = "⭐︎ToggleTerm: Open vifm." }
     )
   end,
 }
