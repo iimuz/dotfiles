@@ -1,8 +1,11 @@
 # see: <https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md>
 gui:
-  timeFormat: '2006-01-02'
-  shortTimeFormat: '15:04'
   nerdFontsVersion: "" # nerd fonts version to use ("2" or "3"); empty means don't show nerd font icons
+  shortTimeFormat: '15:04'
+  timeFormat: '2006-01-02'
 git:
-  branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline {{branchName}} --'
   allBranchesLogCmd: 'git log --graph --all --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline'
+  branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline {{branchName}} --'
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
