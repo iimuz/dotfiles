@@ -7,13 +7,6 @@ vim.g.maplocalleader = " "
 
 -- 自作
 local set = vim.keymap.set
--- Insert modeからのECS
-set(
-  "i",
-  "jj",
-  "<ESC>",
-  { desc = "⭐︎Self: Escape from insert mode." }
-)
 -- 現在開いているファイル名をクリップボードにコピーする
 set(
   "n",
@@ -27,7 +20,7 @@ set(
 -- TerminalのECSコマンドの設定
 set(
   "t",
-  "jj",
+  "<c-]>",
   "<c-\\><c-n>",
   { desc = "⭐︎Self: Escape from terminal." }
 )
