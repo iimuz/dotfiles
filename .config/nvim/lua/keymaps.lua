@@ -7,6 +7,13 @@ vim.g.maplocalleader = " "
 
 -- 自作
 local set = vim.keymap.set
+-- Insert modeからのECS
+set(
+  "i",
+  "jj",
+  "<ESC>",
+  { desc = "⭐︎Self: Escape from insert mode." }
+)
 -- 現在開いているファイル名をクリップボードにコピーする
 set(
   "n",
@@ -15,7 +22,14 @@ set(
     local filename = vim.fn.expand("%:t:r")
     vim.fn.setreg("+", filename)
   end,
-  {desc = "⭐︎Self: Copy filename."}
+  { desc = "⭐︎Self: Copy filename." }
+)
+-- TerminalのECSコマンドの設定
+set(
+  "t",
+  "jj",
+  "<c-\\><c-n>",
+  { desc = "⭐︎Self: Escape from terminal." }
 )
 
 -- Quickfix
@@ -23,48 +37,48 @@ set(
   "n",
   "<Plug>(quickfix.open)",
   "<cmd>copen<CR>",
-  {desc = "⭐︎Quickfix: Open."}
+  { desc = "⭐︎Quickfix: Open." }
 )
 set(
   "n",
   "<Plug>(quickfix.close)",
   "<cmd>cclose<CR>",
-  {desc = "⭐︎Quickfix: Close."}
+  { desc = "⭐︎Quickfix: Close." }
 )
 set(
   "n",
   "<Plug>(quickfix.next)",
   "<cmd>cnext<CR>",
-  {desc = "⭐︎Quickfix: Next."}
+  { desc = "⭐︎Quickfix: Next." }
 )
 set(
   "n",
   "<Plug>(quickfix.previous)",
   "<cmd>cprevious<CR>",
-  {desc = "⭐︎Quickfix: Previous."}
+  { desc = "⭐︎Quickfix: Previous." }
 )
 -- Location
 set(
   "n",
   "<Plug>(location.open)",
   "<cmd>lopen<CR>",
-  {desc = "⭐︎Location: Open."}
+  { desc = "⭐︎Location: Open." }
 )
 set(
   "n",
   "<Plug>(location.close)",
   "<cmd>lclose<CR>",
-  {desc = "⭐︎Location: Close."}
+  { desc = "⭐︎Location: Close." }
 )
 set(
   "n",
   "<Plug>(location.next)",
   "<cmd>lnext<CR>",
-  {desc = "⭐︎Location: Next."}
+  { desc = "⭐︎Location: Next." }
 )
 set(
   "n",
   "<Plug>(location.previous)",
   "<cmd>lprevious<CR>",
-  {desc = "⭐︎Location: Previous."}
+  { desc = "⭐︎Location: Previous." }
 )
