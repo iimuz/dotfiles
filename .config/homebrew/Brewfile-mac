@@ -8,7 +8,7 @@ cask "appcleaner"
 
 # === communication tools
 cask "arc"
-cask "brave-browser"
+# cask "brave-browser"
 # cask "firefox"
 cask "google-chrome"
 # cask "microsoft-edge"
@@ -97,3 +97,4 @@ brew "gh"
 brew "neovim"  # vscode neovim extension
 brew "ripgrep"
 brew "tmux"
+brew "vifm"
