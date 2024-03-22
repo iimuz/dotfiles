@@ -89,12 +89,13 @@ brew "rustup-init"
 # brew "awscli"  # asdfで管理する
 brew "bat"
 # brew "bitwarden-cli"
-brew "exa"
-brew "fd"
-brew "fzf"
+brew "exa"  # replace ls
+brew "fd"  # replace find
+brew "fzf"  # fuzzy finder
 brew "gcc"
-brew "gh"
-brew "neovim"  # vscode neovim extension
-brew "ripgrep"
+brew "git-delta"  # diff viewer
+brew "gh"  # github cli
+brew "neovim"  # neovim
+brew "ripgrep"  # replace grep
 brew "tmux"
-brew "vifm"
+brew "vifm"  # tui filer
