@@ -16,6 +16,13 @@ config.window_background_opacity = 1.0
 -- font
 config.font = wezterm.font("Cica")
 config.font_size = 18.0
+-- 最大まで利用する
+config.window_padding = {
+  left = 0,
+  right = 0,
+  top = 0,
+  bottom = 0,
+}
 
 -- keybinds
 -- デフォルトのkeybindを無効化
