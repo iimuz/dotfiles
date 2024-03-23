@@ -77,20 +77,16 @@ return {
     { key = 'Q',          mods = 'SHIFT|CTRL',     action = act.QuitApplication },
     { key = 'R',          mods = 'CTRL',           action = act.ReloadConfiguration },
     { key = 'R',          mods = 'SHIFT|CTRL',     action = act.ReloadConfiguration },
-    { key = 'T',          mods = 'CTRL',           action = act.SpawnTab 'CurrentPaneDomain' },
-    { key = 'T',          mods = 'SHIFT|CTRL',     action = act.SpawnTab 'CurrentPaneDomain' },
+    { key = 'c',          mods = 'LEADER',         action = act.SpawnTab 'CurrentPaneDomain' },
     { key = 'U',          mods = 'CTRL',           action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
     { key = 'U',          mods = 'SHIFT|CTRL',     action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
     { key = 'V',          mods = 'CTRL',           action = act.PasteFrom 'Clipboard' },
     { key = 'V',          mods = 'SHIFT|CTRL',     action = act.PasteFrom 'Clipboard' },
-    { key = 'W',          mods = 'CTRL',           action = act.CloseCurrentTab { confirm = true } },
-    { key = 'W',          mods = 'SHIFT|CTRL',     action = act.CloseCurrentTab { confirm = true } },
-    { key = 'X',          mods = 'CTRL',           action = act.ActivateCopyMode },
-    { key = 'X',          mods = 'SHIFT|CTRL',     action = act.ActivateCopyMode },
-    { key = 'Z',          mods = 'CTRL',           action = act.TogglePaneZoomState },
-    { key = 'Z',          mods = 'SHIFT|CTRL',     action = act.TogglePaneZoomState },
-    { key = '[',          mods = 'SHIFT|SUPER',    action = act.ActivateTabRelative(-1) },
-    { key = ']',          mods = 'SHIFT|SUPER',    action = act.ActivateTabRelative(1) },
+    { key = 'q',          mods = 'LEADER',         action = act.CloseCurrentTab { confirm = true } },
+    { key = '[',          mods = 'LEADER',         action = act.ActivateCopyMode },
+    { key = 'z',          mods = 'LEADER',         action = act.TogglePaneZoomState },
+    { key = 'p',          mods = 'LEADER',         action = act.ActivateTabRelative(-1) },
+    { key = 'n',          mods = 'LEADER',         action = act.ActivateTabRelative(1) },
     { key = '^',          mods = 'CTRL',           action = act.ActivateTab(5) },
     { key = '^',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(5) },
     { key = '_',          mods = 'CTRL',           action = act.DecreaseFontSize },
@@ -118,10 +114,6 @@ return {
     { key = 'u',          mods = 'SHIFT|CTRL',     action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
     { key = 'v',          mods = 'SHIFT|CTRL',     action = act.PasteFrom 'Clipboard' },
     { key = 'v',          mods = 'SUPER',          action = act.PasteFrom 'Clipboard' },
-    { key = 'w',          mods = 'SHIFT|CTRL',     action = act.CloseCurrentTab { confirm = true } },
-    { key = 'w',          mods = 'SUPER',          action = act.CloseCurrentTab { confirm = true } },
-    { key = 'x',          mods = 'SHIFT|CTRL',     action = act.ActivateCopyMode },
-    { key = 'z',          mods = 'SHIFT|CTRL',     action = act.TogglePaneZoomState },
     { key = '{',          mods = 'SUPER',          action = act.ActivateTabRelative(-1) },
     { key = '{',          mods = 'SHIFT|SUPER',    action = act.ActivateTabRelative(-1) },
     { key = '}',          mods = 'SUPER',          action = act.ActivateTabRelative(1) },
@@ -143,6 +135,25 @@ return {
     { key = 'J',          mods = 'LEADER',         action = act.AdjustPaneSize { 'Down', 1 } },
     { key = 'Copy',       mods = 'NONE',           action = act.CopyTo 'Clipboard' },
     { key = 'Paste',      mods = 'NONE',           action = act.PasteFrom 'Clipboard' },
+    { key = 'w',          mods = 'LEADER',         action = act.ShowTabNavigator },
+    { key = "x",          mods = "LEADER",         action = act.CloseCurrentPane { confirm = true } },
+    {
+      -- Rename a tab.
+      -- see: <https://github.com/wez/wezterm/issues/522#issuecomment-1496894508>
+      key = ',',
+      mods = 'LEADER',
+      action = act.PromptInputLine {
+        description = 'Enter new name for tab',
+        action = wezterm.action_callback(function(window, pane, line)
+          -- line will be `nil` if they hit escape without entering anything
+          -- An empty string if they just hit enter
+          -- Or the actual line of text they wrote
+          if line then
+            window:active_tab():set_title(line)
+          end
+        end),
+      },
+    },
   },
 
   key_tables = {
