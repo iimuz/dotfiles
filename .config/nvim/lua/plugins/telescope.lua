@@ -24,8 +24,10 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     config = function()
+      local set = vim.keymap.set
+      local builtin = require("telescope.builtin")
       -- `<Leader>p`でファイル一覧を表示
-      vim.keymap.set(
+      set(
         "n",
         '<Leader>p',
         '<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>',
@@ -33,111 +35,143 @@ return {
       )
       -- `<Leader>P`でキー登録したコマンドパレットを表示
       -- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
-      vim.keymap.set(
+      set(
         { "n", "v" },
         '<Leader>P',
         function()
-          require('telescope.builtin').keymaps()
+          builtin.keymaps()
           vim.cmd("normal! i⭐︎")
         end,
         { desc = "⭐︎Telescope: Open command palet(keymaps)." }
       )
       -- `<Leader>C`でコマンド一覧を表示
-      vim.keymap.set(
+      set(
         "n",
         '<Leader>c',
-        function()
-          require('telescope.builtin').commands()
-        end,
+        builtin.commands,
         { desc = "⭐︎Telescope: Open command list." }
       )
-      vim.keymap.set(
+      set(
         "n",
         '<Leader>C',
-        function()
-          require('telescope.builtin').command_history()
-        end,
+        builtin.command_history,
         { desc = "⭐︎Telescope: Open command history list." }
       )
 
       -- コマンドパレットでの検索用のコマンド登録
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.buffers)",
-        function()
-          require("telescope.builtin").buffers()
-        end,
+        builtin.buffers,
         { desc = "⭐︎Telescope: Open Buffer." }
       )
-      vim.keymap.set(
+      set(
+        "n",
+        "<Plug>(telescope.marks)",
+        builtin.marks,
+        { desc = "Telescope: Lists vim marks." }
+      )
+      set(
         "n",
         "<Plug>(telescope.colorscheme)",
-        function()
-          require("telescope.builtin").colorscheme()
-        end,
+        builtin.colorscheme,
         { desc = "Telescope: Color scheme." }
       )
-      vim.keymap.set(
+      set(
+        "n",
+        "<Plug>(telescope.quickfix)",
+        builtin.quickfix,
+        { desc = "Telescope: Lists items in the quickfix list." }
+      )
+      set(
+        "n",
+        "<Plug>(telescope.quickfixhistory)",
+        builtin.quickfixhistory,
+        { desc = "Telescope: Lists all quickfix lists in your history." }
+      )
+      set(
+        "n",
+        "<Plug>(telescope.loclist)",
+        builtin.loclist,
+        { desc = "Telescope: Lists items from the current window's location list." }
+      )
+      set(
+        "n",
+        "<Plug>(telescope.jumplist)",
+        builtin.jumplist,
+        { desc = "Telescope: Lists jump list entries." }
+      )
+      set(
+        "n",
+        "<Plug>(telescope.spell_suggest)",
+        builtin.spell_suggest,
+        { desc = "Telescope: Lists spelling suggestions for the current word under the cursor." }
+      )
+      set(
+        "n",
+        "<Plug>(telescope.filetypes)",
+        builtin.filetypes,
+        { desc = "Telescope: Lists all available filetypes." }
+      )
+      set(
         "n",
         "<Plug>(telescope.git_commits)",
-        function()
-          require("telescope.builtin").git_commits()
-        end,
-        { desc = "⭐︎Telescope: git commits." }
+        builtin.git_commits,
+        { desc = "Telescope: git commits." }
       )
-      vim.keymap.set(
+      set(
+        "n",
+        "<Plug>(telescope.git_bcommits)",
+        builtin.git_bcommits,
+        { desc = "⭐︎Telescope: Lists buffer's git commits." }
+      )
+      set(
         "n",
         "<Plug>(telescope.git_status)",
-        function()
-          require("telescope.builtin").git_status()
-        end,
-        { desc = "⭐︎Telescope: git status." }
+        builtin.git_status,
+        { desc = "Telescope: git status." }
       )
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.help_tags)",
-        function()
-          require("telescope.builtin").help_tags()
-        end,
-        { desc = "⭐︎Telescope: Help." }
+        builtin.help_tags,
+        { desc = "Telescope: Help." }
       )
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.grep)",
-        function()
-          require("telescope.builtin").live_grep()
-        end,
+        builtin.live_grep,
         { desc = "⭐︎Telescope: Search in Workspace." }
       )
-      vim.keymap.set(
+      set(
+        "n",
+        "<Plug>(telescope.grep_string)",
+        builtin.grep_string,
+        { desc = "⭐︎Telescope: Search for a string in Workspace." }
+      )
+      set(
         "n",
         "<Plug>(telescope.oldfiles)",
-        function()
-          require("telescope.builtin").oldfiles()
-        end,
+        builtin.oldfiles,
         { desc = "⭐︎Telescope: Open file from history." }
       )
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.registers)",
-        function()
-          require("telescope.builtin").registers()
-        end,
+        builtin.registers,
         { desc = "⭐︎Telescope: Show registers." }
       )
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.vim_options)",
-        function()
-          require("telescope.builtin").vim_options()
-        end,
+        builtin.vim_options,
         { desc = "Telescope: Show vim options." }
       )
       -- TelescopeでLSPコマンド
-      vim.keymap.set(
+      set(
         "n",
         "<Plug>(telescope.show_referneces)",
-        require("telescope.builtin").lsp_references,
+        builtin.lsp_references,
         { desc = "Telescope: Show lsp referneces." }
       )
     end,
