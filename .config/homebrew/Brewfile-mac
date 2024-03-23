@@ -99,3 +99,4 @@ brew "neovim"  # neovim
 brew "ripgrep"  # replace grep
 brew "tmux"
 brew "vifm"  # tui filer
+cask "wezterm"  # terminal emulator
