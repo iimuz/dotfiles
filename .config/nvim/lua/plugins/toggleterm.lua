@@ -72,7 +72,8 @@ return {
     local Path = require("plenary.path")
     local path = vim.fn.tempname()
     local Vifm = Terminal:new {
-      cmd = ('vifm . . --choose-files "%s"'):format(path),
+      -- `:only`を利用してneovimから開く場合は、シングルカラムに修正
+      cmd = ('vifm . -c "only" --choose-files "%s"'):format(path),
       direction = "float",
       close_on_exit = true,
       on_close = function()
