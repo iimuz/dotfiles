@@ -115,6 +115,12 @@ return {
       )
       set(
         "n",
+        "<Plug>(telescope.current_buffer_fuzzy_find)",
+        builtin.current_buffer_fuzzy_find,
+        { desc = "⭐︎Telescope: Live fuzzy search inside of the currently open buffer." }
+      )
+      set(
+        "n",
         "<Plug>(telescope.git_commits)",
         builtin.git_commits,
         { desc = "Telescope: git commits." }
