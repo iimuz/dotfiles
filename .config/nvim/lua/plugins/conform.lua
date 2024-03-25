@@ -12,19 +12,34 @@ return {
     "BufReadPre",
     "BufNewFile"
   }, -- to disable, comment this out
+  opts = {},
   config = function()
     local conform = require("conform")
 
+    -- dprintが有効な場合のみdprintを返し、それ以外はformattersを返す
+    -- dprintが失敗すると`formatters_by_ft = { markdown = {{ "dprint", "prettier" }}`が正しく動作しない
+    local dprint_or_others = function(bufnr, formatters)
+      local dprint_available = require("conform").get_formatter_info("dprint", bufnr).available
+      -- `dprint.json`がneovimを開いているディレクトリに存在するか確認した結果をbooleanでflag変数に格納
+      local has_dprint_json = vim.fn.filereadable("dprint.json") == 1
+      if dprint_available and has_dprint_json then
+        return { "dprint" }
+      end
+
+      return formatters
+    end
+
     -- ファイルタイプごとのformatterの設定
+    -- 利用するformatterはmasonで管理
     conform.setup({
       formatters_by_ft = {
         css = { "prettier" },
         html = { "prettier" },
         javascript = { "prettier" },
         javascriptreact = { "prettier" },
-        json = { { "dprint", "prettier" } },
+        json = function(bufnr) return dprint_or_others(bufnr, { "prettier" }) end,
         lua = { "stylua" },
-        markdown = { { "dprint", "prettier" } },
+        markdown = function(bufnr) return dprint_or_others(bufnr, { "prettier" }) end,
         python = { "ruff" },
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
