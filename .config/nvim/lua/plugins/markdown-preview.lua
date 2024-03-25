@@ -13,6 +13,7 @@ set(
 
 return {
   "iamcco/markdown-preview.nvim",
+  lazy = true,
   cmd = {
     "MarkdownPreviewToggle",
     "MarkdownPreview",
@@ -21,7 +22,8 @@ return {
   ft = { "markdown" },
   build = function()
     vim.fn["mkdp#util#install"]()
-
+  end,
+  config = function()
     set(
       "n",
       "<Plug>(MarkdownPreview.Open)",
