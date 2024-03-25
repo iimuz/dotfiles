@@ -5,3 +5,4 @@ require("lazy-init")    -- plugin managerとしてlazy.nvimを設定
 
 require("auto-lastmod") -- front matterのlatmod自動修正
 require("auto-save")    -- ファイルの自動保存
+require("zettelkasten") -- zettelkasten関連の設定
