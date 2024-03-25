@@ -196,9 +196,28 @@ return {
 
       vim.keymap.set(
         "n",
-        "<Plug>telescope.file_browser.open",
+        "<Plug>(telescope.file_browser.open)",
         "<cmd>Telescope file_browser<CR>",
-        { desc = "⭐︎Telescope FileBrowser: Open file browser." }
+        { desc = "⭐︎Telescope FileBrowser: Open." }
+      )
+    end,
+  },
+  -- TelescopeのLuasnip拡張
+  -- see: <https://github.com/benfowler/telescope-luasnip.nvim>
+  {
+    "benfowler/telescope-luasnip.nvim",
+    cond = condition,
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("telescope").load_extension("luasnip")
+
+      vim.keymap.set(
+        "n",
+        "<Plug>(telescope.luasnip.open)",
+        "<cmd>Telescope luasnip<CR>",
+        { desc = "⭐︎Telescope Luasnip: Open snippet list." }
       )
     end,
   },
