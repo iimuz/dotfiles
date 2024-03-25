@@ -8,9 +8,9 @@ local condition = vim.g.vscode == nil
 local set = vim.keymap.set
 set(
   "n",
-  "<Plug>(mason.loading)",
+  "<Plug>(mason.ui)",
   "<cmd>Mason<CR>",
-  { desc = "⭐︎Mason: Load." }
+  { desc = "⭐︎Mason: Show Mason UI." }
 )
 set(
   "n",
@@ -33,12 +33,6 @@ return {
       require("mason").setup()
 
       -- Telescope検索用コマンドの登録
-      vim.keymap.set(
-        "n",
-        "<Plug>(mason.ui)",
-        "<cmd>Mason<CR>",
-        { desc = "Mason: Show Mason UI." }
-      )
       vim.keymap.set(
         "n",
         "<Plug>(mason.log)",
