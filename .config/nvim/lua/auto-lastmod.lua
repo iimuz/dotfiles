@@ -2,7 +2,7 @@
 
 local function UpdateLastmod()
 	local lastmod = os.time()
-	local lastmod_str = os.date("%Y-%m-%dT%H:%M:%S+09:00", lastmod)
+	local lastmod_str = os.date("%Y-%m-%dT%H:%M:%S", lastmod)
 	local buf = vim.api.nvim_get_current_buf() -- 現在のバッファを取得
 	local max_line = 10 -- 最大で読み込む行数
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, max_line, false) -- 先頭からmax_line行のみ確認する
