@@ -1,17 +1,18 @@
 -- Markdownファイルのfront matterにあるlastmodを自動で保存日時に書き換える
 
 local function UpdateLastmod()
-	local lastmod = vim.fn.strftime("%Y-%m-%dT%H:%M:%S") -- 現在の日時を取得
+	local lastmod = os.time()
+	local lastmod_str = os.date("%Y-%m-%dT%H:%M:%S+09:00", lastmod)
 	local buf = vim.api.nvim_get_current_buf() -- 現在のバッファを取得
 	local max_line = 10 -- 最大で読み込む行数
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, max_line, false) -- 先頭からmax_line行のみ確認する
 
-  -- auto-saveから実行するときにファイルタイプを考慮しないので、ここで確認する
-  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-  vim.notify("lastmod")
-  if filetype ~= "markdown" then
-    return
-  end
+	-- auto-saveから実行するときにファイルタイプを考慮しないので、ここで確認する
+	local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+	vim.notify("lastmod_str")
+	if filetype ~= "markdown" then
+		return
+	end
 
 	-- frontmatterを見つける
 	-- ipairsは1から始まる
@@ -41,9 +42,9 @@ local function UpdateLastmod()
 		end
 
 		if lastmod_line then
-			local lastmod_str = "lastmod: " .. lastmod .. "+09:00"
+			local lastmod_view = "lastmod: " .. lastmod .. "  # " .. lastmod_str
 			vim.notify("Update lastmod: " .. lastmod_str)
-			vim.api.nvim_buf_set_lines(buf, lastmod_line - 1, lastmod_line, false, { lastmod_str })
+			vim.api.nvim_buf_set_lines(buf, lastmod_line - 1, lastmod_line, false, { lastmod_view })
 		end
 	end
 end
