@@ -162,4 +162,19 @@ return {
 			)
 		end,
 	},
+	-- Telescope∂endfzfを利用する拡張
+	-- 検索速度が早くなる
+	-- see: <https://github.com/nvim-telescope/telescope-fzf-native.nvim>
+	{
+		"nvim-telescope/telescope-fzf-native.nvim",
+		cond = condition,
+		dependencies = {
+			"nvim-telescope/telescope.nvim",
+		},
+		-- build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		build = "make",
+		config = function()
+			require("telescope").load_extension("fzf")
+		end,
+	},
 }
