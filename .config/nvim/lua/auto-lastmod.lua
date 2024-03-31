@@ -9,7 +9,6 @@ local function UpdateLastmod()
 
 	-- auto-saveから実行するときにファイルタイプを考慮しないので、ここで確認する
 	local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-	vim.notify("lastmod_str")
 	if filetype ~= "markdown" then
 		return
 	end
