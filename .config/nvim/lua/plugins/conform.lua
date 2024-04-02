@@ -44,12 +44,24 @@ return {
 				markdown = function(bufnr)
 					return dprint_or_others(bufnr, { "prettier" })
 				end,
-				python = { "ruff" },
+				python = function(bufnr)
+					if require("conform").get_formatter_info("ruff_format", bufnr).available then
+						return { "ruff_format" }
+					else
+						return { "isort", "black" }
+					end
+				end,
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
 				yaml = { "prettier" },
 			},
-			format_on_save = { lsp_fallback = true, async = false, timeout_ms = 1000 },
+			format_on_save = function(bufnr)
+				-- Disable with a global or buffer-local variable
+				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+					return
+				end
+				return { lsp_fallback = true, async = false, timeout_ms = 1000 }
+			end,
 		})
 
 		local format_func = function()
@@ -64,9 +76,27 @@ return {
 		-- ショートカットキーの登録
 		vim.keymap.set(
 			{ "n", "v" },
-			"<Plug>conform.format",
+			"<Plug>(conform.format)",
 			format_func,
 			{ desc = "⭐︎Conform: Format file or range (in visual mode)" }
 		)
+		vim.keymap.set(
+			"n",
+			"<Plug>(conform.info)",
+			"<cmd>ConformInfo<CR>",
+			{ desc = "⭐︎Conform: Show information." }
+		)
+		vim.keymap.set("n", "<Plug>(conform.disable)", function()
+			vim.g.disable_autoformat = true
+		end, { desc = "⭐︎Conform: Disable auto format." })
+		vim.keymap.set("n", "<Plug>(conform.enable)", function()
+			vim.g.disable_autoformat = false
+		end, { desc = "⭐︎Conform: Enable auto format." })
+		vim.keymap.set("n", "<Plug>(conform.buff.disable)", function()
+			vim.b.disable_autoformat = true
+		end, { desc = "Conform: Disable auto format for this buffer." })
+		vim.keymap.set("n", "<Plug>(conform.buff.enable)", function()
+			vim.g.disable_autoformat = false
+		end, { desc = "Conform: Enable auto format for this buffer." })
 	end,
 }
