@@ -37,16 +37,15 @@ return {
 				html = { "prettier" },
 				javascript = { "prettier" },
 				javascriptreact = { "prettier" },
-				json = function(bufnr)
-					return dprint_or_others(bufnr, { "prettier" })
-				end,
+				json = { "prettier" },
 				lua = { "stylua" },
 				markdown = function(bufnr)
 					return dprint_or_others(bufnr, { "prettier" })
 				end,
 				python = function(bufnr)
 					if require("conform").get_formatter_info("ruff_format", bufnr).available then
-						return { "ruff_format" }
+						-- ruff_fixまで実施しないとimportの修正が行われない
+						return { "ruff_format", "ruff_fix" }
 					else
 						return { "isort", "black" }
 					end
@@ -64,28 +63,39 @@ return {
 			end,
 		})
 
-		local format_func = function()
-			conform.format({ lsp_fallback = true, async = false, timeout_ms = 1000 })
+		local format_func = function(opts)
+			opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
+			conform.format(opts)
 		end
 		-- auto-saveプラグインから保存するときに自動でformatするための処理
 		local augroup = vim.api.nvim_create_augroup("comform-auto-save", { clear = true })
-		vim.api.nvim_create_autocmd(
-			{ "User" },
-			{ group = augroup, pattern = { "AutoSaveWritePre" }, callback = format_func }
-		)
+		vim.api.nvim_create_autocmd({ "User" }, {
+			group = augroup,
+			pattern = { "AutoSaveWritePre" },
+			callback = function()
+				-- Disable with a global or buffer-local variable
+				if vim.g.disable_autoformat then
+					return
+				end
+
+				format_func()
+			end,
+		})
 		-- ショートカットキーの登録
-		vim.keymap.set(
-			{ "n", "v" },
-			"<Plug>(conform.format)",
-			format_func,
-			{ desc = "⭐︎Conform: Format file or range (in visual mode)" }
-		)
+		vim.keymap.set({ "n", "v" }, "<Plug>(conform.format)", function()
+			format_func()
+		end, { desc = "⭐︎Conform: Format file or range (in visual mode)" })
 		vim.keymap.set(
 			"n",
 			"<Plug>(conform.info)",
 			"<cmd>ConformInfo<CR>",
 			{ desc = "⭐︎Conform: Show information." }
 		)
+		vim.keymap.set({ "n", "v" }, "<Plug>(conform.format_using_specific)", function()
+			vim.ui.input({ prompt = "Formatter: " }, function(formatter)
+				format_func({ formatters = { formatter } })
+			end)
+		end, { desc = "⭐︎Conform: Format file or range (in visual mode) using specific formatter." })
 		vim.keymap.set("n", "<Plug>(conform.disable)", function()
 			vim.g.disable_autoformat = true
 		end, { desc = "⭐︎Conform: Disable auto format." })
