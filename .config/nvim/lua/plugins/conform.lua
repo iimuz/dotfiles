@@ -16,19 +16,6 @@ return {
 	config = function()
 		local conform = require("conform")
 
-		-- dprintが有効な場合のみdprintを返し、それ以外はformattersを返す
-		-- dprintが失敗すると`formatters_by_ft = { markdown = {{ "dprint", "prettier" }}`が正しく動作しない
-		local dprint_or_others = function(bufnr, formatters)
-			local dprint_available = require("conform").get_formatter_info("dprint", bufnr).available
-			-- `dprint.json`がneovimを開いているディレクトリに存在するか確認した結果をbooleanでflag変数に格納
-			local has_dprint_json = vim.fn.filereadable("dprint.json") == 1
-			if dprint_available and has_dprint_json then
-				return { "dprint" }
-			end
-
-			return formatters
-		end
-
 		-- ファイルタイプごとのformatterの設定
 		-- 利用するformatterはmasonで管理
 		conform.setup({
@@ -39,11 +26,9 @@ return {
 				javascriptreact = { "prettier" },
 				json = { "prettier" },
 				lua = { "stylua" },
-				markdown = function(bufnr)
-					return dprint_or_others(bufnr, { "prettier" })
-				end,
+				markdown = { "prettier" },
 				python = function(bufnr)
-					if require("conform").get_formatter_info("ruff_format", bufnr).available then
+					if conform.get_formatter_info("ruff_format", bufnr).available then
 						-- ruff_fixまで実施しないとimportの修正が行われない
 						return { "ruff_format", "ruff_fix" }
 					else
