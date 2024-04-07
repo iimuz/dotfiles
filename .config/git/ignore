@@ -13,3 +13,9 @@
 tmp_*
 tmp_*/
 
+# === Taskfile
+Taskfile.dist.yml
+taskfile.dist.yml
+Taskfile.dist.yaml
+taskfile.dist.yaml
+

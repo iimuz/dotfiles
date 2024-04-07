@@ -28,6 +28,8 @@ if [ "$(uname)" = "Darwin" ]; then  # MacOS
   else  # Intel
     eval "$(/usr/local/bin/brew shellenv)"
   fi
+elif [ "$(uname)" = "Linux" ]; then  # Linux
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # === Brewfileの場所を設定

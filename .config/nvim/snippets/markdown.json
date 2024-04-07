@@ -1,0 +1,24 @@
+{
+  "front-matter-minimal": {
+    "prefix": "front-matter-short",
+    "body": [
+      "---",
+      "title: ${1:Title}",
+      "date: $CURRENT_SECONDS_UNIX  # $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      "lastmod: $CURRENT_SECONDS_UNIX  # $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      "---"
+    ],
+    "description": "minimal front matter."
+  },
+  "front-matter-date": {
+    "prefix": "front-matter-short",
+    "body": [
+      "---",
+      "title: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE ${1:Title}",
+      "date: $CURRENT_SECONDS_UNIX  # $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      "lastmod: $CURRENT_SECONDS_UNIX  # $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      "---"
+    ],
+    "description": "front matter with date."
+  }
+}

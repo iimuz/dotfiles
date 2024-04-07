@@ -84,4 +84,7 @@ colorscheme pablo
 " マウス操作を無効
 set mouse=
 
+" クリップボードを共有
+set clipboard+=unnamedplus
+
 filetype plugin indent on

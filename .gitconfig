@@ -9,6 +9,25 @@
   quotepath = false
   autocrlf = input
 
+[credential]
+  helper = manager
+
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[delta]
+  line-numbers = true
+  minus-style = "syntax #340001"
+  navigate = true
+  plus-style = "syntax #012800"
+  side-by-side = true
+  syntax-theme = Monokai Extended
+
 [diff]
   tool = vimdiff
 
@@ -17,6 +36,15 @@
 
 [difftool "vimdiff"]
   cmd = "vim -R -d -c \"wincmd l\" -d \"$LOCAL\" \"$REMOTE\""
+
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  process = git-lfs filter-process
+  required = true
+  smudge = git-lfs smudge -- %f
+
+[interactive]
+    diffFilter = delta --color-only
 
 [merge]
   tool = vimdiff
@@ -27,16 +55,8 @@
 [mergetool "vimdiff"]
   cmd = "vim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"  \"$MERGED\""
 
-[filter "lfs"]
-  process = git-lfs filter-process
-  required = true
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-
-[credential "https://github.com"]
-  helper =
-  helper = !gh auth git-credential
-
-[credential "https://gist.github.com"]
-  helper =
-  helper = !gh auth git-credential
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
