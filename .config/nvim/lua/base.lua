@@ -63,5 +63,21 @@ vim.cmd([[ syntax enable ]]) -- syntax
 vim.cmd([[ colorscheme pablo ]]) -- デフォルトで利用可能なカラースキーム
 vim.opt.mouse = "" -- マウス操作を無効
 vim.opt.clipboard = "unnamedplus" -- クリップボードを共有
+if vim.fn.has("wsl") == 1 then
+	vim.g.clipboard = {
+		name = "WslClipboard",
+		copy = {
+			["+"] = "xsel -bi",
+			["*"] = "xsel -bi",
+		},
+		paste = {
+			["+"] = "xsel -bo",
+			["*"] = function()
+				return vim.fn.systemlist('xsel -bo | tr -d "\r"')
+			end,
+		},
+		cache_enabled = 1,
+	}
+end
 
 vim.cmd([[ filetype plugin indent on ]])
