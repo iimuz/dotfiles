@@ -84,7 +84,7 @@
   "lpubsppop01.autoTimeStamp.filenamePattern": ".(md|adoc)",
   "lpubsppop01.autoTimeStamp.lineLimit": 10,
   "lpubsppop01.autoTimeStamp.modifiedTimeStart": "lastmod: ",
-  "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH:mm:ss+09:00",
+  "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH",
   // === Extension: draw.io
   "hediet.vscode-drawio.resizeImages": null,
   // === Extension: frontMatter(eliostruyf.vscode-front-matter)
@@ -193,7 +193,7 @@
   "[dockercompose]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2,
+    "editor.tabSize": 2
   },
   // === Language: go
   "go.toolsManagement.autoUpdate": true,
@@ -266,7 +266,7 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "editor.rulers": [79, 88],
-    "outline.showVariables": false,
+    "outline.showVariables": false
   },
   // === Language: reStructuredText
   "[reStructerdText]": {},
