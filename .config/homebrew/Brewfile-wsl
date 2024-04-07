@@ -1,13 +1,26 @@
 tap "homebrew/bundle"
-tap "homebrew/core"
 
-brew "gcc"
+brew "asdf"
 brew "bat"
-brew "bitwarden-cli"
-brew "exa"
-brew "fd"
-brew "fzf"
+brew "eza"  # replace ls
+brew "direnv"
+brew "dprint"  # markdown formatter
+brew "fd"  # replace find
+brew "fzf"  # fuzzy finder
+brew "gcc"
+brew "gh"  # github cli
 brew "git"
-brew "ripgrep"
-brew "tmux"
+brew "git-delta"  # diff viewer
+brew "git-lfs"
+brew "go"
+brew "go-task"  # task runner
+brew "jq"
+brew "lazygit"  # TUI for git
+brew "neovim"  # editor
+brew "pipx"  # for python tools
+brew "ripgrep"  # replace grep
+brew "vifm"  # tui filer
+brew "xsel"  # copy from neovim
+brew "yq"
+brew "zsh"
 

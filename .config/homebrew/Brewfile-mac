@@ -68,7 +68,7 @@ brew "licensed"
 # === programming tools
 brew "asdf"
 brew "direnv"
-brew "dprint"
+brew "dprint"  # markdown formatter
 brew "go-task"
 # cask "obsidian"
 cask "postman"
