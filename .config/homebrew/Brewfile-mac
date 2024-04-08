@@ -97,6 +97,7 @@ brew "git-delta"  # diff viewer
 brew "gh"  # github cli
 brew "neovim"  # neovim
 brew "ripgrep"  # replace grep
+brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
 cask "wezterm"  # terminal emulator

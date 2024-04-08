@@ -19,3 +19,7 @@ if [ "$(uname)" = "Darwin" ]; then
   PROMPT="$(uname -m) $PROMPT"
 fi
 
+# starshipがインストール済みの場合は有効化する
+if type starship > /dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
