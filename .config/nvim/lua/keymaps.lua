@@ -8,10 +8,30 @@ vim.g.maplocalleader = " "
 -- 自作
 local set = vim.keymap.set
 -- 現在開いているファイル名をクリップボードにコピーする
-set("n", "<Plug>(self.copy_filename)", function()
+local function copyToClipboard(value)
+	vim.notify("Copied: " .. value)
+	vim.fn.setreg("+", value)
+end
+set("n", "<Plug>(self.copy.filename)", function()
+	local filename = vim.fn.expand("%:t")
+	copyToClipboard(filename)
+end, { desc = "⭐︎Self: Copy file name." })
+set("n", "<Plug>(self.copy.filename_without_suffix)", function()
 	local filename = vim.fn.expand("%:t:r")
-	vim.fn.setreg("+", filename)
-end, { desc = "⭐︎Self: Copy filename." })
+	copyToClipboard(filename)
+end, { desc = "⭐︎Self: Copy file name without suffix." })
+set("n", "<Plug>(self.copy.relative_filepath)", function()
+	local filepath = vim.fn.expand("%:.")
+	copyToClipboard(filepath)
+end, { desc = "⭐︎Self: Copy relative file path." })
+set("n", "<Plug>(self.copy.relative_filepath_from_home)", function()
+	local filepath = vim.fn.expand("%:~")
+	copyToClipboard(filepath)
+end, { desc = "Self: Copy relative filepath from home." })
+set("n", "<Plug>(self.copy.absolute_filepath)", function()
+	local filepath = vim.fn.expand("%:p")
+	copyToClipboard(filepath)
+end, { desc = "Self: Copy absolute file path." })
 -- TerminalのECSコマンドの設定
 set("t", "<c-]>", "<c-\\><c-n>", { desc = "⭐︎Self: Escape from terminal." })
 
