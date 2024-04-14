@@ -19,6 +19,7 @@ brew "lazygit"  # TUI for git
 brew "neovim"  # editor
 brew "pipx"  # for python tools
 brew "ripgrep"  # replace grep
+brew "starship"  # shell prompt
 brew "vifm"  # tui filer
 brew "xsel"  # copy from neovim
 brew "yq"
