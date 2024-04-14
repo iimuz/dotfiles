@@ -26,6 +26,22 @@ return {
 		config = function()
 			local set = vim.keymap.set
 			local builtin = require("telescope.builtin")
+
+			require("telescope").setup({
+				defaults = {
+					vimgrep_arguments = {
+						"rg",
+						"--color=never", -- 色付けしない
+						"--no-heading", -- ファイル名をマッチした行と一緒に表示
+						"--with-filename", -- 常にファイル名を表示
+						"--line-number", -- 行番号を表示
+						"--column", -- カラム位置も表示。 `ファイル名:行:カラム`
+						"--smart-case",
+						"--no-ignore", -- ignoreは無視する
+						"--hidden", -- 隠しファイルも対象
+					},
+				},
+			})
 			-- `<Leader>p`でファイル一覧を表示
 			set(
 				"n",
@@ -100,12 +116,7 @@ return {
 				builtin.grep_string,
 				{ desc = "⭐︎Telescope: Search for a string in Workspace." }
 			)
-			set(
-				"n",
-				"<Plug>(telescope.oldfiles)",
-				builtin.oldfiles,
-				{ desc = "⭐︎Telescope: Open file from history." }
-			)
+			set("n", "<Plug>(telescope.oldfiles)", builtin.oldfiles, { desc = "Telescope: Open file from history." })
 			set("n", "<Plug>(telescope.registers)", builtin.registers, { desc = "⭐︎Telescope: Show registers." })
 			set("n", "<Plug>(telescope.vim_options)", builtin.vim_options, { desc = "Telescope: Show vim options." })
 			-- TelescopeでLSPコマンド
@@ -162,7 +173,7 @@ return {
 			)
 		end,
 	},
-	-- Telescope∂endfzfを利用する拡張
+	-- Telescopeでdfzfを利用する拡張
 	-- 検索速度が早くなる
 	-- see: <https://github.com/nvim-telescope/telescope-fzf-native.nvim>
 	{
@@ -171,7 +182,6 @@ return {
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 		},
-		-- build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 		build = "make",
 		config = function()
 			require("telescope").load_extension("fzf")
