@@ -14,9 +14,8 @@ return {
 		{ "hrsh7th/cmp-nvim-lsp" }, -- LSPからの補完
 		{ "hrsh7th/cmp-path" }, -- パス補完
 		{ "petertriho/cmp-git" }, -- git issueなどの補完
-		{ "saadparwaiz1/cmp_luasnip" }, -- luasnipからの補完
+		-- { "saadparwaiz1/cmp_luasnip" }, -- luasnipからの補完。cmpから補完しないので無効化
 		-- { "hrsh7th/cmp-emoji" },
-		-- { "hrsh7th/cmp-vsnip" },
 		-- { "onsails/lspkind.nvim" },
 	},
 	config = function()
@@ -46,7 +45,7 @@ return {
 				-- see: <https://github.com/petertriho/cmp-git>
 				{ name = "git" },
 				-- luasnipからの補完
-				{ name = "luasnip" },
+				-- { name = "luasnip" },
 				-- 開いているバッファからのキーワード補完
 				-- see: <https://github.com/hrsh7th/cmp-buffer>
 				{ name = "buffer" },
