@@ -9,9 +9,7 @@ force_color_prompt=yes
 # Set bash_history setting.
 export HISTCONTROL=ignoreboth:erasedups
 if [[ "$SHELL" == *zsh* ]]; then
-  # zshの場合shoptが利用できないため設定しない。
-  # setoptがコマンドとしてはあるようだが使い方がわかっていないので一旦スルーする。
-  echo "skip histappend"
+  setopt histappend
 else
   shopt -u histappend
 fi
