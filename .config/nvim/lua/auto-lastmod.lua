@@ -1,6 +1,20 @@
 -- Markdownファイルのfront matterにあるlastmodを自動で保存日時に書き換える
 
+vim.g.enable_auto_lastmod = true
+vim.keymap.set("n", "<Plug>(auto-lastmod.enable)", function()
+	vim.g.enable_auto_lastmod = true
+	vim.notify("Enable auto-lastmod")
+end, { desc = "AutoLastMod: Enable auto-lastmod" })
+vim.keymap.set("n", "<Plug>(auto-lastmod.disable)", function()
+	vim.g.enable_auto_lastmod = false
+	vim.notify("Disable auto-lastmod")
+end, { desc = "⭐︎AutoLastMod: Disable auto-lastmod" })
+
 local function UpdateLastmod()
+	if not vim.g.enable_auto_lastmod then
+		return
+	end
+
 	local lastmod = os.time()
 	local lastmod_str = os.date("%Y-%m-%dT%H:%M:%S", lastmod)
 	local buf = vim.api.nvim_get_current_buf() -- 現在のバッファを取得
