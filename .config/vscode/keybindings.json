@@ -12,13 +12,6 @@
     "command": "workbench.action.terminal.focusNext",
     "when": "terminalFocus"
   },
-  // === Outline settings
-  {
-    // Outlineにフォーカスを移動する
-    "key": "ctrl+shift+o",
-    "command": "outline.focus",
-    "when": "editorFocus"
-  },
   // === Control panel
   {
     "key": "ctrl+shift+a",
@@ -28,41 +21,5 @@
     "key": "ctrl+space",
     "command": "-editor.action.triggerSuggest",
     "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly"
-  },
-  {
-    "key": "ctrl+shift+v",
-    "command": "-frontMatter.insertSnippet",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "shift+cmd+v",
-    "command": "-frontMatter.insertSnippet",
-    "when": "editorTextFocus"
   }
-  // === bookmark extension
-  // {
-  //   "key": "m b",
-  //   "command": "bookmarks.toggle",
-  //   "when": "editorFocus && vim.mode == 'Normal'"
-  // },
-  // {
-  //   "key": "m l",
-  //   "command": "bookmarks.list",
-  //   "when": "editorFocus && vim.mode == 'Normal'"
-  // },
-  // {
-  //   "key": "m c",
-  //   "command": "bookmarks.clearFromFile",
-  //   "when": "editorFocus && vim.mode == 'Normal'"
-  // },
-  // {
-  //   "key": "m shift+c",
-  //   "command": "bookmarks.clearFromAllFiles",
-  //   "when": "editorFocus && vim.mode == 'Normal'"
-  // },
-  // {
-  //   "key": "m f",
-  //   "command": "bookmarksExplorer.focus",
-  //   "when": "editorFocus && vim.mode == 'Normal'"
-  // },
 ]
