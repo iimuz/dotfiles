@@ -116,17 +116,26 @@ local function frontMatterPicker(opts)
 		:find()
 end
 
+-- Search: Title
 local set = vim.keymap.set
 set("n", "<Plug>(front-matter-searcher.search.title)", function()
 	frontMatterPicker()
 end, { desc = "⭐︎FrontMatterSearcher: Search by title." })
+-- Search: Tag
 set("n", "<Plug>(front-matter-searcher.search.tags)", function()
 	vim.ui.input({ prompt = "Tag: " }, function(tag)
 		frontMatterPicker({ select_query = 'select(.tags[]? == "' .. tag .. '")' })
 	end)
 end, { desc = "⭐︎FrontMatterSearcher: Search by tag." })
+set("n", "<Plug>(front-matter-searcher.search.word)", function()
+	frontMatterPicker({ select_query = 'select(.tags[]? == "word")' })
+end, { desc = "⭐︎FrontMatterSearcher: Search by tag; word." })
+-- Search: Category
 set("n", "<Plug>(front-matter-searcher.search.categories)", function()
-	vim.ui.input({ prompt = "Category: " }, function(tag)
-		frontMatterPicker({ select_query = 'select(.categories[]? == "' .. tag .. '")' })
+	vim.ui.input({ prompt = "Category: " }, function(category)
+		frontMatterPicker({ select_query = 'select(.categories[]? == "' .. category .. '")' })
 	end)
 end, { desc = "⭐︎FrontMatterSearcher: Search by Category." })
+set("n", "<Plug>(front-matter-searcher.search.structure)", function()
+	frontMatterPicker({ select_query = 'select(.categories[]? == "structure")' })
+end, { desc = "⭐︎FrontMatterSearcher: Search by Category; structure." })
