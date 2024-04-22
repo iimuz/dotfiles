@@ -57,3 +57,9 @@ set("n", "<Plug>(fold.open.window)", "zr", { desc = "Fold: Open in Window." })
 set("n", "<Plug>(fold.open_all.window)", "zR", { desc = "⭐︎Fold: Open all in Window." })
 set("n", "<Plug>(fold.close.window)", "zm", { desc = "Fold: Close in Window." })
 set("n", "<Plug>(fold.close_all.window)", "zM", { desc = "⭐︎Fold: Close all in Window." })
+
+-- Tab
+set("n", "<Plug>(tab.new)", "<cmd>tabnew<CR>", { desc = "⭐︎Tab: Open a new tab." })
+set("n", "<Plug>(tab.close)", "<cmd>tabclose<CR>", { desc = "⭐︎Tab: Close tab." })
+set("n", "<Plug>(tab.next)", "<cmd>tabnext<CR>", { desc = "⭐︎Tab: Move next tab." })
+set("n", "<Plug>(tab.previous)", "<cmd>tabprevious<CR>", { desc = "⭐︎Tab: Move previous tab." })
