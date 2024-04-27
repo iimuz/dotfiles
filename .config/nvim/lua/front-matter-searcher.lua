@@ -7,6 +7,8 @@ local finders = require("telescope.finders") -- finder 作成用の API
 local conf = require("telescope.config").values -- ユーザーの init.lua を反映した設定内容
 local entry_display = require("telescope.pickers.entry_display")
 
+local M = {}
+
 -- rgでfront matterを取得して、yqでJSONに変換して返す
 local function getFrontMatter(select_query)
 	if select_query ~= "" then
@@ -90,7 +92,7 @@ local function makeDisplay(entry)
 end
 
 -- front matterを取得してpickerを表示する
-local function frontMatterPicker(opts)
+function M.frontMatterPicker(opts)
 	opts = opts or {}
 	local select_query = opts.select_query or ""
 	pickers
@@ -116,17 +118,22 @@ local function frontMatterPicker(opts)
 		:find()
 end
 
-local set = vim.keymap.set
-set("n", "<Plug>(front-matter-searcher.search.title)", function()
-	frontMatterPicker()
-end, { desc = "⭐︎FrontMatterSearcher: Search by title." })
-set("n", "<Plug>(front-matter-searcher.search.tags)", function()
-	vim.ui.input({ prompt = "Tag: " }, function(tag)
-		frontMatterPicker({ select_query = 'select(.tags[]? == "' .. tag .. '")' })
-	end)
-end, { desc = "⭐︎FrontMatterSearcher: Search by tag." })
-set("n", "<Plug>(front-matter-searcher.search.categories)", function()
-	vim.ui.input({ prompt = "Category: " }, function(tag)
-		frontMatterPicker({ select_query = 'select(.categories[]? == "' .. tag .. '")' })
-	end)
-end, { desc = "⭐︎FrontMatterSearcher: Search by Category." })
+-- 基本となる処理の設定
+function M.setup()
+	local set = vim.keymap.set
+	set("n", "<Plug>(front-matter-searcher.search.title)", function()
+		M.frontMatterPicker()
+	end, { desc = "⭐︎FrontMatterSearcher: Search by title." })
+	set("n", "<Plug>(front-matter-searcher.search.tags)", function()
+		vim.ui.input({ prompt = "Tag: " }, function(tag)
+			M.frontMatterPicker({ select_query = 'select(.tags[]? == "' .. tag .. '")' })
+		end)
+	end, { desc = "⭐︎FrontMatterSearcher: Search by tag." })
+	set("n", "<Plug>(front-matter-searcher.search.categories)", function()
+		vim.ui.input({ prompt = "Category: " }, function(category)
+			M.frontMatterPicker({ select_query = 'select(.categories[]? == "' .. category .. '")' })
+		end)
+	end, { desc = "⭐︎FrontMatterSearcher: Search by Category." })
+end
+
+return M

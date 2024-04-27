@@ -1,11 +1,14 @@
 {
-  "diffEditor.renderSideBySide": false,
-  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
+  "editor.rulers": [
+    79,
+    88,
+    100
+  ], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
   "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "editor.fontSize": 15,
+  "editor.fontSize": 18,
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
   "editor.largeFileOptimizations": false,
@@ -59,7 +62,7 @@
   },
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.fontSize": 18,
   "window.commandCenter": 1,
   "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
@@ -130,7 +133,9 @@
   "insertDateString.formatTime": "hh:mm",
   // === Extension: neovim(asvetliakov.vscode-neovim)
   // リモートのneovimを利用する際に有効化する。通常は無効で良いのだが、通常利用でも設定を勧められたので有効化してみる。
-  "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
   "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
   "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
   "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
@@ -335,5 +340,6 @@
   "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "hediet.vscode-drawio.theme": "Kennedy"
 }

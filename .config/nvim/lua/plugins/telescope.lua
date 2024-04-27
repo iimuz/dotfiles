@@ -10,6 +10,18 @@
 -- VSCodeから利用する場合は無効化
 local condition = vim.g.vscode == nil
 
+-- name_typeで指定した形式でファイルパスを挿入する
+--
+-- e.g. `:t:r`でファイル名のみを挿入: `path/to/file.txt` -> `file`
+-- e.g. `:.`で相対パスを挿入: `path/to/file.txt` -> `path/to/file.txt`
+local function actionsInsertFilepath(prompt_bufnr, name_type)
+	local actions = require("telescope.actions")
+	local selection = require("telescope.actions.state").get_selected_entry()
+	local file_path = vim.fn.fnamemodify(selection.path, name_type)
+	actions.close(prompt_bufnr)
+	vim.api.nvim_put({ file_path }, "c", false, true)
+end
+
 return {
 	-- Telescope本体
 	-- see: <https://github.com/nvim-telescope/telescope.nvim>
@@ -39,6 +51,24 @@ return {
 						"--smart-case",
 						"--no-ignore", -- ignoreは無視する
 						"--hidden", -- 隠しファイルも対象
+					},
+					mappings = {
+						i = {
+							["<C-i>"] = function(prompt_bufnr)
+								actionsInsertFilepath(prompt_bufnr, ":t:r")
+							end,
+							["<C-r>"] = function(prompt_bufnr)
+								actionsInsertFilepath(prompt_bufnr, ":.")
+							end,
+						},
+						n = {
+							["i"] = function(prompt_bufnr)
+								actionsInsertFilepath(prompt_bufnr, ":t:r")
+							end,
+							["r"] = function(prompt_bufnr)
+								actionsInsertFilepath(prompt_bufnr, ":.")
+							end,
+						},
 					},
 				},
 			})
