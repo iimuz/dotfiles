@@ -22,6 +22,15 @@ local function actionsInsertFilepath(prompt_bufnr, name_type)
 	vim.api.nvim_put({ file_path }, "c", false, true)
 end
 
+-- filenameのみを挿入する
+local insert_filename_without_suffix = function(prompt_bufnr)
+	actionsInsertFilepath(prompt_bufnr, ":t:r")
+end
+-- 相対パスを挿入する
+local insert_relative_path = function(prompt_bufnr)
+	actionsInsertFilepath(prompt_bufnr, ":.")
+end
+
 return {
 	-- Telescope本体
 	-- see: <https://github.com/nvim-telescope/telescope.nvim>
@@ -54,20 +63,12 @@ return {
 					},
 					mappings = {
 						i = {
-							["<C-i>"] = function(prompt_bufnr)
-								actionsInsertFilepath(prompt_bufnr, ":t:r")
-							end,
-							["<C-r>"] = function(prompt_bufnr)
-								actionsInsertFilepath(prompt_bufnr, ":.")
-							end,
+							["<C-i>"] = insert_filename_without_suffix,
+							["<C-r>"] = insert_relative_path,
 						},
 						n = {
-							["i"] = function(prompt_bufnr)
-								actionsInsertFilepath(prompt_bufnr, ":t:r")
-							end,
-							["r"] = function(prompt_bufnr)
-								actionsInsertFilepath(prompt_bufnr, ":.")
-							end,
+							["i"] = insert_filename_without_suffix,
+							["r"] = insert_relative_path,
 						},
 					},
 				},
