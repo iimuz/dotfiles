@@ -7,19 +7,17 @@
 local condition = vim.g.vscode == nil
 
 return {
-	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		branch = "canary",
-		cond = condition,
-		cmd = {
-			"CopilotChatOpen",
-		},
-		dependencies = {
-			{ "github/copilot.vim" },
-			{ "nvim-lua/plenary.nvim" },
-		},
-		config = function()
-			require("CopilotChat").setup()
-		end,
+	"CopilotC-Nvim/CopilotChat.nvim",
+	branch = "canary",
+	cond = condition,
+	cmd = {
+		"CopilotChatOpen",
 	},
+	dependencies = {
+		{ "github/copilot.vim" },
+		{ "nvim-lua/plenary.nvim" },
+	},
+	config = function()
+		require("CopilotChat").setup()
+	end,
 }
