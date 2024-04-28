@@ -433,7 +433,12 @@ local function registerLspAndLlmKey()
 			name = "LSP and LLM",
 			c = {
 				name = "GitHub Copilot Chat",
-				c = { require("CopilotChat").close, "CopilotChat: Close chat window." },
+				c = {
+					function()
+						require("CopilotChat").close()
+					end,
+					"CopilotChat: Close chat window.",
+				},
 				i = {
 					function()
 						require("CopilotChat").toggle({
@@ -459,7 +464,12 @@ local function registerLspAndLlmKey()
 					end,
 					"⭐︎CopilotChat: Quick chat",
 				},
-				r = { require("CopilotChat").reset, "CopilotChat: Reset chat window." },
+				r = {
+					function()
+						require("CopilotChat").reset()
+					end,
+					"CopilotChat: Reset chat window.",
+				},
 			},
 			g = {
 				name = "GitHub Copilot",
