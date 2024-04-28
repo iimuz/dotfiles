@@ -48,10 +48,6 @@ return {
 			end,
 		})
 
-		local format_func = function(opts)
-			opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
-			conform.format(opts)
-		end
 		-- auto-saveプラグインから保存するときに自動でformatするための処理
 		local augroup = vim.api.nvim_create_augroup("comform-auto-save", { clear = true })
 		vim.api.nvim_create_autocmd({ "User" }, {
@@ -63,35 +59,9 @@ return {
 					return
 				end
 
-				format_func()
+				opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
+				conform.format(opts)
 			end,
 		})
-		-- ショートカットキーの登録
-		vim.keymap.set({ "n", "v" }, "<Plug>(conform.format)", function()
-			format_func()
-		end, { desc = "⭐︎Conform: Format file or range (in visual mode)" })
-		vim.keymap.set(
-			"n",
-			"<Plug>(conform.info)",
-			"<cmd>ConformInfo<CR>",
-			{ desc = "⭐︎Conform: Show information." }
-		)
-		vim.keymap.set({ "n", "v" }, "<Plug>(conform.format_using_specific)", function()
-			vim.ui.input({ prompt = "Formatter: " }, function(formatter)
-				format_func({ formatters = { formatter } })
-			end)
-		end, { desc = "⭐︎Conform: Format file or range (in visual mode) using specific formatter." })
-		vim.keymap.set("n", "<Plug>(conform.disable)", function()
-			vim.g.disable_autoformat = true
-		end, { desc = "⭐︎Conform: Disable auto format." })
-		vim.keymap.set("n", "<Plug>(conform.enable)", function()
-			vim.g.disable_autoformat = false
-		end, { desc = "⭐︎Conform: Enable auto format." })
-		vim.keymap.set("n", "<Plug>(conform.buff.disable)", function()
-			vim.b.disable_autoformat = true
-		end, { desc = "Conform: Disable auto format for this buffer." })
-		vim.keymap.set("n", "<Plug>(conform.buff.enable)", function()
-			vim.g.disable_autoformat = false
-		end, { desc = "Conform: Enable auto format for this buffer." })
 	end,
 }

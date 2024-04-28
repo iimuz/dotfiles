@@ -119,21 +119,8 @@ function M.frontMatterPicker(opts)
 end
 
 -- 基本となる処理の設定
-function M.setup()
-	local set = vim.keymap.set
-	set("n", "<Plug>(front-matter-searcher.search.title)", function()
-		M.frontMatterPicker()
-	end, { desc = "⭐︎FrontMatterSearcher: Search by title." })
-	set("n", "<Plug>(front-matter-searcher.search.tags)", function()
-		vim.ui.input({ prompt = "Tag: " }, function(tag)
-			M.frontMatterPicker({ select_query = 'select(.tags[]? == "' .. tag .. '")' })
-		end)
-	end, { desc = "⭐︎FrontMatterSearcher: Search by tag." })
-	set("n", "<Plug>(front-matter-searcher.search.categories)", function()
-		vim.ui.input({ prompt = "Category: " }, function(category)
-			M.frontMatterPicker({ select_query = 'select(.categories[]? == "' .. category .. '")' })
-		end)
-	end, { desc = "⭐︎FrontMatterSearcher: Search by Category." })
-end
+--
+-- ショートカットキーの登録はwhich-keyで行うため何もしていない。
+function M.setup() end
 
 return M

@@ -4,10 +4,8 @@ require("lsp") -- Builtin LSP設定
 require("lazy-init") -- plugin managerとしてlazy.nvimを設定
 
 -- 以下は自作コマンドなどの設定
-require("auto-lastmod") -- front matterのlatmod自動修正
+require("auto-lastmod").setup() -- front matterのlatmod自動修正
 require("front-matter-searcher").setup() -- front matterを検索するコマンド
-require("markdown-hop-links")
+require("markdown-hop-links").setup()
 require("project-settings") -- project rootのneovim設定を読み込む
-require("timestamp-inserter") -- timestampを挿入するコマンド
-require("vscode") -- vscodeの設定
-require("zettelkasten") -- zettelkasten関連の設定
+require("timestamp-inserter").setup() -- timestampを挿入するコマンド

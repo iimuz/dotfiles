@@ -6,6 +6,7 @@
 
 return {
 	"okuuva/auto-save.nvim",
+	event = { "BufEnter" },
 	opts = {
 		trigger_events = {
 			-- tmuxを利用する場合に"FocusLost"でファイルを保存するためには`set -g focus-events on`にしておく必要がある。

@@ -1,17 +1,21 @@
 -- Markdownファイルのfront matterにあるlastmodを自動で保存日時に書き換える
 
-vim.g.enable_auto_lastmod = true
-vim.keymap.set("n", "<Plug>(auto-lastmod.enable)", function()
-	vim.g.enable_auto_lastmod = true
-	vim.notify("Enable auto-lastmod")
-end, { desc = "AutoLastMod: Enable auto-lastmod" })
-vim.keymap.set("n", "<Plug>(auto-lastmod.disable)", function()
-	vim.g.enable_auto_lastmod = false
-	vim.notify("Disable auto-lastmod")
-end, { desc = "⭐︎AutoLastMod: Disable auto-lastmod" })
+local M = {}
 
+-- enable or disable auto lastmod at buffer
+vim.b.enable_auto_lastmod = true
+function M.enable_buffer()
+	vim.b.enable_auto_lastmod = true
+	vim.notify("Enable auto-lastmod at buffer.")
+end
+function M.disable_buffer()
+	vim.b.enable_auto_lastmod = false
+	vim.notify("Disable auto-lastmod at buffer")
+end
+
+-- front matterのlastmodを更新する
 local function UpdateLastmod()
-	if not vim.g.enable_auto_lastmod then
+	if not vim.b.enable_auto_lastmod then
 		return
 	end
 
@@ -62,15 +66,20 @@ local function UpdateLastmod()
 	end
 end
 
--- ファイル保存時にUpdateLastmod()を実行
-local augroup = vim.api.nvim_create_augroup("auto-update-lastmod", { clear = true })
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	group = augroup,
-	pattern = { "*.md" },
-	callback = UpdateLastmod,
-})
-vim.api.nvim_create_autocmd({ "User" }, {
-	group = augroup,
-	pattern = { "AutoSaveWritePre" },
-	callback = UpdateLastmod,
-})
+-- 初期化関数
+function M.setup()
+	-- ファイル保存時にUpdateLastmod()を実行
+	local augroup = vim.api.nvim_create_augroup("auto-update-lastmod", { clear = true })
+	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+		group = augroup,
+		pattern = { "*.md" },
+		callback = UpdateLastmod,
+	})
+	vim.api.nvim_create_autocmd({ "User" }, {
+		group = augroup,
+		pattern = { "AutoSaveWritePre" },
+		callback = UpdateLastmod,
+	})
+end
+
+return M

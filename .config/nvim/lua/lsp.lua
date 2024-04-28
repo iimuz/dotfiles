@@ -3,81 +3,44 @@
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(ctx)
 		-- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
-		local set = vim.keymap.set
-		set("n", "gD", vim.lsp.buf.declaration, {
+		require("which-key").register({
+			l = {
+				l = {
+					name = "LSP",
+					a = { vim.lsp.buf.code_action, "⭐︎LSP: Code action." },
+					d = { vim.lsp.buf.definition, "⭐︎LSP: Go to definition." },
+					D = { vim.lsp.buf.declaration, "⭐︎LSP: Go to declaration." },
+					e = {
+						name = "Diagnostic",
+						o = { vim.diagnostic.open_float, "⭐︎LSP: Show line diagnostics." },
+						p = { vim.diagnostic.goto_prev, "⭐︎LSP: Go to previous diagnostics." },
+						n = { vim.diagnostic.goto_next, "⭐︎LSP: Go to next diagnostics." },
+						l = { vim.diagnostic.setloclist, "⭐︎LSP: Set loclist diagnostics." },
+					},
+					f = {
+						function()
+							vim.lsp.buf.format({ async = true })
+						end,
+						"⭐︎LSP: Formatting.",
+					},
+					i = { vim.lsp.buf.implementation, "⭐︎LSP: Go to implementation." },
+					k = { vim.lsp.buf.signature_help, "⭐︎LSP: Show signature help." },
+					K = { vim.lsp.buf.hover, "⭐︎LSP: Show hover." },
+					n = { vim.lsp.buf.rename, "⭐︎LSP: Rename." },
+					r = { vim.lsp.buf.references, "⭐︎LSP: Show references." },
+					s = { "<cmd>LspInfo<CR>", "⭐︎LSP: Show lsp info." },
+					t = { vim.lsp.buf.type_definition, "⭐︎LSP: Type definition." },
+					w = {
+						name = "workspace",
+						a = { vim.lsp.buf.add_workspace_folder, "LSP: Add workspace folder." },
+						r = { vim.lsp.buf.remove_workspace_folder, "LSP: Remove workspace folder." },
+						l = { vim.lsp.buf.list_workspace_folders, "LSP: List workspace folders." },
+					},
+				},
+			},
+		}, {
+			prefix = "<leader>",
 			buffer = ctx.buff,
-			desc = "⭐︎LSP: Go to declaration.",
-		})
-		set("n", "gd", vim.lsp.buf.definition, {
-			buffer = ctx.buff,
-			desc = "⭐︎LSP: Go to definition.",
-		})
-		set("n", "K", vim.lsp.buf.hover, {
-			buffer = true,
-			desc = "⭐︎LSP: Show hover.",
-		})
-		set("n", "gi", vim.lsp.buf.implementation, {
-			buffer = true,
-			desc = "⭐︎LSP: Go to implementation.",
-		})
-		set("n", "<C-k>", vim.lsp.buf.signature_help, {
-			buffer = true,
-			desc = "⭐︎LSP: Show signature help.",
-		})
-		set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, {
-			buffer = true,
-			desc = "LSP: Add workspace folder.",
-		})
-		set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, {
-			buffer = true,
-			desc = "LSP: Remove workspace folder.",
-		})
-		set("n", "<space>wl", function()
-			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-		end, {
-			buffer = true,
-			desc = "LSP: List workspace folders.",
-		})
-		set("n", "<space>D", vim.lsp.buf.type_definition, {
-			buffer = true,
-			desc = "⭐︎LSP: Type definition.",
-		})
-		set("n", "<space>rn", vim.lsp.buf.rename, {
-			buffer = true,
-			desc = "⭐︎LSP: Rename.",
-		})
-		set("n", "<space>ca", vim.lsp.buf.code_action, {
-			buffer = true,
-			desc = "⭐︎LSP: Code action.",
-		})
-		set("n", "gr", vim.lsp.buf.references, {
-			buffer = true,
-			desc = "⭐︎LSP: Show references.",
-		})
-		set("n", "<space>e", vim.diagnostic.open_float, {
-			buffer = true,
-			desc = "⭐︎LSP: Show line diagnostics.",
-		})
-		set("n", "[d", vim.diagnostic.goto_prev, {
-			buffer = true,
-			desc = "⭐︎LSP: Go to previous diagnostics.",
-		})
-		set("n", "]d", vim.diagnostic.goto_next, {
-			buffer = true,
-			desc = "⭐︎LSP: Go to next diagnostics.",
-		})
-		set("n", "<space>q", vim.diagnostic.setloclist, {
-			buffer = true,
-			desc = "⭐︎LSP: Set loclist diagnostics.",
-		})
-		set("n", "<space>f", function()
-			vim.lsp.buf.format({ async = true })
-		end, {
-			buffer = true,
-			desc = "⭐︎LSP: Formatting.",
 		})
 	end,
 })
-
--- Telescopeでのコマンド検索用
-vim.keymap.set("n", "<Plug>lsp.info", "<cmd>LspInfo<CR>", { desc = "LSP: Show lsp info." })

@@ -21,9 +21,6 @@ return {
 		},
 		config = function()
 			require("mason").setup()
-
-			-- Telescope検索用コマンドの登録
-			vim.keymap.set("n", "<Plug>(mason.log)", "<cmd>MasonLog<CR>", { desc = "Mason: Show log." })
 		end,
 	},
 	-- mason-lspconfigの設定
