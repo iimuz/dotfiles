@@ -64,10 +64,16 @@ return {
 						i = {
 							["<C-i>"] = insert_filename_without_suffix,
 							["<C-r>"] = insert_relative_path,
+							["<C-t>"] = function()
+								require("trouble").open_with_trouble()
+							end,
 						},
 						n = {
 							["<C-i>"] = insert_filename_without_suffix,
 							["<C-r>"] = insert_relative_path,
+							["<C-t>"] = function()
+								require("trouble").open_with_trouble()
+							end,
 						},
 					},
 				},

@@ -586,6 +586,45 @@ local function registerLspAndLlmKey()
 				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
 				u = { "<cmd>MasonUpdate<CR>", "Mason: update." },
 			},
+			t = {
+				name = "Trouble",
+				d = {
+					function()
+						require("trouble").toggle("document_diagnostics")
+					end,
+					"Trouble: Toggle document diagnostics.",
+				},
+				l = {
+					function()
+						require("trouble").toggle("loclist")
+					end,
+					"Trouble: Toggle location list.",
+				},
+				q = {
+					function()
+						require("trouble").toggle("quickfix")
+					end,
+					"Trouble: Toggle quickfix.",
+				},
+				r = {
+					function()
+						require("trouble").toggle("lsp_references")
+					end,
+					"Trouble: Toggle LSP references.",
+				},
+				w = {
+					function()
+						require("trouble").toggle("workspace_diagnostics")
+					end,
+					"Trouble: Toggle workspace diagnostics.",
+				},
+				x = {
+					function()
+						require("trouble").toggle()
+					end,
+					"Trouble: Toggle.",
+				},
+			},
 		},
 	}, { prefix = "<Leader>" })
 
