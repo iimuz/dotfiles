@@ -457,10 +457,11 @@ local function registerLspAndLlmKey()
 				o = { "<cmd>CopilotChatOpen<CR>", "⭐︎CopilotChat: Open chat window." },
 				q = {
 					function()
-						local input = vim.ui.input("Quick Chat: ")
-						if input ~= "" then
-							chat.ask(input, { selection = require("CopilotChat.select").buffer })
-						end
+						vim.ui.input({ prompt = "Quick Chat: " }, function(text)
+							if text ~= "" then
+								require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
+							end
+						end)
 					end,
 					"⭐︎CopilotChat: Quick chat",
 				},
