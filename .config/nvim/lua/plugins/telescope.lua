@@ -66,8 +66,8 @@ return {
 							["<C-r>"] = insert_relative_path,
 						},
 						n = {
-							["i"] = insert_filename_without_suffix,
-							["r"] = insert_relative_path,
+							["<C-i>"] = insert_filename_without_suffix,
+							["<C-r>"] = insert_relative_path,
 						},
 					},
 				},
