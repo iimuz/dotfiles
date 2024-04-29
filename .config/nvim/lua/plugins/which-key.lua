@@ -281,6 +281,81 @@ local function registerGitKey()
 				s = { "<cmd>Octo issue search<CR>", "Octo: Live issue search." },
 				u = { "<cmd>Octo issue url<CR>", "Octo: Copies the URL of the current issue to the system clipboard." },
 			},
+			h = {
+				name = "Hunk",
+				b = {
+					name = "Blame",
+					e = {
+						function()
+							require("gitsigns").blame_line({ full = true })
+						end,
+						"GitSigns: Blame line.",
+					},
+					t = {
+						function()
+							require("gitsigns").toggle_current_line_blame()
+						end,
+						"GitSigns: Toggle line blame.",
+					},
+				},
+				d = {
+					function()
+						require("gitsigns").toggle_deleted()
+					end,
+					"GitSigns: Toggle deleted.",
+				},
+				D = {
+					name = "Diff",
+					d = {
+						function()
+							require("gitsigns").diffthis()
+						end,
+						"GitSigns: Diff this.",
+					},
+					D = {
+						function()
+							require("gitsigns").diffthis("~")
+						end,
+						"GitSigns: Diff this (against HEAD~).",
+					},
+				},
+				p = {
+					function()
+						require("gitsigns").preview_hunk()
+					end,
+					"GitSigns: Preview hunk.",
+				},
+				r = {
+					function()
+						require("gitsigns").reset_hunk()
+					end,
+					"GitSigns: Reset hunk.",
+				},
+				R = {
+					function()
+						require("gitsigns").reset_buffer()
+					end,
+					"GitSigns: Reset buffer.",
+				},
+				s = {
+					function()
+						require("gitsigns").stage_hunk()
+					end,
+					"GitSigns: Stage hunk.",
+				},
+				S = {
+					function()
+						require("gitsigns").stage_buffer()
+					end,
+					"GitSigns: Stage buffer.",
+				},
+				u = {
+					function()
+						require("gitsigns").undo_stage_hunk()
+					end,
+					"GitSigns: Undo stage hunk.",
+				},
+			},
 			g = { "<cmd>Octo gist list<CR>", "Octo: List user gists." },
 			l = { lazygitToggle, "⭐︎ToggleTerm: Open lazygit." },
 			p = {
@@ -337,6 +412,28 @@ local function registerGitKey()
 			},
 		},
 	}, { prefix = "<Leader>" })
+
+	-- ビジュアルモード
+	require("which-key").register({
+		g = {
+			h = {
+				-- git sign for visual mode
+				-- dependencies: `lewis6991/gitsigns.nvim`
+				s = {
+					function()
+						require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end,
+					"GitSigns: Stage hunk.",
+				},
+				r = {
+					function()
+						require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end,
+					"GitSigns: Reset hunk.",
+				},
+			},
+		},
+	}, { mode = "v", prefix = "<Leader>" })
 end
 
 -- 言語関連のキー登録
