@@ -37,6 +37,7 @@ return {
 				-- - linter: mfussenegger/nvim-lint
 				ensure_installed = {
 					"gopls", -- Go lang LSP
+					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"pyright", -- Python LSP
 				},
