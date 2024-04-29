@@ -486,6 +486,8 @@ local function registerLspAndLlmKey()
 			m = {
 				name = "Mason",
 				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
+				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
+				u = { "<cmd>MasonUpdate<CR>", "Mason: update." },
 			},
 		},
 	}, { prefix = "<Leader>" })
