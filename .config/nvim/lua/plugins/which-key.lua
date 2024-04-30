@@ -149,13 +149,13 @@ local function registerEditKey()
 						function()
 							vim.b.disable_autoformat = false
 						end,
-						"⭐︎Conform: Disable for this buffer.",
+						"⭐︎Conform: Enable for this buffer.",
 					},
 					g = {
 						function()
 							vim.g.disable_autoformat = false
 						end,
-						"Conform: Disable.",
+						"Conform: Enable",
 					},
 				},
 				i = { "<cmd>ConformInfo<CR>", "⭐︎Conform: Show information." },
