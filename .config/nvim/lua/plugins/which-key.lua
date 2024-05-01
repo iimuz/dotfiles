@@ -419,7 +419,9 @@ local function registerGitKey()
 	-- ビジュアルモード
 	require("which-key").register({
 		g = {
+			name = "Git",
 			h = {
+				name = "Hunk",
 				-- git sign for visual mode
 				-- dependencies: `lewis6991/gitsigns.nvim`
 				s = {
