@@ -689,28 +689,17 @@ local function registerLspAndLlmKey()
 			name = "LSP and LLM",
 			c = {
 				name = "GitHub Copilot Chat",
-				i = {
-					function()
-						require("CopilotChat").toggle({
-							window = {
-								layout = "float",
-								title = "CopilotChat - Inline Chat",
-								relative = "cursor",
-								width = 1,
-								height = 0.4,
-								row = 1,
-							},
-						})
-					end,
-					"⭐︎CopilotChat: Inline chat",
-				},
 				q = {
 					function()
-						vim.ui.input({ prompt = "Quick Chat: " }, function(text)
-							if text ~= "" then
-								require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
-							end
-						end)
+						local input = vim.fn.input("Quick Chat: ")
+						if input ~= "" then
+							require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
+						end
+						-- vim.ui.input({ prompt = "Quick Chat: " }, function(text)
+						-- 	if text ~= "" then
+						-- 		require("CopilotChat").ask(text, { selection = require("CopilotChat.select").visual })
+						-- 	end
+						-- end)
 					end,
 					"⭐︎CopilotChat: Quick chat",
 				},
