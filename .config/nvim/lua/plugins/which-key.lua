@@ -459,8 +459,16 @@ local function registerLanguageKey()
 				},
 				l = {
 					name = "Auto lastmod",
-					d = { require("auto-lastmod").disable_buffer, "⭐︎AutoLastMod: Disable auto-lastmod" },
-					e = { require("auto-lastmod").enable_buffer, "AutoLastMod: Enable auto-lastmod" },
+					b = {
+						name = "Buffer",
+						d = { require("auto-lastmod").disable_buffer, "⭐︎AutoLastMod: Disable auto-lastmod" },
+						e = { require("auto-lastmod").enable_buffer, "AutoLastMod: Enable auto-lastmod" },
+					},
+					g = {
+						name = "Global",
+						d = { require("auto-lastmod").disable_global, "⭐︎AutoLastMod: Disable auto-lastmod" },
+						e = { require("auto-lastmod").enable_global, "AutoLastMod: Enable auto-lastmod" },
+					},
 				},
 				f = {
 					name = "Front matter",

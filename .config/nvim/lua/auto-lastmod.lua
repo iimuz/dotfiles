@@ -2,8 +2,16 @@
 
 local M = {}
 
+-- enable or disable auto lastmod at global
+function M.enable_global()
+	vim.g.enable_auto_lastmod = true
+	vim.notify("Enable auto-lastmod at global.")
+end
+function M.disable_global()
+	vim.g.enable_auto_lastmod = false
+	vim.notify("Disable auto-lastmod at global")
+end
 -- enable or disable auto lastmod at buffer
-vim.b.enable_auto_lastmod = true
 function M.enable_buffer()
 	vim.b.enable_auto_lastmod = true
 	vim.notify("Enable auto-lastmod at buffer.")
@@ -15,7 +23,12 @@ end
 
 -- front matterのlastmodを更新する
 local function UpdateLastmod()
-	if not vim.b.enable_auto_lastmod then
+	-- bufferの設定がない場合はglobalの設定を利用する
+	if vim.b.enable_auto_lastmod == nil and not vim.g.enable_auto_lastmod then
+		return
+	end
+	-- bufferの設定があれば、bufferの設定を利用し、globalは無視する
+	if vim.b.enable_auto_lastmod ~= nil and not vim.b.enable_auto_lastmod then
 		return
 	end
 
@@ -68,6 +81,9 @@ end
 
 -- 初期化関数
 function M.setup()
+	-- デフォルトで有効
+	vim.g.enable_auto_lastmod = true
+
 	-- ファイル保存時にUpdateLastmod()を実行
 	local augroup = vim.api.nvim_create_augroup("auto-update-lastmod", { clear = true })
 	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
