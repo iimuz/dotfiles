@@ -55,7 +55,7 @@ local function registerBufferKey()
 		b = {
 			name = "Buffer",
 			l = { require("telescope.builtin").buffers, "⭐︎Telescope: Open buffer list." },
-			g = {
+			["/"] = {
 				require("telescope.builtin").current_buffer_fuzzy_find,
 				"⭐︎Telescope: Live fuzzy search inside of the currently open buffer.",
 			},
@@ -126,6 +126,12 @@ local function registerEditKey()
 	require("which-key").register({
 		e = {
 			name = "Edit",
+			a = {
+				-- Toggle auto save.
+				-- dependencies: `okuuva/auto-save.nvim`
+				"<cmd>ASToggle<CR>",
+				"AutoSave: Toggle auto save mode.",
+			},
 			c = {
 				name = "Conform",
 				d = {
@@ -235,9 +241,6 @@ local function registerFileKey()
 					"⭐︎Self: Copy file name without suffix.",
 				},
 			},
-			-- Toggle auto save.
-			-- dependencies: `okuuva/auto-save.nvim`
-			s = { "<cmd>ASToggle<CR>", "AutoSave: Toggle auto save mode." },
 			t = {
 				function()
 					local filepath = vim.fn.tempname()
@@ -278,8 +281,8 @@ local function registerGitKey()
 				l = { "<cmd>Octo issue list<CR>", "⭐︎Octo: List issues." },
 				o = { "<cmd>Octo issue rowser<CR>", "Octo: Open current issue in the browser." },
 				r = { "<cmd>Octo issue reload<CR>", "Octo: Reload issue." },
-				s = { "<cmd>Octo issue search<CR>", "Octo: Live issue search." },
 				u = { "<cmd>Octo issue url<CR>", "Octo: Copies the URL of the current issue to the system clipboard." },
+				["/"] = { "<cmd>Octo issue search<CR>", "Octo: Live issue search." },
 			},
 			h = {
 				name = "Hunk",
@@ -399,8 +402,8 @@ local function registerGitKey()
 					r = { "<cmd>Octo review resume<CR>", "⭐︎Octo: Edit a pending review for current PR." },
 					s = { "<cmd>Octo review start<CR>", "⭐︎Octo: Start a new review." },
 				},
-				s = { "<cmd>Octo pr search<CR>", "Octo: Live PR search." },
 				u = { "<cmd>Octo pr url<CR>", "Octo: Copies the URL of the current PR to the system clipboard." },
+				["/"] = { "<cmd>Octo pr search<CR>", "Octo: Live PR search." },
 			},
 			r = {
 				name = "Repository",
@@ -525,6 +528,7 @@ end
 --
 -- dependencies: `CopilotC-Nvim/CopilotChat.nvim`
 local function registerLspAndLlmKey()
+	-- Normal mode
 	require("which-key").register({
 		l = {
 			name = "LSP and LLM",
@@ -628,8 +632,43 @@ local function registerLspAndLlmKey()
 		},
 	}, { prefix = "<Leader>" })
 
-	-- LSP
-	-- LspAttachした
+	-- Visual mode
+	-- Normal modeのキーの内、Visual modeで利用するもののみ登録する
+	require("which-key").register({
+		l = {
+			name = "LSP and LLM",
+			c = {
+				name = "GitHub Copilot Chat",
+				i = {
+					function()
+						require("CopilotChat").toggle({
+							window = {
+								layout = "float",
+								title = "CopilotChat - Inline Chat",
+								relative = "cursor",
+								width = 1,
+								height = 0.4,
+								row = 1,
+							},
+						})
+					end,
+					"⭐︎CopilotChat: Inline chat",
+				},
+				q = {
+					function()
+						vim.ui.input({ prompt = "Quick Chat: " }, function(text)
+							if text ~= "" then
+								require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
+							end
+						end)
+					end,
+					"⭐︎CopilotChat: Quick chat",
+				},
+			},
+		},
+	}, { mode = "v", prefix = "<Leader>" })
+
+	-- LspAttachしたときのみ設定を追加
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(ctx)
 			-- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
@@ -750,14 +789,10 @@ end
 
 -- Workspace関連のキー登録
 local function registerWorkspaceKey()
+	-- Normal mode
 	require("which-key").register({
 		w = {
 			name = "Workspace",
-			g = {
-				name = "Search",
-				g = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
-				s = { require("telescope.builtin").grep_string, "⭐︎Telescope: Search for a string in Workspace." },
-			},
 			n = {
 				-- dependencies: `rcarriga/nvim-notify`
 				"<cmd>Telescope notify<CR>",
@@ -772,8 +807,8 @@ local function registerWorkspaceKey()
 			},
 			v = {
 				name = "VSCode",
-				-- 現在のバッファをvscodeで開く
 				b = {
+					-- 現在のバッファをvscodeで開く
 					function()
 						if vim.fn.executable("code") == 0 then
 							vim.notify("code command not found.")
@@ -786,8 +821,8 @@ local function registerWorkspaceKey()
 					end,
 					"⭐︎VSCode: Open file.",
 				},
-				-- 同じフォルダでvsocdeを開く
 				w = {
+					-- 同じフォルダでvsocdeを開く
 					function()
 						if vim.fn.executable("code") == 0 then
 							vim.notify("code command not found.")
@@ -800,8 +835,30 @@ local function registerWorkspaceKey()
 					"VSCode: Open folder.",
 				},
 			},
+			["/"] = {
+				name = "Search",
+				["*"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
+				["/"] = {
+					require("telescope.builtin").grep_string,
+					"⭐︎Telescope: Search for the string under your cursor in Workspace.",
+				},
+			},
 		},
 	}, { prefix = "<Leader>" })
+
+	-- Visual mode
+	require("which-key").register({
+		w = {
+			name = "Workspace",
+			["/"] = {
+				name = "Search",
+				["/"] = {
+					require("telescope.builtin").grep_string,
+					"⭐︎Telescope: Search for the string your selection in Workspace.",
+				},
+			},
+		},
+	}, { mode = "v", prefix = "<Leader>" })
 end
 
 return {
