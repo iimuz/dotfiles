@@ -190,6 +190,26 @@ local function registerEditKey()
 				"<cmd>Telescope luasnip<CR>",
 				"⭐︎Telescope Luasnip: Open snippet list.",
 			},
+			t = {
+				name = "Tree sitter",
+				c = {
+					name = "Context",
+					e = {
+						"<cmd>TSContextEnable<CR>",
+						"TreeSitterContext: Enable.",
+					},
+					d = {
+						"<cmd>TSContextDisable<CR>",
+						"TreeSitterContext: Disable.",
+					},
+					j = {
+						function()
+							require("treesitter-context").go_to_context(vim.v.count1)
+						end,
+						"TreeSitterContext: Jumping to context(upwards).",
+					},
+				},
+			},
 		},
 	}, { prefix = "<Leader>" })
 end
@@ -322,11 +342,25 @@ local function registerGitKey()
 						"GitSigns: Diff this (against HEAD~).",
 					},
 				},
+				n = {
+					function()
+						if vim.wo.diff then
+							vim.cmd.normal({ "]c", bang = true })
+						else
+							require("gitsigns").nav_hunk("next")
+						end
+					end,
+					"GitSigns: Next hunk.",
+				},
 				p = {
 					function()
-						require("gitsigns").preview_hunk()
+						if vim.wo.diff then
+							vim.cmd.normal({ "[c", bang = true })
+						else
+							require("gitsigns").nav_hunk("prev")
+						end
 					end,
-					"GitSigns: Preview hunk.",
+					"GitSigns: Next hunk.",
 				},
 				r = {
 					function()
@@ -357,6 +391,12 @@ local function registerGitKey()
 						require("gitsigns").undo_stage_hunk()
 					end,
 					"GitSigns: Undo stage hunk.",
+				},
+				v = {
+					function()
+						require("gitsigns").preview_hunk()
+					end,
+					"GitSigns: Preview hunk.",
 				},
 			},
 			g = { "<cmd>Octo gist list<CR>", "Octo: List user gists." },
