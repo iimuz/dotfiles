@@ -32,16 +32,25 @@ elif [ "$(uname)" = "Linux" ]; then  # Linux
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# === current directory
+if [[ "$SHELL" == *bash ]]; then
+  current_directory="$(cd $(dirname $BASH_SOURCE); pwd)"
+elif [[ "$SHELL" == *zsh ]]; then
+  current_directory="$(cd $(dirname ${(%):-%N}); pwd)"
+fi
+
 # === Brewfileの場所を設定
 if [ "$(uname)" = "Darwin" ]; then  # MacOS
   if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
-    export HOMEBREW_BUNDLE_FILE="$(cd $(dirname ${(%):-%N}); pwd)/Brewfile-mac"
+    export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-mac"
   else  # Intel
-    export HOMEBREW_BUNDLE_FILE="$(cd $(dirname ${(%):-%N}); pwd)/Brewfile-rosetta"
+    export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-rosetta"
   fi
 elif [ "$(uname)" = "Linux" ]; then  # Linux
   if [[ "$(uname -r)" == *microsoft* ]]; then  # WSL
-    export HOMEBREW_BUNDLE_FILE="$(cd $(dirname ${(%):-%N}); pwd)/Brewfile-wsl"
+    export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-wsl"
+  elif  [[ "$(uname -r)" == *aws ]]; then
+    export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-ec2"
   fi
 fi
 
