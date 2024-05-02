@@ -1,5 +1,7 @@
 -- Markdownのリンクでbacklink, forward linkを検索する
 
+local M = {}
+
 -- 指定した配列から重複を排除した配列を返す
 local function unique(arr)
 	local unique_set = {}
@@ -110,7 +112,7 @@ local function makeDisplay(entry)
 end
 
 -- front matterを取得してpickerを表示する
-local function frontMatterPicker(opts)
+function M.frontMatterPicker(opts)
 	local pickers = require("telescope.pickers") -- picker 作成用の API
 	local finders = require("telescope.finders") -- finder 作成用の API
 	local conf = require("telescope.config").values -- ユーザーの init.lua を反映した設定内容
@@ -146,8 +148,9 @@ local function frontMatterPicker(opts)
 		:find()
 end
 
--- Telescope検索用コマンドの追加
-local set = vim.keymap.set
-set("n", "<Plug>(markdown-link-hops.backlink)", function()
-	frontMatterPicker()
-end, { desc = "⭐︎MarkdownLinkHops: Show backlinks." })
+-- 設定関数
+--
+-- ショートカットキーの登録はwhich-keyで行うため何もしていない。
+function M.setup() end
+
+return M

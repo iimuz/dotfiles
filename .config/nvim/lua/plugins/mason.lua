@@ -4,11 +4,6 @@
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
 
--- 起動用のキーマッピング
-local set = vim.keymap.set
-set("n", "<Plug>(mason.ui)", "<cmd>Mason<CR>", { desc = "⭐︎Mason: Show Mason UI." })
-set("n", "<Plug>(mason.update)", "<cmd>MasonUpdate<CR>", { desc = "Mason: update." })
-
 -- Neovim builtin LSPを利用する前提
 return {
 	-- LSP manager - mason
@@ -21,9 +16,6 @@ return {
 		},
 		config = function()
 			require("mason").setup()
-
-			-- Telescope検索用コマンドの登録
-			vim.keymap.set("n", "<Plug>(mason.log)", "<cmd>MasonLog<CR>", { desc = "Mason: Show log." })
 		end,
 	},
 	-- mason-lspconfigの設定
@@ -45,6 +37,7 @@ return {
 				-- - linter: mfussenegger/nvim-lint
 				ensure_installed = {
 					"gopls", -- Go lang LSP
+					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"pyright", -- Python LSP
 				},

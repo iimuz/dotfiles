@@ -3,10 +3,15 @@
 --
 -- Snippet管理プラグイン
 
+-- vscodeから呼び出す場合は利用しない
+local condition = vim.g.vscode == nil
+
 return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*", -- follow latest release.
 	build = "make install_jsregexp", -- install jsregexp (optional!).
+	event = { "VimEnter" },
+	cond = condition,
 	config = function()
 		local cwd = vim.fn.getcwd()
 		local cwd_snippets_path = cwd .. "/.snippets"

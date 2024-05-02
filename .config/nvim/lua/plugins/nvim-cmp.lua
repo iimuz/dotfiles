@@ -48,7 +48,12 @@ return {
 				-- { name = "luasnip" },
 				-- 開いているバッファからのキーワード補完
 				-- see: <https://github.com/hrsh7th/cmp-buffer>
-				{ name = "buffer" },
+				{
+					name = "buffer",
+					option = {
+						get_bufnrs = vim.api.nvim_list_bufs,
+					},
+				},
 			}),
 		})
 

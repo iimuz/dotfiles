@@ -16,13 +16,5 @@ return {
 
 		-- Telescopeに拡張機能を追加
 		require("telescope").load_extension("notify")
-
-		-- Telescopeにコマンドを追加
-		vim.keymap.set(
-			"n",
-			"<Plug>(telescope.notify)",
-			"<cmd>Telescope notify<CR>",
-			{ desc = "⭐︎Telescope: Show notify." }
-		)
 	end,
 }

@@ -7,11 +7,10 @@
 local condition = vim.g.vscode == nil
 
 return {
-  "lewis6991/gitsigns.nvim",
-  cond = condition,
-  event = { "BufRead", "BufNewFile" },
-  config = function()
-    require('gitsigns').setup()
-  end,
+	"lewis6991/gitsigns.nvim",
+	cond = condition,
+	event = { "BufRead", "BufNewFile" },
+	config = function()
+		require("gitsigns").setup()
+	end,
 }
-
