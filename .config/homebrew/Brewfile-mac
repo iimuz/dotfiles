@@ -100,5 +100,6 @@ brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
+brew "wget"
 cask "wezterm"  # terminal emulator
 brew "yq"
