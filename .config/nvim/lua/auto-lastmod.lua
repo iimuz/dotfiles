@@ -2,6 +2,12 @@
 
 local M = {}
 
+-- VSCodeから利用する場合は無効化
+if vim.g.vscode ~= nil then
+	function M.setup() end
+	return M
+end
+
 -- enable or disable auto lastmod at global
 function M.enable_global()
 	vim.g.enable_auto_lastmod = true

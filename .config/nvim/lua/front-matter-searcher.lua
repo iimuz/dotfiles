@@ -2,12 +2,18 @@
 --
 -- Telescopeに依存している。
 
+local M = {}
+
+-- VSCodeから利用する場合は無効化
+if vim.g.vscode ~= nil then
+	function M.setup() end
+	return {}
+end
+
 local pickers = require("telescope.pickers") -- picker 作成用の API
 local finders = require("telescope.finders") -- finder 作成用の API
 local conf = require("telescope.config").values -- ユーザーの init.lua を反映した設定内容
 local entry_display = require("telescope.pickers.entry_display")
-
-local M = {}
 
 -- rgでfront matterを取得して、yqでJSONに変換して返す
 local function getFrontMatter(select_query)
