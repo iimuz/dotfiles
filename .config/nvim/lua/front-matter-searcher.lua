@@ -7,7 +7,7 @@ local M = {}
 -- VSCodeから利用する場合は無効化
 if vim.g.vscode ~= nil then
 	function M.setup() end
-	return {}
+	return M
 end
 
 local pickers = require("telescope.pickers") -- picker 作成用の API

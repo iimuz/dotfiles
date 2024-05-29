@@ -5,7 +5,7 @@ local M = {}
 -- VSCodeから利用する場合は無効化
 if vim.g.vscode ~= nil then
 	function M.setup() end
-	return {}
+	return M
 end
 
 -- 引数で指定したunix epochから日時文字列を生成する
