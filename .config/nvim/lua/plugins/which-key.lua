@@ -812,6 +812,7 @@ local function registerTerminalKey()
 			name = "Terminal",
 			f = { "<cmd>ToggleTerm direction='float'<CR>", "⭐︎ToggleTerm: Open floating terminal." },
 			h = { "<cmd>ToggleTerm direction='horizontal'<CR>", "⭐︎ToggleTerm: Open horizontal terminal." },
+			p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
 			s = {
 				name = "Send to terminal",
 				l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
