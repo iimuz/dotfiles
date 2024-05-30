@@ -818,6 +818,7 @@ local function registerTerminalKey()
 				v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
 				s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
 			},
+			t = { "<cmd>ToggleTerm direction='tab'<CR>", "ToggleTerm: Open tab terminal." },
 			v = { "<cmd>ToggleTerm size=180 direction='vertical'<CR>", "ToggleTerm: Open vertical terminal." },
 		},
 	}, { prefix = "<Leader>" })
@@ -873,11 +874,11 @@ local function registerWorkspaceKey()
 			},
 			["/"] = {
 				name = "Search",
-				["*"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
-				["/"] = {
+				["*"] = {
 					require("telescope.builtin").grep_string,
 					"⭐︎Telescope: Search for the string under your cursor in Workspace.",
 				},
+				["/"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
 			},
 		},
 	}, { prefix = "<Leader>" })
