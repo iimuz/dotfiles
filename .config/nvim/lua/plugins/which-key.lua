@@ -766,19 +766,16 @@ end
 
 -- Outline関連のキー登録
 --
--- dependencies: `stevearc/aerial.nvim`
+-- dependencies: `hedyhli/outline.nvim`
 local function registerOutlineKey()
 	require("which-key").register({
 		o = {
 			name = "Outline",
-			f = { "<cmd>Telescope aerial<CR>", "Aerial: Show outline using Telescope" },
-			n = { "<cmd>AerialNavOpen<CR>", "⭐︎Aerial: Open outline navigation." },
-			q = {
-				name = "Close",
-				n = { "<cmd>AerialClose<CR>", "Aerial: Close outline window." },
-				w = { "<cmd>AerialNavClose<CR>", "Aerial: Close outline navigation." },
-			},
-			w = { "<cmd>AerialOpen!<CR>", "⭐︎Aerial: Open outline window." },
+			f = { "<cmd>OutlineFollow<CR>", "Outline: Go follow cursor position." },
+			o = { "<cmd>OutlineOpen<CR>", "⭐︎Outline: Open." },
+			q = { "<cmd>OutlineClose<CR>", "Outline: Close." },
+			s = { "<cmd>OutlineStatus<CR>", "Outline: Show status." },
+			r = { "<cmd>OutlinesRefresh<CR>", "Outline: Refresh of symbols." },
 		},
 	}, { prefix = "<Leader>" })
 end
