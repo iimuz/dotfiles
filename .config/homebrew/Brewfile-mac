@@ -74,7 +74,7 @@ brew "asdf"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
-# cask "obsidian"
+cask "obsidian"
 cask "postman"
 cask "visual-studio-code"
 
