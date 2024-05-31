@@ -14,7 +14,7 @@ local condition = vim.g.vscode == nil
 local set = vim.keymap.set
 return {
 	"stevearc/aerial.nvim",
-	enabled = false,
+	-- enabled = false,
 	cond = condition,
 	cmd = {
 		"AerialToggle",

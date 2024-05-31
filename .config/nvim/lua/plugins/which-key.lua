@@ -766,7 +766,9 @@ end
 
 -- Outline関連のキー登録
 --
--- dependencies: `hedyhli/outline.nvim`
+-- dependencies:
+--   - `hedyhli/outline.nvim`
+--   - `stevearc/aerial.nvim`
 local function registerOutlineKey()
 	require("which-key").register({
 		o = {
@@ -776,6 +778,7 @@ local function registerOutlineKey()
 			q = { "<cmd>OutlineClose<CR>", "Outline: Close." },
 			s = { "<cmd>OutlineStatus<CR>", "Outline: Show status." },
 			r = { "<cmd>OutlinesRefresh<CR>", "Outline: Refresh of symbols." },
+			t = { "<cmd>Telescope aerial<CR>", "Aerial: Open using telescope." },
 		},
 	}, { prefix = "<Leader>" })
 end
