@@ -2,6 +2,10 @@
 -- see: <https://github.com/stevearc/aerial.nvim>
 --
 -- Outline表示
+--
+-- 2024-05-31:
+-- アウトライン表示を呼び出すとクラッシュすることが多発したので利用を停止。
+-- outline.nvimを代わりに利用している。
 
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
@@ -10,6 +14,7 @@ local condition = vim.g.vscode == nil
 local set = vim.keymap.set
 return {
 	"stevearc/aerial.nvim",
+	-- enabled = false,
 	cond = condition,
 	cmd = {
 		"AerialToggle",

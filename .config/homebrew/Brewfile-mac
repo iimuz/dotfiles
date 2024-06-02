@@ -41,6 +41,7 @@ brew "lazygit"
 
 # === golang
 brew "go"
+brew "golangci-lint"
 
 # === hugo
 brew "hugo"
@@ -53,6 +54,9 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
+
+# === LLM
+brew "ollama"
 
 # === plantuml
 brew "graphviz"
@@ -70,7 +74,7 @@ brew "asdf"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
-# cask "obsidian"
+cask "obsidian"
 cask "postman"
 cask "visual-studio-code"
 
@@ -100,5 +104,6 @@ brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
+brew "wget"
 cask "wezterm"  # terminal emulator
 brew "yq"

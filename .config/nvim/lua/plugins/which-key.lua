@@ -766,19 +766,19 @@ end
 
 -- Outline関連のキー登録
 --
--- dependencies: `stevearc/aerial.nvim`
+-- dependencies:
+--   - `hedyhli/outline.nvim`
+--   - `stevearc/aerial.nvim`
 local function registerOutlineKey()
 	require("which-key").register({
 		o = {
 			name = "Outline",
-			f = { "<cmd>Telescope aerial<CR>", "Aerial: Show outline using Telescope" },
-			n = { "<cmd>AerialNavOpen<CR>", "⭐︎Aerial: Open outline navigation." },
-			q = {
-				name = "Close",
-				n = { "<cmd>AerialClose<CR>", "Aerial: Close outline window." },
-				w = { "<cmd>AerialNavClose<CR>", "Aerial: Close outline navigation." },
-			},
-			w = { "<cmd>AerialOpen!<CR>", "⭐︎Aerial: Open outline window." },
+			f = { "<cmd>OutlineFollow<CR>", "Outline: Go follow cursor position." },
+			o = { "<cmd>OutlineOpen<CR>", "⭐︎Outline: Open." },
+			q = { "<cmd>OutlineClose<CR>", "Outline: Close." },
+			s = { "<cmd>OutlineStatus<CR>", "Outline: Show status." },
+			r = { "<cmd>OutlinesRefresh<CR>", "Outline: Refresh of symbols." },
+			t = { "<cmd>Telescope aerial<CR>", "Aerial: Open using telescope." },
 		},
 	}, { prefix = "<Leader>" })
 end
@@ -815,12 +815,14 @@ local function registerTerminalKey()
 			name = "Terminal",
 			f = { "<cmd>ToggleTerm direction='float'<CR>", "⭐︎ToggleTerm: Open floating terminal." },
 			h = { "<cmd>ToggleTerm direction='horizontal'<CR>", "⭐︎ToggleTerm: Open horizontal terminal." },
+			p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
 			s = {
 				name = "Send to terminal",
 				l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
 				v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
 				s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
 			},
+			t = { "<cmd>ToggleTerm direction='tab'<CR>", "ToggleTerm: Open tab terminal." },
 			v = { "<cmd>ToggleTerm size=180 direction='vertical'<CR>", "ToggleTerm: Open vertical terminal." },
 		},
 	}, { prefix = "<Leader>" })
@@ -876,11 +878,11 @@ local function registerWorkspaceKey()
 			},
 			["/"] = {
 				name = "Search",
-				["*"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
-				["/"] = {
+				["*"] = {
 					require("telescope.builtin").grep_string,
 					"⭐︎Telescope: Search for the string under your cursor in Workspace.",
 				},
+				["/"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
 			},
 		},
 	}, { prefix = "<Leader>" })

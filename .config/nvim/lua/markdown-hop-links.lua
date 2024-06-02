@@ -2,6 +2,12 @@
 
 local M = {}
 
+-- VSCodeから利用する場合は無効化
+if vim.g.vscode ~= nil then
+	function M.setup() end
+	return M
+end
+
 -- 指定した配列から重複を排除した配列を返す
 local function unique(arr)
 	local unique_set = {}
