@@ -809,12 +809,20 @@ end
 -- Terminal関連のキー登録
 --
 -- dependencies: `akinsho/toggleterm.nvim`
+-- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
+-- 数字を設定しなければ、最初の端末を開くことができきる。
 local function registerTerminalKey()
 	require("which-key").register({
 		t = {
 			name = "Terminal",
-			f = { "<cmd>ToggleTerm direction='float'<CR>", "⭐︎ToggleTerm: Open floating terminal." },
-			h = { "<cmd>ToggleTerm direction='horizontal'<CR>", "⭐︎ToggleTerm: Open horizontal terminal." },
+			f = {
+				"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
+				"⭐︎ToggleTerm: Open floating terminal.",
+			},
+			h = {
+				"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
+				"⭐︎ToggleTerm: Open horizontal terminal.",
+			},
 			p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
 			s = {
 				name = "Send to terminal",
@@ -822,8 +830,11 @@ local function registerTerminalKey()
 				v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
 				s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
 			},
-			t = { "<cmd>ToggleTerm direction='tab'<CR>", "ToggleTerm: Open tab terminal." },
-			v = { "<cmd>ToggleTerm size=180 direction='vertical'<CR>", "ToggleTerm: Open vertical terminal." },
+			t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
+			v = {
+				"<cmd>exe v:count1 . \"ToggleTerm size=180 direction='vertical'\"<CR>",
+				"ToggleTerm: Open vertical terminal.",
+			},
 		},
 	}, { prefix = "<Leader>" })
 end
