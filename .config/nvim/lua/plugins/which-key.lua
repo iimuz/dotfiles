@@ -190,26 +190,6 @@ local function registerEditKey()
 				"<cmd>Telescope luasnip<CR>",
 				"⭐︎Telescope Luasnip: Open snippet list.",
 			},
-			t = {
-				name = "Tree sitter",
-				c = {
-					name = "Context",
-					e = {
-						"<cmd>TSContextEnable<CR>",
-						"TreeSitterContext: Enable.",
-					},
-					d = {
-						"<cmd>TSContextDisable<CR>",
-						"TreeSitterContext: Disable.",
-					},
-					j = {
-						function()
-							require("treesitter-context").go_to_context(vim.v.count1)
-						end,
-						"TreeSitterContext: Jumping to context(upwards).",
-					},
-				},
-			},
 		},
 	}, { prefix = "<Leader>" })
 end
@@ -634,12 +614,6 @@ local function registerLspAndLlmKey()
 				s = { "<cmd>Copilot status<CR>", "⭐︎Copilot: Show status." },
 				u = { "<cmd>Copilot setup<CR>", "Copilot: Setup." },
 			},
-			m = {
-				name = "Mason",
-				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
-				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
-				u = { "<cmd>MasonUpdate<CR>", "Mason: update." },
-			},
 			t = {
 				name = "Trouble",
 				d = {
@@ -811,29 +785,64 @@ end
 -- dependencies: `akinsho/toggleterm.nvim`
 -- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
 -- 数字を設定しなければ、最初の端末を開くことができきる。
-local function registerTerminalKey()
+local function registerTerminalAndToolsKey()
 	require("which-key").register({
 		t = {
-			name = "Terminal",
-			f = {
-				"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
-				"⭐︎ToggleTerm: Open floating terminal.",
+			name = "Terminal and Tools",
+			l = { "<cmd>Lazy<CR>", "⭐︎Lazy: Show Lazy UI." },
+			m = {
+				name = "Mason",
+				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
+				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
+				u = {
+					name = "Update",
+					m = { "<cmd>MasonUpdate<CR>", "Mason: update." },
+					t = { "<cmd>MasonToolsUpdate<CR>", "MasonTools: update." },
+				},
 			},
-			h = {
-				"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
-				"⭐︎ToggleTerm: Open horizontal terminal.",
+			t = {
+				name = "Terminal",
+				f = {
+					"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
+					"⭐︎ToggleTerm: Open floating terminal.",
+				},
+				h = {
+					"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
+					"⭐︎ToggleTerm: Open horizontal terminal.",
+				},
+				p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
+				s = {
+					name = "Send to terminal",
+					l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
+					v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
+					s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
+				},
+				t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
+				v = {
+					"<cmd>exe v:count1 . \"ToggleTerm size=180 direction='vertical'\"<CR>",
+					"ToggleTerm: Open vertical terminal.",
+				},
 			},
-			p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
 			s = {
-				name = "Send to terminal",
-				l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
-				v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
-				s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
-			},
-			t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
-			v = {
-				"<cmd>exe v:count1 . \"ToggleTerm size=180 direction='vertical'\"<CR>",
-				"ToggleTerm: Open vertical terminal.",
+				name = "Tree sitter",
+				c = {
+					name = "Context",
+					e = {
+						"<cmd>TSContextEnable<CR>",
+						"TreeSitter: Enable Context.",
+					},
+					d = {
+						"<cmd>TSContextDisable<CR>",
+						"TreeSitter: Disable Context.",
+					},
+					j = {
+						function()
+							require("treesitter-context").go_to_context(vim.v.count1)
+						end,
+						"TreeSitter: Jumping to context(upwards).",
+					},
+				},
+				u = { "<cmd>TSUpdate<CR>", "TreeSitter: Update Tree-Sitter" },
 			},
 		},
 	}, { prefix = "<Leader>" })
@@ -939,6 +948,6 @@ return {
 		registerOutlineKey()
 		registerQuickfixAndLocation()
 		registerWorkspaceKey()
-		registerTerminalKey()
+		registerTerminalAndToolsKey()
 	end,
 }
