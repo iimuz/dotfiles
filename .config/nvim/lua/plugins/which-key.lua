@@ -864,6 +864,7 @@ local function registerTerminalAndToolsKey()
 					"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
 					"⭐︎ToggleTerm: Open horizontal terminal.",
 				},
+				n = { "<cmd>ToggleTermSetName<CR>", "ToggleTerm: Set a display name." },
 				p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
 				s = {
 					name = "Send to terminal",
