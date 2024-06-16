@@ -603,6 +603,7 @@ local function registerLspAndLlmKey()
 					"CopilotChat: Reset chat window.",
 				},
 			},
+			-- eはLSPのtelescope利用版で利用済み
 			g = {
 				name = "GitHub Copilot",
 				e = { "<cmd>Copilot enable<CR>", "Copilot: Enable." },
@@ -614,6 +615,7 @@ local function registerLspAndLlmKey()
 				s = { "<cmd>Copilot status<CR>", "⭐︎Copilot: Show status." },
 				u = { "<cmd>Copilot setup<CR>", "Copilot: Setup." },
 			},
+			-- `l`はLSPで利用済み
 			t = {
 				name = "Trouble",
 				d = {
@@ -687,6 +689,58 @@ local function registerLspAndLlmKey()
 			-- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
 			require("which-key").register({
 				l = {
+					e = {
+						name = "LSP with telescope",
+						d = {
+							require("telescope.builtin").lsp_definitions,
+							"LSP Telescope: Go to definition.",
+						},
+						e = {
+							name = "Diagnostics",
+							b = {
+								function()
+									require("telescope.builtin").diagnostics({ bufnr = 0 })
+								end,
+								"LSP Telescope: Lists diagnostics for all open buffers.",
+							},
+							w = {
+								require("telescope.builtin").diagnostics,
+								"LSP Telescope: Lists diagnostics for all open buffers.",
+							},
+						},
+						i = {
+							require("telescope.builtin").lsp_implementations,
+							"LSP Telescope: Go to implementation.",
+						},
+						n = {
+							require("telescope.builtin").lsp_incoming_calls,
+							"LSP Telescope: Lists LSP incoming calls.",
+						},
+						o = {
+							require("telescope.builtin").lsp_outgoing_calls,
+							"LSP Telescope: Lists LSP outgoing calls.",
+						},
+						r = { require("telescope.builtin").lsp_references, "LSP Telescope: Lists LSP References." },
+						s = {
+							name = "Document symbols",
+							b = {
+								require("telescope.builtin").lsp_document_symbols,
+								"LSP Telescope: Lists LSP document symbols in the current buffer.",
+							},
+							w = {
+								require("telescope.builtin").lsp_workspace_symbols,
+								"LSP Telescope: Lists LSP document symbols in the current workspace.",
+							},
+							y = {
+								require("telescope.builtin").lsp_dynamic_workspace_symbols,
+								"LSP Telescope: Dynamically lists LSP for all workspace symbols.",
+							},
+						},
+						t = {
+							require("telescope.builtin").lsp_type_definitions,
+							"LSP Telescope: Go to definition of the type.",
+						},
+					},
 					l = {
 						name = "LSP",
 						a = { vim.lsp.buf.code_action, "⭐︎LSP: Code action." },
