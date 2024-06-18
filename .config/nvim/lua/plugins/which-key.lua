@@ -874,7 +874,7 @@ local function registerTerminalAndToolsKey()
 				},
 				t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
 				v = {
-					"<cmd>exe v:count1 . \"ToggleTerm size=180 direction='vertical'\"<CR>",
+					"<cmd>exe v:count1 . \"ToggleTerm direction='vertical'\"<CR>",
 					"ToggleTerm: Open vertical terminal.",
 				},
 			},
