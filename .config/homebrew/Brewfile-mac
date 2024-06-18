@@ -5,6 +5,7 @@ tap "homebrew/core"
 # === application management
 brew "mas"
 cask "appcleaner"
+mas "RunCat", id: 1429033973
 
 # === communication tools
 cask "arc"
