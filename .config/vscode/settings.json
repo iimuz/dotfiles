@@ -151,6 +151,8 @@
   // "remote.containers.gitCredentialHelperConfigLocation": "none",  // gredential managerに移行したので不要になったはず。暫定で消す。
   // === Extension: sqltools(mtxr.sqltools)
   "sqltools.useNodeRuntime": true,
+  // === Extension: vscodevim.vim
+  "vim.useSystemClipboard": true,
   // === Extension: yaml(redhat.vscode-yaml)
   "yaml.customTags": [
     "!And",
