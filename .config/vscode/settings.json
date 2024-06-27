@@ -1,9 +1,13 @@
 {
-  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
+  "editor.rulers": [
+    79,
+    88,
+    100
+  ], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
-  "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
   "editor.fontSize": 18,
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
@@ -32,7 +36,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 1,
   "files.autoGuessEncoding": true,
-  "files.autoSave": "onWindowChange",
+  "files.autoSave": "onFocusChange",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -57,8 +61,8 @@
     "**/node_modules": true
   },
   "search.useIgnoreFiles": true,
-  "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 20,
   "window.commandCenter": 1,
   "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
@@ -142,7 +146,9 @@
   // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
   // "pasteImage.basePath": "${projectRoot}",
   // === Extension: Project Manager
-  "projectManager.git.baseFolders": ["$home/src"],
+  "projectManager.git.baseFolders": [
+    "$home/src"
+  ],
   "projectManager.git.maxDepthRecursion": 3,
   // === Extension: RedHat
   "redhat.telemetry.enabled": false, // 情報を送らない
@@ -252,7 +258,9 @@
   "[asciidoc]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.rulers": [100],
+    "editor.rulers": [
+      100
+    ],
     // 折り返し有効時には、rulerの位置で折り返す
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
@@ -286,7 +294,9 @@
   // === Language: julia
   "julia.enableTelemetry": false,
   "julia.symbolCacheDownload": true,
-  "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
+  "terminal.integrated.commandsToSkipShell": [
+    "language-julia.interrupt"
+  ],
   "[julia]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 4
@@ -316,7 +326,9 @@
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
-    "editor.rulers": [100],
+    "editor.rulers": [
+      100
+    ],
     // 折り返し有効時には、rulerの位置で折り返す
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
@@ -334,7 +346,10 @@
     "editor.formatOnType": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
-    "editor.rulers": [79, 88],
+    "editor.rulers": [
+      79,
+      88
+    ],
     "outline.showVariables": false
   },
   // === Language: reStructuredText
@@ -385,14 +400,20 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "latexmk",
-      "tools": ["latexmk"]
+      "tools": [
+        "latexmk"
+      ]
     }
   ],
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk",
       "command": "latexmk",
-      "args": ["-silent", "-outdir=%OUTDIR%", "%DOC%"]
+      "args": [
+        "-silent",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ]
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
