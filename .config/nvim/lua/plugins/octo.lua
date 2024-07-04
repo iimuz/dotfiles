@@ -2,6 +2,8 @@
 -- see: <https://github.com/pwntester/octo.nvim>
 --
 -- GitHubの操作を行う
+--
+-- - 2024-07-04: vscodeと併用しており利用しないので無効化
 
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
@@ -11,6 +13,7 @@ set("n", "<Plug>octo.load", "<cmd>Octo<CR>", { desc = "⭐︎Octo: Load octo plu
 
 return {
 	"pwntester/octo.nvim",
+	enabled = false,
 	cond = condition,
 	cmd = { "Octo" },
 	dependencies = {
