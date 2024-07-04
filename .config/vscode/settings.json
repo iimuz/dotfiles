@@ -1,13 +1,10 @@
 {
-  "editor.rulers": [
-    79,
-    88,
-    100
-  ], // pep8: 79, black: 88
+  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
   "editor.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
   "editor.fontSize": 18,
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
@@ -51,6 +48,7 @@
   "git.ignoreLegacyWarning": true,
   "git.openRepositoryInParentFolders": "always",
   "git.terminalAuthentication": false,
+  "scm.experimental.showHistoryGraph": true,
   "search.exclude": {
     "**/.bundle": true,
     "**/.DS_Store": true,
@@ -97,6 +95,7 @@
   "frontMatter.dashboard.openOnStart": false,
   // === Extension: GitHub Copilot
   "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.localeOverride": "ja",
   // === Extension: github PR(GitHub.vscode-pull-request-github)
   "githubPullRequests.queries": [
     {
@@ -134,6 +133,8 @@
   "insertDateString.format": "YYYY-MM-DD hh:mm:ss",
   "insertDateString.formatDate": "YYYY-MM-DD",
   "insertDateString.formatTime": "hh:mm",
+  // === Extension: open in vim(jonsmithers.open-in-vim)
+  "open-in-vim.useNeovim": true,
   // === Extension: neovim(asvetliakov.vscode-neovim)
   // リモートのneovimを利用する際に有効化する。通常は無効で良いのだが、通常利用でも設定を勧められたので有効化してみる。
   "extensions.experimental.affinity": {
@@ -146,9 +147,7 @@
   // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
   // "pasteImage.basePath": "${projectRoot}",
   // === Extension: Project Manager
-  "projectManager.git.baseFolders": [
-    "$home/src"
-  ],
+  "projectManager.git.baseFolders": ["$home/src"],
   "projectManager.git.maxDepthRecursion": 3,
   // === Extension: RedHat
   "redhat.telemetry.enabled": false, // 情報を送らない
@@ -158,23 +157,18 @@
   "sqltools.useNodeRuntime": true,
   // === Extension: vscodevim.vim
   "vim.useSystemClipboard": true,
+  "vim.foldfix": true,
   // === Extension: VSpaceCode
   // 以下は、VSpaceCodeが自動で行った設定。
   // vim拡張を利用しており、vim拡張に対して変更を加えている。
   "vim.easymotion": true,
   "vim.normalModeKeyBindingsNonRecursive": [
     {
-      "before": [
-        "<space>"
-      ],
-      "commands": [
-        "vspacecode.space"
-      ]
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
     },
     {
-      "before": [
-        ","
-      ],
+      "before": [","],
       "commands": [
         "vspacecode.space",
         {
@@ -186,17 +180,11 @@
   ],
   "vim.visualModeKeyBindingsNonRecursive": [
     {
-      "before": [
-        "<space>"
-      ],
-      "commands": [
-        "vspacecode.space"
-      ]
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
     },
     {
-      "before": [
-        ","
-      ],
+      "before": [","],
       "commands": [
         "vspacecode.space",
         {
@@ -206,22 +194,14 @@
       ]
     },
     {
-      "before": [
-        ">"
-      ],
-      "commands": [
-        "editor.action.indentLines"
-      ]
+      "before": [">"],
+      "commands": ["editor.action.indentLines"]
     },
     {
-      "before": [
-        "<"
-      ],
-      "commands": [
-        "editor.action.outdentLines"
-      ]
+      "before": ["<"],
+      "commands": ["editor.action.outdentLines"]
     }
-  ]
+  ],
   // === Extension: yaml(redhat.vscode-yaml)
   "yaml.customTags": [
     "!And",
@@ -258,9 +238,7 @@
   "[asciidoc]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.rulers": [
-      100
-    ],
+    "editor.rulers": [100],
     // 折り返し有効時には、rulerの位置で折り返す
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
@@ -294,9 +272,7 @@
   // === Language: julia
   "julia.enableTelemetry": false,
   "julia.symbolCacheDownload": true,
-  "terminal.integrated.commandsToSkipShell": [
-    "language-julia.interrupt"
-  ],
+  "terminal.integrated.commandsToSkipShell": ["language-julia.interrupt"],
   "[julia]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 4
@@ -318,17 +294,14 @@
     "editor.tabSize": 4
   },
   // === Language: markdown
-  "markdown-preview-enhanced.breakOnSingleNewLine": false,
-  "markdown-preview-enhanced.previewTheme": "github-light.css",
-  "markdown-preview-enhanced.scrollSync": false,
   "markdown-preview-github-styles.colorTheme": "light",
+  "markdown.preview.scrollEditorWithPreview": false,
+  "markdown.preview.scrollPreviewWithEditor": false,
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
-    "editor.rulers": [
-      100
-    ],
+    "editor.rulers": [100],
     // 折り返し有効時には、rulerの位置で折り返す
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
@@ -346,10 +319,7 @@
     "editor.formatOnType": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
-    "editor.rulers": [
-      79,
-      88
-    ],
+    "editor.rulers": [79, 88],
     "outline.showVariables": false
   },
   // === Language: reStructuredText
@@ -400,20 +370,14 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "latexmk",
-      "tools": [
-        "latexmk"
-      ]
+      "tools": ["latexmk"]
     }
   ],
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk",
       "command": "latexmk",
-      "args": [
-        "-silent",
-        "-outdir=%OUTDIR%",
-        "%DOC%"
-      ]
+      "args": ["-silent", "-outdir=%OUTDIR%", "%DOC%"]
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
@@ -426,5 +390,5 @@
   "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  }
 }
