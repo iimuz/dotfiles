@@ -89,7 +89,10 @@ brew "ffmpeg"
 cask "obs"
 
 # === rust
-brew "rustup-init"
+# 2024-07-24 rustup-init -> rustupの変更タイミングで正常にインストールできなくなったので公式の方法に従う。
+# `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+# see: <https://www.rust-lang.org/ja/tools/install>
+# brew "rustup"
 
 # === terminal
 # brew "awscli"  # asdfで管理する
