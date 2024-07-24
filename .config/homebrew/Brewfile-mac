@@ -95,7 +95,7 @@ brew "rustup-init"
 # brew "awscli"  # asdfで管理する
 brew "bat"
 # brew "bitwarden-cli"
-brew "exa"  # replace ls
+brew "eza"  # replace ls -> exa -> eza
 brew "fd"  # replace find
 brew "fzf"  # fuzzy finder
 brew "gcc"
