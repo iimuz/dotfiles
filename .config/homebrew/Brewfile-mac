@@ -73,6 +73,7 @@ brew "licensed"
 
 # === programming tools
 brew "asdf"
+brew "cargo-make"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
