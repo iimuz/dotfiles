@@ -1,13 +1,10 @@
 {
-  "editor.rulers": [
-    79,
-    88,
-    100
-  ], // pep8: 79, black: 88
+  "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
   "editor.detectIndentation": true,
-  "editor.fontFamily": "Cica, Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
   "editor.fontSize": 18,
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
@@ -36,7 +33,7 @@
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 1,
   "files.autoGuessEncoding": true,
-  "files.autoSave": "onWindowChange",
+  "files.autoSave": "onFocusChange",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -51,6 +48,7 @@
   "git.ignoreLegacyWarning": true,
   "git.openRepositoryInParentFolders": "always",
   "git.terminalAuthentication": false,
+  "scm.experimental.showHistoryGraph": true,
   "search.exclude": {
     "**/.bundle": true,
     "**/.DS_Store": true,
@@ -61,8 +59,8 @@
     "**/node_modules": true
   },
   "search.useIgnoreFiles": true,
-  "terminal.integrated.fontFamily": "Cica, Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 20,
   "window.commandCenter": 1,
   "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
@@ -89,11 +87,15 @@
   "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH",
   // === Extension: draw.io
   "hediet.vscode-drawio.resizeImages": null,
+  "hediet.vscode-drawio.theme": "Kennedy",
   // === Extension: frontMatter(eliostruyf.vscode-front-matter)
   "frontMatter.content.autoUpdateDate": false, // autoTimeStamp拡張を利用する
   "frontMatter.content.fmHighlight": false,
   "frontMatter.dashboard.content.pagination": 52, // dashboardで1ページあたりの表示数を最大にする
   "frontMatter.dashboard.openOnStart": false,
+  // === Extension: GitHub Copilot
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.localeOverride": "ja",
   // === Extension: github PR(GitHub.vscode-pull-request-github)
   "githubPullRequests.queries": [
     {
@@ -131,6 +133,8 @@
   "insertDateString.format": "YYYY-MM-DD hh:mm:ss",
   "insertDateString.formatDate": "YYYY-MM-DD",
   "insertDateString.formatTime": "hh:mm",
+  // === Extension: open in vim(jonsmithers.open-in-vim)
+  "open-in-vim.useNeovim": true,
   // === Extension: neovim(asvetliakov.vscode-neovim)
   // リモートのneovimを利用する際に有効化する。通常は無効で良いのだが、通常利用でも設定を勧められたので有効化してみる。
   "extensions.experimental.affinity": {
@@ -151,6 +155,53 @@
   // "remote.containers.gitCredentialHelperConfigLocation": "none",  // gredential managerに移行したので不要になったはず。暫定で消す。
   // === Extension: sqltools(mtxr.sqltools)
   "sqltools.useNodeRuntime": true,
+  // === Extension: vscodevim.vim
+  "vim.useSystemClipboard": true,
+  "vim.foldfix": true,
+  // === Extension: VSpaceCode
+  // 以下は、VSpaceCodeが自動で行った設定。
+  // vim拡張を利用しており、vim拡張に対して変更を加えている。
+  "vim.easymotion": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": [","],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<space>"],
+      "commands": ["vspacecode.space"]
+    },
+    {
+      "before": [","],
+      "commands": [
+        "vspacecode.space",
+        {
+          "command": "whichkey.triggerKey",
+          "args": "m"
+        }
+      ]
+    },
+    {
+      "before": [">"],
+      "commands": ["editor.action.indentLines"]
+    },
+    {
+      "before": ["<"],
+      "commands": ["editor.action.outdentLines"]
+    }
+  ],
   // === Extension: yaml(redhat.vscode-yaml)
   "yaml.customTags": [
     "!And",
@@ -243,10 +294,9 @@
     "editor.tabSize": 4
   },
   // === Language: markdown
-  "markdown-preview-enhanced.breakOnSingleNewLine": false,
-  "markdown-preview-enhanced.previewTheme": "github-light.css",
-  "markdown-preview-enhanced.scrollSync": false,
   "markdown-preview-github-styles.colorTheme": "light",
+  "markdown.preview.scrollEditorWithPreview": false,
+  "markdown.preview.scrollPreviewWithEditor": false,
   "[markdown]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -340,6 +390,5 @@
   "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "hediet.vscode-drawio.theme": "Kennedy"
+  }
 }

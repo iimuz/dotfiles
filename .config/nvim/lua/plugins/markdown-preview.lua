@@ -2,10 +2,13 @@
 -- see: <https://github.com/iamcco/markdown-preview.nvim>
 --
 -- Preview markdown file.
+--
+-- - 2024-07-04: vscodeとの併用で利用しなくなったので無効化
 
 return {
 	"iamcco/markdown-preview.nvim",
 	lazy = true,
+	enabled = false,
 	cmd = { "MarkdownPreview" },
 	ft = { "markdown" },
 	build = function()

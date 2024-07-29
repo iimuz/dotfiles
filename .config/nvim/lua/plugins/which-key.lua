@@ -190,26 +190,6 @@ local function registerEditKey()
 				"<cmd>Telescope luasnip<CR>",
 				"⭐︎Telescope Luasnip: Open snippet list.",
 			},
-			t = {
-				name = "Tree sitter",
-				c = {
-					name = "Context",
-					e = {
-						"<cmd>TSContextEnable<CR>",
-						"TreeSitterContext: Enable.",
-					},
-					d = {
-						"<cmd>TSContextDisable<CR>",
-						"TreeSitterContext: Disable.",
-					},
-					j = {
-						function()
-							require("treesitter-context").go_to_context(vim.v.count1)
-						end,
-						"TreeSitterContext: Jumping to context(upwards).",
-					},
-				},
-			},
 		},
 	}, { prefix = "<Leader>" })
 end
@@ -623,6 +603,7 @@ local function registerLspAndLlmKey()
 					"CopilotChat: Reset chat window.",
 				},
 			},
+			-- eはLSPのtelescope利用版で利用済み
 			g = {
 				name = "GitHub Copilot",
 				e = { "<cmd>Copilot enable<CR>", "Copilot: Enable." },
@@ -634,12 +615,7 @@ local function registerLspAndLlmKey()
 				s = { "<cmd>Copilot status<CR>", "⭐︎Copilot: Show status." },
 				u = { "<cmd>Copilot setup<CR>", "Copilot: Setup." },
 			},
-			m = {
-				name = "Mason",
-				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
-				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
-				u = { "<cmd>MasonUpdate<CR>", "Mason: update." },
-			},
+			-- `l`はLSPで利用済み
 			t = {
 				name = "Trouble",
 				d = {
@@ -713,6 +689,58 @@ local function registerLspAndLlmKey()
 			-- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
 			require("which-key").register({
 				l = {
+					e = {
+						name = "LSP with telescope",
+						d = {
+							require("telescope.builtin").lsp_definitions,
+							"LSP Telescope: Go to definition.",
+						},
+						e = {
+							name = "Diagnostics",
+							b = {
+								function()
+									require("telescope.builtin").diagnostics({ bufnr = 0 })
+								end,
+								"LSP Telescope: Lists diagnostics for all open buffers.",
+							},
+							w = {
+								require("telescope.builtin").diagnostics,
+								"LSP Telescope: Lists diagnostics for all open buffers.",
+							},
+						},
+						i = {
+							require("telescope.builtin").lsp_implementations,
+							"LSP Telescope: Go to implementation.",
+						},
+						n = {
+							require("telescope.builtin").lsp_incoming_calls,
+							"LSP Telescope: Lists LSP incoming calls.",
+						},
+						o = {
+							require("telescope.builtin").lsp_outgoing_calls,
+							"LSP Telescope: Lists LSP outgoing calls.",
+						},
+						r = { require("telescope.builtin").lsp_references, "LSP Telescope: Lists LSP References." },
+						s = {
+							name = "Document symbols",
+							b = {
+								require("telescope.builtin").lsp_document_symbols,
+								"LSP Telescope: Lists LSP document symbols in the current buffer.",
+							},
+							w = {
+								require("telescope.builtin").lsp_workspace_symbols,
+								"LSP Telescope: Lists LSP document symbols in the current workspace.",
+							},
+							y = {
+								require("telescope.builtin").lsp_dynamic_workspace_symbols,
+								"LSP Telescope: Dynamically lists LSP for all workspace symbols.",
+							},
+						},
+						t = {
+							require("telescope.builtin").lsp_type_definitions,
+							"LSP Telescope: Go to definition of the type.",
+						},
+					},
 					l = {
 						name = "LSP",
 						a = { vim.lsp.buf.code_action, "⭐︎LSP: Code action." },
@@ -809,21 +837,68 @@ end
 -- Terminal関連のキー登録
 --
 -- dependencies: `akinsho/toggleterm.nvim`
-local function registerTerminalKey()
+-- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
+-- 数字を設定しなければ、最初の端末を開くことができきる。
+local function registerTerminalAndToolsKey()
 	require("which-key").register({
 		t = {
-			name = "Terminal",
-			f = { "<cmd>ToggleTerm direction='float'<CR>", "⭐︎ToggleTerm: Open floating terminal." },
-			h = { "<cmd>ToggleTerm direction='horizontal'<CR>", "⭐︎ToggleTerm: Open horizontal terminal." },
-			p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
-			s = {
-				name = "Send to terminal",
-				l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
-				v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
-				s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
+			name = "Terminal and Tools",
+			l = { "<cmd>Lazy<CR>", "⭐︎Lazy: Show Lazy UI." },
+			m = {
+				name = "Mason",
+				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
+				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
+				u = {
+					name = "Update",
+					m = { "<cmd>MasonUpdate<CR>", "Mason: update." },
+					t = { "<cmd>MasonToolsUpdate<CR>", "MasonTools: update." },
+				},
 			},
-			t = { "<cmd>ToggleTerm direction='tab'<CR>", "ToggleTerm: Open tab terminal." },
-			v = { "<cmd>ToggleTerm size=180 direction='vertical'<CR>", "ToggleTerm: Open vertical terminal." },
+			t = {
+				name = "Terminal",
+				f = {
+					"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
+					"⭐︎ToggleTerm: Open floating terminal.",
+				},
+				h = {
+					"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
+					"⭐︎ToggleTerm: Open horizontal terminal.",
+				},
+				n = { "<cmd>ToggleTermSetName<CR>", "ToggleTerm: Set a display name." },
+				p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
+				s = {
+					name = "Send to terminal",
+					l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
+					v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
+					s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
+				},
+				t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
+				v = {
+					"<cmd>exe v:count1 . \"ToggleTerm direction='vertical'\"<CR>",
+					"ToggleTerm: Open vertical terminal.",
+				},
+			},
+			s = {
+				name = "Tree sitter",
+				c = {
+					name = "Context",
+					e = {
+						"<cmd>TSContextEnable<CR>",
+						"TreeSitter: Enable Context.",
+					},
+					d = {
+						"<cmd>TSContextDisable<CR>",
+						"TreeSitter: Disable Context.",
+					},
+					j = {
+						function()
+							require("treesitter-context").go_to_context(vim.v.count1)
+						end,
+						"TreeSitter: Jumping to context(upwards).",
+					},
+				},
+				u = { "<cmd>TSUpdate<CR>", "TreeSitter: Update Tree-Sitter" },
+			},
 		},
 	}, { prefix = "<Leader>" })
 end
@@ -928,6 +1003,6 @@ return {
 		registerOutlineKey()
 		registerQuickfixAndLocation()
 		registerWorkspaceKey()
-		registerTerminalKey()
+		registerTerminalAndToolsKey()
 	end,
 }
