@@ -113,3 +113,4 @@ brew "vifm"  # tui filer
 brew "wget"
 cask "wezterm"  # terminal emulator
 brew "yq"
+brew "zellij" # terminal multiplexers
