@@ -659,7 +659,7 @@ local function registerLspAndLlmKey()
 					require("telescope.builtin").lsp_definitions,
 					desc = "LSP Telescope: Go to definition.",
 				},
-				{ "<Leader>lee", gruop = "Diagnostics" },
+				{ "<Leader>lee", group = "Diagnostics" },
 				{
 					"<Leader>leeb",
 					function()
