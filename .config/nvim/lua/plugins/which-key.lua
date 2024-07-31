@@ -51,66 +51,61 @@ end
 
 -- Buffer関連のキー登録
 local function registerBufferKey()
-	require("which-key").register({
-		b = {
-			name = "Buffer",
-			l = { require("telescope.builtin").buffers, "⭐︎Telescope: Open buffer list." },
-			["/"] = {
-				require("telescope.builtin").current_buffer_fuzzy_find,
-				"⭐︎Telescope: Live fuzzy search inside of the currently open buffer.",
-			},
-			z = {
-				name = "Fold",
-				a = { "za", "Fold: Toggle under the cursor." },
-				A = { "zA", "Fold: Toggle all under the cursor." },
-				c = { "zc", "⭐︎Fold: Close under the cursor." },
-				C = { "zC", "⭐︎Fold: Close all under the cursor." },
-				m = { "zm", "Fold: Close in Window." },
-				M = { "zM", "⭐︎Fold: Close all in Window." },
-				o = { "zo", "⭐︎Fold: Open under the cursor." },
-				O = { "zO", "⭐︎Fold: Open all under the cursor." },
-				r = { "zr", "Fold: Open in Window." },
-				R = { "zR", "⭐︎Fold: Open all in Window." },
-			},
+	require("which-key").add({
+		{ "<Leader>b", group = "Buffer" },
+		{ "<Leader>bl", require("telescope.builtin").buffers, desc = "⭐︎Telescope: Open buffer list." },
+		{
+			"<Leader>b/",
+			require("telescope.builtin").current_buffer_fuzzy_find,
+			desc = "⭐︎Telescope: Live fuzzy search inside of the currently open buffer.",
 		},
-	}, { prefix = "<Leader>" })
+		{ "<Leader>bz", group = "Fold" },
+		{ "<Leader>bza", "za", desc = "Fold: Toggle under the cursor." },
+		{ "<Leader>bzA", "zA", desc = "Fold: Toggle all under the cursor." },
+		{ "<Leader>bzc", "zc", desc = "⭐︎Fold: Close under the cursor." },
+		{ "<Leader>bzC", "zC", desc = "⭐︎Fold: Close all under the cursor." },
+		{ "<Leader>bzm", "zm", desc = "Fold: Close in Window." },
+		{ "<Leader>bzM", "zM", desc = "⭐︎Fold: Close all in Window." },
+		{ "<Leader>bzo", "zo", desc = "⭐︎Fold: Open under the cursor." },
+		{ "<Leader>bzO", "zO", desc = "⭐︎Fold: Open all under the cursor." },
+		{ "<Leader>bzr", "zr", desc = "Fold: Open in Window." },
+		{ "<Leader>bzR", "zR", desc = "⭐︎Fold: Open all in Window." },
+	})
 end
 
 -- コマンド関連のキー登録
 local function registerCommandKey()
-	require("which-key").register({
-		c = {
-			name = "Commands",
-			l = {
-				require("telescope.builtin").commands,
-				"⭐︎Telescope: Open command list.",
-			},
-			h = {
-				require("telescope.builtin").command_history,
-				"⭐︎Telescope: Open command history list.",
-			},
+	require("which-key").add({
+		{ "<Leader>c", group = "Commands" },
+		{ "<Leader>cl", require("telescope.builtin").commands, desc = "⭐︎Telescope: Open command list." },
+		{
+			"<Leader>ch",
+			require("telescope.builtin").command_history,
+			desc = "⭐︎Telescope: Open command history list.",
 		},
-	}, { prefix = "<Leader>" })
+	})
 end
 
 -- VSCodeのコマンドパレットと合わせるためのショートカットキー登録
 local function registerCommandPalletKey()
-	require("which-key").register({
+	require("which-key").add({
 		-- ファイル一覧を表示
-		p = {
+		{
+			"<Leader>p",
 			"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>",
-			"⭐︎Telescope: Find files.",
+			desc = "⭐︎Telescope: Find files.",
 		},
 		--キー登録したコマンドパレットを表示
 		-- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
-		P = {
+		{
+			"<Leader>P",
 			function()
 				require("telescope.builtin").keymaps()
 				vim.cmd("normal! i⭐︎")
 			end,
-			"⭐︎Telescope: Open command palet(keymaps).",
+			desc = "⭐︎Telescope: Open command palet(keymaps).",
 		},
-	}, { prefix = "<Leader>" })
+	})
 end
 
 -- 編集に関連するキー登録
@@ -123,75 +118,65 @@ local function registerEditKey()
 		require("conform").format(opts)
 	end
 
-	require("which-key").register({
-		e = {
-			name = "Edit",
-			a = {
-				-- Toggle auto save.
-				-- dependencies: `okuuva/auto-save.nvim`
-				"<cmd>ASToggle<CR>",
-				"AutoSave: Toggle auto save mode.",
-			},
-			c = {
-				name = "Conform",
-				d = {
-					name = "Disable",
-					b = {
-						function()
-							vim.b.disable_autoformat = true
-						end,
-						"Conform: Disable for this buffer.",
-					},
-					g = {
-						function()
-							vim.g.disable_autoformat = true
-						end,
-						"Conform: Disable.",
-					},
-				},
-				e = {
-					name = "Enable",
-					b = {
-						function()
-							vim.b.disable_autoformat = false
-						end,
-						"⭐︎Conform: Enable for this buffer.",
-					},
-					g = {
-						function()
-							vim.g.disable_autoformat = false
-						end,
-						"Conform: Enable",
-					},
-				},
-				i = { "<cmd>ConformInfo<CR>", "⭐︎Conform: Show information." },
-			},
-			f = {
-				name = "Format",
-				f = { format, "⭐︎Conform: Format file or range." },
-				s = {
-					function()
-						vim.ui.input({ prompt = "Formatter: " }, function(formatter)
-							format({ formatters = { formatter } })
-						end)
-					end,
-					"⭐︎Conform: Specific formatter.",
-				},
-			},
-			l = {
-				-- dependencies: `mfussenegger/nvim-lint`
-				function()
-					require("lint").try_lint()
-				end,
-				"⭐︎Lint: Trigger linting for current file",
-			},
-			s = {
-				-- dependencies: `benfowler/telescope-luasnip.nvim`
-				"<cmd>Telescope luasnip<CR>",
-				"⭐︎Telescope Luasnip: Open snippet list.",
-			},
+	require("which-key").add({
+		{ "<Leader>e", group = "Edit" },
+		-- Toggle auto save.
+		-- dependencies: `okuuva/auto-save.nvim`
+		{ "<Leader>ea", "<cmd>ASToggle<CR>", desc = "AutoSave: Toggle auto save mode." },
+		{ "<Leader>ec", group = "Conform" },
+		{ "<Leader>ecd", group = "Disable" },
+		{
+			"<Leader>ecdb",
+			function()
+				vim.b.disable_autoformat = true
+			end,
+			desc = "Conform: Disable for this buffer.",
 		},
-	}, { prefix = "<Leader>" })
+		{
+			"<Leader>ecdg",
+			function()
+				vim.g.disable_autoformat = true
+			end,
+			desc = "Conform: Disable.",
+		},
+		{ "<Leader>ece", group = "Enable" },
+		{
+			"<Leader>eceb",
+			function()
+				vim.b.disable_autoformat = false
+			end,
+			desc = "⭐︎Conform: Enable for this buffer.",
+		},
+		{
+			"<Leader>eceg",
+			function()
+				vim.g.disable_autoformat = false
+			end,
+			desc = "Conform: Enable",
+		},
+		{ "<Leader>eci", "<cmd>ConformInfo<CR>", desc = "⭐︎Conform: Show information." },
+		{ "<Leader>ef", group = "Format" },
+		{ "<Leader>eff", format, desc = "⭐︎Conform: Format file or range." },
+		{
+			"<Leader>efs",
+			function()
+				vim.ui.input({ prompt = "Formatter: " }, function(formatter)
+					format({ formatters = { formatter } })
+				end)
+			end,
+			desc = "⭐︎Conform: Specific formatter.",
+		},
+		-- dependencies: `mfussenegger/nvim-lint`
+		{
+			"<Leader>el",
+			function()
+				require("lint").try_lint()
+			end,
+			desc = "⭐︎Lint: Trigger linting for current file",
+		},
+		-- dependencies: `benfowler/telescope-luasnip.nvim`
+		{ "<Leader>es", "<cmd>Telescope luasnip<CR>", desc = "⭐︎Telescope Luasnip: Open snippet list." },
+	})
 end
 
 -- File関連のキー登録
@@ -202,55 +187,57 @@ local function registerFileKey()
 		vim.fn.setreg("+", value)
 	end
 
-	require("which-key").register({
-		f = {
-			name = "File",
-			-- Open file browser.
-			-- dependencies: `nvim-telescope/telescope-file-browser.nvim`
-			b = { "<cmd>Telescope file_browser<CR>", "⭐︎Telescope FileBrowser: Open." },
-			c = {
-				name = "Copy file path",
-				a = {
-					function()
-						copyToClipboard(vim.fn.expand("%:p"))
-					end,
-					"Self: Copy absolute file path.",
-				},
-				h = {
-					function()
-						copyToClipboard(vim.fn.expand("%:~"))
-					end,
-					"Self: Copy relative filepath from home.",
-				},
-				n = {
-					function()
-						copyToClipboard(vim.fn.expand("%:t"))
-					end,
-					"⭐︎Self: Copy file name.",
-				},
-				r = {
-					function()
-						copyToClipboard(vim.fn.expand("%:."))
-					end,
-					"⭐︎Self: Copy relative file path.",
-				},
-				w = {
-					function()
-						copyToClipboard(vim.fn.expand("%:t:r"))
-					end,
-					"⭐︎Self: Copy file name without suffix.",
-				},
-			},
-			t = {
-				function()
-					local filepath = vim.fn.tempname()
-					vim.cmd("edit " .. filepath)
-				end,
-				"⭐︎Zettelkasten: Create and open temporary file.",
-			},
-			v = { vifmToggle, "⭐︎ToggleTerm: Open vifm." },
+	require("which-key").add({
+		{ "<Leader>f", group = "File" },
+		-- Open file browser.
+		-- dependencies: `nvim-telescope/telescope-file-browser.nvim`
+		{ "<Leader>fb", "<cmd>Telescope file_browser<CR>", desc = "⭐︎Telescope FileBrowser: Open." },
+		{ "<Leader>fc", group = "Copy file path" },
+		{
+			"<Leader>fca",
+			function()
+				copyToClipboard(vim.fn.expand("%:p"))
+			end,
+			desc = "Self: Copy absolute file path.",
 		},
-	}, { prefix = "<Leader>" })
+		{
+			"<Leader>fch",
+			function()
+				copyToClipboard(vim.fn.expand("%:~"))
+			end,
+			desc = "Self: Copy relative filepath from home.",
+		},
+		{
+			"<Leader>fcn",
+			function()
+				copyToClipboard(vim.fn.expand("%:t"))
+			end,
+			desc = "⭐︎Self: Copy file name.",
+		},
+		{
+			"<Leader>fcr",
+			function()
+				copyToClipboard(vim.fn.expand("%:."))
+			end,
+			desc = "⭐︎Self: Copy relative file path.",
+		},
+		{
+			"<Leader>fcw",
+			function()
+				copyToClipboard(vim.fn.expand("%:t:r"))
+			end,
+			desc = "⭐︎Self: Copy file name without suffix.",
+		},
+		{
+			"<Leader>ft",
+			function()
+				local filepath = vim.fn.tempname()
+				vim.cmd("edit " .. filepath)
+			end,
+			desc = "⭐︎Zettelkasten: Create and open temporary file.",
+		},
+		{ "<Leader>fv", vifmToggle, desc = "⭐︎ToggleTerm: Open vifm." },
+	})
 end
 
 -- Git関連のキー登録
@@ -259,206 +246,197 @@ end
 -- - `sindrets/diffview.nvim`
 -- - `pwntester/octo.nvim`
 local function registerGitKey()
-	require("which-key").register({
-		g = {
-			name = "Git",
-			d = { "<cmd>DiffviewFileHistory %<CR>", "Diffview: Open file history." },
-			e = {
-				name = "Edit issue/PR",
-				c = {
-					name = "Comment",
-					a = { "<cmd>Octo comment add<CR>", "⭐︎Octo: Add a new comment." },
-					d = { "<cmd>Octo comment delete<CR>", "⭐︎Octo: Delete a comment." },
-				},
-				t = {
-					name = "Thread",
-					r = { "<cmd>Octo thread resolve<CR>", "⭐︎Octo: Resolve a review thread." },
-					o = { "<cmd>Octo thread unresolve<CR>", "Octo: Unresolve a review thread." },
-				},
-			},
-			i = {
-				name = "GitHub Issue",
-				l = { "<cmd>Octo issue list<CR>", "⭐︎Octo: List issues." },
-				o = { "<cmd>Octo issue rowser<CR>", "Octo: Open current issue in the browser." },
-				r = { "<cmd>Octo issue reload<CR>", "Octo: Reload issue." },
-				u = { "<cmd>Octo issue url<CR>", "Octo: Copies the URL of the current issue to the system clipboard." },
-				["/"] = { "<cmd>Octo issue search<CR>", "Octo: Live issue search." },
-			},
-			h = {
-				name = "Hunk",
-				b = {
-					name = "Blame",
-					e = {
-						function()
-							require("gitsigns").blame_line({ full = true })
-						end,
-						"GitSigns: Blame line.",
-					},
-					t = {
-						function()
-							require("gitsigns").toggle_current_line_blame()
-						end,
-						"GitSigns: Toggle line blame.",
-					},
-				},
-				d = {
-					function()
-						require("gitsigns").toggle_deleted()
-					end,
-					"GitSigns: Toggle deleted.",
-				},
-				D = {
-					name = "Diff",
-					d = {
-						function()
-							require("gitsigns").diffthis()
-						end,
-						"GitSigns: Diff this.",
-					},
-					D = {
-						function()
-							require("gitsigns").diffthis("~")
-						end,
-						"GitSigns: Diff this (against HEAD~).",
-					},
-				},
-				n = {
-					function()
-						if vim.wo.diff then
-							vim.cmd.normal({ "]c", bang = true })
-						else
-							require("gitsigns").nav_hunk("next")
-						end
-					end,
-					"GitSigns: Next hunk.",
-				},
-				p = {
-					function()
-						if vim.wo.diff then
-							vim.cmd.normal({ "[c", bang = true })
-						else
-							require("gitsigns").nav_hunk("prev")
-						end
-					end,
-					"GitSigns: Next hunk.",
-				},
-				r = {
-					function()
-						require("gitsigns").reset_hunk()
-					end,
-					"GitSigns: Reset hunk.",
-				},
-				R = {
-					function()
-						require("gitsigns").reset_buffer()
-					end,
-					"GitSigns: Reset buffer.",
-				},
-				s = {
-					function()
-						require("gitsigns").stage_hunk()
-					end,
-					"GitSigns: Stage hunk.",
-				},
-				S = {
-					function()
-						require("gitsigns").stage_buffer()
-					end,
-					"GitSigns: Stage buffer.",
-				},
-				u = {
-					function()
-						require("gitsigns").undo_stage_hunk()
-					end,
-					"GitSigns: Undo stage hunk.",
-				},
-				v = {
-					function()
-						require("gitsigns").preview_hunk()
-					end,
-					"GitSigns: Preview hunk.",
-				},
-			},
-			g = { "<cmd>Octo gist list<CR>", "Octo: List user gists." },
-			l = { lazygitToggle, "⭐︎ToggleTerm: Open lazygit." },
-			p = {
-				name = "Pull request",
-				c = { "<cmd>Octo pr checkout<CR>", "⭐︎Octo: Checkout PR." },
-				-- Show PR review.
-				-- PR Review用に分岐元との差分を表示
-				-- see: <https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md>
-				d = {
-					name = "Diff",
-					b = {
-						function()
-							vim.ui.input({ prompt = "Enter base branch name: " }, function(branch_name)
-								local base_hash = vim.fn.system("git merge-base " .. branch_name .. " HEAD")
-								vim.cmd("DiffviewOpen " .. base_hash .. " ...HEAD --imply-local")
-							end)
-						end,
-						"Diffview: PR for specific branch.",
-					},
-					l = {
-						"<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<CR>",
-						"Diffview: Open large PR.",
-					},
-					o = {
-						"<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<CR>",
-						"⭐︎Diffview: Open PR.",
-					},
-					t = { "<cmd>Octo pr diff<CR>", "Octo: Show PR diff." },
-				},
-				h = { "<cmd>Octo pr checks<CR>", "Octo: Show the status of all checks run on the PR." },
-				l = { "<cmd>Octo pr list<CR>", "⭐︎Octo: List PRs." },
-				m = { "<cmd>Octo pr commits<CR>", "Octo: List all PR commits." },
-				n = { "<cmd>Octo pr reload<CR>", "Octo: Reload PR." },
-				o = { "<cmd>Octo pr browser<CR>", "Octo: Open current PR in the browser." },
-				r = {
-					name = "Review",
-					b = { "<cmd>Octo review submit<CR>", "⭐︎Octo: Submit the review." },
-					c = { "<cmd>Octo review comments<CR>", "⭐︎Octo: View pending review comments." },
-					d = { "<cmd>Octo review discard<CR>", "Octo: Deletes a pending review for current PR if any." },
-					q = { "<cmd>Octo review close<CR>", "⭐︎Octo: Close the review window and return to the PR." },
-					r = { "<cmd>Octo review resume<CR>", "⭐︎Octo: Edit a pending review for current PR." },
-					s = { "<cmd>Octo review start<CR>", "⭐︎Octo: Start a new review." },
-				},
-				u = { "<cmd>Octo pr url<CR>", "Octo: Copies the URL of the current PR to the system clipboard." },
-				["/"] = { "<cmd>Octo pr search<CR>", "Octo: Live PR search." },
-			},
-			r = {
-				name = "Repository",
-				b = { "<cmd>Octo repo browser<CR>", "Octo: Open current repo in the browser." },
-				u = {
-					"<cmd>Octo repo url<CR>",
-					"Octo: Copies the URL of the current repository to the system clipboard.",
-				},
-			},
+	require("which-key").add({
+		{ "<Leader>g", group = "Git" },
+		{ "<Leader>gd", "<cmd>DiffviewFileHistory %<CR>", desc = "Diffview: Open file history." },
+		{ "<Leader>ge", group = "Edit issue/PR" },
+		{ "<Leader>gec", group = "Comment" },
+		{ "<Leader>geca", "<cmd>Octo comment add<CR>", desc = "⭐︎Octo: Add a new comment." },
+		{ "<Leader>gecd", "<cmd>Octo comment delete<CR>", desc = "⭐︎Octo: Delete a comment." },
+		{ "<Leader>get", group = "Thread" },
+		{ "<Leader>getr", "<cmd>Octo thread resolve<CR>", desc = "⭐︎Octo: Resolve a review thread." },
+		{ "<Leader>geto", "<cmd>Octo thread unresolve<CR>", desc = "Octo: Unresolve a review thread." },
+		{ "<Leader>gi", group = "GitHub Issue" },
+		{ "<Leader>gil", "<cmd>Octo issue list<CR>", desc = "⭐︎Octo: List issues." },
+		{ "<Leader>gio", "<cmd>Octo issue rowser<CR>", desc = "Octo: Open current issue in the browser." },
+		{ "<Leader>gir", "<cmd>Octo issue reload<CR>", desc = "Octo: Reload issue." },
+		{
+			"<Leader>giu",
+			"<cmd>Octo issue url<CR>",
+			desc = "Octo: Copies the URL of the current issue to the system clipboard.",
 		},
-	}, { prefix = "<Leader>" })
-
-	-- ビジュアルモード
-	require("which-key").register({
-		g = {
-			name = "Git",
-			h = {
-				name = "Hunk",
-				-- git sign for visual mode
-				-- dependencies: `lewis6991/gitsigns.nvim`
-				s = {
-					function()
-						require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-					end,
-					"GitSigns: Stage hunk.",
-				},
-				r = {
-					function()
-						require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-					end,
-					"GitSigns: Reset hunk.",
-				},
-			},
+		{ "<Leader>gi/", "<cmd>Octo issue search<CR>", desc = "Octo: Live issue search." },
+		{ "<Leader>gh", group = "Hunk" },
+		{ "<Leader>ghb", group = "Blame" },
+		{
+			"<Leader>ghbe",
+			function()
+				require("gitsigns").blame_line({ full = true })
+			end,
+			desc = "GitSigns: Blame line.",
 		},
-	}, { mode = "v", prefix = "<Leader>" })
+		{
+			"<Leader>ghbt",
+			function()
+				require("gitsigns").toggle_current_line_blame()
+			end,
+			desc = "GitSigns: Toggle line blame.",
+		},
+		{
+			"<Leader>ghd",
+			function()
+				require("gitsigns").toggle_deleted()
+			end,
+			desc = "GitSigns: Toggle deleted.",
+		},
+		{ "<Leader>ghD", group = "Diff" },
+		{
+			"<Leader>ghDd",
+			function()
+				require("gitsigns").diffthis()
+			end,
+			desc = "GitSigns: Diff this.",
+		},
+		{
+			"<Leader>ghDD",
+			function()
+				require("gitsigns").diffthis("~")
+			end,
+			desc = "GitSigns: Diff this (against HEAD~).",
+		},
+		{
+			"<Leader>ghn",
+			function()
+				if vim.wo.diff then
+					vim.cmd.normal({ "]c", bang = true })
+				else
+					require("gitsigns").nav_hunk("next")
+				end
+			end,
+			desc = "GitSigns: Next hunk.",
+		},
+		{
+			"<Leader>ghp",
+			function()
+				if vim.wo.diff then
+					vim.cmd.normal({ "[c", bang = true })
+				else
+					require("gitsigns").nav_hunk("prev")
+				end
+			end,
+			desc = "GitSigns: Next hunk.",
+		},
+		{
+			"<Leader>ghr",
+			function()
+				require("gitsigns").reset_hunk()
+			end,
+			desc = "GitSigns: Reset hunk.",
+			mode = { "n", "v" },
+		},
+		{
+			"<Leader>ghR",
+			function()
+				require("gitsigns").reset_buffer()
+			end,
+			desc = "GitSigns: Reset buffer.",
+		},
+		{
+			"<Leader>ghs",
+			function()
+				require("gitsigns").stage_hunk()
+			end,
+			desc = "GitSigns: Stage hunk.",
+			mode = { "n", "v" },
+		},
+		{
+			"<Leader>ghS",
+			function()
+				require("gitsigns").stage_buffer()
+			end,
+			desc = "GitSigns: Stage buffer.",
+		},
+		{
+			"<Leader>ghu",
+			function()
+				require("gitsigns").undo_stage_hunk()
+			end,
+			desc = "GitSigns: Undo stage hunk.",
+		},
+		{
+			"<Leader>ghv",
+			function()
+				require("gitsigns").preview_hunk()
+			end,
+			desc = "GitSigns: Preview hunk.",
+		},
+		{ "<Leader>gg", "<cmd>Octo gist list<CR>", desc = "Octo: List user gists." },
+		{ "<Leader>gl", lazygitToggle, desc = "⭐︎ToggleTerm: Open lazygit." },
+		{ "<Leader>gp", group = "Pull request" },
+		{ "<Leader>gpc", "<cmd>Octo pr checkout<CR>", desc = "⭐︎Octo: Checkout PR." },
+		-- Show PR review.
+		-- PR Review用に分岐元との差分を表示
+		-- see: <https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md>
+		{ "<Leader>gpd", group = "Diff" },
+		{
+			"<Leader>gpdb",
+			function()
+				vim.ui.input({ prompt = "Enter base branch name: " }, function(branch_name)
+					local base_hash = vim.fn.system("git merge-base " .. branch_name .. " HEAD")
+					vim.cmd("DiffviewOpen " .. base_hash .. " ...HEAD --imply-local")
+				end)
+			end,
+			desc = "Diffview: PR for specific branch.",
+		},
+		{
+			"<Leader>gpdl",
+			"<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<CR>",
+			desc = "Diffview: Open large PR.",
+		},
+		{
+			"<Leader>gpdo",
+			"<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<CR>",
+			desc = "⭐︎Diffview: Open PR.",
+		},
+		{ "<Leader>gpdt", "<cmd>Octo pr diff<CR>", desc = "Octo: Show PR diff." },
+		{ "<Leader>gph", "<cmd>Octo pr checks<CR>", desc = "Octo: Show the status of all checks run on the PR." },
+		{ "<Leader>gpl", "<cmd>Octo pr list<CR>", desc = "⭐︎Octo: List PRs." },
+		{ "<Leader>gpm", "<cmd>Octo pr commits<CR>", desc = "Octo: List all PR commits." },
+		{ "<Leader>gpn", "<cmd>Octo pr reload<CR>", desc = "Octo: Reload PR." },
+		{ "<Leader>gpo", "<cmd>Octo pr browser<CR>", desc = "Octo: Open current PR in the browser." },
+		{ "<Leader>gpr", group = "Review" },
+		{ "<Leader>gprb", "<cmd>Octo review submit<CR>", desc = "⭐︎Octo: Submit the review." },
+		{ "<Leader>gprc", "<cmd>Octo review comments<CR>", desc = "⭐︎Octo: View pending review comments." },
+		{
+			"<Leader>gprd",
+			"<cmd>Octo review discard<CR>",
+			desc = "Octo: Deletes a pending review for current PR if any.",
+		},
+		{
+			"<Leader>gprq",
+			"<cmd>Octo review close<CR>",
+			desc = "⭐︎Octo: Close the review window and return to the PR.",
+		},
+		{
+			"<Leader>gprr",
+			"<cmd>Octo review resume<CR>",
+			desc = "⭐︎Octo: Edit a pending review for current PR.",
+		},
+		{ "<Leader>gprs", "<cmd>Octo review start<CR>", desc = "⭐︎Octo: Start a new review." },
+		{
+			"<Leader>gpu",
+			"<cmd>Octo pr url<CR>",
+			desc = "Octo: Copies the URL of the current PR to the system clipboard.",
+		},
+		{ "<Leader>gp/", "<cmd>Octo pr search<CR>", desc = "Octo: Live PR search." },
+		{ "<Leader>gr", group = "Repository" },
+		{ "<Leader>grb", "<cmd>Octo repo browser<CR>", desc = "Octo: Open current repo in the browser." },
+		{
+			"<Leader>gru",
+			"<cmd>Octo repo url<CR>",
+			desc = "Octo: Copies the URL of the current repository to the system clipboard.",
+		},
+	})
 end
 
 -- 言語関連のキー登録
@@ -466,92 +444,91 @@ end
 -- 先頭は言語を分けるためのプレフィックスとして利用する
 -- "l"は予約済みのため、二文字目の"a"を利用する。
 local function registerLanguageKey()
-	require("which-key").register({
-		a = {
-			name = "Language",
-			m = {
-				name = "Markdown",
-				b = {
-					function()
-						require("markdown-hop-links").frontMatterPicker()
-					end,
-					"⭐︎MarkdownLinkHops: Show backlinks.",
-				},
-				l = {
-					name = "Auto lastmod",
-					b = {
-						name = "Buffer",
-						d = { require("auto-lastmod").disable_buffer, "⭐︎AutoLastMod: Disable auto-lastmod" },
-						e = { require("auto-lastmod").enable_buffer, "AutoLastMod: Enable auto-lastmod" },
-					},
-					g = {
-						name = "Global",
-						d = { require("auto-lastmod").disable_global, "⭐︎AutoLastMod: Disable auto-lastmod" },
-						e = { require("auto-lastmod").enable_global, "AutoLastMod: Enable auto-lastmod" },
-					},
-				},
-				f = {
-					name = "Front matter",
-					c = {
-						function()
-							vim.ui.input({ prompt = "Category: " }, function(category)
-								require("front-matter-searcher").frontMatterPicker({
-									select_query = 'select(.categories[]? == "' .. category .. '")',
-								})
-							end)
-						end,
-						"⭐︎FrontMatterSearcher: Search by Category.",
-					},
-					g = {
-						function()
-							vim.ui.input({ prompt = "Tag: " }, function(tag)
-								require("front-matter-searcher").frontMatterPicker({
-									select_query = 'select(.tags[]? == "' .. tag .. '")',
-								})
-							end)
-						end,
-						"⭐︎FrontMatterSearcher: Search by tag.",
-					},
-					t = {
-						function()
-							require("front-matter-searcher").frontMatterPicker()
-						end,
-						"⭐︎FrontMatterSearcher: Search by title.",
-					},
-				},
-				p = {
-					-- dependencies: `iamcco/markdown-preview.nvim`
-					name = "Preview",
-					s = { "<cmd>MarkdownPreview<CR>", "⭐︎MarkdownPreview: Start." },
-					q = { "<cmd>MarkdownPreviewStop<CR>", "MarkdownPreview: Stop." },
-				},
-				t = {
-					name = "Timestamp",
-					d = {
-						function()
-							local ti = require("timestamp-inserter")
-							vim.api.nvim_put({ ti.timestamp2DateStr(ti.getNowEpoch()) }, "c", true, true)
-						end,
-						"⭐︎TimestampInserter: Insert current date.",
-					},
-					f = {
-						function()
-							local ti = require("timestamp-inserter")
-							vim.api.nvim_put({ ti.timestamp2DateTimeStr(ti.getNowEpoch()) }, "c", true, true)
-						end,
-						"TimestampInserter: Insert current date and time.",
-					},
-					t = {
-						function()
-							local ti = require("timestamp-inserter")
-							vim.api.nvim_put({ ti.timestamp2TimeStr(ti.getNowEpoch()) }, "c", true, true)
-						end,
-						"⭐︎TimestampInserter: Insert current time.",
-					},
-				},
-			},
+	require("which-key").add({
+		{ "<Leader>a", group = "Language" },
+		{ "<Leader>am", group = "Markdown" },
+		{
+			"<Leader>amb",
+			function()
+				require("markdown-hop-links").frontMatterPicker()
+			end,
+			desc = "⭐︎MarkdownLinkHops: Show backlinks.",
 		},
-	}, { prefix = "<Leader>" })
+		{ "<Leader>aml", group = "Auto lastmod" },
+		{ "<Leader>amlb", group = "Buffer" },
+		{
+			"<Leader>amlbd",
+			require("auto-lastmod").disable_buffer,
+			desc = "⭐︎AutoLastMod: Disable auto-lastmod",
+		},
+		{ "<Leader>amlbe", require("auto-lastmod").enable_buffer, desc = "AutoLastMod: Enable auto-lastmod" },
+		{ "<Leader>amlg", group = "Global" },
+		{
+			"<Leader>amlgd",
+			require("auto-lastmod").disable_global,
+			desc = "⭐︎AutoLastMod: Disable auto-lastmod",
+		},
+		{ "<Leader>amlge", require("auto-lastmod").enable_global, desc = "AutoLastMod: Enable auto-lastmod" },
+		{ "<Leader>amf", group = "Front matter" },
+		{
+			"<Leader>amfc",
+			function()
+				vim.ui.input({ prompt = "Category: " }, function(category)
+					require("front-matter-searcher").frontMatterPicker({
+						select_query = 'select(.categories[]? == "' .. category .. '")',
+					})
+				end)
+			end,
+			desc = "⭐︎FrontMatterSearcher: Search by Category.",
+		},
+		{
+			"<Leader>amfg",
+			function()
+				vim.ui.input({ prompt = "Tag: " }, function(tag)
+					require("front-matter-searcher").frontMatterPicker({
+						select_query = 'select(.tags[]? == "' .. tag .. '")',
+					})
+				end)
+			end,
+			desc = "⭐︎FrontMatterSearcher: Search by tag.",
+		},
+		{
+			"<Leader>amft",
+			function()
+				require("front-matter-searcher").frontMatterPicker()
+			end,
+			desc = "⭐︎FrontMatterSearcher: Search by title.",
+		},
+		-- dependencies: `iamcco/markdown-preview.nvim`
+		{ "<Leader>amp", group = "Preview" },
+		{ "<Leader>amps", "<cmd>MarkdownPreview<CR>", desc = "⭐︎MarkdownPreview: Start." },
+		{ "<Leader>ampq", "<cmd>MarkdownPreviewStop<CR>", desc = "MarkdownPreview: Stop." },
+		{ "<Leader>amt", group = "Timestamp" },
+		{
+			"<Leader>amtd",
+			function()
+				local ti = require("timestamp-inserter")
+				vim.api.nvim_put({ ti.timestamp2DateStr(ti.getNowEpoch()) }, "c", true, true)
+			end,
+			desc = "⭐︎TimestampInserter: Insert current date.",
+		},
+		{
+			"<Leader>amtf",
+			function()
+				local ti = require("timestamp-inserter")
+				vim.api.nvim_put({ ti.timestamp2DateTimeStr(ti.getNowEpoch()) }, "c", true, true)
+			end,
+			desc = "TimestampInserter: Insert current date and time.",
+		},
+		{
+			"<Leader>amtt",
+			function()
+				local ti = require("timestamp-inserter")
+				vim.api.nvim_put({ ti.timestamp2TimeStr(ti.getNowEpoch()) }, "c", true, true)
+			end,
+			desc = "⭐︎TimestampInserter: Insert current time.",
+		},
+	})
 end
 
 -- LSPとLLMに関連するキー登録
@@ -559,223 +536,211 @@ end
 -- dependencies: `CopilotC-Nvim/CopilotChat.nvim`
 local function registerLspAndLlmKey()
 	-- Normal mode
-	require("which-key").register({
-		l = {
-			name = "LSP and LLM",
-			c = {
-				name = "GitHub Copilot Chat",
-				c = {
-					function()
-						require("CopilotChat").close()
-					end,
-					"CopilotChat: Close chat window.",
-				},
-				i = {
-					function()
-						require("CopilotChat").toggle({
-							window = {
-								layout = "float",
-								title = "CopilotChat - Inline Chat",
-								relative = "cursor",
-								width = 1,
-								height = 0.4,
-								row = 1,
-							},
-						})
-					end,
-					"⭐︎CopilotChat: Inline chat",
-				},
-				o = { "<cmd>CopilotChatOpen<CR>", "⭐︎CopilotChat: Open chat window." },
-				q = {
-					function()
-						vim.ui.input({ prompt = "Quick Chat: " }, function(text)
-							if text ~= "" then
-								require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
-							end
-						end)
-					end,
-					"⭐︎CopilotChat: Quick chat",
-				},
-				r = {
-					function()
-						require("CopilotChat").reset()
-					end,
-					"CopilotChat: Reset chat window.",
-				},
-			},
-			-- eはLSPのtelescope利用版で利用済み
-			g = {
-				name = "GitHub Copilot",
-				e = { "<cmd>Copilot enable<CR>", "Copilot: Enable." },
-				d = { "<cmd>Copilot disable<CR>", "Copilot: Disable." },
-				i = { "<cmd>Copilot signin<CR>", "Copilot: Signin." },
-				o = { "<cmd>Copilot signout<CR>", "Copilot: Signout." },
-				p = { "<cmd>Copilot panel<CR>", "Copilot: Show panel." },
-				r = { "<cmd>Copilot restart<CR>", "Copilot: Restart." },
-				s = { "<cmd>Copilot status<CR>", "⭐︎Copilot: Show status." },
-				u = { "<cmd>Copilot setup<CR>", "Copilot: Setup." },
-			},
-			-- `l`はLSPで利用済み
-			t = {
-				name = "Trouble",
-				d = {
-					function()
-						require("trouble").toggle("document_diagnostics")
-					end,
-					"Trouble: Toggle document diagnostics.",
-				},
-				l = {
-					function()
-						require("trouble").toggle("loclist")
-					end,
-					"Trouble: Toggle location list.",
-				},
-				q = {
-					function()
-						require("trouble").toggle("quickfix")
-					end,
-					"Trouble: Toggle quickfix.",
-				},
-				r = {
-					function()
-						require("trouble").toggle("lsp_references")
-					end,
-					"Trouble: Toggle LSP references.",
-				},
-				w = {
-					function()
-						require("trouble").toggle("workspace_diagnostics")
-					end,
-					"Trouble: Toggle workspace diagnostics.",
-				},
-				x = {
-					function()
-						require("trouble").toggle()
-					end,
-					"Trouble: Toggle.",
-				},
-			},
+	require("which-key").add({
+		{ "<Leader>l", group = "LSP and LLM" },
+		{ "<Leader>lc", group = "GitHub Copilot Chat" },
+		{
+			"<Leader>lcc",
+			function()
+				require("CopilotChat").close()
+			end,
+			desc = "CopilotChat: Close chat window.",
 		},
-	}, { prefix = "<Leader>" })
-
-	-- Visual mode
-	-- Normal modeのキーの内、Visual modeで利用するもののみ登録する
-	require("which-key").register({
-		l = {
-			name = "LSP and LLM",
-			c = {
-				name = "GitHub Copilot Chat",
-				q = {
-					function()
-						local input = vim.fn.input("Quick Chat: ")
-						if input ~= "" then
-							require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
-						end
-						-- vim.ui.input({ prompt = "Quick Chat: " }, function(text)
-						-- 	if text ~= "" then
-						-- 		require("CopilotChat").ask(text, { selection = require("CopilotChat.select").visual })
-						-- 	end
-						-- end)
-					end,
-					"⭐︎CopilotChat: Quick chat",
-				},
-			},
+		{
+			"<Leader>lci",
+			function()
+				require("CopilotChat").toggle({
+					window = {
+						layout = "float",
+						title = "CopilotChat - Inline Chat",
+						relative = "cursor",
+						width = 1,
+						height = 0.4,
+						row = 1,
+					},
+				})
+			end,
+			desc = "⭐︎CopilotChat: Inline chat",
 		},
-	}, { mode = "v", prefix = "<Leader>" })
+		{ "<Leader>lco", "<cmd>CopilotChatOpen<CR>", desc = "⭐︎CopilotChat: Open chat window." },
+		{
+			"<Leader>lcq",
+			function()
+				vim.ui.input({ prompt = "Quick Chat: " }, function(text)
+					if text ~= "" then
+						require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
+					end
+				end)
+			end,
+			desc = "⭐︎CopilotChat: Quick chat",
+		},
+		{
+			"<Leader>lcq",
+			function()
+				local input = vim.fn.input("Quick Chat: ")
+				if input ~= "" then
+					require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
+				end
+			end,
+			desc = "⭐︎CopilotChat: Quick chat",
+			mode = { "v" },
+		},
+		{
+			"<Leader>lcr",
+			function()
+				require("CopilotChat").reset()
+			end,
+			desc = "CopilotChat: Reset chat window.",
+		},
+		-- `<Leader>le`はLSPのtelescope利用版で利用済み
+		{ "<Leader>lg", group = "GitHub Copilot" },
+		{ "<Leader>lge", "<cmd>Copilot enable<CR>", desc = "Copilot: Enable." },
+		{ "<Leader>lgd", "<cmd>Copilot disable<CR>", desc = "Copilot: Disable." },
+		{ "<Leader>lgi", "<cmd>Copilot signin<CR>", desc = "Copilot: Signin." },
+		{ "<Leader>lgo", "<cmd>Copilot signout<CR>", desc = "Copilot: Signout." },
+		{ "<Leader>lgp", "<cmd>Copilot panel<CR>", desc = "Copilot: Show panel." },
+		{ "<Leader>lgr", "<cmd>Copilot restart<CR>", desc = "Copilot: Restart." },
+		{ "<Leader>lgs", "<cmd>Copilot status<CR>", desc = "⭐︎Copilot: Show status." },
+		{ "<Leader>lgu", "<cmd>Copilot setup<CR>", desc = "Copilot: Setup." },
+		-- `<Leader>ll`はLSPで利用済み
+		{ "<Leader>lt", group = "Trouble" },
+		{
+			"<Leader>ltd",
+			function()
+				require("trouble").toggle("document_diagnostics")
+			end,
+			desc = "Trouble: Toggle document diagnostics.",
+		},
+		{
+			"<Leader>ltl",
+			function()
+				require("trouble").toggle("loclist")
+			end,
+			desc = "Trouble: Toggle location list.",
+		},
+		{
+			"<Leader>ltq",
+			function()
+				require("trouble").toggle("quickfix")
+			end,
+			desc = "Trouble: Toggle quickfix.",
+		},
+		{
+			"<Leader>ltr",
+			function()
+				require("trouble").toggle("lsp_references")
+			end,
+			desc = "Trouble: Toggle LSP references.",
+		},
+		{
+			"<Leader>ltw",
+			function()
+				require("trouble").toggle("workspace_diagnostics")
+			end,
+			desc = "Trouble: Toggle workspace diagnostics.",
+		},
+		{
+			"<Leader>ltx",
+			function()
+				require("trouble").toggle()
+			end,
+			desc = "Trouble: Toggle.",
+		},
+	})
 
 	-- LspAttachしたときのみ設定を追加
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(ctx)
 			-- see: <https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#suggested-configuration>
-			require("which-key").register({
-				l = {
-					e = {
-						name = "LSP with telescope",
-						d = {
-							require("telescope.builtin").lsp_definitions,
-							"LSP Telescope: Go to definition.",
-						},
-						e = {
-							name = "Diagnostics",
-							b = {
-								function()
-									require("telescope.builtin").diagnostics({ bufnr = 0 })
-								end,
-								"LSP Telescope: Lists diagnostics for all open buffers.",
-							},
-							w = {
-								require("telescope.builtin").diagnostics,
-								"LSP Telescope: Lists diagnostics for all open buffers.",
-							},
-						},
-						i = {
-							require("telescope.builtin").lsp_implementations,
-							"LSP Telescope: Go to implementation.",
-						},
-						n = {
-							require("telescope.builtin").lsp_incoming_calls,
-							"LSP Telescope: Lists LSP incoming calls.",
-						},
-						o = {
-							require("telescope.builtin").lsp_outgoing_calls,
-							"LSP Telescope: Lists LSP outgoing calls.",
-						},
-						r = { require("telescope.builtin").lsp_references, "LSP Telescope: Lists LSP References." },
-						s = {
-							name = "Document symbols",
-							b = {
-								require("telescope.builtin").lsp_document_symbols,
-								"LSP Telescope: Lists LSP document symbols in the current buffer.",
-							},
-							w = {
-								require("telescope.builtin").lsp_workspace_symbols,
-								"LSP Telescope: Lists LSP document symbols in the current workspace.",
-							},
-							y = {
-								require("telescope.builtin").lsp_dynamic_workspace_symbols,
-								"LSP Telescope: Dynamically lists LSP for all workspace symbols.",
-							},
-						},
-						t = {
-							require("telescope.builtin").lsp_type_definitions,
-							"LSP Telescope: Go to definition of the type.",
-						},
-					},
-					l = {
-						name = "LSP",
-						a = { vim.lsp.buf.code_action, "⭐︎LSP: Code action." },
-						d = { vim.lsp.buf.definition, "⭐︎LSP: Go to definition." },
-						D = { vim.lsp.buf.declaration, "⭐︎LSP: Go to declaration." },
-						e = {
-							name = "Diagnostic",
-							o = { vim.diagnostic.open_float, "⭐︎LSP: Show line diagnostics." },
-							p = { vim.diagnostic.goto_prev, "⭐︎LSP: Go to previous diagnostics." },
-							n = { vim.diagnostic.goto_next, "⭐︎LSP: Go to next diagnostics." },
-							l = { vim.diagnostic.setloclist, "⭐︎LSP: Set loclist diagnostics." },
-						},
-						f = {
-							function()
-								vim.lsp.buf.format({ async = true })
-							end,
-							"⭐︎LSP: Formatting.",
-						},
-						i = { vim.lsp.buf.implementation, "⭐︎LSP: Go to implementation." },
-						k = { vim.lsp.buf.signature_help, "⭐︎LSP: Show signature help." },
-						K = { vim.lsp.buf.hover, "⭐︎LSP: Show hover." },
-						n = { vim.lsp.buf.rename, "⭐︎LSP: Rename." },
-						r = { vim.lsp.buf.references, "⭐︎LSP: Show references." },
-						s = { "<cmd>LspInfo<CR>", "⭐︎LSP: Show lsp info." },
-						t = { vim.lsp.buf.type_definition, "⭐︎LSP: Type definition." },
-						w = {
-							name = "workspace",
-							a = { vim.lsp.buf.add_workspace_folder, "LSP: Add workspace folder." },
-							r = { vim.lsp.buf.remove_workspace_folder, "LSP: Remove workspace folder." },
-							l = { vim.lsp.buf.list_workspace_folders, "LSP: List workspace folders." },
-						},
-					},
+			require("which-key").add({
+				{ "<Leader>le", group = "LSP with telescope" },
+				{
+					"<Leader>led",
+					require("telescope.builtin").lsp_definitions,
+					desc = "LSP Telescope: Go to definition.",
 				},
+				{ "<Leader>lee", gruop = "Diagnostics" },
+				{
+					"<Leader>leeb",
+					function()
+						require("telescope.builtin").diagnostics({ bufnr = 0 })
+					end,
+					desc = "LSP Telescope: Lists diagnostics for all open buffers.",
+				},
+				{
+					"<Leader>leew",
+					require("telescope.builtin").diagnostics,
+					desc = "LSP Telescope: Lists diagnostics for all open buffers.",
+				},
+				{
+					"<Leader>lei",
+					require("telescope.builtin").lsp_implementations,
+					desc = "LSP Telescope: Go to implementation.",
+				},
+				{
+					"<Leader>len",
+					require("telescope.builtin").lsp_incoming_calls,
+					desc = "LSP Telescope: Lists LSP incoming calls.",
+				},
+				{
+					"<Leader>leo",
+					require("telescope.builtin").lsp_outgoing_calls,
+					desc = "LSP Telescope: Lists LSP outgoing calls.",
+				},
+				{
+					"<Leader>ler",
+					require("telescope.builtin").lsp_references,
+					desc = "LSP Telescope: Lists LSP References.",
+				},
+				{ "<Leader>les", group = "Document symbols" },
+				{
+					"<Leader>lesb",
+					require("telescope.builtin").lsp_document_symbols,
+					desc = "LSP Telescope: Lists LSP document symbols in the current buffer.",
+				},
+				{
+					"<Leader>lesw",
+					require("telescope.builtin").lsp_workspace_symbols,
+					desc = "LSP Telescope: Lists LSP document symbols in the current workspace.",
+				},
+				{
+					"<Leader>lesy",
+					require("telescope.builtin").lsp_dynamic_workspace_symbols,
+					desc = "LSP Telescope: Dynamically lists LSP for all workspace symbols.",
+				},
+				{
+					"<Leader>let",
+					require("telescope.builtin").lsp_type_definitions,
+					desc = "LSP Telescope: Go to definition of the type.",
+				},
+				{ "<Leader>ll", group = "LSP" },
+				{ "<Leader>lla", vim.lsp.buf.code_action, desc = "⭐︎LSP: Code action." },
+				{ "<Leader>lld", vim.lsp.buf.definition, desc = "⭐︎LSP: Go to definition." },
+				{ "<Leader>llD", vim.lsp.buf.declaration, desc = "⭐︎LSP: Go to declaration." },
+				{ "<Leader>lle", group = "Diagnostic" },
+				{ "<Leader>lleo", vim.diagnostic.open_float, desc = "⭐︎LSP: Show line diagnostics." },
+				{ "<Leader>llep", vim.diagnostic.goto_prev, desc = "⭐︎LSP: Go to previous diagnostics." },
+				{ "<Leader>llen", vim.diagnostic.goto_next, desc = "⭐︎LSP: Go to next diagnostics." },
+				{ "<Leader>llel", vim.diagnostic.setloclist, desc = "⭐︎LSP: Set loclist diagnostics." },
+				{
+					"<Leader>llf",
+					function()
+						vim.lsp.buf.format({ async = true })
+					end,
+					desc = "⭐︎LSP: Formatting.",
+				},
+				{ "<Leader>lli", vim.lsp.buf.implementation, desc = "⭐︎LSP: Go to implementation." },
+				{ "<Leader>llk", vim.lsp.buf.signature_help, desc = "⭐︎LSP: Show signature help." },
+				{ "<Leader>llK", vim.lsp.buf.hover, desc = "⭐︎LSP: Show hover." },
+				{ "<Leader>lln", vim.lsp.buf.rename, desc = "⭐︎LSP: Rename." },
+				{ "<Leader>llr", vim.lsp.buf.references, desc = "⭐︎LSP: Show references." },
+				{ "<Leader>lls", "<cmd>LspInfo<CR>", desc = "⭐︎LSP: Show lsp info." },
+				{ "<Leader>llt", vim.lsp.buf.type_definition, desc = "⭐︎LSP: Type definition." },
+				{ "<Leader>llw", group = "workspace" },
+				{ "<Leader>llwa", vim.lsp.buf.add_workspace_folder, desc = "LSP: Add workspace folder." },
+				{ "<Leader>llwr", vim.lsp.buf.remove_workspace_folder, desc = "LSP: Remove workspace folder." },
+				{ "<Leader>llwl", vim.lsp.buf.list_workspace_folders, desc = "LSP: List workspace folders." },
 			}, {
-				prefix = "<leader>",
 				buffer = ctx.buff,
 			})
 		end,
@@ -784,12 +749,10 @@ end
 
 -- Marks関連のキー登録
 local function registerMarkKey()
-	require("which-key").register({
-		m = {
-			name = "Marks",
-			l = { require("telescope.builtin").marks, "⭐︎Telescope: Lists vim marks." },
-		},
-	}, { prefix = "<Leader>" })
+	require("which-key").add({
+		{ "<Leader>m", group = "Marks" },
+		{ "<Leader>ml", require("telescope.builtin").marks, desc = "⭐︎Telescope: Lists vim marks." },
+	})
 end
 
 -- Outline関連のキー登録
@@ -798,40 +761,32 @@ end
 --   - `hedyhli/outline.nvim`
 --   - `stevearc/aerial.nvim`
 local function registerOutlineKey()
-	require("which-key").register({
-		o = {
-			name = "Outline",
-			f = { "<cmd>OutlineFollow<CR>", "Outline: Go follow cursor position." },
-			o = { "<cmd>OutlineOpen<CR>", "⭐︎Outline: Open." },
-			q = { "<cmd>OutlineClose<CR>", "Outline: Close." },
-			s = { "<cmd>OutlineStatus<CR>", "Outline: Show status." },
-			r = { "<cmd>OutlinesRefresh<CR>", "Outline: Refresh of symbols." },
-			t = { "<cmd>Telescope aerial<CR>", "Aerial: Open using telescope." },
-		},
-	}, { prefix = "<Leader>" })
+	require("which-key").add({
+		{ "<Leader>o", group = "Outline" },
+		{ "<Leader>of", "<cmd>OutlineFollow<CR>", desc = "Outline: Go follow cursor position." },
+		{ "<Leader>oo", "<cmd>OutlineOpen<CR>", desc = "⭐︎Outline: Open." },
+		{ "<Leader>oq", "<cmd>OutlineClose<CR>", desc = "Outline: Close." },
+		{ "<Leader>os", "<cmd>OutlineStatus<CR>", desc = "Outline: Show status." },
+		{ "<Leader>or", "<cmd>OutlinesRefresh<CR>", desc = "Outline: Refresh of symbols." },
+		{ "<Leader>ot", "<cmd>Telescope aerial<CR>", desc = "Aerial: Open using telescope." },
+	})
 end
 
 -- QuickfixとLocation関連のキー登録
 local function registerQuickfixAndLocation()
-	require("which-key").register({
-		q = {
-			name = "Quickfix and Location list",
-			l = {
-				name = "Location list",
-				n = { "<cmd>lnext<CR>", "⭐︎Location: Next." },
-				o = { "<cmd>lopen<CR>", "⭐︎Location: Open." },
-				p = { "<cmd>lprevious<CR>", "⭐︎Location: Previous." },
-				q = { "<cmd>lclose<CR>", "⭐︎Location: Close." },
-			},
-			q = {
-				name = "Quickfix",
-				n = { "<cmd>cnext<CR>", "⭐︎Quickfix: Next." },
-				o = { "<cmd>copen<CR>", "⭐︎Quickfix: Open." },
-				p = { "<cmd>cprevious<CR>", "⭐︎Quickfix: Previous." },
-				q = { "<cmd>cclose<CR>", "⭐︎Quickfix: Close." },
-			},
-		},
-	}, { prefix = "<Leader>" })
+	require("which-key").add({
+		{ "<Leader>q", group = "Quickfix and Location list" },
+		{ "<Leader>ql", group = "Location list" },
+		{ "<Leader>qln", "<cmd>lnext<CR>", desc = "⭐︎Location: Next." },
+		{ "<Leader>qlo", "<cmd>lopen<CR>", desc = "⭐︎Location: Open." },
+		{ "<Leader>qlp", "<cmd>lprevious<CR>", desc = "⭐︎Location: Previous." },
+		{ "<Leader>qlq", "<cmd>lclose<CR>", desc = "⭐︎Location: Close." },
+		{ "<Leader>qq", group = "Quickfix" },
+		{ "<Leader>qqn", "<cmd>cnext<CR>", desc = "⭐︎Quickfix: Next." },
+		{ "<Leader>qqo", "<cmd>copen<CR>", desc = "⭐︎Quickfix: Open." },
+		{ "<Leader>qqp", "<cmd>cprevious<CR>", desc = "⭐︎Quickfix: Previous." },
+		{ "<Leader>qqq", "<cmd>cclose<CR>", desc = "⭐︎Quickfix: Close." },
+	})
 end
 
 -- Terminal関連のキー登録
@@ -840,141 +795,112 @@ end
 -- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
 -- 数字を設定しなければ、最初の端末を開くことができきる。
 local function registerTerminalAndToolsKey()
-	require("which-key").register({
-		t = {
-			name = "Terminal and Tools",
-			l = { "<cmd>Lazy<CR>", "⭐︎Lazy: Show Lazy UI." },
-			m = {
-				name = "Mason",
-				l = { "<cmd>MasonLog<CR>", "Mason: Show log." },
-				o = { "<cmd>Mason<CR>", "⭐︎Mason: Show Mason UI." },
-				u = {
-					name = "Update",
-					m = { "<cmd>MasonUpdate<CR>", "Mason: update." },
-					t = { "<cmd>MasonToolsUpdate<CR>", "MasonTools: update." },
-				},
-			},
-			t = {
-				name = "Terminal",
-				f = {
-					"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
-					"⭐︎ToggleTerm: Open floating terminal.",
-				},
-				h = {
-					"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
-					"⭐︎ToggleTerm: Open horizontal terminal.",
-				},
-				n = { "<cmd>ToggleTermSetName<CR>", "ToggleTerm: Set a display name." },
-				p = { "<cmd>TermSelect<CR>", "ToggleTerm: Select a terminal." },
-				s = {
-					name = "Send to terminal",
-					l = { "<cmd>ToggleTermSendCurrentLine<CR>", "ToggleTerm: Send current line to terminal." },
-					v = { "<cmd>ToggleTermSendVisualLines<CR>", "ToggleTerm: Send selected lines to terminal." },
-					s = { "<cmd>ToggleTermSendVisualSelection<CR>", "ToggleTerm: Send selection to terminal." },
-				},
-				t = { "<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>", "ToggleTerm: Open tab terminal." },
-				v = {
-					"<cmd>exe v:count1 . \"ToggleTerm direction='vertical'\"<CR>",
-					"ToggleTerm: Open vertical terminal.",
-				},
-			},
-			s = {
-				name = "Tree sitter",
-				c = {
-					name = "Context",
-					e = {
-						"<cmd>TSContextEnable<CR>",
-						"TreeSitter: Enable Context.",
-					},
-					d = {
-						"<cmd>TSContextDisable<CR>",
-						"TreeSitter: Disable Context.",
-					},
-					j = {
-						function()
-							require("treesitter-context").go_to_context(vim.v.count1)
-						end,
-						"TreeSitter: Jumping to context(upwards).",
-					},
-				},
-				u = { "<cmd>TSUpdate<CR>", "TreeSitter: Update Tree-Sitter" },
-			},
+	require("which-key").add({
+		{ "<Leader>t", group = "Terminal and Tools" },
+		{ "<Leader>tl", "<cmd>Lazy<CR>", desc = "⭐︎Lazy: Show Lazy UI." },
+		{ "<Leader>tm", group = "Mason" },
+		{ "<Leader>tml", "<cmd>MasonLog<CR>", desc = "Mason: Show log." },
+		{ "<Leader>tmo", "<cmd>Mason<CR>", desc = "⭐︎Mason: Show Mason UI." },
+		{ "<Leader>tmu", group = "Update" },
+		{ "<Leader>tmum", "<cmd>MasonUpdate<CR>", desc = "Mason: update." },
+		{ "<Leader>tmut", "<cmd>MasonToolsUpdate<CR>", desc = "MasonTools: update." },
+		{ "<Leader>tt", group = "Terminal" },
+		{
+			"<Leader>ttf",
+			"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
+			desc = "⭐︎ToggleTerm: Open floating terminal.",
 		},
-	}, { prefix = "<Leader>" })
+		{
+			"<Leader>tth",
+			"<cmd>exe v:count1 . \"ToggleTerm direction='horizontal'\"<CR>",
+			desc = "⭐︎ToggleTerm: Open horizontal terminal.",
+		},
+		{ "<Leader>ttn", "<cmd>ToggleTermSetName<CR>", desc = "ToggleTerm: Set a display name." },
+		{ "<Leader>ttp", "<cmd>TermSelect<CR>", desc = "ToggleTerm: Select a terminal." },
+		{ "<Leader>tts", group = "Send to terminal" },
+		{ "<Leader>ttsl", "<cmd>ToggleTermSendCurrentLine<CR>", desc = "ToggleTerm: Send current line to terminal." },
+		{ "<Leader>ttsv", "<cmd>ToggleTermSendVisualLines<CR>", desc = "ToggleTerm: Send selected lines to terminal." },
+		{ "<Leader>ttss", "<cmd>ToggleTermSendVisualSelection<CR>", desc = "ToggleTerm: Send selection to terminal." },
+		{
+			"<Leader>ttt",
+			"<cmd>exe v:count1 . \"ToggleTerm direction='tab'\"<CR>",
+			desc = "ToggleTerm: Open tab terminal.",
+		},
+		{
+			"<Leader>ttv",
+			"<cmd>exe v:count1 . \"ToggleTerm direction='vertical'\"<CR>",
+			desc = "ToggleTerm: Open vertical terminal.",
+		},
+		{ "<Leader>ts", group = "Tree sitter" },
+		{ "<Leader>tsc", group = "Context" },
+		{ "<Leader>tsce", "<cmd>TSContextEnable<CR>", desc = "TreeSitter: Enable Context." },
+		{ "<Leader>tscd", "<cmd>TSContextDisable<CR>", desc = "TreeSitter: Disable Context." },
+		{
+			"<Leader>tscj",
+			function()
+				require("treesitter-context").go_to_context(vim.v.count1)
+			end,
+			desc = "TreeSitter: Jumping to context(upwards).",
+		},
+		{ "<Leader>tsu", "<cmd>TSUpdate<CR>", desc = "TreeSitter: Update Tree-Sitter" },
+	})
 end
 
 -- Workspace関連のキー登録
 local function registerWorkspaceKey()
 	-- Normal mode
-	require("which-key").register({
-		w = {
-			name = "Workspace",
-			n = {
-				-- dependencies: `rcarriga/nvim-notify`
-				"<cmd>Telescope notify<CR>",
-				"⭐︎Telescope: Show notify.",
-			},
-			t = {
-				name = "Tab",
-				n = { "<cmd>tabnext<CR>", "⭐︎Tab: Move next tab." },
-				o = { "<cmd>tabnew<CR>", "⭐︎Tab: Open a new tab." },
-				p = { "<cmd>tabprevious<CR>", "⭐︎Tab: Move previous tab." },
-				q = { "<cmd>tabclose<CR>", "⭐︎Tab: Close tab." },
-			},
-			v = {
-				name = "VSCode",
-				b = {
-					-- 現在のバッファをvscodeで開く
-					function()
-						if vim.fn.executable("code") == 0 then
-							vim.notify("code command not found.")
-							return
-						end
-
-						local project_path = vim.fn.getcwd()
-						local file_path = vim.fn.expand("%:p")
-						vim.fn.jobstart({ "code", project_path, file_path }, { detach = true })
-					end,
-					"⭐︎VSCode: Open file.",
-				},
-				w = {
-					-- 同じフォルダでvsocdeを開く
-					function()
-						if vim.fn.executable("code") == 0 then
-							vim.notify("code command not found.")
-							return
-						end
-
-						local path = vim.fn.expand("%:p:h")
-						vim.fn.jobstart({ "code", path }, { detach = true })
-					end,
-					"VSCode: Open folder.",
-				},
-			},
-			["/"] = {
-				name = "Search",
-				["*"] = {
-					require("telescope.builtin").grep_string,
-					"⭐︎Telescope: Search for the string under your cursor in Workspace.",
-				},
-				["/"] = { require("telescope.builtin").live_grep, "⭐︎Telescope: Search in Workspace." },
-			},
+	require("which-key").add({
+		{ "<Leader>w", group = "Workspace" },
+		{
+			"<Leader>wn",
+			-- dependencies: `rcarriga/nvim-notify`
+			"<cmd>Telescope notify<CR>",
+			desc = "⭐︎Telescope: Show notify.",
 		},
-	}, { prefix = "<Leader>" })
+		{ "<Leader>wt", group = "Tab" },
+		{ "<Leader>wtn", "<cmd>tabnext<CR>", desc = "⭐︎Tab: Move next tab." },
+		{ "<Leader>wto", "<cmd>tabnew<CR>", desc = "⭐︎Tab: Open a new tab." },
+		{ "<Leader>wtp", "<cmd>tabprevious<CR>", desc = "⭐︎Tab: Move previous tab." },
+		{ "<Leader>wtq", "<cmd>tabclose<CR>", desc = "⭐︎Tab: Close tab." },
+		{ "<Leader>wv", group = "VSCode" },
+		{
+			"<Leader>wvb",
+			-- 現在のバッファをvscodeで開く
+			function()
+				if vim.fn.executable("code") == 0 then
+					vim.notify("code command not found.")
+					return
+				end
 
-	-- Visual mode
-	require("which-key").register({
-		w = {
-			name = "Workspace",
-			["/"] = {
-				name = "Search",
-				["/"] = {
-					require("telescope.builtin").grep_string,
-					"⭐︎Telescope: Search for the string your selection in Workspace.",
-				},
-			},
+				local project_path = vim.fn.getcwd()
+				local file_path = vim.fn.expand("%:p")
+				vim.fn.jobstart({ "code", project_path, file_path }, { detach = true })
+			end,
+			desc = "⭐︎VSCode: Open file.",
 		},
-	}, { mode = "v", prefix = "<Leader>" })
+		{
+			"<Leader>wvw",
+			-- 同じフォルダでvsocdeを開く
+			function()
+				if vim.fn.executable("code") == 0 then
+					vim.notify("code command not found.")
+					return
+				end
+
+				local path = vim.fn.expand("%:p:h")
+				vim.fn.jobstart({ "code", path }, { detach = true })
+			end,
+			desc = "VSCode: Open folder.",
+		},
+		{ "<Leader>w/", group = "Search" },
+		{
+			"<Leader>w/*",
+			require("telescope.builtin").grep_string,
+			desc = "⭐︎Telescope: Search for the string under your cursor in Workspace.",
+			mode = { "n", "v" },
+		},
+		{ "<Leader>w//", require("telescope.builtin").live_grep, desc = "⭐︎Telescope: Search in Workspace." },
+	})
 end
 
 return {
