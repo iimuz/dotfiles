@@ -11,7 +11,7 @@ mas "RunCat", id: 1429033973
 cask "arc"
 # cask "brave-browser"
 # cask "firefox"
-cask "google-chrome"
+# cask "google-chrome"
 # cask "microsoft-edge"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
@@ -36,7 +36,7 @@ cask "font-hack-nerd-font"
 # === git
 tap "microsoft/git"
 brew "git"
-brew "git-filter-repo"  # gitの履歴抽出
+# brew "git-filter-repo"  # gitの履歴抽出
 brew "git-lfs"
 # cask "git-credential-manager-core"
 brew "lazygit"
@@ -46,7 +46,7 @@ brew "go"
 brew "golangci-lint"
 
 # === hugo
-brew "hugo"
+# brew "hugo"
 
 # === key management
 brew "stoken"  # pass generateor
@@ -78,7 +78,7 @@ brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
 cask "obsidian"
-cask "postman"
+# cask "postman"
 cask "visual-studio-code"
 
 # === python
@@ -111,6 +111,7 @@ brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
 brew "wget"
-cask "wezterm"  # terminal emulator
+# cask "wezterm"  # terminal emulator
 brew "yq"
 brew "zellij" # terminal multiplexers
+cask "alacritty" # terminal emurator
