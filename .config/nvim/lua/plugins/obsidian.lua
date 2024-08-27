@@ -5,16 +5,15 @@
 -- 2024-05-30
 -- obsidianを編集するためにはneovimを利用しているが、viewerとして導入した。
 -- ただ、補完機能が重かったり動作として不要なものも多かったので無効化。
-
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
+--
+-- 2024-08-27
+-- ファイル開くのに利用しようかと思ったが、ファイル名をコピーしてobsidianで開くのと、それほど手順が減らないのでやはり無効化
 
 return {
 	"epwalsh/obsidian.nvim",
 	version = "*",
-	lazy = true,
+	lazy = false,
 	ft = "markdown",
-	cond = condition,
 	enabled = false, -- 思ったより使いにくかったので無効化
 	dependencies = {
 		"hrsh7th/nvim-cmp",
