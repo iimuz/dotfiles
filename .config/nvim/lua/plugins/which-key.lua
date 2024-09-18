@@ -183,7 +183,8 @@ end
 local function registerFileKey()
 	-- 指定した値をクリップボードにコピーする
 	local function copyToClipboard(value)
-		vim.notify("Copied: " .. value)
+		--  zellijからnvimを利用するとチラつくケースがあったので修正
+		-- vim.notify("Copied: " .. value)
 		vim.fn.setreg("+", value)
 	end
 
