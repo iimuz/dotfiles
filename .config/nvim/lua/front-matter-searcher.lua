@@ -216,33 +216,6 @@ function M.frontMatterPicker2(opts)
 		:find()
 end
 
--- front matterを取得してpickerを表示する
-function M.frontMatterPicker3(opts)
-	opts = opts or {}
-	local select_query = opts.select_query or ""
-	pickers
-		.new(opts, {
-			prompt_title = "File",
-			finder = finders.new_table({
-				results = getFrontMatter3(select_query),
-				entry_maker = function(entry)
-					return {
-						value = entry,
-						-- 検索対象として使われる文字列
-						ordinal = entry.title,
-						-- 画面上に表示される文字列
-						display = makeDisplay,
-						-- 選択したときに開くファイルのパス
-						path = entry.filepath,
-					}
-				end,
-			}),
-			sorter = conf.generic_sorter(opts),
-			previewer = conf.file_previewer(opts),
-		})
-		:find()
-end
-
 -- 基本となる処理の設定
 --
 -- ショートカットキーの登録はwhich-keyで行うため何もしていない。
