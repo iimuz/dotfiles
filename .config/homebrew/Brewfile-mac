@@ -1,6 +1,6 @@
 tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/core"
+# tap "homebrew/cask" # デフォルト対応しているらしいので不要とのこと
+# tap "homebrew/core" # デフォルト対応しているらしいので不要とのこと
 
 # === application management
 brew "mas"
