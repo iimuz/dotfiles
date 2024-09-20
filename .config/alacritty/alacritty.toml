@@ -1,0 +1,8 @@
+[shell]
+program = "/bin/zsh"
+args = ["-l", "-c", "tmux a -t 0 || tmux"]
+
+[font]
+normal = { family = "Cica", style = "Regular" }
+size = 18
+

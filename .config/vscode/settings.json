@@ -61,7 +61,17 @@
   "search.useIgnoreFiles": true,
   "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 20,
-  "window.commandCenter": 1,
+  "terminal.integrated.drawBoldTextInBrightColors": false,
+  "terminal.integrated.macOptionIsMeta": false,
+  "terminal.integrated.defaultProfile.osx": "tmux",
+  "terminal.integrated.profiles.osx": {
+    "tmux": {
+      "overrideName": true,
+      "path": "tmux",
+      "args": ["new-session", "-A", "-s", "${workspaceFolderBasename}"]
+    }
+  },
+  "window.commandCenter": false,
   "workbench.activityBar.location": "top",
   "workbench.colorTheme": "GitHub Dark Dimmed",
   "workbench.editor.enablePreviewFromQuickOpen": true,

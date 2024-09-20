@@ -79,7 +79,8 @@ local function UpdateLastmod()
 
 		if lastmod_line then
 			local lastmod_view = "lastmod: " .. lastmod .. "  # " .. lastmod_str
-			vim.notify("Update lastmod: " .. lastmod_str)
+			--  zellijからnvim起動しているとnotifyで画面がチラつくので出力を抑制
+			-- vim.notify("Update lastmod: " .. lastmod_str)
 			vim.api.nvim_buf_set_lines(buf, lastmod_line - 1, lastmod_line, false, { lastmod_view })
 		end
 	end
