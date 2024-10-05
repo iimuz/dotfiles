@@ -35,6 +35,7 @@ return {
 						return { "isort", "black" }
 					end
 				end,
+				rust = { "rust_analyzer" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
 				yaml = { "prettier" },

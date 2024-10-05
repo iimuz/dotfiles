@@ -40,6 +40,7 @@ return {
 					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"pyright", -- Python LSP
+					"rust_analyzer", -- Rust LSP
 				},
 			})
 
