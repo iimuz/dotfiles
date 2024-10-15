@@ -14,7 +14,7 @@ return {
 			immediate_save = { "BufLeave", "FocusLost" },
 			-- defer_save = { "InsertLeave", "TextChanged" },
 			defer_save = {},
-			cancel_defered_save = { "InsertEnter" },
+			cancel_deferred_save = { "InsertEnter" },
 		},
 		-- delay after which a pending save is executed
 		debounce_delay = 1000,
