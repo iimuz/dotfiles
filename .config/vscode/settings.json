@@ -1,4 +1,5 @@
 {
+  "diffEditor.renderSideBySide": false, // 差分表示で画面を分割しない
   "editor.rulers": [79, 88, 100], // pep8: 79, black: 88
   "editor.accessibilitySupport": "off",
   "editor.cursorStyle": "line",
@@ -48,7 +49,6 @@
   "git.ignoreLegacyWarning": true,
   "git.openRepositoryInParentFolders": "always",
   "git.terminalAuthentication": false,
-  "scm.experimental.showHistoryGraph": true,
   "search.exclude": {
     "**/.bundle": true,
     "**/.DS_Store": true,
@@ -58,34 +58,27 @@
     "**/__pycache__": true,
     "**/node_modules": true
   },
+  "search.searchEditor.focusResultsOnSearch": true,
   "search.useIgnoreFiles": true,
+  "terminal.integrated.allowChords": false,
   "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 20,
+  "terminal.integrated.defaultLocation": "editor",
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.macOptionIsMeta": false,
-  "terminal.integrated.defaultProfile.osx": "tmux",
-  "terminal.integrated.profiles.osx": {
-    "tmux": {
-      "overrideName": true,
-      "path": "tmux",
-      "args": ["new-session", "-A", "-s", "${workspaceFolderBasename}"]
-    }
-  },
   "window.commandCenter": false,
   "workbench.activityBar.location": "top",
-  "workbench.colorTheme": "GitHub Dark Dimmed",
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.labelFormat": "short",
   "workbench.editor.limit.enabled": true,
   "workbench.editor.limit.perEditorGroup": false,
-  "workbench.editor.limit.value": 16,
+  "workbench.editor.limit.value": 32,
   "workbench.editor.showIcons": true,
   "workbench.editor.showTabs": "single",
   "workbench.editor.tabActionCloseVisibility": false,
   "workbench.editor.tabSizing": "shrink",
-  "workbench.editor.tabCloseButton": "off",
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "Monokai Pro Icons",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "none",
   "workbench.tree.enableStickyScroll": true,
@@ -95,17 +88,30 @@
   "lpubsppop01.autoTimeStamp.lineLimit": 10,
   "lpubsppop01.autoTimeStamp.modifiedTimeStart": "lastmod: ",
   "lpubsppop01.autoTimeStamp.momentFormat": "YYYY-MM-DDTHH",
-  // === Extension: draw.io
+  // === Extension: AWS Toolkit(AmazonWebServices.aws-toolkit-vscode)
+  "aws.telemetry": false,
+  // === Extension: code-runner(formulahendry.code-runner)
+  "code-runner.preserveFocus": true,
+  "code-runner.runInTerminal": false,
+  "code-runner.enableAppInsights": false,
+  "code-runner.fileDirectoryAsCwd": true,
+  // === Extension: draw.io(hediet.vscode-drawio)
   "hediet.vscode-drawio.resizeImages": null,
   "hediet.vscode-drawio.theme": "Kennedy",
+  // === Extension: find-it-faster(TomRijndorp.find-it-faster)
+  "find-it-faster.general.hideTerminalAfterFail": true,
+  "find-it-faster.general.showMaximizedTerminal": false,
+  "find-it-faster.general.useTerminalInEditor": true,
   // === Extension: frontMatter(eliostruyf.vscode-front-matter)
   "frontMatter.content.autoUpdateDate": false, // autoTimeStamp拡張を利用する
   "frontMatter.content.fmHighlight": false,
   "frontMatter.dashboard.content.pagination": 52, // dashboardで1ページあたりの表示数を最大にする
   "frontMatter.dashboard.openOnStart": false,
-  // === Extension: GitHub Copilot
+  // === Extension: GitHub Copilot(GitHub.copilot)
   "github.copilot.editor.enableAutoCompletions": true,
   "github.copilot.chat.localeOverride": "ja",
+  // === Extension: GitHub Copilot Chat(GitHub.copilot-chat)
+  "chat.editing.alwaysSaveWithGeneratedChanges": true,
   // === Extension: github PR(GitHub.vscode-pull-request-github)
   "githubPullRequests.queries": [
     {
@@ -123,12 +129,13 @@
   ],
   "githubPullRequests.pullBranch": "never",
   // === Extension: gitlens(eamodio.gitlens)
-  "gitlens.advanced.messages": {
-    "suppressGitVersionWarning": true
-  },
-  "gitlens.codeLens.authors.enabled": false,
-  "gitlens.codeLens.recentChange.enabled": false,
-  "gitlens.currentLine.enabled": false,
+  // 2024-11-06: 利用していないので無効化
+  // "gitlens.advanced.messages": {
+  //   "suppressGitVersionWarning": true
+  // },
+  // "gitlens.codeLens.authors.enabled": false,
+  // "gitlens.codeLens.recentChange.enabled": false,
+  // "gitlens.currentLine.enabled": false,
   // === Extension: indent-rainbow(oderwat.indent-rainbow)
   "indentRainbow.indicatorStyle": "light",
   "indentRainbow.lightIndicatorStyleLineWidth": 1,
@@ -143,28 +150,36 @@
   "insertDateString.format": "YYYY-MM-DD hh:mm:ss",
   "insertDateString.formatDate": "YYYY-MM-DD",
   "insertDateString.formatTime": "hh:mm",
+  // === Extension: markdown preview enhanced(shd101wyy.markdown-preview-enhanced)
+  "markdown-preview-enhanced.liveUpdate": true,
+  "markdown-preview-enhanced.breakOnSingleNewLine": false,
+  "markdown-preview-enhanced.scrollSync": false,
+  "markdown-preview-enhanced.enablePreviewZenMode": false,
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
   // === Extension: open in vim(jonsmithers.open-in-vim)
-  "open-in-vim.useNeovim": true,
+  // 2024-11-06: vscode-vimを利用するようにしたため無効化
+  // "open-in-vim.useNeovim": true,
   // === Extension: neovim(asvetliakov.vscode-neovim)
+  // 2024-11-06: vscode-vimを利用するようにしたため無効化
   // リモートのneovimを利用する際に有効化する。通常は無効で良いのだが、通常利用でも設定を勧められたので有効化してみる。
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  },
-  "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
-  "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
-  "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
-  // === Extension: pasteImage (拡張機能を無効化中)
+  // "extensions.experimental.affinity": {
+  //   "asvetliakov.vscode-neovim": 1
+  // },
+  // "vscode-neovim.neovimInitVimPaths.win32": "~/AppData/Local/nvim/init.vim",
+  // "vscode-neovim.useCtrlKeysForInsertMode": false, // insert modeは完全にvscodeの挙動
+  // "vscode-neovim.useCtrlKeysForNormalMode": true, // normal modeはnevom挙動
+  // === Extension: pasteImage
+  // 拡張機能を無効化
   // "pasteImage.path": "${projectRoot}/static/imgs/${currentFileNameWithoutExt}",
   // "pasteImage.basePath": "${projectRoot}",
   // === Extension: Project Manager
   "projectManager.git.baseFolders": ["$home/src"],
   "projectManager.git.maxDepthRecursion": 3,
   // === Extension: RedHat
-  "redhat.telemetry.enabled": false, // 情報を送らない
-  // === Extension: remote development(ms-vscode-remote.vscode-remote-extensionpack)
-  // "remote.containers.gitCredentialHelperConfigLocation": "none",  // gredential managerに移行したので不要になったはず。暫定で消す。
+  "redhat.telemetry.enabled": false,
   // === Extension: sqltools(mtxr.sqltools)
-  "sqltools.useNodeRuntime": true,
+  // SQLToolsを利用していないので無効k
+  // "sqltools.useNodeRuntime": true,
   // === Extension: vscodevim.vim
   "vim.useSystemClipboard": true,
   "vim.foldfix": true,
@@ -243,7 +258,6 @@
     "!Split sequence"
   ],
   // === Language: asciidoc
-  "asciidoc.use_asciidoctor_js": true,
   "asciidoc.preview.useEditorStyle": false,
   "[asciidoc]": {
     "editor.insertSpaces": true,
@@ -349,48 +363,6 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
-  "latex-workshop.chktex.enabled": true,
-  "latex-workshop.chktex.run": "onSave",
-  "latex-workshop.intellisense.package.enabled": true,
-  "latex-workshop.latex.clean.fileTypes": [
-    "*.aux",
-    "*.bbl",
-    "*.blg",
-    "*.idx",
-    "*.ind",
-    "*.lof",
-    "*.lot",
-    "*.out",
-    "*.toc",
-    "*.acn",
-    "*.acr",
-    "*.alg",
-    "*.glg",
-    "*.glo",
-    "*.gls",
-    "*.ist",
-    "*.fls",
-    "*.log",
-    "*.fdb_latexmk",
-    "*.snm",
-    "*.nav",
-    "*.dvi",
-    "*.synctex.gz"
-  ],
-  "latex-workshop.latex.recipes": [
-    {
-      "name": "latexmk",
-      "tools": ["latexmk"]
-    }
-  ],
-  "latex-workshop.latex.tools": [
-    {
-      "name": "latexmk",
-      "command": "latexmk",
-      "args": ["-silent", "-outdir=%OUTDIR%", "%DOC%"]
-    }
-  ],
-  "latex-workshop.view.pdf.viewer": "tab",
   // === Language: toml
   "[toml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -400,5 +372,6 @@
   "[typescript][typescriptreact]": {
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "workbench.colorTheme": "Cobalt2"
 }
