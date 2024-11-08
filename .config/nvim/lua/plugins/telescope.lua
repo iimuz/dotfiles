@@ -67,6 +67,36 @@ return {
 							["<C-t>"] = function()
 								require("trouble").open_with_trouble()
 							end,
+							-- vscodeでファイルを開く
+							["<C-o>"] = function(prompt_bufnr)
+								if vim.fn.executable("code") == 0 then
+									vim.notify("code command not found.")
+									return
+								end
+
+								local actions = require("telescope.actions")
+								local selection = require("telescope.actions.state").get_selected_entry()
+								local file_path = vim.fn.fnamemodify(selection.path, "%:p")
+
+								actions.close(prompt_bufnr)
+								vim.fn.jobstart({ "code", file_path }, { detach = true })
+							end,
+							-- ファイル名をコピーする
+							["<C-w>"] = function(prompt_bufnr)
+								if vim.fn.executable("code") == 0 then
+									vim.notify("code command not found.")
+									return
+								end
+
+								local actions = require("telescope.actions")
+								local selection = require("telescope.actions.state").get_selected_entry()
+								vim.notify(selection.path)
+								local file_path = vim.fn.fnamemodify(selection.path, ":t:r")
+								vim.notify(file_path)
+
+								actions.close(prompt_bufnr)
+								vim.fn.setreg("+", file_path)
+							end,
 						},
 						n = {
 							["<C-i>"] = insert_filename_without_suffix,
