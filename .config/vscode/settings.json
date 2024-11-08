@@ -19,7 +19,11 @@
   "editor.tabSize": 2,
   "editor.unicodeHighlight.ambiguousCharacters": false,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
-  "editor.wordWrap": "off",
+  // ビューもしくは `wordWrapColumn` で折り返す
+  // `wordWrapColumn` はデフォルトで80なので、ビューよりも小さくなりやすい。
+  // 予め大きめに設定しておく。
+  "editor.wordWrap": "bounded", // ビューもしくは `wordWrapColumn` で折り返す
+  "editor.wordWrapColumn": 180,
   "explorer.autoReveal": true,
   "explorer.autoRevealExclude": {
     "**/.bundle": true,
@@ -264,7 +268,7 @@
     "editor.tabSize": 2,
     "editor.rulers": [100],
     // 折り返し有効時には、rulerの位置で折り返す
-    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrap": "bounded",
     "editor.wordWrapColumn": 100,
     "editor.wrappingIndent": "indent"
   },
@@ -327,7 +331,7 @@
     "editor.tabSize": 2,
     "editor.rulers": [100],
     // 折り返し有効時には、rulerの位置で折り返す
-    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrap": "bounded",
     "editor.wordWrapColumn": 100,
     "editor.wrappingIndent": "indent"
   },
@@ -373,5 +377,6 @@
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "workbench.colorTheme": "Cobalt2"
+  "workbench.colorTheme": "Cobalt2",
+  "lldb.suppressUpdateNotifications": true
 }
