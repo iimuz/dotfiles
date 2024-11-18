@@ -6,7 +6,8 @@
   "editor.detectIndentation": true,
   "editor.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
-  "editor.fontSize": 18,
+  // "editor.fontSize": 18, // Default
+  "editor.fontSize": 20, // LG Display
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
   "editor.largeFileOptimizations": false,
@@ -81,8 +82,9 @@
   "search.useIgnoreFiles": true,
   "terminal.integrated.allowChords": false,
   "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 20,
-  "terminal.integrated.defaultLocation": "editor",
+  // "terminal.integrated.fontSize": 20, // Default
+  "terminal.integrated.fontSize": 22, // LG Display
+  "terminal.integrated.defaultLocation": "view",
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.macOptionIsMeta": false,
   "window.commandCenter": false,
@@ -395,5 +397,7 @@
   "lldb.suppressUpdateNotifications": true,
   "remote.SSH.remotePlatform": {
     "aws-ec2-ml-dev": "linux"
-  }
+  },
+  "extensions.ignoreRecommendations": true,
+  "workbench.colorTheme": "Noctis"
 }
