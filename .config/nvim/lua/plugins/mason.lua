@@ -50,7 +50,7 @@ return {
 					"dprint", -- Markdown, json, toml formatter
 					"prettier", -- formatter
 					"ruff", -- Python linter, formatter
-					"ruff-lsp", -- Python linter, formatter
+					-- "ruff-lsp", -- Python linter, formatter
 					"stylua", -- lua formatter
 				},
 			})
