@@ -14,7 +14,7 @@ return {
 	config = function()
 		-- ruffとpyrightなどを併用する場合
 		-- see: <https://github.com/astral-sh/ruff-lsp?tab=readme-ov-file#example-neovim>
-		require("lspconfig").ruff_lsp.setup({
+		require("lspconfig").ruff.setup({
 			init_options = {
 				settings = {
 					-- Any extra CLI arguments for "ruff" go here.
@@ -22,7 +22,7 @@ return {
 				},
 			},
 			on_attach = function(client, _)
-				if client.name == "ruff_lsp" then
+				if client.name == "ruff" then
 					-- Disable hover in favor of Pyright
 					client.server_capabilities.hoverProvider = false
 				end

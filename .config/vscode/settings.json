@@ -6,7 +6,8 @@
   "editor.detectIndentation": true,
   "editor.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
-  "editor.fontSize": 18,
+  // "editor.fontSize": 18, // Default
+  "editor.fontSize": 20, // LG Display
   "editor.formatOnSave": false,
   "editor.insertSpaces": false,
   "editor.largeFileOptimizations": false,
@@ -29,11 +30,16 @@
     "**/.bundle": true,
     "**/.git/**": true,
     "**/.mypy_cache": true,
+    "**/.obsidian": true,
     "**/.venv": true,
     "**/.vscode": true,
     "**/__pycache__/**": true,
+    "**/*.egg-info/**": true,
+    "**/cdk.out": true,
+    "**/bower_components": true,
     "**/node_modules": true,
-    "**/bower_components": true
+    "**/ruff_cache": true,
+    "**/target": true // rusb build
   },
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 1,
@@ -46,9 +52,14 @@
     "**/.bundle": true,
     "**/.git/**": true,
     "**/.mypy_cache/**": true,
+    "**/.obsidian/**": true,
     "**/.venv/**": true,
     "**/__pycache__/**": true,
-    "**/node_modules/**": true
+    "**/*.egg-info/**": true,
+    "**/cdk.out/**": true,
+    "**/node_modules/**": true,
+    "**/ruff_cache/**": true,
+    "**/target/**": true // rust build
   },
   "git.ignoreLegacyWarning": true,
   "git.openRepositoryInParentFolders": "always",
@@ -58,16 +69,22 @@
     "**/.DS_Store": true,
     "**/.git": true,
     "**/.mypy_cache": true,
+    "**/.obsidian": true,
     "**/.venv": true,
     "**/__pycache__": true,
-    "**/node_modules": true
+    "**/*.egg-info": true,
+    "**/cdk.out": true,
+    "**/node_modules": true,
+    "**/ruff_cache": true,
+    "**/target": true // rust build
   },
   "search.searchEditor.focusResultsOnSearch": true,
   "search.useIgnoreFiles": true,
   "terminal.integrated.allowChords": false,
   "terminal.integrated.fontFamily": "Cica, 'Hack Nerd Font Mono', Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontSize": 20,
-  "terminal.integrated.defaultLocation": "editor",
+  // "terminal.integrated.fontSize": 20, // Default
+  "terminal.integrated.fontSize": 22, // LG Display
+  "terminal.integrated.defaultLocation": "view",
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.macOptionIsMeta": false,
   "window.commandCenter": false,
@@ -377,6 +394,10 @@
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "workbench.colorTheme": "Cobalt2",
-  "lldb.suppressUpdateNotifications": true
+  "lldb.suppressUpdateNotifications": true,
+  "remote.SSH.remotePlatform": {
+    "aws-ec2-ml-dev": "linux"
+  },
+  "extensions.ignoreRecommendations": true,
+  "workbench.colorTheme": "Noctis"
 }

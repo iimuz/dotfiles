@@ -50,7 +50,7 @@ return {
 					"dprint", -- Markdown, json, toml formatter
 					"prettier", -- formatter
 					"ruff", -- Python linter, formatter
-					"ruff-lsp", -- Python linter, formatter
+					-- "ruff-lsp", -- Python linter, formatter
 					"stylua", -- lua formatter
 				},
 			})
@@ -59,9 +59,12 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			require("mason-lspconfig").setup_handlers({
 				function(server_name)
-					require("lspconfig")[server_name].setup({
-						capabilities = capabilities,
-					})
+					local server = require("lspconfig")[server_name]
+					if server ~= nil then
+						server.setup({
+							capabilities = capabilities,
+						})
+					end
 				end,
 			})
 		end,
