@@ -17,6 +17,17 @@ function create_symlink() {
   ln -s $src $dst
 }
 
+# install cica
+# See: <https://github.com/miiton/Cica>
+function _install_cica() {
+  local VERSION=v5.0.3
+  curl -L -O https://github.com/miiton/Cica/releases/download/$VERSION/Cica_${VERSION}.zip
+  unzip Cica_${VERSION}.zip 
+  sudo mkdir  /usr/share/fonts/truetype/cica
+  sudo cp *.ttf /usr/share/fonts/truetype/cica/
+  sudo fc-cache -vf
+}
+
 # Install jq command
 # See:
 # - <https://github.com/jqlang/jq>
@@ -80,9 +91,12 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
 # === bash
-if type bash > /dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
+if type alacritty > /dev/null 2>&1; then
+  mkdir -p $HOME/.config/alacritty
+  create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
 fi
+# === bash
+if [ $(fc-list | grep -i cica | wc -l) == 0 ]; then _install_cica; fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
