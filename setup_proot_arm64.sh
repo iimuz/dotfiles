@@ -100,6 +100,8 @@ if type lazygit > /dev/null 2>&1; then
 fi
 # === [mise](https/;/github.cojm/dx/mise)
 if ! type mise > /dev/null 2>&1; then curl https://mise.run | sh; fi
+# === [Taskfile](https;//tasklfie.dev/inslltaation/)
+if ! type task > /dev/null 2>&1; then pushd $HOME/.local && sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d && popd; fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
