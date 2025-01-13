@@ -93,6 +93,8 @@ if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
+# === [drpint](https://dprint.dev/)
+if ! type drpint > /dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh | sh; fi
 # === lazygit
 if ! type lazygit > /dev/null 2>&1; then _install_lazygit; fi
 if type lazygit > /dev/null 2>&1; then
