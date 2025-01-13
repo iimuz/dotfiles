@@ -94,10 +94,12 @@ if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
 # === lazygit
-if ! type lazygit > /dev/null; then _install_lazygit; fi
+if ! type lazygit > /dev/null 2>&1; then _install_lazygit; fi
 if type lazygit > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
 fi
+# === [mise](https/;/github.cojm/dx/mise)
+if ! type mise > /dev/null 2>&1; then curl https://mise.run | sh; fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
