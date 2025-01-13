@@ -28,26 +28,12 @@ function _install_cica() {
   sudo fc-cache -vf
 }
 
-# Install jq command
-# See:
-# - <https://github.com/jqlang/jq>
-# - <https://jqlang.github.io/jq/>
-function _install_jq() {
-  sudo apt-get install -y --no-install-recommends jq
-}
-
 # Install lazygit
 function _install_lazygit() {
   local LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
   curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
   tar xf lazygit.tar.gz lazygit
   sudo install lazygit -D -t /usr/local/bin/
-}
-
-# Install ripgrep
-# See: <https://github.com/BurntSushi/ripgrep>
-function _install_ripgrep() {
-  sudo apt-get install -y --no-install-recommends ripgrep
 }
 
 function _install_yq() {
@@ -87,6 +73,11 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 
 # Installが確認できていないツール
 # - eza
+# aptでインストール可能なコマンドはaptでインストールする
+sudo apt-get install -y --no-install-recommends \
+  jq \
+  ripgrep \
+  rsync
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
@@ -102,8 +93,6 @@ if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
-# === jq
-if ! type jq > /dev/null 2>&1; then _install_jq; fi
 # === lazygit
 if ! type lazygit > /dev/null; then _install_lazygit; fi
 if type lazygit > /dev/null 2>&1; then
@@ -113,8 +102,6 @@ fi
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
 fi
-# === rg
-if ! type rg > /dev/null 2>&1; then _install_ripgrep; fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
