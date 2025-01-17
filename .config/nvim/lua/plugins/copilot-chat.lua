@@ -10,9 +10,8 @@ local condition = vim.g.vscode == nil
 
 return {
 	"CopilotC-Nvim/CopilotChat.nvim",
-	branch = "canary",
 	cond = condition,
-	enabled = false,
+	enabled = true,
 	cmd = {
 		"CopilotChatOpen",
 	},
@@ -20,7 +19,9 @@ return {
 		{ "github/copilot.vim" },
 		{ "nvim-lua/plenary.nvim" },
 	},
-	config = function()
-		require("CopilotChat").setup()
-	end,
+	build = "make tiktoken", -- Only on MacOS or Linux
+	opts = {},
+	-- config = function()
+	-- 	require("CopilotChat").setup()
+	-- end,
 }
