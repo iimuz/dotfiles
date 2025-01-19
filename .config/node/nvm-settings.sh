@@ -10,6 +10,8 @@ if [ -n "$NVM_DIR" ]; then
 fi
 
 # === Gurad if command does not exist.
+# brewがない場合は、インストール方法が違うが、考慮していない
+if ! type brew > /dev/null 2>&1; then return 0; fi
 if [ ! -s "$(brew --prefix)/opt/nvm/nvm.sh" ]; then return 0; fi
 
 # === nvmの保存先設定
