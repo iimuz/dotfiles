@@ -10,7 +10,7 @@ mas "RunCat", id: 1429033973
 # === communication tools
 cask "arc"
 # cask "brave-browser"
-# cask "firefox"
+cask "firefox"
 # cask "google-chrome"
 # cask "microsoft-edge"
 cask "slack"
