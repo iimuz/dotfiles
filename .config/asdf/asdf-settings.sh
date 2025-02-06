@@ -11,8 +11,8 @@ if [ -n "$ASDF_DATA_DIR" ]; then
 fi
 
 # === Gurad if command does not exist.
-# asdfの判定はhomebrewで導入しておりパスが設定されているか
-if [ ! -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]; then return 0; fi
+# asdfの判定はhomebrewで導入しておりasdfが存在するかで確認する。
+if [ ! -f "$HOMEBREW_PREFIX/opt/asdf/bin/asdf" ]; then return 0; fi
 
 # === data dir
 # ASDF_DIRについては、homebrewの場所が異なるので別のパスになるので、そのまま
@@ -25,5 +25,8 @@ if [ "$(uname)" = "Darwin" ]; then  # MacOS
   fi
 fi
 
-source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+# asdfのcompletionが必要になったことはないので下記は追加しない。
+# ディレクトリ構造が変わったのか下記は2025-02-06時点で使えなくなっている。
+# see: <https://asdf-vm.com/guide/getting-started.html>
+# source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
 
