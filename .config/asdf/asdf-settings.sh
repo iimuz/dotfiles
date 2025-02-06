@@ -25,6 +25,9 @@ if [ "$(uname)" = "Darwin" ]; then  # MacOS
   fi
 fi
 
+# バイナリにパスを通す
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
 # asdfのcompletionが必要になったことはないので下記は追加しない。
 # ディレクトリ構造が変わったのか下記は2025-02-06時点で使えなくなっている。
 # see: <https://asdf-vm.com/guide/getting-started.html>
