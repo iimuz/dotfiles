@@ -1,0 +1,6 @@
+[tools]
+awscli = "2.11.15"
+java = "openjdk-21.0.2"
+nodejs = "22.5.1"
+python = "3.11.9"
+

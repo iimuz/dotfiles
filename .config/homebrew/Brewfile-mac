@@ -72,11 +72,12 @@ brew "pwgen"
 brew "licensed"
 
 # === programming tools
-brew "asdf"
+# brew "asdf"
 brew "cargo-make"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
+brew "mise"
 cask "obsidian"
 # cask "postman"
 cask "visual-studio-code"
