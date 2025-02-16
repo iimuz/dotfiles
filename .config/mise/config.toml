@@ -5,4 +5,5 @@ golangci-lint = "1"
 java = "openjdk-21"
 nodejs = "22"
 python = "3.12"
+rust = "stable"
 
