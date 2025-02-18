@@ -19,3 +19,6 @@ taskfile.dist.yml
 Taskfile.dist.yaml
 taskfile.dist.yaml
 
+# === mise
+.mise.local.toml
+mise.local.toml
