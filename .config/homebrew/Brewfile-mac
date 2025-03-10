@@ -86,6 +86,14 @@ brew "pipx"
 brew "ffmpeg"
 cask "obs"
 
+# === ruby
+# rubyをmiseでインストールするときに必要
+brew "autoconf"
+brew "gmp"
+brew "libyaml"
+brew "openssl@3"
+brew "readline"
+
 # === rust
 # 2024-07-24 rustup-init -> rustupの変更タイミングで正常にインストールできなくなったので公式の方法に従う。
 # `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
