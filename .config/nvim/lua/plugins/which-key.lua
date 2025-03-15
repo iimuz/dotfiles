@@ -541,6 +541,9 @@ local function registerLspAndLlmKey()
 	-- Normal mode
 	require("which-key").add({
 		{ "<Leader>l", group = "LSP and LLM" },
+		{ "<Leader>la", group = "Avante" },
+		{ "<Leader>laa", "<cmd>AvanteAsk<CR>", desc = "Avante: Ask mode.", mode = { "n", "v" } },
+		{ "<Leader>lae", "<cmd>AvanteEdit<CR>", desc = "Avante: Edit mode.", mode = { "n", "v" } },
 		{ "<Leader>lc", group = "GitHub Copilot Chat" },
 		{
 			"<Leader>lcc",
