@@ -529,8 +529,8 @@ local function registerLanguageKey()
 			end,
 			desc = "⭐︎TimestampInserter: Insert current time.",
 		},
-		{ "<Leader>amve", "<cmd>Markview Enable<CR>", desc = "⭐︎Markview: Enable." },
-		{ "<Leader>amvd", "<cmd>Markview Disable<CR>", desc = "⭐︎Markview: Disable." },
+		{ "<Leader>amve", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
+		{ "<Leader>amvd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
 	})
 end
 
