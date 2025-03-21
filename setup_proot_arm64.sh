@@ -81,6 +81,7 @@ sudo apt-get install -y --no-install-recommends \
   ripgrep \
   rsync \
   vifm \
+  vim \
   tmux
 
 # 各種設定ファイルの配置もしくは読み込み設定
