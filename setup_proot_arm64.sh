@@ -41,7 +41,8 @@ function _install_yq() {
   local BINARY=yq_linux_arm64
 
   wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - | tar xz
-  sudo install ${BINARY} -D -t /usr/local/bin/yq
+  mv $BINARY yq
+  sudo install yq -D -t /usr/local/bin/
 }
 
 # Add loading file in .bashrc or .zshrc.
@@ -75,26 +76,34 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # - eza
 # aptでインストール可能なコマンドはaptでインストールする
 sudo apt-get install -y --no-install-recommends \
+  fzf \
   jq \
   ripgrep \
-  rsync
+  rsync \
+  vifm \
+  tmux
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === bash
-if type alacritty > /dev/null 2>&1; then
-  mkdir -p $HOME/.config/alacritty
-  create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
-fi
-# === bash
+# === alacritty
+# if type alacritty > /dev/null 2>&1; then
+#   mkdir -p $HOME/.config/alacritty
+#   create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
+# fi
+# === cica font
 if [ $(fc-list | grep -i cica | wc -l) == 0 ]; then _install_cica; fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
+# === delta
+# `--target-dir` を設定しないと変なところにビルドしてリンクできなくて使えなくなる
+if ! type delta > /dev/null 2>&1 && type cargo > /dev/null 2>&1; then
+  cargo install --target-dir="$HOME/.cargo/build/git-delta" git-delta
+fi
 # === [drpint](https://dprint.dev/)
-if ! type drpint > /dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh | DPRINT_INSTALL=$HOME/.local sh; fi
+if ! type dprint > /dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh | DPRINT_INSTALL=$HOME/.local sh; fi
 # === lazygit
 if ! type lazygit > /dev/null 2>&1; then _install_lazygit; fi
 if type lazygit > /dev/null 2>&1; then
@@ -106,7 +115,7 @@ if type mise > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/mise/config.toml $HOME/.config/mise/config.toml
 fi
 # === [Taskfile](https;//tasklfie.dev/inslltaation/)
-if ! type task > /dev/null 2>&1; then pushd $HOME/.local && sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d && popd; fi
+# if ! type task > /dev/null 2>&1; then pushd $HOME/.local && sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d && popd; fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
