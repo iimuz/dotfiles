@@ -529,6 +529,8 @@ local function registerLanguageKey()
 			end,
 			desc = "⭐︎TimestampInserter: Insert current time.",
 		},
+		{ "<Leader>amve", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
+		{ "<Leader>amvd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
 	})
 end
 
@@ -539,6 +541,9 @@ local function registerLspAndLlmKey()
 	-- Normal mode
 	require("which-key").add({
 		{ "<Leader>l", group = "LSP and LLM" },
+		{ "<Leader>la", group = "Avante" },
+		{ "<Leader>laa", "<cmd>AvanteAsk<CR>", desc = "Avante: Ask mode.", mode = { "n", "v" } },
+		{ "<Leader>lae", "<cmd>AvanteEdit<CR>", desc = "Avante: Edit mode.", mode = { "n", "v" } },
 		{ "<Leader>lc", group = "GitHub Copilot Chat" },
 		{
 			"<Leader>lcc",

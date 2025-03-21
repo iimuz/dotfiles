@@ -1,0 +1,13 @@
+[tools]
+awscli = "2"
+go = "1"
+golangci-lint = "1"
+java = "openjdk-21"
+nodejs = "22"
+python = "3.12"
+ruby = "3.4"
+rust = "stable"
+
+[settings]
+experimental = true
+

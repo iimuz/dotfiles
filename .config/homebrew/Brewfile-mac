@@ -10,8 +10,8 @@ mas "RunCat", id: 1429033973
 # === communication tools
 cask "arc"
 # cask "brave-browser"
-# cask "firefox"
-# cask "google-chrome"
+cask "firefox"
+cask "google-chrome"
 # cask "microsoft-edge"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
@@ -41,10 +41,6 @@ brew "git-lfs"
 # cask "git-credential-manager-core"
 brew "lazygit"
 
-# === golang
-brew "go"
-brew "golangci-lint"
-
 # === hugo
 # brew "hugo"
 
@@ -72,11 +68,12 @@ brew "pwgen"
 brew "licensed"
 
 # === programming tools
-brew "asdf"
+# brew "asdf"
 brew "cargo-make"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
+brew "mise"
 cask "obsidian"
 # cask "postman"
 cask "visual-studio-code"
@@ -88,6 +85,14 @@ brew "pipx"
 # === recording
 brew "ffmpeg"
 cask "obs"
+
+# === ruby
+# rubyをmiseでインストールするときに必要
+brew "autoconf"
+brew "gmp"
+brew "libyaml"
+brew "openssl@3"
+brew "readline"
 
 # === rust
 # 2024-07-24 rustup-init -> rustupの変更タイミングで正常にインストールできなくなったので公式の方法に従う。

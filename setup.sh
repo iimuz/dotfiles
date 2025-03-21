@@ -79,6 +79,10 @@ fi
 if type lazygit > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
 fi
+# === mise
+if type mise > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/mise/config.toml $HOME/.config/mise/config.toml
+fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
