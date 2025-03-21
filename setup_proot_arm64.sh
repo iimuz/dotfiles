@@ -104,6 +104,19 @@ if ! type delta > /dev/null 2>&1 && type cargo > /dev/null 2>&1; then
 fi
 # === [drpint](https://dprint.dev/)
 if ! type dprint > /dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh | DPRINT_INSTALL=$HOME/.local sh; fi
+# === gh
+# see: <https://github.com/cli/cli/blob/trunk/docs/install_linux.md>
+if ! type gh > /dev/null 2>&1; then
+  (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y))
+  sudo mkdir -p -m 755 /etc/apt/keyrings
+  out=$(mktemp)
+  wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg
+  cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+  sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt update
+  sudo apt install gh
+fi
 # === lazygit
 if ! type lazygit > /dev/null 2>&1; then _install_lazygit; fi
 if type lazygit > /dev/null 2>&1; then
