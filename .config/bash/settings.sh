@@ -20,3 +20,10 @@ fi
 
 # Set DOTFILES variables.
 export DOTFILES=$(cd $(dirname ${BASH_SOURCE:-$0})/../..; pwd)
+
+# termuxでpromptのエラーが出るので無効化
+if [[ "$(uname -r)" == *proot* ]]; then
+  if ! declare -f __vsc_prompt_cmd_original > /dev/null; then
+    function __vsc_prompt_cmd_original() { :; }
+  fi
+fi
