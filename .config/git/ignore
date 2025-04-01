@@ -24,5 +24,14 @@ taskfile.dist.yaml
 .mise.local.toml
 mise.local.toml
 
+# === cline
+.clinerules
+.clinerules/
+memory-bank
+memory-bank/
+
 # === tools
 .tools.local
+
+# === Mac
+.DS_Store
