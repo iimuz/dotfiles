@@ -32,6 +32,7 @@ cask "rancher"  # dockerd
 tap "homebrew/cask-fonts"
 cask "font-cica"
 cask "font-hack-nerd-font"
+cask "font-hackgen-nerd"
 
 # === git
 tap "microsoft/git"
