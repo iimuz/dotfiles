@@ -8,7 +8,6 @@ local condition = vim.g.vscode == nil
 
 return {
 	"yetone/avante.nvim",
-	-- enabled = false,
 	cmd = { "AvanteAsk", "AvanteEdit" },
 	version = "*", -- always pull the latest release version
 	opts = {
@@ -34,6 +33,7 @@ return {
 			-- support for image pasting
 			"HakonHarnes/img-clip.nvim",
 			event = "VeryLazy",
+			enabled = false,
 			opts = {
 				-- recommended settings
 				default = {
