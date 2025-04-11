@@ -112,6 +112,7 @@ brew "gcc"
 brew "git-delta"  # diff viewer
 brew "gh"  # github cli
 brew "neovim"  # neovim
+brew "pngpaste"  # for img-clip.nvim neovim plugin
 brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"
