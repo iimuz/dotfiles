@@ -3,6 +3,7 @@ awscli = "2"
 go = "1"
 golangci-lint = "2"
 java = "openjdk-21"
+lua = "5.1" # 2025-04-11時点でlazy.nvimがlua5.1を要求しているため
 nodejs = "22"
 python = "3.12"
 ruby = "3.4"

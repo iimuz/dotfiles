@@ -111,8 +111,9 @@ brew "fzf"  # fuzzy finder
 brew "gcc"
 brew "git-delta"  # diff viewer
 brew "gh"  # github cli
+brew "lualocks"  # for lazy.nvim plugin
 brew "neovim"  # neovim
-brew "pngpaste"  # for img-clip.nvim neovim plugin
+brew "pngpaste"  # for img-clip.nvim plugin
 brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"
