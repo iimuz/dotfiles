@@ -52,7 +52,7 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
-cask "maccy"  # クリップボード履歴
+# cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 
 # === LLM
