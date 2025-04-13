@@ -9,7 +9,7 @@ mas "RunCat", id: 1429033973
 
 # === communication tools
 cask "arc"
-# cask "brave-browser"
+cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
 # cask "microsoft-edge"
@@ -18,8 +18,9 @@ mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 mas "MuteKey", id: 1509590766  # Micのミュート操作用
 
 # === desktop management
-cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
+# cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 cask "only-switch"  # スクリーンセーバーの防止など
+cask "raycast"  # 検索 + rectangle
 
 # === docker
 cask "rancher"  # dockerd
@@ -111,7 +112,7 @@ brew "fzf"  # fuzzy finder
 brew "gcc"
 brew "git-delta"  # diff viewer
 brew "gh"  # github cli
-brew "lualocks"  # for lazy.nvim plugin
+brew "luarocks"  # for lazy.nvim plugin
 brew "neovim"  # neovim
 brew "pngpaste"  # for img-clip.nvim plugin
 brew "ripgrep"  # replace grep
