@@ -9,7 +9,7 @@ mas "RunCat", id: 1429033973
 
 # === communication tools
 cask "arc"
-# cask "brave-browser"
+cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
 # cask "microsoft-edge"
@@ -18,8 +18,9 @@ mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 mas "MuteKey", id: 1509590766  # Micのミュート操作用
 
 # === desktop management
-cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
+# cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 cask "only-switch"  # スクリーンセーバーの防止など
+cask "raycast"  # 検索 + rectangle
 
 # === docker
 cask "rancher"  # dockerd
@@ -32,6 +33,7 @@ cask "rancher"  # dockerd
 tap "homebrew/cask-fonts"
 cask "font-cica"
 cask "font-hack-nerd-font"
+cask "font-hackgen-nerd"
 
 # === git
 tap "microsoft/git"
@@ -50,7 +52,7 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
-cask "maccy"  # クリップボード履歴
+# cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 
 # === LLM
@@ -110,7 +112,9 @@ brew "fzf"  # fuzzy finder
 brew "gcc"
 brew "git-delta"  # diff viewer
 brew "gh"  # github cli
+brew "luarocks"  # for lazy.nvim plugin
 brew "neovim"  # neovim
+brew "pngpaste"  # for img-clip.nvim plugin
 brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"

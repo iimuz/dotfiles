@@ -1,17 +1,27 @@
-# === vscode editor
-.devcontainer
-.devcontainer/
-.vscode
-.vscode/
+# === aider
+.aider*
+
+# === cline
+.clinerules
+.clinerules/
+memory-bank
+memory-bank/
 
 # === env
 .env
 # direnv
 .envrc
 
-# === temporary files and folders
-tmp_*
-tmp_*/
+# === GitHub Copilot
+.github/copilot-instructions.md
+
+# === Mac
+.DS_Store
+
+# === mise
+.mise.local
+.mise.local.toml
+mise.local.toml
 
 # === Taskfile
 Taskfile.dist.yml
@@ -19,10 +29,16 @@ taskfile.dist.yml
 Taskfile.dist.yaml
 taskfile.dist.yaml
 
-# === mise
-.mise.local
-.mise.local.toml
-mise.local.toml
+# === temporary files and folders
+tmp_*
+tmp_*/
 
 # === tools
 .tools.local
+
+# === vscode editor
+.devcontainer
+.devcontainer/
+.vscode
+.vscode/
+
