@@ -21,6 +21,8 @@ doc/*.local.*
 
 # === GitHub Copilot
 .github/copilot-instructions.md
+.github/instructions/
+.github/prompots/
 
 # === Mac
 .DS_Store
