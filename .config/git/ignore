@@ -2,6 +2,7 @@
 .aider*
 
 # === cline
+.clineignore
 .clinerules
 .clinerules/
 memory-bank
