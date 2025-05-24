@@ -7,6 +7,7 @@ lua = "5.1" # 2025-04-11時点でlazy.nvimがlua5.1を要求しているため
 nodejs = "22"
 python = "3.12"
 rust = "stable"
+uv = "latest"
 
 [settings]
 experimental = true

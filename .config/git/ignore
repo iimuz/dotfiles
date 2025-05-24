@@ -7,6 +7,13 @@
 memory-bank
 memory-bank/
 
+# === local documents
+doc.local
+doc.local/
+doc/*.local
+doc/*.local
+doc/*.local.*
+
 # === env
 .env
 # direnv
@@ -14,6 +21,10 @@ memory-bank/
 
 # === GitHub Copilot
 .github/copilot-instructions.md
+.github/instructions
+.github/instructions/
+.github/prompts
+.github/prompts/
 
 # === Mac
 .DS_Store

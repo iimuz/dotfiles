@@ -27,9 +27,11 @@ return {
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp", -- capabilityを設定
 			"WhoIsSethDaniel/mason-tool-installer.nvim", -- masonでensure_installedできないツールの対応
+			-- "williamboman/mason.nvim",
 		},
 		config = function()
 			require("mason-lspconfig").setup({
+				automatic_enable = true,
 				-- よく使うLSPはインストールしておく。
 				-- formatter, linterについては下記のpluginを利用する。
 				-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
@@ -56,17 +58,19 @@ return {
 			})
 
 			-- Setup lspconfig to nvim-cmp
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			require("mason-lspconfig").setup_handlers({
-				function(server_name)
-					local server = require("lspconfig")[server_name]
-					if server ~= nil then
-						server.setup({
-							capabilities = capabilities,
-						})
-					end
-				end,
-			})
+			-- v0.11のLSP変更で不要になった?
+			-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			-- require("mason-lspconfig").setup_handlers({
+			-- 	function(server_name)
+			-- 		local server = require("lspconfig")[server_name]
+			-- 		if server ~= nil then
+			-- 			server.setup({
+			-- 				capabilities = capabilities,
+			-- 			})
+			-- 		end
+			-- 	end,
+			-- })
+			vim.lsp.enable(require("mason-lspconfig").get_installed_servers())
 		end,
 	},
 }
