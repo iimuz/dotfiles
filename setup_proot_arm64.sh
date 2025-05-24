@@ -75,9 +75,12 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # Installが確認できていないツール
 # - eza
 # aptでインストール可能なコマンドはaptでインストールする
+#
+# - libreadline-dev: miseからluaをインストールする際に必要
 sudo apt-get install -y --no-install-recommends \
   fzf \
   jq \
+  libreadline-dev \
   ripgrep \
   rsync \
   vifm \
