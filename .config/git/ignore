@@ -8,6 +8,10 @@
 memory-bank
 memory-bank/
 
+# === LLM copilot
+.agent-memory
+.agent-memory/
+
 # === local documents
 doc.local
 doc.local/
@@ -34,6 +38,12 @@ doc/*.local.*
 .mise.local
 .mise.local.toml
 mise.local.toml
+
+# === Roo code
+.roo
+.roo/
+.rooignore
+.roomodes
 
 # === Taskfile
 Taskfile.dist.yml
