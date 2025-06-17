@@ -8,7 +8,7 @@ cask "appcleaner"
 mas "RunCat", id: 1429033973
 
 # === communication tools
-cask "arc"
+# cask "arc"
 cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
@@ -54,6 +54,7 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 # cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
+cask "superwhisper"  # 音声入力
 
 # === LLM
 brew "ollama"

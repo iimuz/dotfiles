@@ -1,12 +1,3 @@
-# === aider
-.aider*
-
-# === cline
-.clinerules
-.clinerules/
-memory-bank
-memory-bank/
-
 # === local documents
 doc.local
 doc.local/
@@ -19,12 +10,29 @@ doc/*.local.*
 # direnv
 .envrc
 
-# === GitHub Copilot
+# === LLM Agent
+# aider
+.aider*
+# cline
+.clineignore
+.clinerules
+.clinerules/
+memory-bank
+memory-bank/
+# GitHub Copilot
 .github/copilot-instructions.md
 .github/instructions
 .github/instructions/
 .github/prompts
 .github/prompts/
+# Roo code
+.roo
+.roo/
+.rooignore
+.roomodes
+# Others
+.agent-memory
+.agent-memory/
 
 # === Mac
 .DS_Store
