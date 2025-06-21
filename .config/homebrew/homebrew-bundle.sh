@@ -6,19 +6,19 @@
 # === homebrewのパスが既にある場合は削除
 # guardより前で実施しないと環境を切り替えた方に入っていないとパスが削除できない
 # HOMEBREW_PREFIXが定義されていない場合は、事前に定義がないのでパスは設定されていない
-if [ -n "$HOMEBREW_PREFIX" ]; then
-  # homebrewのインストール先が `/usr/local/bin` の場合は、参照を消すと他も消えるので消せない
-  if [ "$HOMEBREW_PREFIX/bin" != "/usr/local/bin" ]; then
-    remove_path "$HOMEBREW_PREFIX/bin"
-  fi
-  remove_path "$HOMEBREW_PREFIX/sbin"
-fi
+# if [ -n "$HOMEBREW_PREFIX" ]; then
+#   # homebrewのインストール先が `/usr/local/bin` の場合は、参照を消すと他も消えるので消せない
+#   if [ "$HOMEBREW_PREFIX/bin" != "/usr/local/bin" ]; then
+#     remove_path "$HOMEBREW_PREFIX/bin"
+#   fi
+#   remove_path "$HOMEBREW_PREFIX/sbin"
+# fi
 
 # === Gurad if command does not exist.
 # binを削除しておくとbrew commandの有無で判別できない。
 # 一度でも設定して環境変数を全て削除していない想定で環境変数の有無でhomebrewの有無を確認する。
 # if ! type brew > /dev/null 2>&1; then return 0; fi
-if [ ! -n "$HOMEBREW_PREFIX" ]; then return 0; fi
+# if [ ! -n "$HOMEBREW_PREFIX" ]; then return 0; fi
 
 # === mac環境においてarm版とrosetta版を実行環境で切り替える
 # ref: <https://qiita.com/tamachan210/items/b253ced93425d7cc0f1f>
@@ -53,4 +53,3 @@ elif [ "$(uname)" = "Linux" ]; then  # Linux
     export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-ec2"
   fi
 fi
-
