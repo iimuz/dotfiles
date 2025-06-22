@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # スクリプトパスの特定
-if [ "$ZSH_VERSION" != "" ]; then  # zshの場合
+if [[ "$SHELL" == *zsh* ]]; then
   readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
 else  # bashを想定
   readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"

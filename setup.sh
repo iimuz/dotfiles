@@ -86,6 +86,7 @@ fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
+  create_symlink $SCRIPT_DIR/.config/nvim/mcphub $HOME/.config/mcphub
 fi
 # === tmux
 if type tmux > /dev/null 2>&1; then
