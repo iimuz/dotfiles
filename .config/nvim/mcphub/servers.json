@@ -3,7 +3,14 @@
     "mcp-git": {
       "command": "uvx",
       "args": ["mcp-server-git"],
-      "autoApprove": ["git_status"]
+      "autoApprove": [
+        "git_diff",
+        "git_diff_staged",
+        "git_log",
+        "git_reset",
+        "git_show",
+        "git_status"
+      ]
     }
   }
 }
