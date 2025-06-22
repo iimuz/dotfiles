@@ -11,7 +11,6 @@ return {
   cmd = { "AvanteAsk", "AvanteEdit" },
   version = "*", -- always pull the latest release version
   opts = {
-    provider = "copilot",
     behaviour = { auto_set_keymaps = false },
     -- system_prompt as function ensures LLM always has latest MCP server state
     -- This is evaluated for every message, even in existing chats
@@ -25,6 +24,17 @@ return {
         require("mcphub.extensions.avante").mcp_tool(),
       }
     end,
+    provider = "copilot_gpt",
+    providers = {
+      copilot_gpt = {
+        __inherited_from = "copilot",
+        model = "gpt-4.1",
+      },
+      copilot_claude = {
+        __inherited_from = "copilot",
+        model = "claude-sonnet-4",
+      },
+    },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
