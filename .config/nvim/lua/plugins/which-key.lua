@@ -540,11 +540,19 @@ end
 local function registerLspAndLlmKey()
   -- Normal mode
   require("which-key").add({
-    { "<Leader>l",   group = "LSP and LLM" },
-    { "<Leader>la",  group = "Avante" },
-    { "<Leader>laa", "<cmd>AvanteAsk<CR>",         desc = "Avante: Ask mode.",  mode = { "n", "v" } },
-    { "<Leader>lae", "<cmd>AvanteEdit<CR>",        desc = "Avante: Edit mode.", mode = { "n", "v" } },
-    { "<Leader>lc",  group = "GitHub Copilot Chat" },
+    { "<Leader>l",    group = "LSP and LLM" },
+    { "<Leader>la",   group = "Avante" },
+    { "<Leader>laa",  "<cmd>AvanteAsk<CR>",                           desc = "Avante: Ask mode.",                                 mode = { "n", "v" } },
+    { "<Leader>lae",  "<cmd>AvanteEdit<CR>",                          desc = "Avante: Edit mode.",                                mode = { "n", "v" } },
+    { "<Leader>laf",  "<cmd>AvanteFocus<CR>",                         desc = "Avante: Switch focus to/from the sidebar.",         mode = { "n" } },
+    { "<Leader>lag",  "<cmd>AvanteToggle<CR>",                        desc = "Avante: Toggle the sidebar.",                       mode = { "n", "v" } },
+    { "<Leader>lah",  "<cmd>AvanteHistory<CR>",                       desc = "Avante: Show history.",                             mode = { "n" } },
+    { "<Leader>lam",  "<cmd>AvanteModels<CR>",                        desc = "Avante: Select model.",                             mode = { "n" } },
+    { "<Leader>las",  group = "Avante providers" },
+    { "<Leader>lasg", "<cmd>AvanteSwitchProvider copilot_gpt<CR>",    desc = "Avante: Switch provider to GitHub Copilot GPT.",    mode = { "n" } },
+    { "<Leader>lasg", "<cmd>AvanteSwitchProvider copilot_claude<CR>", desc = "Avante: Switch provider to GitHub Copilot Calude.", mode = { "n" } },
+    { "<Leader>lat",  "<cmd>AvanteStop<CR>",                          desc = "Avante: Stop the current AI request.",              mode = { "n" } },
+    { "<Leader>lc",   group = "GitHub Copilot Chat" },
     {
       "<Leader>lcc",
       function()
