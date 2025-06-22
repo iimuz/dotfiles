@@ -56,8 +56,7 @@ return {
     },
   },
   dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-treesitter/nvim-treesitter",
+    "github/copilot.vim",
     {
       "MeanderingProgrammer/render-markdown.nvim",
       opts = {
@@ -65,6 +64,8 @@ return {
       },
       ft = { "markdown", "codecompanion" },
     },
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
     "ravitemer/mcphub.nvim",
   },
 }
