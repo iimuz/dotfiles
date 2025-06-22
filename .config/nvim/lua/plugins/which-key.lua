@@ -636,6 +636,7 @@ local function registerLspAndLlmKey()
       desc = "CodeCompanion: Open inline chat.",
       mode = { "n", "v" },
     },
+    { "<Leader>lp", "<cmd>MCPHub<CR>", desc = "MCPHub: Open.", mode = { "n" } },
     { "<Leader>lt", group = "Trouble" },
     {
       "<Leader>ltd",
@@ -679,6 +680,11 @@ local function registerLspAndLlmKey()
       end,
       desc = "Trouble: Toggle.",
     },
+    { "<Leader>lu",  group = "Claude" },
+    { "<Leader>luc", "<cmd>ClaudeCodeContinue<CR>", desc = "ClaudeCode: Resume the most recent conversation.",        mode = { "n" } },
+    { "<Leader>luo", "<cmd>ClaudeCode<CR>",         desc = "ClaudeCode: Open.",                                       mode = { "n" } },
+    { "<Leader>lur", "<cmd>ClaudeCodeContinue<CR>", desc = "ClaudeCode: Resume the most recent conversation.",        mode = { "n" } },
+    { "<Leader>lur", "<cmd>ClaudeCodeResume<CR>",   desc = "ClaudeCode: Display an interactive conversation picker.", mode = { "n" } },
   })
 
   -- LspAttachしたときのみ設定を追加
