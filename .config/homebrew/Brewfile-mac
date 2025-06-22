@@ -1,6 +1,4 @@
 tap "homebrew/bundle"
-# tap "homebrew/cask" # デフォルト対応しているらしいので不要とのこと
-# tap "homebrew/core" # デフォルト対応しているらしいので不要とのこと
 
 # === application management
 brew "mas"
@@ -8,29 +6,21 @@ cask "appcleaner"
 mas "RunCat", id: 1429033973
 
 # === communication tools
-# cask "arc"
 cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
-# cask "microsoft-edge"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 mas "MuteKey", id: 1509590766  # Micのミュート操作用
 
 # === desktop management
-# cask "rectangle"  # 画面分割とマルチディスプレイでのウィンドウ移動
 cask "only-switch"  # スクリーンセーバーの防止など
 cask "raycast"  # 検索 + rectangle
 
 # === docker
 cask "rancher"  # dockerd
 
-# === drone
-# cask "qgroundcontrol"  # QGC app
-# cask "google-earth-pro"
-
 # === fonts
-tap "homebrew/cask-fonts"
 cask "font-cica"
 cask "font-hack-nerd-font"
 cask "font-hackgen-nerd"
@@ -38,13 +28,8 @@ cask "font-hackgen-nerd"
 # === git
 tap "microsoft/git"
 brew "git"
-# brew "git-filter-repo"  # gitの履歴抽出
 brew "git-lfs"
-# cask "git-credential-manager-core"
 brew "lazygit"
-
-# === hugo
-# brew "hugo"
 
 # === key management
 brew "stoken"  # pass generateor
@@ -52,16 +37,15 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
-# cask "maccy"  # クリップボード履歴
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 cask "superwhisper"  # 音声入力
 
 # === LLM
 brew "ollama"
+cask "claude"
 
 # === plantuml
 brew "graphviz"
-# brew "java"  # javaはasdfなどを利用してバージョン管理しつつ導入する
 brew "plantuml"
 
 # === project
@@ -71,19 +55,13 @@ brew "pwgen"
 brew "licensed"
 
 # === programming tools
-# brew "asdf"
 brew "cargo-make"
 brew "direnv"
 brew "dprint"  # markdown formatter
 brew "go-task"
 brew "mise"
 cask "obsidian"
-# cask "postman"
 cask "visual-studio-code"
-
-# === python
-brew "pipx"
-# brew "pyenv"  # asdfと重複するので削除
 
 # === recording
 brew "ffmpeg"
@@ -104,9 +82,7 @@ brew "readline"
 # brew "rustup"
 
 # === terminal
-# brew "awscli"  # asdfで管理する
 brew "bat"
-# brew "bitwarden-cli"
 brew "eza"  # replace ls -> exa -> eza
 brew "fd"  # replace find
 brew "fzf"  # fuzzy finder
@@ -121,7 +97,6 @@ brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
 brew "wget"
-# cask "wezterm"  # terminal emulator
 brew "yq"
 brew "zellij" # terminal multiplexers
 cask "alacritty" # terminal emurator
