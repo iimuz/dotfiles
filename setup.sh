@@ -70,6 +70,11 @@ set_bashrc $CONFIG_PATH/rc-settings.sh
 if type bash > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
 fi
+# === claude
+if type claude > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.config/claude/commands
+  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.config/claude/settings.json
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
