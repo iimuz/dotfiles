@@ -103,7 +103,10 @@ if type vim > /dev/null 2>&1; then
 fi
 # === vscode
 if type code > /dev/null 2>&1; then
+  # Copilot
   create_symlink $SCRIPT_DIR/.config/vscode/instructions $HOME/.vscode/instructions
   create_symlink $SCRIPT_DIR/.config/vscode/prompts $HOME/.vscode/prompts
+  # Cline
+  create_symlink $SCRIPT_DIR/.config/cline/Rules $HOME/Documents/Cline/Rules
 fi
 
