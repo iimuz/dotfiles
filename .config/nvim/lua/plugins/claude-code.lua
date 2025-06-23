@@ -13,5 +13,6 @@ return {
 		window = {
 			position = "rightbelow vsplit",
 		},
+		command = "~/.config/claude/local/claude",
 	},
 }
