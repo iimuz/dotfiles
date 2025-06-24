@@ -36,7 +36,29 @@
       "mcp__mcp-rag-server__get_system_info",
       "mcp__mcp-rag-server__search"
     ],
-    "deny": []
+    "deny": [
+      "Bash(curl:*)",
+      "Bash(git push:*)",
+      "Bash(git rebase:*)",
+      "Bash(git reset:*)",
+      "Bash(mongod:*)",
+      "Bash(mysql:*)",
+      "Bash(nc:*)",
+      "Bash(npm remove:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(psql:*)",
+      "Bash(rm -f:*)",
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(wget;*)",
+      "Read(**/*key*)",
+      "Read(**/*token*)",
+      "Read(.env.*)",
+      "Read(id_ed25519)",
+      "Read(id_rsa)",
+      "Write(**/secrets/**)",
+      "Write(.env*)"
+    ]
   },
   "theme": "dark"
 }
