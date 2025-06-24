@@ -72,8 +72,8 @@ if type bash > /dev/null 2>&1; then
 fi
 # === claude
 if type claude > /dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.config/claude/commands
-  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.config/claude/settings.json
+  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
+  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
 fi
 # === git
 if type git > /dev/null 2>&1; then

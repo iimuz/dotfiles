@@ -13,6 +13,6 @@ return {
 		window = {
 			position = "rightbelow vsplit",
 		},
-		command = "~/.config/claude/local/claude",
+		command = "~/.claude/local/claude",
 	},
 }

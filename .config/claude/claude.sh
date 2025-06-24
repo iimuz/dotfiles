@@ -2,8 +2,8 @@
 #
 # Claude settings.
 
-if [ -f "$HOME/.config/claude/local/claude" ]; then
-  alias claude="$HOME/.config/claude/local/claude"
+if [ -f "$HOME/.claude/local/claude" ]; then
+  alias claude="$HOME/.claude/local/claude"
 fi
 
 # Gurad if command does not exist.
