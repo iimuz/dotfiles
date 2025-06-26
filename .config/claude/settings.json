@@ -2,7 +2,11 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
+      "Bash(ls:*)",
+      "Bash(grep:*)",
       "Bash(mise run lint)",
+      "Bash(rg:*)",
+      "Bash(wc:*)",
       "mcp__git__git_diff",
       "mcp__git__git_diff_staged",
       "mcp__git__git_diff_unstaged",
@@ -38,9 +42,11 @@
     ],
     "deny": [
       "Bash(curl:*)",
+      "Bash(git checkout:*)",
       "Bash(git push:*)",
       "Bash(git rebase:*)",
       "Bash(git reset:*)",
+      "Bash(git switch:*)",
       "Bash(mongod:*)",
       "Bash(mysql:*)",
       "Bash(nc:*)",
