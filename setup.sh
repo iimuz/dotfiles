@@ -77,6 +77,11 @@ if type $HOME/.claude/local/claude > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
   create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
 fi
+# === gemini cli
+if type $HOME/.claude/local/claude > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/gemini/settings.json $HOME/.gemini/settings.json
+  create_symlink $SCRIPT_DIR/.config/gemini/GEMINI.md $HOME/.gemini/GEMINI.md
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
