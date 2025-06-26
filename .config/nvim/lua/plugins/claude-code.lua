@@ -4,13 +4,15 @@
 -- Claude codeの統合
 
 return {
-  "greggh/claude-code.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim", -- Required for git operations
-  },
-  opts = {
-    window = {
-      position = "rightbelow vsplit"
-    },
-  },
+	"greggh/claude-code.nvim",
+	cmd = { "ClaudeCode", "ClaudeCodeContinue", "ClaudeCodeResume" },
+	dependencies = {
+		"nvim-lua/plenary.nvim", -- Required for git operations
+	},
+	opts = {
+		window = {
+			position = "rightbelow vsplit",
+		},
+		command = "~/.claude/local/claude",
+	},
 }

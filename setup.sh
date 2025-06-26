@@ -70,6 +70,13 @@ set_bashrc $CONFIG_PATH/rc-settings.sh
 if type bash > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
 fi
+# === claude
+# claudeはaliasで登録されているため直接指定する必要がある
+if type $HOME/.claude/local/claude > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
+  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
+  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
@@ -100,5 +107,13 @@ fi
 if type vim > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/vim/init.vim $HOME/.vimrc
   create_symlink $SCRIPT_DIR/.config/vim $HOME/.config/vim
+fi
+# === vscode
+if type code > /dev/null 2>&1; then
+  # Copilot
+  create_symlink $SCRIPT_DIR/.config/vscode/instructions $HOME/.vscode/instructions
+  create_symlink $SCRIPT_DIR/.config/vscode/prompts $HOME/.vscode/prompts
+  # Cline
+  create_symlink $SCRIPT_DIR/.config/cline/Rules $HOME/Documents/Cline/Rules
 fi
 
