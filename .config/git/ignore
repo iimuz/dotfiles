@@ -17,6 +17,8 @@ doc/*.local.*
 .clineignore
 .clinerules
 .clinerules/
+# claude
+**/.claude/settings.local.json
 # Roo code
 .roo
 .roo/
@@ -49,4 +51,3 @@ tmp_*/
 .devcontainer/
 .vscode
 .vscode/
-
