@@ -17,16 +17,11 @@ doc/*.local.*
 .clineignore
 .clinerules
 .clinerules/
-memory-bank
-memory-bank/
 # Roo code
 .roo
 .roo/
 .rooignore
 .roomodes
-# Others
-.agent-memory
-.agent-memory/
 
 # === Mac
 .DS_Store
