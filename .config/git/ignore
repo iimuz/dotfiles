@@ -17,16 +17,13 @@ doc/*.local.*
 .clineignore
 .clinerules
 .clinerules/
-memory-bank
-memory-bank/
+# claude
+**/.claude/settings.local.json
 # Roo code
 .roo
 .roo/
 .rooignore
 .roomodes
-# Others
-.agent-memory
-.agent-memory/
 
 # === Mac
 .DS_Store
@@ -54,4 +51,3 @@ tmp_*/
 .devcontainer/
 .vscode
 .vscode/
-
