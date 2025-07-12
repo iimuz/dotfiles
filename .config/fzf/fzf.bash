@@ -20,10 +20,15 @@ fi
 # proot環境ではkey-bindingsの位置が異なるので修正
 if [[ "$(uname -r)" == *proot* ]]; then
   FZF_CONFIG="/usr/share/doc/fzf/examples"
-  FZF_KEYBINDINGS="/usr/share/bash-completion/completions/fzf"
+  FZF_COMPLETION="/usr/share/bash-completion/completions/fzf"
   FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
 fi
-
+# termux環境ではkey-bindingsの位置が異なるので修正
+if [[ "$(uname -r)" == *android* ]]; then
+  FZF_CONFIG="/data/data/com.termux/files/usr/share/fzf"
+  FZF_COMPLETION="$FZF_CONFIG/completion.bash"
+  FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
+fi
 
 # Use tmux for selecting window if tmux exists..
 # tmuxがない場合は明示的に無効化する。macなどでarm64, amd64の切り替えをするときに環境がないのに有効化される。
