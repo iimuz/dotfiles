@@ -25,6 +25,7 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 . "$_DOTFILES_CONFIG_DIR/fzf/fzf.bash"
 . "$_DOTFILES_CONFIG_DIR/git/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/nvim/nvim-settings.sh"
+. "$_DOTFILES_CONFIG_DIR/starship/starship-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/vscode/vscode.sh"
 . "$_DOTFILES_CONFIG_DIR/xcode/xcode-settings.sh"
 
