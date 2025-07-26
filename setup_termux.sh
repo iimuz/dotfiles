@@ -49,8 +49,10 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # - eza
 # pkgでインストール可能なコマンドはpkgでインストールする
 #
+# - build-essential: build package for neovim
 # - libreadline-dev: miseからluaをインストールする際に必要
 pkg install -y \
+  build-essential \
   fzf \
   gh \
   git-delta \
@@ -66,15 +68,21 @@ pkg install -y \
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
+# === claude
+# claudeはaliasで登録されているため直接指定する必要がある
+if type $HOME/.claude/local/claude > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
+  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
+  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
-# === [mise](https/;/github.cojm/dx/mise)
-if ! type mise > /dev/null 2>&1; then curl https://mise.run | sh; fi
-if type mise > /dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/mise/config.toml $HOME/.config/mise/config.toml
+# === lazygit
+if type lazygit > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
 fi
 # === neovim
 if type nvim > /dev/null 2>&1; then
