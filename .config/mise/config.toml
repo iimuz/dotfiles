@@ -1,5 +1,6 @@
 [tools]
 awscli = "2"
+cargo-binstall = "latest"
 go = "1"
 golangci-lint = "2"
 java = "openjdk-21"
