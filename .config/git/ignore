@@ -45,9 +45,3 @@ tmp_*/
 
 # === tools
 .tools.local
-
-# === vscode editor
-.devcontainer
-.devcontainer/
-.vscode
-.vscode/

@@ -7,38 +7,8 @@
       "Bash(mise run lint)",
       "Bash(rg:*)",
       "Bash(wc:*)",
-      "mcp__git__git_diff",
-      "mcp__git__git_diff_staged",
-      "mcp__git__git_diff_unstaged",
-      "mcp__git__git_log",
-      "mcp__git__git_show",
-      "mcp__git__git_status",
-      "mcp__github__get_code_scanning_alert",
-      "mcp__github__get_commit",
-      "mcp__github__get_file_contents",
-      "mcp__github__get_issue",
-      "mcp__github__get_issue_comments",
-      "mcp__github__get_pull_request",
-      "mcp__github__get_pull_request_comments",
-      "mcp__github__get_pull_request_files",
-      "mcp__github__get_pull_request_reviews",
-      "mcp__github__get_pull_request_status",
-      "mcp__github__get_secret_scanning_alert",
-      "mcp__github__list_branches",
-      "mcp__github__list_code_scanning_alerts",
-      "mcp__github__list_commits",
-      "mcp__github__list_issues",
-      "mcp__github__list_pull_requests",
-      "mcp__github__list_secret_scanning_alerts",
-      "mcp__github__search_code",
-      "mcp__github__search_issues",
-      "mcp__github__search_repositories",
-      "mcp__github__search_users",
-      "mcp__mcp-rag-server__echo",
-      "mcp__mcp-rag-server__get_current_time",
-      "mcp__mcp-rag-server__get_document_count",
-      "mcp__mcp-rag-server__get_system_info",
-      "mcp__mcp-rag-server__search"
+      "mcp__gemini__call_gemini",
+      "mcp__gemini__list_gemini_models"
     ],
     "deny": [
       "Bash(curl:*)",
@@ -66,5 +36,5 @@
       "Write(.env*)"
     ]
   },
-  "theme": "dark"
+  "model": "sonnet"
 }
