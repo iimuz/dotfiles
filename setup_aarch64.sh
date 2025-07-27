@@ -97,6 +97,11 @@ sudo apt-get install -y --no-install-recommends \
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
+# === docker
+if ! type docker > /dev/null 2>&1; then
+  curl -fsSL https://get.docker.com | sudo sh
+  sudo usermod -aG docker $(whoami)
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
