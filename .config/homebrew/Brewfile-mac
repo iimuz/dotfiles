@@ -38,7 +38,6 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
-cask "superwhisper"  # 音声入力
 
 # === LLM
 brew "ollama"
