@@ -34,6 +34,7 @@ brew "lazygit"
 # === key management
 brew "stoken"  # pass generateor
 mas "bitwarden", id: 1352778147  # password manager(app store版を利用しないとブラウザの生体認証が利用できない)
+cask "voiceink"  # instantly transcribe what you say
 
 # === keyboard, mouse and trackpad management
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
