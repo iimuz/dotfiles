@@ -1,14 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(ls:*)",
+      "Bash(gemini:*)",
       "Bash(grep:*)",
-      "Bash(mise run lint)",
       "Bash(rg:*)",
-      "Bash(wc:*)",
-      "mcp__gemini__call_gemini",
-      "mcp__gemini__list_gemini_models"
+      "Bash(wc:*)"
     ],
     "deny": [
       "Bash(curl:*)",
