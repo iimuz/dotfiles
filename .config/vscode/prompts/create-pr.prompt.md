@@ -1,6 +1,6 @@
 ---
 mode: "agent"
-tools: ["create_pull_request", "git_diff", "git_status", "git_log", "git_show"]
+tools: ['git_diff', 'git_log', 'git_show', 'git_status', 'create_pull_request']
 description: "Create PR."
 ---
 
@@ -8,78 +8,39 @@ description: "Create PR."
 
 Follow these steps when creating pull requests:
 
-1. Check Branch Status
-
-   ```bash
-   # Check for uncommitted changes
-   git status
-
-   # Check changes
-   git diff
-
-   # Check differences from main
-   git diff develop...HEAD
-
-   # Check commit history
-   git log
-   ```
-
-1. Analyze Changes
+1. Check Branch Status.
+   - `git_status`
+   - `git_diff`
+   - `git_diff` from develop to HEAD
+   - `git_log`
+1. Analyze Changes.
    - Check all commits since branching from develop
    - Understand the nature and purpose of the changes
    - Evaluate the impact on the project
    - Check for sensitive information
-1. Confirm the PR title and description with the user
-1. Create Pull Request as Draft
+1. Confirm the PR title and description with the user.
+1. Create Pull Request as **DRAFT** using `create_pull_request`.
 
-   ```bash
-   # Create pull request as draft
-   gh pr create --draft --title ":art: Improve error handling with Result type" --body "$(cat <<'EOF'
-   ## Related URLs
+## Important Notice
 
-   ## Changes
-
-   - Introduction of Result type using neverthrow
-   - Explicit type definition for error cases
-   - Addition of test cases
-
-   ## Confirmation Results
-
-   <!-- Describe preconditions, steps, and results of confirmation if any -->
-
-   ## Review Points
-
-   - Is the Result type used appropriately?
-   - Comprehensiveness of error cases
-   - Sufficiency of tests
-
-   ## Limitations
-
-   <!-- Describe known limitations of this change or items to be addressed in a separate PR if any -->
-   EOF
-   )"
-   ```
-
-## Important Notes
-
-1. Pull Request Related
-   - Create a new branch if necessary
-   - Commit changes appropriately
-   - Use the `-u` flag when pushing to remote
-   - Analyze all changes
-1. Operations to Avoid
-   - Using interactive git commands (-i flag)
-   - Pushing directly to the remote repository
-   - Changing git settings
+Use tools.
+DO NOT use git command and gh command.
 
 ## Pull Request Example
 
+Title
+
+`:art: Improve error handling with Result type`
+
+Body
+
 ```markdown
+## Related URLs
+
 ## Changes
 
-- Introduction of neverthrow library
-- Use of Result type in API client
-- Type definition for error cases
+- Introduction of Result type using never throw
+- Explicit type definition for error cases
 - Addition of test cases
 
 ## Confirmation Results
