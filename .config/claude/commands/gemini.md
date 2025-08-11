@@ -1,43 +1,43 @@
 ## Use Gemini
 
-Geminiを利用することで以下のことが可能になります。
+By using Gemini, you can do the following:
 
-- インターネット記事の調査
-- 異なる意見の確認
-- プロジェクト全体からの探索
-- 長い内容の要約
+- Research internet articles
+- Check different opinions
+- Explore across entire projects
+- Summarize long content
 
-### 注意事項
+## Notes
 
-利用可能な場合は積極的に利用してください。
-特に、fetch toolを利用するのではなく、geminiを利用してください。
+Please actively use it when available.
+Especially, use Gemini instead of the fetch tool.
 
-調査時は、参照先のリンクを取得するようにしてください。
-また、ユーザーへの回答にはリンクも同時に提示するようにしてください。
+When researching, be sure to obtain reference links.
+Also, when responding to users, present the links together with your answers.
 
-プロンプトはClaudeが新規に入力としてもらった場合に処理を実行できるように適切な内容を設定してください。
-前後の文脈は保持していないことに注意してください。
+Set prompts so that Claude can process them when newly input as instructions.
+Note that previous context is not retained.
 
-### ツールの利用方法
+## How to Use the Tool
 
 ```sh
-gemini -p "ドキュメントを読んで要約してください。 https://github.com/google-gemini/gemini-cli"
+gemini -p "Please read the document and summarize it. https://github.com/google-gemini/gemini-cli"
 
-gemini -p "dummyについてあっているか確認してください。"
+gemini -p "Please check if the information about dummy is correct."
 
-gemini -p "@long-context.md を読んで必要な事項をまとめてください。"
+gemini -p "Read @long-context.md and summarize the necessary points."
 ```
 
-### モデルの選択
+## Model Selection
 
-以下のように利用モデルを変更できます。
-コマンド実行時にレート制限で失敗した場合は別のモデルを利用してみてください。
+You can change the model used as follows.
+If a command fails due to rate limiting, try using a different model.
 
-- gemini-2.5-pro: 賢いですがレート制限が発生しやすいです。
-- gemini-2.5-flush: proに比べると高速に動作し、レート制限も緩いです。
+- gemini-2.5-pro: Smart, but prone to rate limiting.
+- gemini-2.5-flush: Faster than pro and less likely to be rate limited.
 
 ```sh
-gemini --model gemini-2.5-pro -p "要約して。"
+gemini --model gemini-2.5-pro -p "Summarize."
 
-gemini --model gemini-2.5-flush -p "要約して。"
+gemini --model gemini-2.5-flush -p "Summarize."
 ```

@@ -8,15 +8,8 @@ Although examples are shown using git commands, please use tools if available.
 Follow these steps when creating commits:
 
 1. Confirm Changes
-
-   ```bash
-   # Check details of changes
-   git diff --staged
-
-   # Check commit message style
-   git log
-   ```
-
+   - `git diff --staged`: Check details of changes
+   - `git log`: Check commit message style
 1. Analyze Changes
    - Identify changed or added files
    - Understand the nature of the change (new feature, bug fix, refactoring, etc.)
@@ -30,22 +23,9 @@ Follow these steps when creating commits:
 1. Ask the user to review the commit message
 1. Execute Commit
 
-   ```bash
-   # Create commit message (using HEREDOC)
-   git commit -m "$(cat <<'EOF'
-   :art: Introduce Result type for user authentication
-
-   - Make error handling more type-safe
-   - Enforce explicit handling of error cases
-   - Improve tests
-   EOF
-   )"
-   ```
-
 ## Important Notes
 
 1. Commit Related
-   - Use `git commit -am` when possible
    - Do not include unrelated files
    - Do not create empty commits
    - Do not change git settings
@@ -55,27 +35,22 @@ Follow these steps when creating commits:
    - Pushing directly to the remote repository
    - Changing git settings
 
-## Commit Message Examples
+## Commit command examples
+
+Create commit message using HEREDOC:
 
 ```bash
-# Add new feature
-:sparkles: Introduce Result type for error handling
+git commit -m "$(cat <<'EOF'
+:art: Introduce Result type for user authentication
 
-# Improve existing feature
-:art: Improve cache feature performance
-
-# Fix bug
-:bug: Fix authentication token expiration handling
-
-# Refactor
-:recycle: Abstract external dependencies using Adapter pattern
-
-# Add tests
-:white_check_mark: Add tests for Result type error cases
-
-# Update documentation
-:memo: Add best practices for error handling
+- Make error handling more type-safe
+- Enforce explicit handling of error cases
+- Improve tests
+EOF
+)"
 ```
+
+## Commit Message Examples
 
 Use the following prefixes:
 
