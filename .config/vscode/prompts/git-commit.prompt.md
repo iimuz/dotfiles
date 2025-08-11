@@ -14,8 +14,8 @@ Although examples are shown using git commands, please use tools if available.
 Follow these steps when creating commits:
 
 1. Confirm Changes:
-   - `git_diff_staged`: Check details of changes.
-   - `git_log`: Check commit message style.
+   - `git_diff_staged`: Check details of changes
+   - `git_log`: Check commit message style
 1. Analyze Changes
    - Identify changed or added files
    - Understand the nature of the change (new feature, bug fix, refactoring, etc.)
