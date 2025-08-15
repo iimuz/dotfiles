@@ -10,7 +10,7 @@ set("n", "<Plug>octo.load", "<cmd>Octo<CR>", { desc = "⭐︎Octo: Load octo plu
 
 return {
 	"pwntester/octo.nvim",
-	enabled = false,
+	enabled = true,
 	cmd = { "Octo" },
 	dependencies = {
 		"nvim-lua/plenary.nvim",
