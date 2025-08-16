@@ -87,6 +87,8 @@ fi
 if type gh > /dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
   create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
+
+  gh extension install kmtym1998/gh-prowl
 fi
 # === git
 if type git > /dev/null 2>&1; then
