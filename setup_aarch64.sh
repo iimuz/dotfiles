@@ -97,6 +97,23 @@ sudo apt-get install -y --no-install-recommends \
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
+# === claude
+if type claude > /dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
+  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
+  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
+  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
+fi
+# === docker
+if ! type docker > /dev/null 2>&1; then
+  curl -fsSL https://get.docker.com | sudo sh
+  sudo usermod -aG docker $(whoami)
+fi
+# ===gh
+if type gh > /dev/null 2>&1; then
+  gh extension install dlvhdr/gh-dash
+  create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
+fi
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
