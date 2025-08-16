@@ -84,6 +84,11 @@ if type $HOME/.claude/local/claude > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/gemini/GEMINI.md $HOME/.gemini/GEMINI.md
 fi
 # === git
+if type gh > /dev/null 2>&1; then
+  gh extension install dlvhdr/gh-dash
+  create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
+fi
+# === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
