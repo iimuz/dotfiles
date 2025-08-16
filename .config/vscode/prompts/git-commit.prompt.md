@@ -1,7 +1,7 @@
 ---
 mode: "agent"
-tools: ["git_commit", "git_diff", "git_diff_staged", "git_log", "git_show"]
-description: "Git workflow"
+tools: ['codebase', 'usages', 'changes', 'searchResults', 'search', 'git_commit', 'git_diff_staged', 'git_log', 'git_show', 'git_status']
+description: "Create Commit."
 ---
 
 ## Summary
@@ -13,16 +13,9 @@ Although examples are shown using git commands, please use tools if available.
 
 Follow these steps when creating commits:
 
-1. Confirm Changes
-
-   ```bash
-   # Check details of changes
-   git diff --staged
-
-   # Check commit message style
-   git log
-   ```
-
+1. Confirm Changes:
+   - `git_diff_staged`: Check details of changes
+   - `git_log`: Check commit message style
 1. Analyze Changes
    - Identify changed or added files
    - Understand the nature of the change (new feature, bug fix, refactoring, etc.)
@@ -36,51 +29,18 @@ Follow these steps when creating commits:
 1. Ask the user to review the commit message
 1. Execute Commit
 
-   ```bash
-   # Create commit message (using HEREDOC)
-   git commit -m "$(cat <<'EOF'
-   :art: Introduce Result type for user authentication
-
-   - Make error handling more type-safe
-   - Enforce explicit handling of error cases
-   - Improve tests
-   EOF
-   )"
-   ```
-
 ## Important Notes
 
-1. Commit Related
-   - Use `git commit -am` when possible
-   - Do not include unrelated files
-   - Do not create empty commits
-   - Do not change git settings
-   - Use formal written language for commit messages.
-1. Operations to Avoid
-   - Using interactive git commands (-i flag)
-   - Pushing directly to the remote repository
-   - Changing git settings
+- Use formal written language for commit messages.
 
 ## Commit Message Examples
 
-```bash
-# Add new feature
-:sparkles: Introduce Result type for error handling
+```markdown
+:art: Introduce Result type for user authentication
 
-# Improve existing feature
-:art: Improve cache feature performance
-
-# Fix bug
-:bug: Fix authentication token expiration handling
-
-# Refactor
-:recycle: Abstract external dependencies using Adapter pattern
-
-# Add tests
-:white_check_mark: Add tests for Result type error cases
-
-# Update documentation
-:memo: Add best practices for error handling
+- Make error handling more type-safe
+- Enforce explicit handling of error cases
+- Improve tests
 ```
 
 Use the following prefixes:
