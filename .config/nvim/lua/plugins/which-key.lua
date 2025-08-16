@@ -9,17 +9,30 @@
 -- vscodeから呼び出す場合は利用しない
 local condition = vim.g.vscode == nil
 
+-- cluade codeコマンドのターミナルを開閉
+--
+-- dependencies: `akinsho/toggleterm.nvim`
+local function claudeCodeToggle()
+	local Terminal = require("toggleterm.terminal").Terminal
+	local cc = Terminal:new({
+		cmd = "claude",
+		direction = "float",
+		hidden = true,
+	})
+	cc:toggle()
+end
+
 -- gh dashコマンドのターミナルを開閉
 --
 -- dependencies: `akinsho/toggleterm.nvim`
 local function ghDashToggle()
 	local Terminal = require("toggleterm.terminal").Terminal
-	local lazygit = Terminal:new({
+	local ghDash = Terminal:new({
 		cmd = "gh dash",
 		direction = "float",
 		hidden = true,
 	})
-	lazygit:toggle()
+	ghDash:toggle()
 end
 
 -- lazygitコマンドのターミナルを開閉
@@ -754,16 +767,11 @@ local function registerLspAndLlmKey()
 		},
 		{
 			"<Leader>lur",
-			"<cmd>ClaudeCodeContinue<CR>",
-			desc = "ClaudeCode: Resume the most recent conversation.",
-			mode = { "n" },
-		},
-		{
-			"<Leader>lur",
 			"<cmd>ClaudeCodeResume<CR>",
 			desc = "ClaudeCode: Display an interactive conversation picker.",
 			mode = { "n" },
 		},
+		{ "<Leader>lut", claudeCodeToggle, desc = "⭐︎ToggleTerm: Open claude code." },
 	})
 
 	-- LspAttachしたときのみ設定を追加
