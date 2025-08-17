@@ -11,10 +11,8 @@ cask "firefox"
 cask "google-chrome"
 cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
-mas "MuteKey", id: 1509590766  # Micのミュート操作用
 
 # === desktop management
-cask "only-switch"  # スクリーンセーバーの防止など
 cask "raycast"  # 検索 + rectangle
 
 # === docker

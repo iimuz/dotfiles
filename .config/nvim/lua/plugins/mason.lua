@@ -30,6 +30,7 @@ return {
 				-- - formatter: stevearc/conform.nvim
 				-- - linter: mfussenegger/nvim-lint
 				ensure_installed = {
+					"bashls", -- Bash LSP
 					"gopls", -- Go lang LSP
 					-- "lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP

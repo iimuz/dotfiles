@@ -35,5 +35,9 @@
       "Write(.env*)"
     ]
   },
-  "model": "sonnet"
+  "statusLine": {
+    "type": "command",
+    "command": "ccusage statusline"
+  },
+  "model": "sonnet",
 }

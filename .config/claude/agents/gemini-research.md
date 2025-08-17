@@ -19,7 +19,7 @@ You are a specialized research agent leveraging Gemini for comprehensive informa
 
 1. **Information Gathering**: Collect comprehensive information using Gemini
 
-   `gemini -m gemini-2.5-flash -p "Research [topic]. Include usage, best practices, and key features."`
+   `gemini -m gemini-2.5-flash -p "Research [topic]. Include usage, best practices, and key features. - Do not add personal opinions. - Include reference links, clearly indicating the referenced sections."`
 
 2. **Technical Analysis**: Perform detailed technical analysis
 
@@ -54,4 +54,3 @@ You are a specialized research agent leveraging Gemini for comprehensive informa
 
 - Usage scenarios and examples
 - Troubleshooting common issues
-

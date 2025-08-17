@@ -8,6 +8,9 @@ prSections:
   - title: Involved
     filters: is:open involves:@me -author:@me
     type: null
+  - title: All
+    filters: is:open
+    type: null
 issuesSections:
   - title: My Issues
     filters: is:open author:@me
