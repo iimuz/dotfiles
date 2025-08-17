@@ -20,6 +20,7 @@ return {
 		-- 利用するformatterはmasonで管理
 		conform.setup({
 			formatters_by_ft = {
+				bash = { "shfmt" },
 				css = { "prettier" },
 				html = { "prettier" },
 				javascript = { "prettier" },
@@ -36,9 +37,11 @@ return {
 					end
 				end,
 				rust = { "rust_analyzer" },
+				sh = { "shfmt" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
 				yaml = { "prettier" },
+				zsh = { "shfmt" },
 			},
 			format_on_save = function(bufnr)
 				-- Disable with a global or buffer-local variable

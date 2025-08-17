@@ -17,6 +17,7 @@ return {
 
 		-- ファイルタイプごとのlinterの設定
 		lint.linters_by_ft = {
+			bash = { "shellcheck" },
 			css = { "cspell" },
 			html = { "cspell" },
 			javascript = { "eslint_d", "cspell" },
@@ -25,9 +26,19 @@ return {
 			lua = { "cspell" },
 			markdown = { "cspell" },
 			python = { "ruff", "cspell" },
+			sh = { "shellcheck" },
 			typescript = { "eslint_d", "cspell" },
 			typescriptreact = { "eslint_d", "cspell" },
 			yaml = { "cspell" },
+			zsh = { "shellcheck" },
+		}
+
+		-- shellcheckの設定カスタマイズ
+		lint.linters.shellcheck.args = {
+			"--format=json",
+			"--shell=bash", -- デフォルトシェルをbashに指定
+			-- "--exclude=SC1091,SC2034", -- 特定のエラーを除外
+			"-",
 		}
 
 		-- バッファの書き込み時にlintを実行

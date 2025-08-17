@@ -13,6 +13,8 @@ nodejs = "24"
 "pipx:awslabs.aws-documentation-mcp-server" = "latest"
 python = "3.12"
 rust = "stable"
+shellcheck = "latest"
+shfmt = "latest"
 uv = "latest"
 
 [settings]
