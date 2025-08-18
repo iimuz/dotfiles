@@ -859,6 +859,7 @@ local function registerLspAndLlmKey()
 				{ "<Leader>llk", vim.lsp.buf.signature_help, desc = "⭐︎LSP: Show signature help." },
 				{ "<Leader>llK", vim.lsp.buf.hover, desc = "⭐︎LSP: Show hover." },
 				{ "<Leader>lln", vim.lsp.buf.rename, desc = "⭐︎LSP: Rename." },
+				{ "<Leader>llo", "<cmd>LspRestart<CR>", desc = "⭐︎LSP: Restart lsp." },
 				{ "<Leader>llr", vim.lsp.buf.references, desc = "⭐︎LSP: Show references." },
 				{ "<Leader>lls", "<cmd>LspInfo<CR>", desc = "⭐︎LSP: Show lsp info." },
 				{ "<Leader>llt", vim.lsp.buf.type_definition, desc = "⭐︎LSP: Type definition." },
