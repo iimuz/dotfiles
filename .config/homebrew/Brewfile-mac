@@ -95,7 +95,6 @@ brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"  # tui filer
-brew "watch"
 brew "wget"
 brew "yq"
 brew "zellij" # terminal multiplexers
