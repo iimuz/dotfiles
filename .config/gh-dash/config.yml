@@ -8,8 +8,8 @@ prSections:
   - title: Involved
     filters: is:open involves:@me -author:@me
     type: null
-  - title: All
-    filters: is:open
+  - title: Team
+    filters: is:open review-requested:@me assignee:@me -reviewed-by:@me
     type: null
 issuesSections:
   - title: My Issues
