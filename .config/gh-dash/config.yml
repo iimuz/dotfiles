@@ -68,13 +68,13 @@ keybindings:
   universal: []
   issues:
     # Neovimでissueを表示
-    - key: v
+    - key: n
       command: |
         tmux display-popup -w 98% -h 98% -E "nvim -c ':Octo issue edit {{.IssueNumber}} {{.RepoName}}'"
       description: "Edit issue in Neovim"
   prs:
     # Neovimでprを表示
-    - key: v
+    - key: n
       command: |
         tmux display-popup -w 98% -h 98% -E "nvim -c ':Octo pr edit {{.PrNumber}} {{.RepoName}}'"
       description: "Edit PR in Neovim"
