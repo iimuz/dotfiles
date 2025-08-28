@@ -558,6 +558,42 @@ local function registerLanguageKey()
 		},
 		{ "<Leader>amve", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
 		{ "<Leader>amvd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
+		{ "<Leader>at", group = "Test" },
+		{
+			"<Leader>atn",
+			function()
+				require("neotest").run.run()
+			end,
+			desc = "Neotest: Run test nearest.",
+		},
+		{
+			"<Leader>atO",
+			function()
+				require("neotest").output_panel.toggle()
+			end,
+			desc = "Neotest: Toggl test output panel.",
+		},
+		{
+			"<Leader>ato",
+			function()
+				require("neotest").output.open({ enter = true, auto_close = true })
+			end,
+			desc = "Neotest: Test output.",
+		},
+		{
+			"<Leader>ats",
+			function()
+				require("neotest").summary.toggle()
+			end,
+			desc = "Neotest: Toggle test summary.",
+		},
+		{
+			"<Leader>att",
+			function()
+				require("neotest").run.stop()
+			end,
+			desc = "Neotest: Test terminate.",
+		},
 	})
 end
 
@@ -607,15 +643,15 @@ local function registerLspAndLlmKey()
 		},
 		{ "<Leader>las", group = "Avante providers" },
 		{
-			"<Leader>lasg",
-			"<cmd>AvanteSwitchProvider copilot_gpt<CR>",
-			desc = "Avante: Switch provider to GitHub Copilot GPT.",
+			"<Leader>lasc",
+			"<cmd>AvanteSwitchProvider copilot_claude<CR>",
+			desc = "Avante: Switch provider to GitHub Copilot Calude.",
 			mode = { "n" },
 		},
 		{
 			"<Leader>lasg",
-			"<cmd>AvanteSwitchProvider copilot_claude<CR>",
-			desc = "Avante: Switch provider to GitHub Copilot Calude.",
+			"<cmd>AvanteSwitchProvider copilot_gpt<CR>",
+			desc = "Avante: Switch provider to GitHub Copilot GPT.",
 			mode = { "n" },
 		},
 		{
