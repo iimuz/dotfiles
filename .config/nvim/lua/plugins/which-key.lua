@@ -310,13 +310,6 @@ local function registerGitKey()
 			end,
 			desc = "GitSigns: Toggle line blame.",
 		},
-		{
-			"<Leader>ghd",
-			function()
-				require("gitsigns").toggle_deleted()
-			end,
-			desc = "GitSigns: Toggle deleted.",
-		},
 		{ "<Leader>ghD", group = "Diff" },
 		{
 			"<Leader>ghDd",
@@ -331,6 +324,11 @@ local function registerGitKey()
 				require("gitsigns").diffthis("~")
 			end,
 			desc = "GitSigns: Diff this (against HEAD~).",
+		},
+		{
+			"<Leader>ghDw",
+			"<cmd>Gitsign toggle_word_diff<CR>",
+			desc = "GitSigns: Toggle word diff.",
 		},
 		{
 			"<Leader>ghn",
@@ -355,6 +353,11 @@ local function registerGitKey()
 			desc = "GitSigns: Next hunk.",
 		},
 		{
+			"<Leader>ghq",
+			"<cmd>Gitsign setqflist<CR>",
+			desc = "GitSigns: Show hunks quickfix list.",
+		},
+		{
 			"<Leader>ghr",
 			function()
 				require("gitsigns").reset_hunk()
@@ -375,7 +378,15 @@ local function registerGitKey()
 				require("gitsigns").stage_hunk()
 			end,
 			desc = "GitSigns: Stage hunk.",
-			mode = { "n", "v" },
+			mode = { "n" },
+		},
+		{
+			"<Leader>ghs",
+			function()
+				require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end,
+			desc = "GitSigns: Stage hunk.",
+			mode = { "v" },
 		},
 		{
 			"<Leader>ghS",
@@ -385,18 +396,18 @@ local function registerGitKey()
 			desc = "GitSigns: Stage buffer.",
 		},
 		{
-			"<Leader>ghu",
+			"<Leader>ghv",
 			function()
-				require("gitsigns").undo_stage_hunk()
+				require("gitsigns").preview_hunk()
 			end,
-			desc = "GitSigns: Undo stage hunk.",
+			desc = "GitSigns: Preview hunk.",
 		},
 		{
 			"<Leader>ghv",
 			function()
 				require("gitsigns").preview_hunk()
 			end,
-			desc = "GitSigns: Preview hunk.",
+			desc = "GitSigns: Preview hunk inline.",
 		},
 		{ "<Leader>gg", "<cmd>Octo gist list<CR>", desc = "Octo: List user gists." },
 		{ "<Leader>gl", lazygitToggle, desc = "⭐︎ToggleTerm: Open lazygit." },
@@ -559,6 +570,13 @@ local function registerLanguageKey()
 		{ "<Leader>amve", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
 		{ "<Leader>amvd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
 		{ "<Leader>at", group = "Test" },
+		{
+			"<Leader>atl",
+			function()
+				require("neotest").run.run_last()
+			end,
+			desc = "Neotest: Run test last.",
+		},
 		{
 			"<Leader>atn",
 			function()
