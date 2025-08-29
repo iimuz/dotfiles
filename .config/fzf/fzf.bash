@@ -42,6 +42,19 @@ if [[ "$(uname -r)" == *oracle* ]]; then
     FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
   fi
 fi
+# wslでのkeybindings
+if [[ "$(uname -r)" == *WSL* ]]; then
+  if [[ "$SHELL" == *zsh* ]]; then
+    FZF_CONFIG="/usr/share/doc/fzf/examples"
+    FZF_KEYBINDINGS="$FZF_CONFIG/completion.zsh"
+    FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.zsh"
+  else
+    # bash
+    FZF_CONFIG="/usr/share/doc/fzf/examples"
+    FZF_KEYBINDINGS="/usr/share/bash-completion/completions/fzf"
+    FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
+  fi
+fi
 
 # Use tmux for selecting window if tmux exists..
 # tmuxがない場合は明示的に無効化する。macなどでarm64, amd64の切り替えをするときに環境がないのに有効化される。
