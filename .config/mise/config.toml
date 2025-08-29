@@ -1,5 +1,5 @@
 [tools]
-awscli = "2"
+awscli = "latest"
 cargo-binstall = "latest"
 go = "1"
 golangci-lint = "2"
