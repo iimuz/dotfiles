@@ -11,6 +11,6 @@ return {
 	cond = condition,
 	event = { "BufRead", "BufNewFile" },
 	opts = {
-		word_diff = true,
+		word_diff = false,
 	},
 }
