@@ -5,15 +5,6 @@
 -- vscodeから利用することにする。
 
 return {
-	-- masonで利用するツールの自動インストールを追加
-	{
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		opts = {
-			ensure_installed = {
-				"sqruff",
-			},
-		},
-	},
 	-- conformのformatter設定のみ追加
 	{
 		"stevearc/conform.nvim",

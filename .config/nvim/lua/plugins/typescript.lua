@@ -1,24 +1,6 @@
 -- Typescript, Javascriptの設定
 
 return {
-	-- LSP
-	{
-		"williamboman/mason-lspconfig.nvim",
-		opts = {
-			ensure_installed = {
-				"vtsls",
-			},
-		},
-	},
-	-- linter
-	{
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		opts = {
-			ensure_installed = {
-				"eslint_d",
-			},
-		},
-	},
 	-- formatter
 	{
 		"stevearc/conform.nvim",

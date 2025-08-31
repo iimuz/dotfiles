@@ -23,6 +23,7 @@ return {
 			lua = { "stylua" },
 			markdown = { "prettier" },
 			python = function(bufnr)
+				local conform = require("conform")
 				if conform.get_formatter_info("ruff_format", bufnr).available then
 					-- ruff_fixまで実施しないとimportの修正が行われない
 					return { "ruff_format", "ruff_fix" }

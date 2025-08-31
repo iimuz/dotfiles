@@ -22,42 +22,51 @@ return {
 			"hrsh7th/cmp-nvim-lsp", -- capabilityを設定
 			"williamboman/mason.nvim",
 		},
-		opts = {
-			-- よく使うLSPはインストールしておく。
-			-- formatter, linterについては下記のpluginを利用する。
-			-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
-			-- - formatter: stevearc/conform.nvim
-			-- - linter: mfussenegger/nvim-lint
-			ensure_installed = {
-				"bashls", -- Bash LSP
-				"gopls", -- Go lang LSP
-				-- "lua_ls", -- Lua LSP
-				"marksman", -- Markdown LSP
-				"pyright", -- Python LSP
-				"rust_analyzer", -- Rust LSP
-			},
-		},
+		config = function(_, opts)
+			require("mason-lspconfig").setup({
+				-- よく使うLSPはインストールしておく。
+				-- formatter, linterについては下記のpluginを利用する。
+				-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
+				-- - formatter: stevearc/conform.nvim
+				-- - linter: mfussenegger/nvim-lint
+				ensure_installed = {
+					"bashls", -- Bash LSP
+					"gopls", -- Go lang LSP
+					-- "lua_ls", -- Lua LSP
+					"marksman", -- Markdown LSP
+					"nomicfoundation-solidity-language-server", -- Solidity LSP
+					"pyright", -- Python LSP
+					"rust_analyzer", -- Rust LSP
+					"vtsls", -- Javascript and Typescript LSP
+				},
+			})
+		end,
 	},
 	-- masonでツールを自動インストール
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "williamboman/mason.nvim" },
-		opts = {
-			ensure_installed = {
-				"cspell", -- CSpell
-				"cspell-lsp", -- CSpell
-				"shfmt", -- Bash
-				"shellcheck", -- Bash
-				"stylua", -- Lua
-			},
-			auto_update = true,
-			run_on_start = true,
-			start_delay = 3000,
-			integrations = {
-				["mason-lspconfig"] = true,
-				["mason-null-ls"] = false,
-				["mason-nvim-dap"] = false,
-			},
-		},
+		config = function(_, opts)
+			require("mason-tool-installer").setup({
+				ensure_installed = {
+					"cspell", -- CSpell
+					"cspell-lsp", -- CSpell
+					"eslint_d", -- Javascript and Typescript linter
+					"shfmt", -- Bash formatter
+					"shellcheck", -- Bash linter
+					"solhint", -- Solidity linter
+					"sqruff", -- SQL linter and formatter
+					"stylua", -- Lua linter and formatter
+				},
+				auto_update = true,
+				run_on_start = true,
+				start_delay = 3000,
+				integrations = {
+					["mason-lspconfig"] = true,
+					["mason-null-ls"] = false,
+					["mason-nvim-dap"] = false,
+				},
+			})
+		end,
 	},
 }
