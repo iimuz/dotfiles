@@ -35,7 +35,7 @@ return {
 					-- "lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"pyright", -- Python LSP
-					-- "rust_analyzer", -- Rust LSP
+					"rust_analyzer", -- Rust LSP
 				},
 			})
 		end,
@@ -46,11 +46,11 @@ return {
 		dependencies = { "williamboman/mason.nvim" },
 		opts = {
 			ensure_installed = {
-				"cspell",
-				"cspell-lsp",
-				"shfmt",
-				"shellcheck",
-				"stylua",
+				"cspell", -- CSpell
+				"cspell-lsp", -- CSpell
+				"shfmt", -- Bash
+				"shellcheck", -- Bash
+				"stylua", -- Lua
 			},
 			auto_update = true,
 			run_on_start = true,
