@@ -22,23 +22,21 @@ return {
 			"hrsh7th/cmp-nvim-lsp", -- capabilityを設定
 			"williamboman/mason.nvim",
 		},
-		config = function()
-			require("mason-lspconfig").setup({
-				-- よく使うLSPはインストールしておく。
-				-- formatter, linterについては下記のpluginを利用する。
-				-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
-				-- - formatter: stevearc/conform.nvim
-				-- - linter: mfussenegger/nvim-lint
-				ensure_installed = {
-					"bashls", -- Bash LSP
-					"gopls", -- Go lang LSP
-					-- "lua_ls", -- Lua LSP
-					"marksman", -- Markdown LSP
-					"pyright", -- Python LSP
-					"rust_analyzer", -- Rust LSP
-				},
-			})
-		end,
+		opts = {
+			-- よく使うLSPはインストールしておく。
+			-- formatter, linterについては下記のpluginを利用する。
+			-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
+			-- - formatter: stevearc/conform.nvim
+			-- - linter: mfussenegger/nvim-lint
+			ensure_installed = {
+				"bashls", -- Bash LSP
+				"gopls", -- Go lang LSP
+				-- "lua_ls", -- Lua LSP
+				"marksman", -- Markdown LSP
+				"pyright", -- Python LSP
+				"rust_analyzer", -- Rust LSP
+			},
+		},
 	},
 	-- masonでツールを自動インストール
 	{
