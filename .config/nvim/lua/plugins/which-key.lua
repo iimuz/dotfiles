@@ -276,7 +276,9 @@ local function registerGitKey()
 	require("which-key").add({
 		{ "<Leader>g", group = "Git" },
 		{ "<Leader>ga", ghDashToggle, desc = "⭐︎ToggleTerm: Open gh dash." },
-		{ "<Leader>gd", "<cmd>DiffviewFileHistory %<CR>", desc = "Diffview: Open file history." },
+		{ "<Leader>gd", group = "Diff" },
+		{ "<Leader>gdf", "<cmd>DiffviewFileHistory %<CR>", desc = "Diffview: Open file history." },
+		{ "<Leader>gdo", "<cmd>DiffviewOpen<CR>", desc = "Diffview: Open diffview." },
 		{ "<Leader>ge", group = "Edit issue/PR" },
 		{ "<Leader>gec", group = "Comment" },
 		{ "<Leader>geca", "<cmd>Octo comment add<CR>", desc = "⭐︎Octo: Add a new comment." },
@@ -569,6 +571,109 @@ local function registerLanguageKey()
 		},
 		{ "<Leader>amve", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
 		{ "<Leader>amvd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
+		{ "<Leader>ar", group = "REST" },
+		{
+			"<Leader>ara",
+			function()
+				require("kulala").run_all()
+			end,
+			desc = "Kulala: Send all requests.",
+		},
+		{
+			"<Leader>arb",
+			function()
+				require("kulala").scratchpad()
+			end,
+			desc = "Kulala: Open scratchpad.",
+		},
+		{
+			"<Leader>arc",
+			function()
+				require("kulala").copy()
+			end,
+			mode = { "n", "v" },
+			desc = "Kulala: Copy as curl.",
+		},
+		{
+			"<Leader>arC",
+			function()
+				require("kulala").from_curl()
+			end,
+			mode = { "n", "v" },
+			desc = "Kulala: Paste from curl.",
+		},
+		{
+			"<Leader>are",
+			function()
+				require("kulala").set_selected_env()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Select env.",
+		},
+		{
+			"<Leader>arf",
+			function()
+				require("kulala").search()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Find request.",
+		},
+		{
+			"<Leader>ari",
+			function()
+				require("kulala").inspect()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Inspect curl request.",
+		},
+		{
+			"<Leader>arn",
+			function()
+				require("kulala").jump_next()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Jump to next request.",
+		},
+		{
+			"<Leader>arp",
+			function()
+				require("kulala").jump_prev()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Jump to previous request.",
+		},
+		{
+			"<leader>arr",
+			function()
+				require("kulala").replay()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Replay the last request",
+		},
+		{
+			"<leader>ars",
+			function()
+				require("kulala").run()
+			end,
+			mode = { "n", "v" },
+			desc = "Kulala: Send request",
+		},
+		{
+			"<leader>arx",
+			function()
+				require("kulala").scripts_clear_global()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Clear globals",
+		},
+		{
+			"<leader>arX",
+			function()
+				require("kulala").clear_cached_files()
+			end,
+			mode = { "n" },
+			desc = "Kulala: Clear cached files",
+		},
 		{ "<Leader>at", group = "Test" },
 		{
 			"<Leader>atl",
