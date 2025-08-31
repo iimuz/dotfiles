@@ -27,6 +27,7 @@ return {
 			markdown = { "cspell" },
 			python = { "ruff", "cspell" },
 			sh = { "shellcheck" },
+			sql = { "sqruff" },
 			typescript = { "eslint_d", "cspell" },
 			typescriptreact = { "eslint_d", "cspell" },
 			yaml = { "cspell" },

@@ -47,6 +47,7 @@ return {
 				"mermaid",
 				"python",
 				"rust",
+				"sql",
 				"toml",
 				"typescript",
 				"vim",
