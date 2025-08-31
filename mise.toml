@@ -1,0 +1,5 @@
+[tools]
+
+[env]
+mise.file = ".env"
+
