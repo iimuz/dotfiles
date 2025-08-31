@@ -34,7 +34,7 @@ return {
 					"gopls", -- Go lang LSP
 					-- "lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
-					"nomicfoundation-solidity-language-server", -- Solidity LSP
+					"solidity_ls_nomicfoundation", -- Solidity LSP
 					"pyright", -- Python LSP
 					"rust_analyzer", -- Rust LSP
 					"vtsls", -- Javascript and Typescript LSP
