@@ -52,6 +52,7 @@ return {
 					"cspell", -- CSpell
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
+					"ruff", -- Python linter and formatter
 					"shfmt", -- Bash formatter
 					"shellcheck", -- Bash linter
 					"solhint", -- Solidity linter
