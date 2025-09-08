@@ -6,16 +6,15 @@
 -- 2024-05-31:
 -- アウトライン表示を呼び出すとクラッシュすることが多発したので利用を停止。
 -- outline.nvimを代わりに利用している。
-
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
+--
+-- 2025-09-08:
+-- telescope連携でoutlineを取得するときに利用している。
 
 -- 起動用のキーマッピング
 local set = vim.keymap.set
 return {
 	"stevearc/aerial.nvim",
 	-- enabled = false,
-	cond = condition,
 	cmd = {
 		"AerialToggle",
 		"AerialOpen",
