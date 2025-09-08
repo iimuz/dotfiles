@@ -31,6 +31,7 @@ return {
 			end,
 			rust = { "rust_analyzer" },
 			sh = { "shfmt" },
+			typespec = { "tsp" },
 			yaml = { "prettier" },
 			zsh = { "shfmt" },
 		},

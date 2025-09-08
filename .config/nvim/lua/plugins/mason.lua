@@ -58,6 +58,7 @@ return {
 					"solhint", -- Solidity linter
 					"sqruff", -- SQL linter and formatter
 					"stylua", -- Lua linter and formatter
+					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
 				},
 				auto_update = true,
 				run_on_start = true,
