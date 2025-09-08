@@ -848,25 +848,6 @@ local function registerLspAndLlmKey()
 		{ "<Leader>lgs", "<cmd>Copilot status<CR>", desc = "⭐︎Copilot: Show status." },
 		{ "<Leader>lgu", "<cmd>Copilot setup<CR>", desc = "Copilot: Setup." },
 		-- `<Leader>ll`はLSPで利用済み
-		{ "<Leader>lm", group = "CodeCompanion" },
-		{
-			"<Leader>lma",
-			"<cmd>CodeCompanionAction<CR>",
-			desc = "CodeCompanion: Open action.",
-			mode = { "n", "v" },
-		},
-		{
-			"<Leader>lmc",
-			"<cmd>CodeCompanionChat<CR>",
-			desc = "CodeCompanion: Open chat.",
-			mode = { "n", "v" },
-		},
-		{
-			"<Leader>lmi",
-			"<cmd>CodeCompanion<CR>",
-			desc = "CodeCompanion: Open inline chat.",
-			mode = { "n", "v" },
-		},
 		{ "<Leader>lp", "<cmd>MCPHub<CR>", desc = "MCPHub: Open.", mode = { "n" } },
 		{ "<Leader>lt", group = "Trouble" },
 		{
