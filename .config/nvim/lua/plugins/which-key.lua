@@ -281,7 +281,7 @@ local function registerGitKey()
 		{ "<Leader>gdo", "<cmd>DiffviewOpen<CR>", desc = "Diffview: Open diffview." },
 		{ "<Leader>ge", group = "Edit issue/PR" },
 		{ "<Leader>gec", group = "Comment" },
-		{ "<Leader>geca", "<cmd>Octo comment add<CR>", desc = "⭐︎Octo: Add a new comment." },
+		{ "<Leader>geca", "<cmd>Octo comment add<CR>", mode = { "n", "v" }, desc = "⭐︎Octo: Add a new comment." },
 		{ "<Leader>gecd", "<cmd>Octo comment delete<CR>", desc = "⭐︎Octo: Delete a comment." },
 		{ "<Leader>get", group = "Thread" },
 		{ "<Leader>getr", "<cmd>Octo thread resolve<CR>", desc = "⭐︎Octo: Resolve a review thread." },
@@ -1188,7 +1188,9 @@ return {
 	end,
 	config = function()
 		local wk = require("which-key")
-		wk.setup()
+		wk.setup({
+			preset = "helix",
+		})
 
 		-- キーの登録関数
 		-- <Leader>キーの次の文字で分類
