@@ -2,7 +2,6 @@
 awscli = "latest"
 cargo-binstall = "latest"
 go = "1"
-golangci-lint = "2"
 java = "openjdk-25"
 lua = "5.4"
 nodejs = "24"
