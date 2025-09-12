@@ -7,9 +7,6 @@
 -- - `Ctrl + P`: 登録コマンドの一覧表示
 -- - プレビュー画面の移動: `Ctrl + u`, `Ctrl + d`
 
--- VSCodeから利用する場合は無効化
-local condition = vim.g.vscode == nil
-
 -- name_typeで指定した形式でファイルパスを挿入する
 --
 -- e.g. `:t:r`でファイル名のみを挿入: `path/to/file.txt` -> `file`
@@ -21,10 +18,12 @@ local function actionsInsertFilepath(prompt_bufnr, name_type)
 	actions.close(prompt_bufnr)
 	vim.api.nvim_put({ file_path }, "c", false, true)
 end
+
 -- filenameのみを挿入する
 local insert_filename_without_suffix = function(prompt_bufnr)
 	actionsInsertFilepath(prompt_bufnr, ":t:r")
 end
+
 -- 相対パスを挿入する
 local insert_relative_path = function(prompt_bufnr)
 	actionsInsertFilepath(prompt_bufnr, ":.")
@@ -35,9 +34,8 @@ return {
 	-- see: <https://github.com/nvim-telescope/telescope.nvim>
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.6",
-		branch = "0.1.x",
-		cond = condition,
+		tag = "0.1.8",
+		-- branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
@@ -178,7 +176,6 @@ return {
 	-- see: <https://github.com/nvim-telescope/telescope-file-browser.nvim>
 	{
 		"nvim-telescope/telescope-file-browser.nvim",
-		cond = condition,
 		event = { "VimEnter" },
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
@@ -192,7 +189,6 @@ return {
 	-- see: <https://github.com/benfowler/telescope-luasnip.nvim>
 	{
 		"benfowler/telescope-luasnip.nvim",
-		cond = condition,
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 		},
@@ -205,7 +201,6 @@ return {
 	-- see: <https://github.com/nvim-telescope/telescope-fzf-native.nvim>
 	{
 		"nvim-telescope/telescope-fzf-native.nvim",
-		cond = condition,
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 		},

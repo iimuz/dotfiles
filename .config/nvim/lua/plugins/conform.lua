@@ -12,42 +12,52 @@ return {
 		"BufReadPre",
 		"BufNewFile",
 	},
-	opts = {
-		formatters_by_ft = {
-			bash = { "shfmt" },
-			css = { "prettier" },
-			html = { "prettier" },
-			json = { "prettier" },
-			lua = { "stylua" },
-			markdown = { "prettier" },
-			python = function(bufnr)
-				local conform = require("conform")
-				if conform.get_formatter_info("ruff_format", bufnr).available then
-					-- ruff_fixまで実施しないとimportの修正が行われない
-					return { "ruff_format", "ruff_fix" }
-				else
-					return { "isort", "black" }
-				end
-			end,
-			rust = { "rust_analyzer" },
-			sh = { "shfmt" },
-			typespec = { "tsp" },
-			yaml = { "prettier" },
-			zsh = { "shfmt" },
-		},
-		format_on_save = function(bufnr)
-			-- Disable with a global or buffer-local variable
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
-			return { lsp_fallback = true, async = false, timeout_ms = 1000 }
-		end,
-	},
 	config = function(_, opts)
 		local conform = require("conform")
 
 		-- ファイルタイプごとのformatterの設定
 		-- 利用するformatterはmasonで管理
+		opts = {
+			formatters_by_ft = {
+				bash = { "shfmt" },
+				css = { "prettier" },
+				html = { "prettier" },
+				javascript = { "prettier" },
+				javascriptreact = { "prettier" },
+				json = { "prettier" },
+				lua = { "stylua" },
+				markdown = { "prettier" },
+				python = function(bufnr)
+					local conform = require("conform")
+					if conform.get_formatter_info("ruff_format", bufnr).available then
+						-- ruff_fixまで実施しないとimportの修正が行われない
+						return { "ruff_format", "ruff_fix" }
+					else
+						return { "isort", "black" }
+					end
+				end,
+				rust = { "rust_analyzer" },
+				sh = { "shfmt" },
+				-- solidity pluginが必要
+				-- `npm install --save-dev prettier prettier-plugin-solidity`
+				-- インストール後に以下の設定を.prettierrcなどに設定する。
+				-- <https://github.com/prettier-solidity/prettier-plugin-solidity?tab=readme-ov-file#configuration-file>
+				solidity = { "prettier" },
+				sql = { "sqruff" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
+				typespec = { "tsp" },
+				yaml = { "prettier" },
+				zsh = { "shfmt" },
+			},
+			format_on_save = function(bufnr)
+				-- Disable with a global or buffer-local variable
+				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+					return
+				end
+				return { lsp_fallback = true, async = false, timeout_ms = 1000 }
+			end,
+		}
 		conform.setup(opts)
 
 		-- auto-saveプラグインから保存するときに自動でformatするための処理

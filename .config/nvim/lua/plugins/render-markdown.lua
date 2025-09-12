@@ -3,12 +3,8 @@
 --
 -- Markdown preview
 
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
-
 return {
 	"MeanderingProgrammer/render-markdown.nvim",
-	cond = condition,
 	dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
 	opts = {
 		-- 挿入モードにおいてもカーソル行のみレンダリングしないように設定

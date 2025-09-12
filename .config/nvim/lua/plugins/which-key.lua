@@ -6,9 +6,6 @@
 -- ショートカットキーに登録するときの簡易ルール
 -- - descriptionには、"⭐︎"を付けることでTelescopeで検索した時に優先して表示される。
 
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
-
 -- cluade codeコマンドのターミナルを開閉
 --
 -- dependencies: `akinsho/toggleterm.nvim`
@@ -721,8 +718,6 @@ local function registerLanguageKey()
 end
 
 -- LSPとLLMに関連するキー登録
---
--- dependencies: `CopilotC-Nvim/CopilotChat.nvim`
 local function registerLspAndLlmKey()
 	-- Normal mode
 	require("which-key").add({
@@ -782,60 +777,6 @@ local function registerLspAndLlmKey()
 			"<cmd>AvanteStop<CR>",
 			desc = "Avante: Stop the current AI request.",
 			mode = { "n" },
-		},
-		{ "<Leader>lc", group = "GitHub Copilot Chat" },
-		{
-			"<Leader>lcc",
-			function()
-				require("CopilotChat").close()
-			end,
-			desc = "CopilotChat: Close chat window.",
-		},
-		{
-			"<Leader>lci",
-			function()
-				require("CopilotChat").toggle({
-					window = {
-						layout = "float",
-						title = "CopilotChat - Inline Chat",
-						relative = "cursor",
-						width = 1,
-						height = 0.4,
-						row = 1,
-					},
-				})
-			end,
-			desc = "⭐︎CopilotChat: Inline chat",
-		},
-		{ "<Leader>lco", "<cmd>CopilotChatOpen<CR>", desc = "⭐︎CopilotChat: Open chat window." },
-		{
-			"<Leader>lcq",
-			function()
-				vim.ui.input({ prompt = "Quick Chat: " }, function(text)
-					if text ~= "" then
-						require("CopilotChat").ask(text, { selection = require("CopilotChat.select").buffer })
-					end
-				end)
-			end,
-			desc = "⭐︎CopilotChat: Quick chat",
-		},
-		{
-			"<Leader>lcq",
-			function()
-				local input = vim.fn.input("Quick Chat: ")
-				if input ~= "" then
-					require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
-				end
-			end,
-			desc = "⭐︎CopilotChat: Quick chat",
-			mode = { "v" },
-		},
-		{
-			"<Leader>lcr",
-			function()
-				require("CopilotChat").reset()
-			end,
-			desc = "CopilotChat: Reset chat window.",
 		},
 		-- `<Leader>le`はLSPのtelescope利用版で利用済み
 		{ "<Leader>lg", group = "GitHub Copilot" },
@@ -1180,7 +1121,6 @@ end
 
 return {
 	"folke/which-key.nvim",
-	cond = condition,
 	event = "VeryLazy",
 	init = function()
 		vim.o.timeout = true

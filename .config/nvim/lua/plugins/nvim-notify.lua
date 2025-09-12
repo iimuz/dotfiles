@@ -1,12 +1,8 @@
 -- rcarriga/nvim-notify
 -- see: <https://github.com/rcarriga/nvim-notify>
 
--- VSCodeから利用する場合は無効化
-local condition = vim.g.vscode == nil
-
 return {
 	"rcarriga/nvim-notify",
-	cond = condition,
 	dependencies = {
 		"nvim-telescope/telescope.nvim",
 	},

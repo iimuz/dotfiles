@@ -22,7 +22,7 @@ return {
 			"hrsh7th/cmp-nvim-lsp", -- capabilityを設定
 			"williamboman/mason.nvim",
 		},
-		config = function(_, opts)
+		config = function()
 			require("mason-lspconfig").setup({
 				-- よく使うLSPはインストールしておく。
 				-- formatter, linterについては下記のpluginを利用する。
@@ -32,7 +32,7 @@ return {
 				ensure_installed = {
 					"bashls", -- Bash LSP
 					"gopls", -- Go lang LSP
-					-- "lua_ls", -- Lua LSP
+					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"solidity_ls_nomicfoundation", -- Solidity LSP
 					"pyright", -- Python LSP
@@ -46,7 +46,7 @@ return {
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "williamboman/mason.nvim" },
-		config = function(_, opts)
+		config = function()
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					"cspell", -- CSpell
