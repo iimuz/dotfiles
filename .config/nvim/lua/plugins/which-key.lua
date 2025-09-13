@@ -65,11 +65,12 @@ return {
 			-- <Leader>sはLeapで利用しているため、ここでは利用しない
 			-- <Leader>SはLeapで利用しているため、ここでは利用しない
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
-			{ "<Leader>U", group = "ClaudeCode" },
-			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },
 			{ "<Leader>T", group = "ToggleTerm" },
+			{ "<Leader>U", group = "ClaudeCode" },
+			{ "<Leader>v", group = "VSCode" },
+			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
 		})
 	end,
 }

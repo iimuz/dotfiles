@@ -173,23 +173,6 @@ return {
 			end, { desc = "⭐︎Telescope: Show lsp definitions using vertical split." })
 		end,
 		keys = {
-			--prefix `<Leader>t` ではない特殊キーのタイプ
-			-- ファイル一覧を表示
-			{
-				"<Leader>p",
-				"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>",
-				desc = "⭐︎Telescope: Find files.",
-			},
-			--キー登録したコマンドパレットを表示
-			-- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
-			{
-				"<Leader>P",
-				function()
-					require("telescope.builtin").keymaps()
-					vim.cmd("normal! i⭐︎")
-				end,
-				desc = "⭐︎Telescope: Open command palet(keymaps).",
-			},
 			-- 通常のコマンド登録
 			{ "<Leader>tb", require("telescope.builtin").buffers, desc = "⭐︎Telescope: Open buffer list." },
 			{

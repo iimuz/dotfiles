@@ -11,15 +11,221 @@ return {
 	opts = {
 		bigfile = { enabled = false },
 		dashboard = { enabled = false },
-		explorer = { enabled = false },
+		explorer = { enabled = true },
 		indent = { enabled = false },
 		input = { enabled = true },
-		picker = { enabled = false },
+		picker = {
+			enabled = true,
+			formatters = {
+				file = {
+					filename_first = true,
+					truncate = 100,
+				},
+			},
+			sources = {
+				explorer = { hidden = true },
+				files = { hidden = true },
+			},
+		},
 		notifier = { enabled = false },
 		quickfile = { enabled = false },
 		scope = { enabled = false },
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
 		words = { enabled = false },
+	},
+	keys = {
+		--prefix `<Leader>w` ではない特殊キーのタイプ
+		-- ファイル一覧を表示
+		{
+			"<Leader>p",
+			function()
+				require("snacks").picker.files()
+			end,
+			desc = "Snacks: Find Files",
+		},
+		--キー登録したコマンドパレットを表示
+		--
+		-- 以下はtelescopeでの対応だが、同様の操作でsnacksで対応
+		-- ただしカーソル位置が⭐の前になっており完全ではない。
+		-- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
+		{
+			"<Leader>P",
+			function()
+				require("snacks").picker.keymaps()
+				vim.cmd("normal! i⭐︎")
+			end,
+			desc = "⭐︎Snacks: Keymaps",
+		},
+		{
+			"<Leader>wb",
+			function()
+				require("snacks").picker.buffers()
+			end,
+			desc = "Snacks: Buffers",
+		},
+		{
+			"<Leader>wc",
+			function()
+				require("snacks").picker.pickers()
+			end,
+			desc = "Snacks: Pickers",
+		},
+		{
+			"<Leader>wC",
+			function()
+				require("snacks").picker.commands()
+			end,
+			desc = "Snacks: Commands",
+		},
+		{
+			"<Leader>wd",
+			function()
+				require("snacks").picker.lsp_definitions()
+			end,
+			desc = "Snacks: Goto Definition",
+		},
+		{
+			"<Leader>gD",
+			function()
+				require("snacks").picker.lsp_declarations()
+			end,
+			desc = "Snacks: Goto Declaration",
+		},
+		{
+			"<Leader>we",
+			function()
+				require("snacks").explorer.open({})
+			end,
+			desc = "⭐︎Snacks: Open explorer",
+		},
+		{
+			"<Leader>wE",
+			function()
+				require("snacks").explorer.reveal({})
+			end,
+			desc = "Snacks: Reveals the given file/buffer or the current buffer in the explorer",
+		},
+		{
+			"<Leader>wg",
+			function()
+				require("snacks").lazygit.open({})
+			end,
+			desc = "⭐︎Snacks: Open layzgit",
+		},
+		{
+			"<Leader>wG",
+			function()
+				require("snacks").picker.git_files()
+			end,
+			desc = "Snacks: Find Git Files",
+		},
+		{
+			"<Leader>wh",
+			function()
+				require("snacks").picker.search_history()
+			end,
+			desc = "Snacks: Search History",
+		},
+		{
+			"<Leader>wi",
+			function()
+				require("snacks").picker.lsp_implementations()
+			end,
+			desc = "Snacks: Goto Implementation",
+		},
+		{
+			"<Leader>wm",
+			function()
+				require("snacks").picker.marks()
+			end,
+			desc = "Snacks: Marks",
+		},
+		{
+			"<Leader>wn",
+			function()
+				require("snacks").picker.notifications()
+			end,
+			desc = "Snacks: Notification History",
+		},
+		{
+			"<Leader>wr",
+			function()
+				require("snacks").picker.lsp_references()
+			end,
+			nowait = true,
+			desc = "Snacks: References",
+		},
+		{
+			"<Leader>wR",
+			function()
+				require("snacks").picker.resume()
+			end,
+			desc = "Snacks: Resume",
+		},
+		{
+			"<Leader>ws",
+			function()
+				require("snacks").scratch()
+			end,
+			desc = "⭐︎Snacks: Toggle Scratch Buffer",
+		},
+		{
+			"<Leader>wS",
+			function()
+				require("snacks").scratch.select()
+			end,
+			desc = "Snacks: Select Scratch Buffer",
+		},
+		{
+			"<Leader>wt", -- error -> Trouble
+			function()
+				require("snacks").picker.diagnostics_buffer()
+			end,
+			desc = "Snacks: Buffer Diagnostics",
+		},
+		{
+			"<Leader>wT", -- error -> Trouble
+			function()
+				require("snacks").picker.diagnostics()
+			end,
+			desc = "Snacks: Diagnostics",
+		},
+		{
+			"<Leader>wy",
+			function()
+				require("snacks").picker.lsp_type_definitions()
+			end,
+			desc = "Snacks: Goto T[y]pe Definition",
+		},
+		{
+			"<Leader>w/",
+			function()
+				require("snacks").picker.grep()
+			end,
+			desc = "Snacks: Grep",
+		},
+		{
+			"<Leader>w*",
+			function()
+				require("snacks").picker.grep_word()
+			end,
+			desc = "Snacks: Visual selection or word",
+			mode = { "n", "x" },
+		},
+		{
+			"<Leader>w:",
+			function()
+				require("snacks").picker.command_history()
+			end,
+			desc = "Snacks: Command History",
+		},
+		{
+			"<Leader>w<space>",
+			function()
+				require("snacks").picker.smart()
+			end,
+			desc = "⭐︎Snacks: Smart Find Files",
+		},
 	},
 }
