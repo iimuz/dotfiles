@@ -4,7 +4,12 @@ require("lazy-init") -- plugin managerとしてlazy.nvimを設定
 
 -- 以下は自作コマンドなどの設定
 require("auto-lastmod").setup() -- front matterのlatmod自動修正
+require("clipboard").setup() -- Clipboardへのコピーコマンド
+require("file").setup() -- File関連のコマンド
 require("front-matter-searcher").setup() -- front matterを検索するコマンド
+require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
+require("quickfix").setup() -- quickfixとlocation listのコマンド
 require("project-settings") -- project rootのneovim設定を読み込む
+require("tab").setup() -- tab関連のコマンド
 require("timestamp-inserter").setup() -- timestampを挿入するコマンド

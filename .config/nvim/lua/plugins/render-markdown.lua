@@ -18,4 +18,8 @@ return {
 		},
 	},
 	ft = { "markdown" },
+	keys = {
+		{ "<Leader>Re", "<cmd>RenderMarkdown enable<CR>", desc = "⭐︎RenderMarkdown: Enable." },
+		{ "<Leader>Rd", "<cmd>RenderMarkdown disable<CR>", desc = "⭐︎RenderMarkdown: Disable." },
+	},
 }

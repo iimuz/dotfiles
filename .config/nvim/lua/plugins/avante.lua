@@ -85,4 +85,60 @@ return {
 			},
 		},
 	},
+	keys = {
+		{
+			"<Leader>aa",
+			"<cmd>AvanteAsk<CR>",
+			desc = "Avante: Ask mode.",
+			mode = { "n", "v" },
+		},
+		{
+			"<Leader>au",
+			"<cmd>AvanteSwitchProvider copilot_claude<CR>",
+			desc = "Avante: Switch provider to GitHub Copilot Calude.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>ae",
+			"<cmd>AvanteEdit<CR>",
+			desc = "Avante: Edit mode.",
+			mode = { "n", "v" },
+		},
+		{
+			"<Leader>af",
+			"<cmd>AvanteFocus<CR>",
+			desc = "Avante: Switch focus to/from the sidebar.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>ag",
+			"<cmd>AvanteSwitchProvider copilot_gpt<CR>",
+			desc = "Avante: Switch provider to GitHub Copilot GPT.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>ah",
+			"<cmd>AvanteHistory<CR>",
+			desc = "Avante: Show history.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>am",
+			"<cmd>AvanteModels<CR>",
+			desc = "Avante: Select model.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>as",
+			"<cmd>AvanteStop<CR>",
+			desc = "Avante: Stop the current AI request.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>at",
+			"<cmd>AvanteToggle<CR>",
+			desc = "Avante: Toggle the sidebar.",
+			mode = { "n", "v" },
+		},
+	},
 }

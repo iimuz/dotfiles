@@ -107,6 +107,7 @@ return {
 				},
 			})
 
+			-- ショートカットキーは割り当てないが検索できるようにするための設定
 			-- colorscheme
 			set("n", "<Plug>(telescope.colorscheme)", builtin.colorscheme, { desc = "Telescope: Color scheme." })
 			set(
@@ -171,6 +172,90 @@ return {
 				builtin.lsp_definitions({ jump_type = "vsplit" })
 			end, { desc = "⭐︎Telescope: Show lsp definitions using vertical split." })
 		end,
+		keys = {
+			--prefix `<Leader>t` ではない特殊キーのタイプ
+			-- ファイル一覧を表示
+			{
+				"<Leader>p",
+				"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>",
+				desc = "⭐︎Telescope: Find files.",
+			},
+			--キー登録したコマンドパレットを表示
+			-- see: <https://blog.atusy.net/2022/11/03/telescope-as-command-pallete/>
+			{
+				"<Leader>P",
+				function()
+					require("telescope.builtin").keymaps()
+					vim.cmd("normal! i⭐︎")
+				end,
+				desc = "⭐︎Telescope: Open command palet(keymaps).",
+			},
+			-- 通常のコマンド登録
+			{ "<Leader>tb", require("telescope.builtin").buffers, desc = "⭐︎Telescope: Open buffer list." },
+			{
+				"<Leader>tb",
+				require("telescope.builtin").current_buffer_fuzzy_find,
+				desc = "⭐︎Telescope: Live fuzzy search inside of the currently open buffer.",
+			},
+			{ "<Leader>tc", require("telescope.builtin").commands, desc = "⭐︎Telescope: Open command list." },
+			{
+				"<Leader>tC",
+				require("telescope.builtin").command_history,
+				desc = "⭐︎Telescope: Open command history list.",
+			},
+			{
+				"<Leader>te",
+				function()
+					require("telescope.builtin").diagnostics({ bufnr = 0 })
+				end,
+				desc = "LSP Telescope: Lists diagnostics for a buffer.",
+			},
+			{
+				"<Leader>tE",
+				require("telescope.builtin").diagnostics,
+				desc = "LSP Telescope: Lists diagnostics for all open buffers.",
+			},
+			{ "<Leader>tm", require("telescope.builtin").marks, desc = "⭐︎Telescope: Lists vim marks." },
+			-- group `tl`: LSP
+			{
+				"<Leader>tld",
+				require("telescope.builtin").lsp_definitions,
+				desc = "LSP Telescope: Go to definition.",
+			},
+			{
+				"<Leader>tli",
+				require("telescope.builtin").lsp_implementations,
+				desc = "LSP Telescope: Go to implementation.",
+			},
+			{
+				"<Leader>tln",
+				require("telescope.builtin").lsp_incoming_calls,
+				desc = "LSP Telescope: Lists LSP incoming calls.",
+			},
+			{
+				"<Leader>tlo",
+				require("telescope.builtin").lsp_outgoing_calls,
+				desc = "LSP Telescope: Lists LSP outgoing calls.",
+			},
+			{
+				"<Leader>tlr",
+				require("telescope.builtin").lsp_references,
+				desc = "LSP Telescope: Lists LSP References.",
+			},
+			{
+				"<Leader>tly",
+				require("telescope.builtin").lsp_type_definitions,
+				desc = "LSP Telescope: Go to definition of the type.",
+			},
+			-- `<Leader>tr` はtelescope file browserで利用
+			{
+				"<Leader>t*",
+				require("telescope.builtin").grep_string,
+				desc = "⭐︎Telescope: Search for the string under your cursor in Workspace.",
+				mode = { "n", "v" },
+			},
+			{ "<Leader>t/", require("telescope.builtin").live_grep, desc = "⭐︎Telescope: Search in Workspace." },
+		},
 	},
 	-- Telescopeのファイルブラウザ拡張
 	-- see: <https://github.com/nvim-telescope/telescope-file-browser.nvim>
@@ -184,6 +269,9 @@ return {
 		config = function()
 			require("telescope").load_extension("file_browser")
 		end,
+		keys = {
+			{ "<Leader>tr", "<cmd>Telescope file_browser<CR>", desc = "⭐︎Telescope FileBrowser: Open." },
+		},
 	},
 	-- TelescopeのLuasnip拡張
 	-- see: <https://github.com/benfowler/telescope-luasnip.nvim>

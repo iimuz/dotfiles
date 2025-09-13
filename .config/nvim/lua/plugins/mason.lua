@@ -11,6 +11,12 @@ return {
 		config = function()
 			require("mason").setup()
 		end,
+		keys = {
+			{ "<Leader>Ml", "<cmd>MasonLog<CR>", desc = "Mason: Show log." },
+			{ "<Leader>Mo", "<cmd>Mason<CR>", desc = "⭐︎Mason: Show Mason UI." },
+			{ "<Leader>Mt", "<cmd>MasonToolsUpdate<CR>", desc = "MasonTools: update." },
+			{ "<Leader>Mu", "<cmd>MasonUpdate<CR>", desc = "Mason: update." },
+		},
 	},
 	-- mason-lspconfigの設定
 	-- see: <https://github.com/williamboman/mason-lspconfig.nvim>

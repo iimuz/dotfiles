@@ -20,4 +20,7 @@ return {
 			},
 		})
 	end,
+	keys = {
+		{ "<Leader>n", "<cmd>Telescope luasnip<CR>", desc = "⭐︎Telescope Luasnip: Open snippet list." },
+	},
 }

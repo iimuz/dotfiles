@@ -55,4 +55,13 @@ return {
 			end,
 		})
 	end,
+	keys = {
+		{
+			"<Leader>N",
+			function()
+				require("lint").try_lint()
+			end,
+			desc = "⭐︎Lint: Trigger linting for current file",
+		},
+	},
 }

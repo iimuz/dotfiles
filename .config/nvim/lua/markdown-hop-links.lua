@@ -155,8 +155,12 @@ function M.frontMatterPicker(opts)
 end
 
 -- 設定関数
---
--- ショートカットキーの登録はwhich-keyで行うため何もしていない。
-function M.setup() end
+function M.setup()
+	-- キーマッピング
+	local set = vim.keymap.set
+	set("n", "<Leader>h", function()
+		require("markdown-hop-links").frontMatterPicker()
+	end, { desc = "⭐︎MarkdownHopLinks: Show backlinks." })
+end
 
 return M

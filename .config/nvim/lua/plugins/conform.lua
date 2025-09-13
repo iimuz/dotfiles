@@ -76,4 +76,52 @@ return {
 			end,
 		})
 	end,
+	keys = {
+		{
+			"<Leader>Cb",
+			function()
+				vim.b.disable_autoformat = true
+			end,
+			desc = "Conform: Disable for this buffer.",
+		},
+		{
+			"<Leader>CB",
+			function()
+				vim.b.disable_autoformat = false
+			end,
+			desc = "⭐︎Conform: Enable for this buffer.",
+		},
+		{
+			"<Leader>Cf",
+			function(opts)
+				opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
+				require("conform").format(opts)
+			end,
+			desc = "⭐︎Conform: Format file or range.",
+		},
+		{
+			"<Leader>Cg",
+			function()
+				vim.g.disable_autoformat = false
+			end,
+			desc = "Conform: Enable",
+		},
+		{
+			"<Leader>CG",
+			function()
+				vim.g.disable_autoformat = true
+			end,
+			desc = "Conform: Disable.",
+		},
+		{ "<Leader>Ci", "<cmd>ConformInfo<CR>", desc = "⭐︎Conform: Show information." },
+		{
+			"<Leader>Cs",
+			function()
+				vim.ui.input({ prompt = "Formatter: " }, function(formatter)
+					format({ formatters = { formatter } })
+				end)
+			end,
+			desc = "⭐︎Conform: Specific formatter.",
+		},
+	},
 }

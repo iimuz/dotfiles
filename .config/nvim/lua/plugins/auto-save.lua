@@ -19,4 +19,7 @@ return {
 		-- delay after which a pending save is executed
 		debounce_delay = 1000,
 	},
+	keys = {
+		{ "<Leader>u", "<cmd>ASToggle<CR>", desc = "AutoSave: Toggle auto save mode." },
+	},
 }
