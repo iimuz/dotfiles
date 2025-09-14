@@ -5,10 +5,14 @@
 
 return {
 	"yetone/avante.nvim",
-	cmd = { "AvanteAsk", "AvanteEdit" },
+	cmd = { "AvanteAsk", "AvanteChat", "AvanteEdit", "AvanteFocus", "AvanteToggle" },
 	version = "*", -- always pull the latest release version
 	opts = {
 		behaviour = { auto_set_keymaps = false },
+		hints = { enabled = false }, -- virtual textを利用したキーマップ表示をoff
+		windows = {
+			input = { height = 16 },
+		},
 		-- system_prompt as function ensures LLM always has latest MCP server state
 		-- This is evaluated for every message, even in existing chats
 		system_prompt = function()
@@ -91,6 +95,12 @@ return {
 			"<cmd>AvanteAsk<CR>",
 			desc = "Avante: Ask mode.",
 			mode = { "n", "v" },
+		},
+		{
+			"<Leader>ac",
+			"<cmd>AvanteChat<CR>",
+			desc = "Avante: Chat mode.",
+			mode = { "n" },
 		},
 		{
 			"<Leader>au",
