@@ -1,5 +1,7 @@
 -- rcarriga/nvim-notify
 -- see: <https://github.com/rcarriga/nvim-notify>
+--
+-- 2025-09-14: Snacks.nvimのnotifyに入れ替え
 
 return {
 	"rcarriga/nvim-notify",
