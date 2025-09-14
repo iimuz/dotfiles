@@ -38,7 +38,19 @@ return {
 				},
 			},
 			sources = {
-				explorer = { hidden = true },
+				explorer = {
+					hidden = true,
+					auto_close = true,
+					win = {
+						list = {
+							keys = {
+								-- デフォルトで `S-CR` に割り当てられているが動作しないので `O` に設定
+								-- see: <https://github.com/folke/snacks.nvim/discussions/1362>
+								["O"] = { { "pick_win", "jump" }, mode = { "n", "i" } },
+							},
+						},
+					},
+				},
 				files = { hidden = true },
 			},
 		},
@@ -110,7 +122,7 @@ return {
 		{
 			"<Leader>we",
 			function()
-				require("snacks").explorer.open({})
+				require("snacks").explorer.open()
 			end,
 			desc = "⭐︎Snacks: Open explorer",
 		},
