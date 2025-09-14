@@ -10,6 +10,5 @@ require("front-matter-searcher").setup() -- front matterを検索するコマン
 require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
 require("quickfix").setup() -- quickfixとlocation listのコマンド
-require("project-settings") -- project rootのneovim設定を読み込む
 require("tab").setup() -- tab関連のコマンド
 require("timestamp-inserter").setup() -- timestampを挿入するコマンド
