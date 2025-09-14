@@ -3,6 +3,21 @@
 --
 -- A collection of QoL plugins for Neovim.
 
+-- 同じフォルダのファイルのみを検索する
+--
+-- see: <https://eiji.page/blog/neovim-snacks-picker-intro/>
+local function find_files_in_current_folder()
+	require("snacks").picker({
+		finder = "proc",
+		cmd = "find",
+		args = { vim.fn.expand("%:h"), "-type", "f", "-not", "-name", vim.fn.expand("%:t") },
+		---@param item snacks.picker.finder.Item
+		transform = function(item)
+			item.file = item.text
+		end,
+	})
+end
+
 return {
 	"folke/snacks.nvim",
 	priority = 1000,
@@ -98,6 +113,11 @@ return {
 				require("snacks").explorer.open({})
 			end,
 			desc = "⭐︎Snacks: Open explorer",
+		},
+		{
+			"<Leader>wf",
+			find_files_in_current_folder,
+			desc = "⭐︎Snacks: Find files on current buffer folder",
 		},
 		{
 			"<Leader>wE",
