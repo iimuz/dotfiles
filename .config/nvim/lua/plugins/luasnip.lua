@@ -3,6 +3,50 @@
 --
 -- Snippet管理プラグイン
 
+-- LuaSnipのスニペット一覧をsnack.pickerで出力する
+local function snacksPicker()
+	local function finder()
+		local luasnip = require("luasnip")
+		local ft = vim.bo.filetype
+		local snippets = luasnip.get_snippets(ft)
+
+		local items = {}
+		for _, snippet in pairs(snippets or {}) do
+			table.insert(items, {
+				text = snippet.trigger,
+				description = snippet.desc or "",
+				snippet = snippet,
+			})
+		end
+
+		return items
+	end
+
+	local function format(item)
+		return {
+			{ item.text, "SnacksPickerLabel" },
+			{ " ", virtual = true },
+			{ item.description, "SnacksPickerComment" },
+		}
+	end
+
+	local function confirm(picker, item)
+		picker:close()
+		if not item or not item.snippet then
+			return
+		end
+
+		require("luasnip").snip_expand(item.snippet)
+	end
+
+	require("snacks").picker({
+		finder = finder,
+		format = format,
+		confirm = confirm,
+		layout = { preview = false },
+	})
+end
+
 return {
 	"L3MON4D3/LuaSnip",
 	version = "v2.*", -- follow latest release.
@@ -21,6 +65,6 @@ return {
 		})
 	end,
 	keys = {
-		{ "<Leader>n", "<cmd>Telescope luasnip<CR>", desc = "⭐︎Telescope Luasnip: Open snippet list." },
+		{ "<Leader>n", snacksPicker, desc = "⭐︎Luasnip: Open snippet list." },
 	},
 }
