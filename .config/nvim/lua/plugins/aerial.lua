@@ -42,4 +42,7 @@ return {
 		-- Telescope拡張
 		require("telescope").load_extension("aerial")
 	end,
+	keys = {
+		{ "<Leader>ot", "<cmd>Telescope aerial<CR>", desc = "Aerial: Open using telescope." },
+	},
 }
