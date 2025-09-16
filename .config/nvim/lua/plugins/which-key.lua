@@ -36,9 +36,9 @@ return {
 			{ "<Leader>G", group = "Copilot" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
 			{ "<Leader>H", group = "McpHub" },
-			{ "<Leader>j", group = "Timestamp" }, -- Timestamp = 時 = Ji
+			{ "<Leader>j", group = "Timestamp" }, -- Timestamp = 時 = [J]i
 			{ "<Leader>k", group = "Kulala" },
-			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = Ki
+			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = [K]i
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用
 			{ "<Leader>L", "<cmd>Lazy<CR>", desc = "⭐︎Lazy: Show Lazy UI." }, -- 全体の管理なので元の所で設定する方法がわからないのでここに記載
 			{ "<Leader>m", group = "Markdown" },
@@ -54,7 +54,6 @@ return {
 			{ "<Leader>Op", group = "PR" },
 			{ "<Leader>Or", group = "Review" },
 			{ "<Leader>Ot", group = "Thread" },
-			{ "<Leader>ot", "<cmd>Telescope aerial<CR>", desc = "Aerial: Open using telescope." }, -- 例外で一時退避
 			-- <Leader>pはFilePalletteで利用しているため、ここでは利用しない
 			-- <Leader>PはCommandPalletteで利用しているため、ここでは利用しない
 			{ "<Leader>q", group = "Quickfix and Location list" },
@@ -68,6 +67,7 @@ return {
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },
 			{ "<Leader>T", group = "ToggleTerm" },
+			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
 			{ "<Leader>U", group = "ClaudeCode" },
 			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
