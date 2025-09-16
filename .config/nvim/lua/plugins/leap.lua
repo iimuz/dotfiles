@@ -15,6 +15,6 @@ return {
 	},
 	keys = {
 		{ "<Leader>s", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap: Forward search." },
-		{ "<Leader>S", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
+		{ "<Leader>S", "<Plug>(leap-backward)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
 	},
 }
