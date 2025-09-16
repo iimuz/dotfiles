@@ -3,13 +3,17 @@
 --
 -- Outlineの表示に利用
 
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
-
 return {
 	"hedyhli/outline.nvim",
 	lazy = true,
-	cond = condition,
 	cmd = { "Outline", "OutlineOpen" },
 	opts = {},
+	keys = {
+		{ "<Leader>of", "<cmd>OutlineFollow<CR>", desc = "Outline: Go follow cursor position." },
+		{ "<Leader>oo", "<cmd>OutlineOpen<CR>", desc = "⭐︎Outline: Open." },
+		{ "<Leader>os", "<cmd>OutlineStatus<CR>", desc = "Outline: Show status." },
+		{ "<Leader>or", "<cmd>OutlinesRefresh<CR>", desc = "Outline: Refresh of symbols." },
+		-- <Leader>otは、aerialのショートカットで利用している
+		{ "<Leader>ox", "<cmd>OutlineClose<CR>", desc = "Outline: Close." },
+	},
 }

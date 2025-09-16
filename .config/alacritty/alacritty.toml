@@ -1,7 +1,10 @@
-[shell]
+[terminal]
+
+[terminal.shell]
 program = "/bin/zsh"
-args = ["-l", "-c", "tmux new -A -s alacritty"]
+args = ["-l", "-c", "tmux new -A -s ala"]
 
 [font]
-normal = { family = "Cica", style = "Regular" }
-size = 18
+normal = { family = "HackGen Console NF", style = "Regular" }
+size = 22
+

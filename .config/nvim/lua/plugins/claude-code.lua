@@ -14,4 +14,24 @@ return {
 			position = "rightbelow vsplit",
 		},
 	},
+	keys = {
+		{
+			"<Leader>Uc",
+			"<cmd>ClaudeCodeContinue<CR>",
+			desc = "ClaudeCode: Resume the most recent conversation.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>Uo",
+			"<cmd>ClaudeCode<CR>",
+			desc = "ClaudeCode: Open.",
+			mode = { "n" },
+		},
+		{
+			"<Leader>Ur",
+			"<cmd>ClaudeCodeResume<CR>",
+			desc = "ClaudeCode: Display an interactive conversation picker.",
+			mode = { "n" },
+		},
+	},
 }

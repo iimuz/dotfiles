@@ -2,7 +2,7 @@
 --
 -- neovimで開いているファイルをobsidianで同期して表示する。
 --
---scroll syncを利用するために導入しようとしたが、対応手順が多かったので見送り。
+-- scroll syncを利用するために導入しようとしたが、対応手順が多かったので見送り。
 
 return {
 	"oflisback/obsidian-bridge.nvim",
@@ -11,7 +11,7 @@ return {
 	config = function()
 		require("obsidian-bridge").setup({
 			obsidian_server_address = "https://localhost:27124",
-			scroll_sync = fals,
+			scroll_sync = false,
 		})
 	end,
 	event = {

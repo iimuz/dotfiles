@@ -5,13 +5,9 @@
 --
 -- - 2024-07-02: VSCodeと併用しているので、このプラグインを利用しなくなったので無効化
 
--- VSCodeから利用する場合は無効化
-local condition = vim.g.vscode == nil
-
 return {
 	"CopilotC-Nvim/CopilotChat.nvim",
-	cond = condition,
-	enabled = true,
+	enabled = false,
 	cmd = {
 		"CopilotChatOpen",
 	},
@@ -21,7 +17,4 @@ return {
 	},
 	build = "make tiktoken", -- Only on MacOS or Linux
 	opts = {},
-	-- config = function()
-	-- 	require("CopilotChat").setup()
-	-- end,
 }

@@ -1,4 +1,4 @@
-tap "homebrew/bundle"
+#tap "homebrew/bundle"
 
 # === application management
 brew "mas"
@@ -37,27 +37,27 @@ mas "bitwarden", id: 1352778147  # password manager(app store版を利用しな�
 cask "azookey"
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
-cask "voiceink"  # instantly transcribe what you say
+# cask "voiceink"  # instantly transcribe what you say
 
 # === LLM
 brew "ollama"
 cask "claude"
 
 # === plantuml
-brew "graphviz"
-brew "plantuml"
+# brew "graphviz"
+# brew "plantuml"
 
 # === project
 brew "bash"
 brew "jq"
-brew "pwgen"
-brew "licensed"
+# brew "pwgen"
+# brew "licensed"
 
 # === programming tools
-brew "cargo-make"
-brew "direnv"
-brew "dprint"  # markdown formatter
-brew "go-task"
+# brew "cargo-make"
+# brew "direnv"
+# brew "dprint"  # markdown formatter
+# brew "go-task"
 brew "mise"
 cask "obsidian"
 cask "visual-studio-code"
@@ -68,11 +68,11 @@ cask "obs"
 
 # === ruby
 # rubyをmiseでインストールするときに必要
-brew "autoconf"
-brew "gmp"
-brew "libyaml"
-brew "openssl@3"
-brew "readline"
+# brew "autoconf"
+# brew "gmp"
+# brew "libyaml"
+# brew "openssl@3"
+# brew "readline"
 
 # === rust
 # 2024-07-24 rustup-init -> rustupの変更タイミングで正常にインストールできなくなったので公式の方法に従う。
@@ -97,5 +97,5 @@ brew "tmux"
 brew "vifm"  # tui filer
 brew "wget"
 brew "yq"
-brew "zellij" # terminal multiplexers
+# brew "zellij" # terminal multiplexers
 cask "alacritty" # terminal emurator

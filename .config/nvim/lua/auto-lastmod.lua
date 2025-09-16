@@ -103,6 +103,13 @@ function M.setup()
 		pattern = { "AutoSaveWritePre" },
 		callback = UpdateLastmod,
 	})
+
+	-- キーマッピング
+	local set = vim.keymap.set
+	set("n", "<Leader>Ab", require("auto-lastmod").disable_buffer, { desc = "⭐︎AutoLastMod: Disable auto-lastmod" })
+	set("n", "<Leader>AB", require("auto-lastmod").enable_buffer, { desc = "AutoLastMod: Enable auto-lastmod" })
+	set("n", "<Leader>Ag", require("auto-lastmod").disable_global, { desc = "⭐︎AutoLastMod: Disable auto-lastmod" })
+	set("n", "<Leader>AG", require("auto-lastmod").enable_global, { desc = "AutoLastMod: Enable auto-lastmod" })
 end
 
 return M

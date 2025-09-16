@@ -1,17 +1,19 @@
 [tools]
-awscli = "2"
+awscli = "latest"
 cargo-binstall = "latest"
+"cargo:tree-sitter-cli" = "latest" # for neovim
 go = "1"
-golangci-lint = "2"
-java = "openjdk-21"
-lua = "5.1" # 2025-04-11時点でlazy.nvimがlua5.1を要求しているため
+java = "openjdk-25"
+lua = "5.1" # neovim luarocksで要求しているバージョンが5.1
 nodejs = "24"
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:ccusage" = "latest"
 "npm:mcp-hub" = "latest"
+"npm:neovim" = "latest" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "latest"
 "pipx:oraios/serena" = "latest"
+"pipx:pynvim" = "latest" # for neovim
 python = "3.12"
 rust = "stable"
 shellcheck = "latest"

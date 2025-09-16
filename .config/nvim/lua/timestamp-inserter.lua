@@ -33,8 +33,21 @@ function M.getNowEpoch()
 end
 
 -- 初期化処理
---
--- ショートカットキーはwhich-keyで設定するため何もしていない。
-function M.setup() end
+function M.setup()
+	-- キーマッピング
+	local set = vim.keymap.set
+	set("n", "<Leader>ja", function()
+		local ti = require("timestamp-inserter")
+		vim.api.nvim_put({ ti.timestamp2DateTimeStr(ti.getNowEpoch()) }, "c", true, true)
+	end, { desc = "TimestampInserter: Insert current date and time." })
+	set("n", "<Leader>jd", function()
+		local ti = require("timestamp-inserter")
+		vim.api.nvim_put({ ti.timestamp2DateStr(ti.getNowEpoch()) }, "c", true, true)
+	end, { desc = "⭐︎TimestampInserter: Insert current date." })
+	set("n", "<Leader>jt", function()
+		local ti = require("timestamp-inserter")
+		vim.api.nvim_put({ ti.timestamp2TimeStr(ti.getNowEpoch()) }, "c", true, true)
+	end, { desc = "⭐︎TimestampInserter: Insert current time." })
+end
 
 return M

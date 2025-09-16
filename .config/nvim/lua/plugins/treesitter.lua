@@ -47,6 +47,7 @@ return {
 				"mermaid",
 				"python",
 				"rust",
+				"sql",
 				"toml",
 				"typescript",
 				"vim",
@@ -63,4 +64,16 @@ return {
 		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 		vim.opt.foldenable = false -- デフォルトでは折りたたみを無効にする
 	end,
+	keys = {
+		{ "<Leader>Ke", "<cmd>TSContextEnable<CR>", desc = "TreeSitter: Enable Context." },
+		{ "<Leader>Kd", "<cmd>TSContextDisable<CR>", desc = "TreeSitter: Disable Context." },
+		{
+			"<Leader>Kj",
+			function()
+				require("treesitter-context").go_to_context(vim.v.count1)
+			end,
+			desc = "TreeSitter: Jumping to context(upwards).",
+		},
+		{ "<Leader>Ku", "<cmd>TSUpdate<CR>", desc = "TreeSitter: Update Tree-Sitter" },
+	},
 }

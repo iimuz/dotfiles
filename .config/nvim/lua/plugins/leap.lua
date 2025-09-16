@@ -13,9 +13,8 @@ return {
 	dependencies = {
 		"tpope/vim-repeat",
 	},
-	config = function()
-		-- vscodeから利用する場合も使うためwhich-keyではなく、ここに記載する。
-		vim.keymap.set({ "n", "x", "o" }, "<Leader>s", "<Plug>(leap-forward)")
-		vim.keymap.set({ "n", "x", "o" }, "<Leader>S", "<Plug>(leap-backward)")
-	end,
+	keys = {
+		{ "<Leader>s", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap: Forward search." },
+		{ "<Leader>S", "<Plug>(leap-backward)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
+	},
 }

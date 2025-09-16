@@ -27,6 +27,7 @@ return {
 			markdown = { "cspell" },
 			python = { "ruff", "cspell" },
 			sh = { "shellcheck" },
+			sql = { "sqruff" },
 			typescript = { "eslint_d", "cspell" },
 			typescriptreact = { "eslint_d", "cspell" },
 			yaml = { "cspell" },
@@ -54,4 +55,13 @@ return {
 			end,
 		})
 	end,
+	keys = {
+		{
+			"<Leader>N",
+			function()
+				require("lint").try_lint()
+			end,
+			desc = "⭐︎Lint: Trigger linting for current file",
+		},
+	},
 }

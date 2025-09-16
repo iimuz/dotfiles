@@ -2,15 +2,29 @@
 --
 --Colorschemeは、どれか一つで良いので全てここにまとめる
 
--- VSCodeから利用する場合は無効化する
-local condition = vim.g.vscode == nil
-
 return {
+	-- catppuccin
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = false,
+		enabled = false,
+		priority = 1000,
+		config = function()
+			require("catppuccin").setup({
+				flavour = "frappe",
+				integrations = {
+					diffview = true,
+				},
+			})
+
+			vim.cmd([[ colorscheme catppuccin ]])
+		end,
+	},
 	-- iceverg
 	-- see: <https://github.com/cocopon/iceberg.vim>
 	{
 		"cocopon/iceberg.vim",
-		cond = condition,
 		lazy = false,
 		enabled = false,
 		config = function()
@@ -23,7 +37,6 @@ return {
 	-- see: <https://github.com/EdenEast/nightfox.nvim>
 	{
 		"EdenEast/nightfox.nvim",
-		cond = condition,
 		lazy = false,
 		enabled = false,
 		config = function()
@@ -34,7 +47,6 @@ return {
 	},
 	{
 		"projekt0n/github-nvim-theme",
-		cond = condition,
 		lazy = false,
 		enabled = false,
 		priority = 1000, -- make sure to load this before all the other start plugins
@@ -45,11 +57,9 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
-		cond = condition,
 		lazy = false,
 		enabled = true,
 		priority = 1000,
-		opts = {},
 		config = function()
 			vim.cmd([[ colorscheme tokyonight-night ]])
 		end,

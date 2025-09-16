@@ -17,8 +17,8 @@
 # === Gurad if command does not exist.
 # binを削除しておくとbrew commandの有無で判別できない。
 # 一度でも設定して環境変数を全て削除していない想定で環境変数の有無でhomebrewの有無を確認する。
-# if ! type brew > /dev/null 2>&1; then return 0; fi
-if [ ! -n "$HOMEBREW_PREFIX" ]; then return 0; fi
+if ! type brew > /dev/null 2>&1; then return 0; fi
+# if [ ! -n "$HOMEBREW_PREFIX" ]; then return 0; fi
 
 # === mac環境においてarm版とrosetta版を実行環境で切り替える
 # ref: <https://qiita.com/tamachan210/items/b253ced93425d7cc0f1f>

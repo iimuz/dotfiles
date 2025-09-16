@@ -11,6 +11,12 @@ return {
 		config = function()
 			require("mason").setup()
 		end,
+		keys = {
+			{ "<Leader>Ml", "<cmd>MasonLog<CR>", desc = "Mason: Show log." },
+			{ "<Leader>Mo", "<cmd>Mason<CR>", desc = "⭐︎Mason: Show Mason UI." },
+			{ "<Leader>Mt", "<cmd>MasonToolsUpdate<CR>", desc = "MasonTools: update." },
+			{ "<Leader>Mu", "<cmd>MasonUpdate<CR>", desc = "Mason: update." },
+		},
 	},
 	-- mason-lspconfigの設定
 	-- see: <https://github.com/williamboman/mason-lspconfig.nvim>
@@ -32,10 +38,41 @@ return {
 				ensure_installed = {
 					"bashls", -- Bash LSP
 					"gopls", -- Go lang LSP
-					-- "lua_ls", -- Lua LSP
+					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
+					"solidity_ls_nomicfoundation", -- Solidity LSP
 					"pyright", -- Python LSP
-					-- "rust_analyzer", -- Rust LSP
+					"rust_analyzer", -- Rust LSP
+					"vtsls", -- Javascript and Typescript LSP
+				},
+			})
+		end,
+	},
+	-- masonでツールを自動インストール
+	{
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		dependencies = { "williamboman/mason.nvim" },
+		config = function()
+			require("mason-tool-installer").setup({
+				ensure_installed = {
+					"cspell", -- CSpell
+					"cspell-lsp", -- CSpell
+					"eslint_d", -- Javascript and Typescript linter
+					"ruff", -- Python linter and formatter
+					"shfmt", -- Bash formatter
+					"shellcheck", -- Bash linter
+					"solhint", -- Solidity linter
+					"sqruff", -- SQL linter and formatter
+					"stylua", -- Lua linter and formatter
+					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
+				},
+				auto_update = true,
+				run_on_start = true,
+				start_delay = 3000,
+				integrations = {
+					["mason-lspconfig"] = true,
+					["mason-null-ls"] = false,
+					["mason-nvim-dap"] = false,
 				},
 			})
 		end,

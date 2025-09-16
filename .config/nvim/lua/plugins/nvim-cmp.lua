@@ -3,12 +3,9 @@
 --
 -- Completion
 
-local condition = vim.g.vscode == nil
-
 return {
 	"hrsh7th/nvim-cmp",
 	event = "InsertEnter",
-	cond = condition,
 	dependencies = {
 		{ "hrsh7th/cmp-buffer" }, -- 開いているバッファからのキーワード補完
 		{ "hrsh7th/cmp-nvim-lsp" }, -- LSPからの補完

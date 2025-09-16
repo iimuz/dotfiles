@@ -25,7 +25,7 @@
       "Bash(rm -f:*)",
       "Bash(rm -rf:*)",
       "Bash(sudo:*)",
-      "Bash(wget;*)",
+      "Bash(wget:*)",
       "Read(**/*key*)",
       "Read(**/*token*)",
       "Read(.env.*)",
@@ -39,5 +39,5 @@
     "type": "command",
     "command": "ccusage statusline"
   },
-  "model": "sonnet",
+  "model": "sonnet"
 }
