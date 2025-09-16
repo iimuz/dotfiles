@@ -18,6 +18,15 @@ local function find_files_in_current_folder()
 	})
 end
 
+-- 選択しているファイルのfilenameをカーソル位置に挿入する
+local function insert_filename_without_suffix(picker, _)
+	local item = picker:current()
+	local filepath = item.file or item.path or item.filename
+	local filename = vim.fn.fnamemodify(filepath, ":t:r")
+	picker:close()
+	vim.api.nvim_put({ filename }, "c", false, true)
+end
+
 return {
 	"folke/snacks.nvim",
 	priority = 1000,
@@ -54,6 +63,16 @@ return {
 				files = { hidden = true },
 				grep = { hidden = true },
 				grep_word = { hidden = true },
+			},
+			actions = {
+				insert_filename_without_suffix = insert_filename_without_suffix,
+			},
+			win = {
+				input = {
+					keys = {
+						["<C-f>"] = { "insert_filename_without_suffix", mode = { "n", "i" } },
+					},
+				},
 			},
 		},
 		notifier = { enabled = true },
