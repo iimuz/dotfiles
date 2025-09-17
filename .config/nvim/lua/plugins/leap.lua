@@ -14,7 +14,7 @@ return {
 		"tpope/vim-repeat",
 	},
 	keys = {
-		{ "<Leader>s", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap: Forward search." },
-		{ "<Leader>S", "<Plug>(leap-backward)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
+		{ "f", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap: Forward search." },
+		{ "F", "<Plug>(leap-backward)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
 	},
 }

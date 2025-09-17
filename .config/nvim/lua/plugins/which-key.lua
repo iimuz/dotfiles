@@ -61,8 +61,6 @@ return {
 			{ "<Leader>qq", group = "Quickfix" },
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
-			-- <Leader>sはLeapで利用しているため、ここでは利用しない
-			-- <Leader>SはLeapで利用しているため、ここでは利用しない
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },
