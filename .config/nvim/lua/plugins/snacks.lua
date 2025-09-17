@@ -225,9 +225,10 @@ return {
 			desc = "Snacks: Resume",
 		},
 		{
+			-- どのようなファイルであってもメモ用のmarkdownファイルを開く
 			"<Leader>ws",
 			function()
-				require("snacks").scratch()
+				require("snacks").scratch({ ft = "markdown" })
 			end,
 			desc = "⭐︎Snacks: Toggle Scratch Buffer",
 		},
