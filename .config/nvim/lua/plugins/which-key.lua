@@ -36,7 +36,6 @@ return {
 			{ "<Leader>G", group = "Copilot" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
 			{ "<Leader>H", group = "McpHub" },
-			{ "<Leader>j", group = "Timestamp" }, -- Timestamp = 時 = [J]i
 			{ "<Leader>k", group = "Kulala" },
 			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = [K]i
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用

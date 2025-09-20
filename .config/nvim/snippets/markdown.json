@@ -1,4 +1,25 @@
 {
+  "current-date": {
+    "prefix": "current-date",
+    "body": [
+      "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
+    ],
+    "description": "Insert current date."
+  },
+  "current-timestamp": {
+    "prefix": "current-timestamp",
+    "body": [
+      "$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND"
+    ],
+    "description": "Insert current timestamp."
+  },
+  "current-datetime": {
+    "prefix": "current-datetime",
+    "body": [
+      "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND"
+    ],
+    "description": "Insert current date and time."
+  },
   "front-matter-minimal": {
     "prefix": "front-matter-short",
     "body": [
