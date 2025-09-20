@@ -11,3 +11,7 @@ model_provider = "litellm"
 [profiles.litellm-claude4sonnet]
 model = "claude-4-sonnet"
 model_provider = "litellm"
+
+[mcp_servers.serena]
+command = "serena"
+args = ["start-mcp-server", "--context", "codex"]
