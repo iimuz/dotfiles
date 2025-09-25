@@ -41,5 +41,12 @@
       "---"
     ],
     "description": "front matter with date."
+  },
+  "state-tag-in-progress": {
+    "prefix": "state-tag-in-progress",
+    "body": [
+      "**In progress**"
+    ],
+    "description": "In progress"
   }
 }
