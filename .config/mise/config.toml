@@ -7,6 +7,7 @@ java = "openjdk-25"
 lua = "5.1" # neovim luarocksで要求しているバージョンが5.1
 nodejs = "24"
 "npm:@anthropic-ai/claude-code" = "latest"
+"npm:@github/copilot" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@openai/codex" = "latest"
 "npm:ccusage" = "latest"
