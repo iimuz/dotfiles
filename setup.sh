@@ -77,8 +77,12 @@ fi
 if type bash >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
 fi
+# === codex
+if type codex >/dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/codex/AGENTS.md $HOME/.codex/AGENTS.md
+  create_symlink $SCRIPT_DIR/.config/codex/config.toml $HOME/.codex/config.toml
+fi
 # === claude
-# claudeはaliasで登録されているため直接指定する必要がある
 if type claude >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
   create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands

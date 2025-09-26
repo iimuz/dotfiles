@@ -78,6 +78,14 @@ return {
 		notifier = { enabled = true },
 		quickfile = { enabled = false },
 		scope = { enabled = false },
+		scratch = {
+			-- scratchはプロジェクト共通で利用する
+			filekey = {
+				cwd = false, -- 作業ディレクトリを無視
+				branch = false, -- Gitブランチを無視
+				count = true, -- カウントは使用(異なる番号で複数作成可能)
+			},
+		},
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
 		words = { enabled = false },
@@ -217,9 +225,10 @@ return {
 			desc = "Snacks: Resume",
 		},
 		{
+			-- どのようなファイルであってもメモ用のmarkdownファイルを開く
 			"<Leader>ws",
 			function()
-				require("snacks").scratch()
+				require("snacks").scratch({ ft = "markdown" })
 			end,
 			desc = "⭐︎Snacks: Toggle Scratch Buffer",
 		},

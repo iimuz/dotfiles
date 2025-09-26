@@ -52,9 +52,13 @@ return {
 	version = "v2.*", -- follow latest release.
 	build = "make install_jsregexp", -- install jsregexp (optional!).
 	event = { "VimEnter" },
+	dependencies = { "rafamadriz/friendly-snippets" },
 	config = function()
 		local cwd = vim.fn.getcwd()
 		local cwd_snippets_path = cwd .. "/.snippets"
+
+		-- load friendly snippets and default
+		require("luasnip.loaders.from_vscode").lazy_load()
 
 		require("luasnip.loaders.from_vscode").lazy_load({
 			paths = {

@@ -11,5 +11,4 @@ require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
 require("quickfix").setup() -- quickfixとlocation listのコマンド
 require("tab").setup() -- tab関連のコマンド
-require("timestamp-inserter").setup() -- timestampを挿入するコマンド
 require("vscode").setup() -- vscode関連のコマンド

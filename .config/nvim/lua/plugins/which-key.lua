@@ -36,7 +36,6 @@ return {
 			{ "<Leader>G", group = "Copilot" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
 			{ "<Leader>H", group = "McpHub" },
-			{ "<Leader>j", group = "Timestamp" }, -- Timestamp = 時 = [J]i
 			{ "<Leader>k", group = "Kulala" },
 			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = [K]i
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用
@@ -61,8 +60,6 @@ return {
 			{ "<Leader>qq", group = "Quickfix" },
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
-			-- <Leader>sはLeapで利用しているため、ここでは利用しない
-			-- <Leader>SはLeapで利用しているため、ここでは利用しない
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },

@@ -25,7 +25,6 @@ return {
 		event = { "VimEnter" },
 		dependencies = {
 			"neovim/nvim-lspconfig", -- 不足していた必須依存
-			"hrsh7th/cmp-nvim-lsp", -- capabilityを設定
 			"williamboman/mason.nvim",
 		},
 		config = function()
