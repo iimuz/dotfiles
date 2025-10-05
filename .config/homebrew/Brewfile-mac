@@ -82,6 +82,7 @@ cask "obs"
 
 # === terminal
 brew "bat"
+brew "cmake"
 brew "eza"  # replace ls -> exa -> eza
 brew "fd"  # replace find
 brew "fzf"  # fuzzy finder
@@ -90,6 +91,7 @@ brew "git-delta"  # diff viewer
 brew "gh"  # github cli
 brew "luarocks"  # for lazy.nvim plugin
 brew "neovim"  # neovim
+brew "pkg-config"
 brew "pngpaste"  # for img-clip.nvim plugin
 brew "ripgrep"  # replace grep
 brew "starship"  # Shell prompt
