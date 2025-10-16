@@ -210,6 +210,20 @@ return {
 			desc = "Snacks: Notification History",
 		},
 		{
+			"<Leader>wo",
+			function()
+				require("snacks").picker.lsp_symbols()
+			end,
+			desc = "Snacks: LSP Buffer Symbols",
+		},
+		{
+			"<Leader>wO",
+			function()
+				require("snacks").picker.lsp_workspace_symbols()
+			end,
+			desc = "Snacks: LSP Workspace Symbols",
+		},
+		{
 			"<Leader>wr",
 			function()
 				require("snacks").picker.lsp_references()
