@@ -132,11 +132,13 @@ if type vim >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/vim/init.vim $HOME/.vimrc
   create_symlink $SCRIPT_DIR/.config/vim $HOME/.config/vim
 fi
-# === vscode
+# === vscode / copilot cli
 if type code >/dev/null 2>&1; then
   # Copilot
   create_symlink $SCRIPT_DIR/.config/vscode/instructions $HOME/.vscode/instructions
   create_symlink $SCRIPT_DIR/.config/vscode/prompts $HOME/.vscode/prompts
+  # Copilot CLI
+  create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
   # Cline
   create_symlink $SCRIPT_DIR/.config/cline/Rules $HOME/Documents/Cline/Rules
 fi

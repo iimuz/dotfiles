@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "atlassian": {
+      "tools": ["getConfluencePage", "getJiraIssue"],
+      "type": "local",
+      "command": "mcp-remote",
+      "args": ["https://mcp.atlassian.com/v1/sse"]
+    },
+    "serena": {
+      "tools": [
+        "activate_project",
+        "check_onboarding_performed",
+        "find_file",
+        "find_referencing_symbols",
+        "find_symbol",
+        "get_symbols_overview",
+        "insert_after_symbol",
+        "insert_before_symbol",
+        "list_dir",
+        "onboarding",
+        "replace_regex",
+        "replace_symbol_body",
+        "search_for_pattern"
+      ],
+      "type": "local",
+      "command": "serena",
+      "args": ["start-mcp-server", "--context", "ide-assistant"]
+    }
+  }
+}

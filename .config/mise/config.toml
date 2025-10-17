@@ -12,6 +12,7 @@ node = "22"
 "npm:@openai/codex" = "latest"
 "npm:ccusage" = "latest"
 "npm:mcp-hub" = "latest"
+"npm:mcp-remote" = "latest"
 "npm:neovim" = "latest" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "latest"
 "pipx:oraios/serena" = "latest"
