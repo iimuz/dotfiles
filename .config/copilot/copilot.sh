@@ -34,6 +34,9 @@ readonly COPILOT_SHELL_READ_TOOLS="\
   --allow-tool='shell(cargo check:*)'\
   --allow-tool='shell(cargo clippy:*)'\
   --allow-tool='shell(cargo fmt:*)'\
+  --allow-tool='shell(cat:*)'\
+  --allow-tool='shell(echo:*)'\
+  --allow-tool='shell(find:*)'\
   --allow-tool='shell(ls:*)'\
   --allow-tool='shell(git diff:*)'\
   --allow-tool='shell(git log:*)'\
@@ -42,7 +45,9 @@ readonly COPILOT_SHELL_READ_TOOLS="\
   --allow-tool='shell(grep:*)'\
   --allow-tool='shell(rg:*)'\
   --allow-tool='shell(rustfmt:*)'\
+  --allow-tool='shell(tree:*)'\
   --allow-tool='shell(wc:*)'\
+  --allow-tool='shell(xargs:*)'\
 "
 readonly COPILOT_SHELL_DENY_TOOLS="\
   --deny-tool='shell(curl:*)'\
@@ -61,16 +66,27 @@ readonly COPILOT_SHELL_DENY_TOOLS="\
 "
 
 alias copilot_atlassian="copilot\
-  $COPILOT_SHELL_DENY_TOOLS  --allow-tool='write'\
-  $COPILOT_ATLASSIAN_READ_TOOLS  $COPILOT_SERENA_READ_TOOLS  --disable-mcp-server='markitdown'\
+  $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
+  $COPILOT_ATLASSIAN_READ_TOOLS $COPILOT_SERENA_READ_TOOLS --disable-mcp-server='markitdown'\
 "
 alias copilot_auto="copilot\
-  $COPILOT_SHELL_DENY_TOOLS  --allow-tool='write'\
-  $COPILOT_SERENA_READ_TOOLS  $COPILOT_MARKITDOWN_READ_TOOLS  $COPILOT_SERENA_WRITE_TOOLS  --disable-mcp-server='atlassian'\
+  $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
+  $COPILOT_SERENA_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
+"
+alias copilot_commit="copilot\
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS --allow-tool='shell(git commit:*)'\
+  --deny-tool='shell(git add:*)'\
+  --disable-mcp-server='atlassian'\
+  --disable-mcp-server='markitdown'\
 "
 alias copilot_edit="copilot\
-  $COPILOT_SHELL_DENY_TOOLS  --allow-tool='write'\
-  $COPILOT_SERENA_READ_TOOLS  $COPILOT_MARKITDOWN_READ_TOOLS  $COPILOT_SERENA_WRITE_TOOLS  --disable-mcp-server='atlassian'\
+  $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
+  $COPILOT_SERENA_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
 "
 alias copilot_planning="copilot\
-  $COPILOT_SHELL_DENY_TOOLS  $COPILOT_ATLASSIAN_READ_TOOLS  $COPILOT_MARKITDOWN_READ_TOOLS  $COPILOT_SERENA_READ_TOOLS  $COPILOT_SHELL_READ_TOOLS"
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_ATLASSIAN_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS"
+alias copilot_pr="copilot\
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS --deny-tool='shell(gh pr create --draft:*)'\
+  --disable-mcp-server='atlassian'\
+  --disable-mcp-server='markitdown'\
+"
