@@ -15,6 +15,8 @@ node = "22"
 "npm:mcp-remote" = "latest"
 "npm:neovim" = "latest" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "latest"
+"pipx:markitdown" = { version = "latest", all = "" }
+"pipx:markitdown-mcp" = { version = "latest", all = "" }
 "pipx:oraios/serena" = "latest"
 "pipx:pynvim" = "latest" # for neovim
 python = "3.12"
