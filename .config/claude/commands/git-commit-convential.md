@@ -33,7 +33,7 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 ### Single Type Changes
 
 ```
-<emoji> <type>(<scope>): <description>
+<type>(<scope>): <description>
 <BLANK LINE>
 [optional <body>]
 <BLANK LINE>
@@ -43,19 +43,19 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 ### Multiple Type Changes
 
 ```
-<emoji> <type>(<scope>): <description>
+<type>(<scope>): <emoji> <description>
 <BLANK LINE>
 [optional <body> of type 1]
 <BLANK LINE>
 [optional <footer(s)> of type 1]
 <BLANK LINE>
 <BLANK LINE>
-<emoji> <type>(<scope>): <description>
+<type>(<scope>): <emoji> <description>
 <BLANK LINE>
 [optional <body> of type 2]
 <BLANK LINE>
 [optional <footer(s)> of type 2]
-<emoji> <type>(<scope>): <description>
+<type>(<scope>): <emoji> <description>
 <BLANK LINE>
 [optional <body> of type 3]
 <BLANK LINE>
@@ -66,18 +66,18 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 
 | Type     | Title                    | Emoji | Description                                                                                            | Example Scopes (non-exaustive)                                |
 | -------- | ------------------------ | ----- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-| build    | Builds                   | 🏗️    | Changes that affect the build system or external dependencies                                          | gulp, broccoli, npm                                           |
-| chore    | Chores                   | 🔧    | Other changes that don't modify src or test files                                                      | scripts, config                                               |
-| ci       | Continuous Integrations  | 👷    | Changes to our CI configuration files and scripts                                                      | Travis, Circle, BrowserStack, SauceLabs,github actions, husky |
-| docs     | Documentation            | 📝    | Documentation only changes                                                                             | README, API                                                   |
-| feat     | Features                 | ✨    | A new feature                                                                                          | user, payment, gallery                                        |
-| fix      | Bug Fixes                | 🐛    | A bug fix                                                                                              | auth, data                                                    |
-| perf     | Performance Improvements | ⚡️   | A code change that improves performance                                                                | query, cache                                                  |
-| refactor | Code Refactoring         | ♻️    | A code change that neither fixes a bug nor adds a feature                                              | utils, helpers                                                |
-| revert   | Reverts                  | ⏪️   | Reverts a previous commit                                                                              | query, utils,                                                 |
-| style    | Styles                   | 💄    | Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc) | formatting                                                    |
-| test     | Tests                    | ✅    | Adding missing tests or correcting existing tests                                                      | unit, e2e                                                     |
-| i18n     |                          | 🌐    | Internationalization                                                                                   | locale, translation                                           |
+| build    | Builds                   | :building_construction:    | Changes that affect the build system or external dependencies                                          | gulp, broccoli, npm                                           |
+| chore    | Chores                   | :wrench:    | Other changes that don't modify src or test files                                                      | scripts, config                                               |
+| ci       | Continuous Integrations  | :construction_worker:    | Changes to our CI configuration files and scripts                                                      | Travis, Circle, BrowserStack, SauceLabs,github actions, husky |
+| docs     | Documentation            | :memo:    | Documentation only changes                                                                             | README, API                                                   |
+| feat     | Features                 | :sparkles:    | A new feature                                                                                          | user, payment, gallery                                        |
+| fix      | Bug Fixes                | :bug:    | A bug fix                                                                                              | auth, data                                                    |
+| perf     | Performance Improvements | :zap:   | A code change that improves performance                                                                | query, cache                                                  |
+| refactor | Code Refactoring         | :recycle:    | A code change that neither fixes a bug nor adds a feature                                              | utils, helpers                                                |
+| revert   | Reverts                  | :rewind:   | Reverts a previous commit                                                                              | query, utils,                                                 |
+| style    | Styles                   | :lipstick:    | Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc) | formatting                                                    |
+| test     | Tests                    | :white_check_mark:    | Adding missing tests or correcting existing tests                                                      | unit, e2e                                                     |
+| i18n     |                          | :globe_with_meridians:    | Internationalization                                                                                   | locale, translation                                           |
 
 ## More information about types
 
@@ -133,8 +133,9 @@ This type is used for commits that involve changes related to internationalizati
 
 ### Subject Line
 
-Format: `<emoji> <type>[optional (<scope>)]: <description>`
+Format: `<type>[optional (<scope>)]: <emoji code as string> <description>`
 
+- ALWAYS use the colon notation for emoji (e.g. :wrench:), never insert an actual emoji character
 - Scope must be in English
 - Imperative mood
 - No capitalization
@@ -240,7 +241,7 @@ See also #321
 
 1. Output ONLY the commit message
 2. Write ONLY in English
-3. ALWAYS add the emoji to the beginning of first line
+3. ALWAYS add the emoji code (e.g. `:wrench:`) as a string after the type on the first line, do NOT use Unicode emoji. Always use the colon notation (e.g. `:bug:`), never output an actual emoji character.
 4. NO additional text or explanations
 5. NO questions or comments
 6. NO formatting instructions or metadata
@@ -265,7 +266,7 @@ n });
 
 OUTPUT:
 
-♻️ refactor(server): optimize server port configuration
+:recycle: refactor(server): optimize server port configuration
 
 - rename port variable to uppercase (PORT) to follow constant naming convention
 - add environment variable port support for flexible deployment
@@ -290,7 +291,7 @@ index af76bc0..781d472 100644
   "lint:debug": "eslint . --debug",
 
 OUTPUT:
-🔧 chore: update lint-staged script to use mjs config file
+:wrench: chore: update lint-staged script to use mjs config file
 
 - change lint-staged script command to use lint-staged.config.mjs instead of lint-staged.config.ts
 
