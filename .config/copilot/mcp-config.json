@@ -6,6 +6,12 @@
       "command": "mcp-remote",
       "args": ["https://mcp.atlassian.com/v1/sse"]
     },
+    "markitdown": {
+      "tools": ["convert_to_markdown"],
+      "type": "local",
+      "command": "markitdown-mcp",
+      "args": []
+    },
     "serena": {
       "tools": [
         "activate_project",
