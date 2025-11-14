@@ -5,8 +5,8 @@ gui:
   timeFormat: '2006-01-02'
 git:
   branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline {{branchName}} --'
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
   allBranchesLogCmds:
     - git log --graph --all --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline
