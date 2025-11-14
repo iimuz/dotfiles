@@ -29,6 +29,14 @@ readonly COPILOT_SERENA_WRITE_TOOLS="\
   --allow-tool='serena(replace_regex)'\
   --allow-tool='serena(replace_symbol_body)'\
 "
+readonly COPILOT_SERENA_READ_MEMORY="\
+  --allow-tool='serena(list_memories)'\
+  --allow-tool='serena(read_memory)'\
+"
+readonly COPILOT_SERENA_WRITE_MEMORY="\
+  --allow-tool='serena(delete_memory)'\
+  --allow-tool='serena(write_memory)'\
+"
 
 readonly COPILOT_SHELL_READ_TOOLS="\
   --allow-tool='shell(cargo check:*)'\
@@ -71,22 +79,22 @@ alias copilot_atlassian="copilot\
 "
 alias copilot_auto="copilot\
   $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
-  $COPILOT_SERENA_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
+  $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
 "
 alias copilot_commit="copilot\
-  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS --allow-tool='shell(git commit:*)'\
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SHELL_READ_TOOLS --allow-tool='shell(git commit:*)'\
   --deny-tool='shell(git add:*)'\
   --disable-mcp-server='atlassian'\
   --disable-mcp-server='markitdown'\
 "
 alias copilot_edit="copilot\
   $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
-  $COPILOT_SERENA_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
+  $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
 "
 alias copilot_planning="copilot\
-  $COPILOT_SHELL_DENY_TOOLS $COPILOT_ATLASSIAN_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS"
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_ATLASSIAN_READ_TOOLS $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_SHELL_READ_TOOLS"
 alias copilot_pr="copilot\
-  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SHELL_READ_TOOLS --deny-tool='shell(gh pr create --draft:*)'\
+  $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_SHELL_READ_TOOLS --allow-tool='shell(gh pr create --draft:*)'\
   --disable-mcp-server='atlassian'\
   --disable-mcp-server='markitdown'\
 "
