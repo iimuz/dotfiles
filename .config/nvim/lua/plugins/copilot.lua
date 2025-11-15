@@ -10,7 +10,7 @@ return {
 	cmd = "Copilot",
 	event = "InsertEnter",
 	dependencies = {
-		"copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality,
+		-- "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality だが NES は利用していないので無効化
 	},
 	keys = {
 		{ "<Leader>Ge", "<cmd>Copilot enable<CR>", desc = "Copilot: Enable." },
