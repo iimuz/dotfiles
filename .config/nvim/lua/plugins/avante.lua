@@ -43,15 +43,10 @@ return {
 				require("mcphub.extensions.avante").mcp_tool(),
 			}
 		end,
-		provider = "copilot_gpt",
+		provider = "copilot",
 		providers = {
-			copilot_gpt = {
-				__inherited_from = "copilot",
-				model = "gpt-4.1",
-			},
-			copilot_claude = {
-				__inherited_from = "copilot",
-				model = "claude-sonnet-4.5",
+			copilot = {
+				model = "gpt-5-mini",
 			},
 		},
 	},
