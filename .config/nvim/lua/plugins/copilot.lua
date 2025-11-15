@@ -2,6 +2,8 @@
 -- see: <https://github.com/zbirenbaum/copilot.lua>
 --
 -- GitHub Copilot Plugin.
+--
+-- - 補完は、 blink.cmp を利用して実施
 
 return {
 	"zbirenbaum/copilot.lua",
