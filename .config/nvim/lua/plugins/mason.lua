@@ -42,6 +42,7 @@ return {
 					"solidity_ls_nomicfoundation", -- Solidity LSP
 					"pyright", -- Python LSP
 					"rust_analyzer", -- Rust LSP
+					"taplo", -- TOML LSP
 					"vtsls", -- Javascript and Typescript LSP
 				},
 			})

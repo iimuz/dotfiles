@@ -44,7 +44,7 @@ return {
 				-- <https://github.com/prettier-solidity/prettier-plugin-solidity?tab=readme-ov-file#configuration-file>
 				solidity = { "prettier" },
 				sql = { "sqruff" },
-				toml = { "prettier" },
+				toml = { "taplo" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
 				typespec = { "tsp" },
