@@ -58,6 +58,7 @@ return {
 					"cspell", -- CSpell
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
+					"prettier", -- Formatter for various file types
 					"ruff", -- Python linter and formatter
 					"shfmt", -- Bash formatter
 					"shellcheck", -- Bash linter
