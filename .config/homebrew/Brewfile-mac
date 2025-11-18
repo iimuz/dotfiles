@@ -41,7 +41,6 @@ cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 
 # === LLM
 brew "ollama"
-cask "claude"
 
 # === plantuml
 # brew "graphviz"
