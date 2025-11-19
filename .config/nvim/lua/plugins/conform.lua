@@ -22,6 +22,7 @@ return {
 				bash = { "shfmt" },
 				css = { "prettier" },
 				html = { "prettier" },
+				http = { "kulala-fmt" },
 				javascript = { "prettier" },
 				javascriptreact = { "prettier" },
 				json = { "prettier" },
@@ -36,6 +37,7 @@ return {
 						return { "isort", "black" }
 					end
 				end,
+				rest = { "kulala-fmt" },
 				rust = { "rust_analyzer" },
 				sh = { "shfmt" },
 				-- solidity pluginが必要

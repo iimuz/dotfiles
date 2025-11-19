@@ -58,6 +58,7 @@ return {
 					"cspell", -- CSpell
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
+					"kulala-fmt", -- HTTP formatter and linter
 					"prettier", -- Formatter for various file types
 					"ruff", -- Python linter and formatter
 					"shfmt", -- Bash formatter
