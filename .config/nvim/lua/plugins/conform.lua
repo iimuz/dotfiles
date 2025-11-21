@@ -53,6 +53,25 @@ return {
 				yaml = { "prettier" },
 				zsh = { "shfmt" },
 			},
+			formatters = {
+				-- prettier では複数の parser があるため、 filetype に応じて parser を切り替える設定を追加する。
+				-- ただし、基本的にはファイル拡張子から判定する。
+				-- ファイル拡張子から判断できないファイルに対して format したくなるケースのみ記載する。
+				prettier = {
+					prepend_args = function(self, ctx)
+						local parser_map = {
+							markdown = "markdown",
+							json = "json",
+							yaml = "toml",
+						}
+						local parser = parser_map[vim.bo[ctx.buf].filetype]
+						if parser then
+							return { "--parser", parser }
+						end
+						return {}
+					end,
+				},
+			},
 			format_on_save = function(bufnr)
 				-- Disable with a global or buffer-local variable
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
