@@ -15,6 +15,15 @@ return {
 	config = function(_, opts)
 		local conform = require("conform")
 
+		-- format_on_saveの共通実装
+		local format_on_save_fn = function(bufnr)
+			-- Disable with a global or buffer-local variable
+			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+				return
+			end
+			return { lsp_fallback = true, async = false, timeout_ms = 1000 }
+		end
+
 		-- ファイルタイプごとのformatterの設定
 		-- 利用するformatterはmasonで管理
 		opts = {
@@ -72,13 +81,7 @@ return {
 					end,
 				},
 			},
-			format_on_save = function(bufnr)
-				-- Disable with a global or buffer-local variable
-				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-					return
-				end
-				return { lsp_fallback = true, async = false, timeout_ms = 1000 }
-			end,
+			format_on_save = format_on_save_fn,
 		}
 		conform.setup(opts)
 
@@ -88,13 +91,11 @@ return {
 			group = augroup,
 			pattern = { "AutoSaveWritePre" },
 			callback = function()
-				-- Disable with a global or buffer-local variable
-				if vim.g.disable_autoformat then
-					return
+				local bufnr = vim.api.nvim_get_current_buf()
+				local format_opts = format_on_save_fn(bufnr)
+				if format_opts then
+					conform.format(format_opts)
 				end
-
-				opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
-				conform.format(opts)
 			end,
 		})
 	end,
