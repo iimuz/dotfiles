@@ -1,0 +1,12 @@
+{
+  "name": "dotfiles-dnvim",
+  "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@aikidosec/safe-chain": "^1.1.10",
+    "mcp-hub": "^4.2.1",
+    "neovim": "^5.4.0"
+  }
+}

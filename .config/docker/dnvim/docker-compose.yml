@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: ${DOTFILES_CONFIG_DIR}
+      dockerfile: .config/docker/dnvim/Dockerfile
+    volumes:
+      - .:/workspace
+      - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
+    working_dir: /workspace
+    tty: true
+    stdin_open: true
