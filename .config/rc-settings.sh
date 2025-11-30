@@ -23,6 +23,7 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/docker/colima-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/docker/dnvim/dnvim-command.sh"
+. "$_DOTFILES_CONFIG_DIR/docker/dgit/dgit-command.sh"
 . "$_DOTFILES_CONFIG_DIR/fzf/fzf.bash"
 . "$_DOTFILES_CONFIG_DIR/git/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/nvim/nvim-settings.sh"
