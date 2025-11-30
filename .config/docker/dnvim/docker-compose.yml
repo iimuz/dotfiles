@@ -6,6 +6,7 @@ services:
     volumes:
       - .:/workspace
       - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
+      - $DOTFILES_CONFIG_DIR:/home/ubuntu/dotfiles:ro
     working_dir: /workspace
     tty: true
     stdin_open: true
