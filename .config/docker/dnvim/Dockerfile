@@ -42,7 +42,7 @@ RUN LUA_VERSION=5.1.5 \
     && rm -rf lua-${LUA_VERSION} lua-${LUA_VERSION}.tar.gz
 
 # Install Node.js
-RUN NODE_VERSION=22.11.0 \
+RUN NODE_VERSION=22.21.0 \
     && ARCH=$(uname -m) \
     && if [ "$ARCH" = "aarch64" ]; then NODE_ARCH="arm64"; else NODE_ARCH="x64"; fi \
     && curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz \
@@ -55,7 +55,7 @@ RUN NODE_VERSION=22.11.0 \
     && npm cache clean --force
 
 # Install Go
-RUN GO_VERSION=1.25.3 \
+RUN GO_VERSION=1.25.4 \
     && ARCH=$(uname -m) \
     && if [ "$ARCH" = "aarch64" ]; then GO_ARCH="arm64"; else GO_ARCH="amd64"; fi \
     && curl -LO https://go.dev/dl/go${GO_VERSION}.linux-${GO_ARCH}.tar.gz \
@@ -143,8 +143,14 @@ RUN cd $PIP_GLOBAL_DIR \
 RUN export GOPATH=/tmp/go \
     && export GOCACHE=/tmp/go-cache \
     && go install github.com/jesseduffield/lazygit@v0.56.0 \
+    && go install github.com/rakyll/gotest@v0.0.6 \
+    && go install github.com/fatih/gomodifytags@v1.17.0 \
+    && go install github.com/josharian/impl@v1.4.0 \
+    && go install github.com/haya14busa/goplay/cmd/goplay@v1.0.0 \
+    && go install github.com/go-delve/delve/cmd/dlv@v1.25.2 \
+    && go install golang.org/x/tools/gopls@v0.20.0 \
     && mkdir -p /home/$USERNAME/go/bin \
-    && mv $GOPATH/bin/lazygit /home/$USERNAME/go/bin/ \
+    && mv $GOPATH/bin/* /home/$USERNAME/go/bin/ \
     && go clean -modcache \
     && rm -rf $GOPATH $GOCACHE
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
