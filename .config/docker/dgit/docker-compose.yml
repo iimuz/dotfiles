@@ -1,5 +1,6 @@
 services:
   dev:
+    image: dgit:latest
     build:
       context: ${DOTFILES_CONFIG_DIR}
       dockerfile: .config/docker/dgit/Dockerfile
