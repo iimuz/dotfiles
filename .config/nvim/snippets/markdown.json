@@ -21,7 +21,7 @@
     "description": "Insert current date and time."
   },
   "front-matter-minimal": {
-    "prefix": "front-matter-short",
+    "prefix": "front-matter-minimal",
     "body": [
       "---",
       "title: ${1:Title}",
@@ -32,7 +32,7 @@
     "description": "minimal front matter."
   },
   "front-matter-date": {
-    "prefix": "front-matter-short",
+    "prefix": "front-matter-date",
     "body": [
       "---",
       "title: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE ${1:Title}",

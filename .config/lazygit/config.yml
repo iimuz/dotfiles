@@ -1,12 +1,17 @@
 # see: <https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md>
 gui:
   nerdFontsVersion: "" # nerd fonts version to use ("2" or "3"); empty means don't show nerd font icons
-  shortTimeFormat: '15:04'
-  timeFormat: '2006-01-02'
+  shortTimeFormat: "15:04"
+  timeFormat: "2006-01-02"
 git:
-  branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline {{branchName}} --'
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  branchLogCmd: "git log --graph --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline {{branchName}} --"
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
   allBranchesLogCmds:
     - git log --graph --all --color=always --abbrev-commit --decorate=short --date=iso --pretty=oneline
+customCommands:
+  - key: "F"
+    command: "git merge --ff-only {{.SelectedLocalBranch.Name}}"
+    context: "localBranches"
+    description: "Fast-forward merge selected branch"

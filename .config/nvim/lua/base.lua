@@ -78,6 +78,19 @@ if vim.fn.has("wsl") == 1 then
 		},
 		cache_enabled = 1,
 	}
+elseif vim.fn.has("linux") == 1 then
+	-- Linux (Docker含む) でOSC 52を使用
+	vim.g.clipboard = {
+		name = "OSC 52",
+		copy = {
+			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+		},
+		paste = {
+			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+		},
+	}
 end
 
 vim.cmd([[ filetype plugin indent on ]])

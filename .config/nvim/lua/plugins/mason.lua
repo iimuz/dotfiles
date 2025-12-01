@@ -28,23 +28,7 @@ return {
 			"williamboman/mason.nvim",
 		},
 		config = function()
-			require("mason-lspconfig").setup({
-				-- よく使うLSPはインストールしておく。
-				-- formatter, linterについては下記のpluginを利用する。
-				-- ただし、インストールしておくpluginをここで指定して、どのファイルタイプに対して適用するかは、plugin側の設定で行う。
-				-- - formatter: stevearc/conform.nvim
-				-- - linter: mfussenegger/nvim-lint
-				ensure_installed = {
-					"bashls", -- Bash LSP
-					"gopls", -- Go lang LSP
-					"lua_ls", -- Lua LSP
-					"marksman", -- Markdown LSP
-					"solidity_ls_nomicfoundation", -- Solidity LSP
-					"pyright", -- Python LSP
-					"rust_analyzer", -- Rust LSP
-					"vtsls", -- Javascript and Typescript LSP
-				},
-			})
+			require("mason-lspconfig").setup({})
 		end,
 	},
 	-- masonでツールを自動インストール
@@ -52,18 +36,34 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "williamboman/mason.nvim" },
 		config = function()
+			-- よく使う LSP, Tool はインストールしておく。
+			-- formatter, linter については下記の plugin を利用する。
+			-- ただし、インストールしておく plugin をここで指定して、どのファイルタイプに対して適用するかは、 plugin 側の設定で行う。
+			-- - formatter: stevearc/conform.nvim
+			-- - linter: mfussenegger/nvim-lint
 			require("mason-tool-installer").setup({
 				ensure_installed = {
+					"bashls", -- Bash LSP
 					"cspell", -- CSpell
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
+					"gopls", -- Go lang LSP
+					"kulala-fmt", -- HTTP formatter and linter
+					"lua_ls", -- Lua LSP
+					"marksman", -- Markdown LSP
+					"prettier", -- Formatter for various file types
+					"pyright", -- Python LSP
 					"ruff", -- Python linter and formatter
+					"rust_analyzer", -- Rust LSP
 					"shfmt", -- Bash formatter
 					"shellcheck", -- Bash linter
 					"solhint", -- Solidity linter
+					"solidity_ls_nomicfoundation", -- Solidity LSP
 					"sqruff", -- SQL linter and formatter
 					"stylua", -- Lua linter and formatter
+					"taplo", -- TOML LSP
 					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
+					"vtsls", -- Javascript and Typescript LSP
 				},
 				auto_update = true,
 				run_on_start = true,

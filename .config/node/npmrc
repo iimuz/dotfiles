@@ -1,4 +1,4 @@
 prefix=${NPM_USER_PREFIX}
 cache=${NPM_USER_CACHE}
 init-module=${NPM_USER_INIT}
-
+ignore-scripts=true

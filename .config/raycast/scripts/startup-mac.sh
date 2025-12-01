@@ -21,6 +21,7 @@ brew bundle --file ../../homebrew/Brewfile-mac cleanup --force
 # ref: <https://qiita.com/bonji/items/183160eab52919aaf93e>
 # brew upgrade --cask --greedy
 mise up
+gh extension upgrade --all
 
 open -a "Scroll Reverser" # マウスによるscrollの逆転
 
@@ -42,4 +43,4 @@ open -a "Microsoft Outlook"
 
 # work tools
 open -a "Alacritty"
-open -a "Visual Studio Code"
+# open -a "Visual Studio Code"

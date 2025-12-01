@@ -1,5 +1,16 @@
 {
-  "preferredEditor": "nvim",
-  "selectedAuthType": "oauth-personal",
-  "theme": "GitHub"
+  "general": {
+    "preferredEditor": "nvim"
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "GitHub"
+  },
+  "tools": {
+    "sandbox": true
+  }
 }

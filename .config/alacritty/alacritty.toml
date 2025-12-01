@@ -1,4 +1,5 @@
 [terminal]
+osc52 = "CopyPaste" # docker container から copy するため
 
 [terminal.shell]
 program = "/bin/zsh"

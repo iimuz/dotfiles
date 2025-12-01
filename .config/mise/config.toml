@@ -5,15 +5,19 @@ cargo-binstall = "latest"
 go = "1"
 java = "openjdk-25"
 lua = "5.1" # neovim luarocksで要求しているバージョンが5.1
-nodejs = "24"
-"npm:@anthropic-ai/claude-code" = "latest"
+node = "22"
+"npm:@aikidosec/safe-chain" = "latest"
+# "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@github/copilot" = "latest"
 "npm:@google/gemini-cli" = "latest"
-"npm:@openai/codex" = "latest"
-"npm:ccusage" = "latest"
+# "npm:@openai/codex" = "latest"
+# "npm:ccusage" = "latest"
 "npm:mcp-hub" = "latest"
+"npm:mcp-remote" = "latest"
 "npm:neovim" = "latest" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "latest"
+"pipx:markitdown" = { version = "latest", all = "" }
+"pipx:markitdown-mcp" = { version = "latest", all = "" }
 "pipx:oraios/serena" = "latest"
 "pipx:pynvim" = "latest" # for neovim
 python = "3.12"

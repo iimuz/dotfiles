@@ -5,13 +5,31 @@
 
 return {
 	"yetone/avante.nvim",
-	cmd = { "AvanteAsk", "AvanteChat", "AvanteEdit", "AvanteFocus", "AvanteToggle" },
-	version = "*", -- always pull the latest release version
+	cmd = {
+		"AvanteAsk",
+		"AvanteChat",
+		"AvanteEdit",
+		"AvanteFocus",
+		"AvanteToggle",
+	},
+	event = "VeryLazy",
+	version = false,
+	---@module 'avante'
+	---@type avante.Config
 	opts = {
+		instructions_file = "AGENTS.md",
 		behaviour = { auto_set_keymaps = false },
 		hints = { enabled = false }, -- virtual textを利用したキーマップ表示をoff
 		windows = {
 			input = { height = 16 },
+		},
+		input = {
+			provider = "snacks",
+			provider_opts = {
+				-- Additional snacks.input options
+				title = "Avante Input",
+				icon = " ",
+			},
 		},
 		-- system_prompt as function ensures LLM always has latest MCP server state
 		-- This is evaluated for every message, even in existing chats
@@ -25,15 +43,10 @@ return {
 				require("mcphub.extensions.avante").mcp_tool(),
 			}
 		end,
-		provider = "copilot_gpt",
+		provider = "copilot",
 		providers = {
-			copilot_gpt = {
-				__inherited_from = "copilot",
+			copilot = {
 				model = "gpt-4.1",
-			},
-			copilot_claude = {
-				__inherited_from = "copilot",
-				model = "claude-sonnet-4",
 			},
 		},
 	},
@@ -41,35 +54,12 @@ return {
 	build = "make",
 	-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
 	dependencies = {
-		"nvim-treesitter/nvim-treesitter",
-		"stevearc/dressing.nvim",
 		"nvim-lua/plenary.nvim",
 		"MunifTanjim/nui.nvim",
 		--- The below dependencies are optional,
-		"echasnovski/mini.pick", -- for file_selector provider mini.pick
-		"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-		"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-		"ibhagwan/fzf-lua", -- for file_selector provider fzf
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+		"folke/snacks.nvim", -- for input provider snacks
 		"zbirenbaum/copilot.lua", -- for providers='copilot'
-		{
-			-- support for image pasting
-			"HakonHarnes/img-clip.nvim",
-			event = "VeryLazy",
-			enabled = false,
-			opts = {
-				-- recommended settings
-				default = {
-					embed_image_as_base64 = false,
-					prompt_for_file_name = false,
-					drag_and_drop = {
-						insert_mode = true,
-					},
-					-- required for Windows users
-					use_absolute_path = true,
-				},
-			},
-		},
 		{
 			-- Make sure to set this up properly if you have lazy=true
 			"MeanderingProgrammer/render-markdown.nvim",

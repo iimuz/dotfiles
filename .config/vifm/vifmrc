@@ -46,6 +46,11 @@ set syscalls
 " I recommend not changing this until you are familiar with vifm.
 " This probably shouldn't be an option.
 set trash
+if has('mac') || has('macunix')
+    set trashdir='~/.Trash'
+elseif has('unix')
+    set trashdir='~/.local/share/vifm/Trash'
+endif
 
 " What should be saved automatically on restarting vifm.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
