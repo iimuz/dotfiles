@@ -2,6 +2,8 @@ FROM public.ecr.aws/lts/ubuntu:24.04_stable
 
 ARG USERNAME=ubuntu
 
+ENV SELFRC="/home/$USERNAME/.selfrc"
+
 # Install tools
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -19,7 +21,6 @@ RUN apt-get update && apt-get install -y \
     vifm \
     wget \
     xz-utils \
-    zsh \
     && rm -rf /var/lib/apt/lists/*
 
 # Set locale
@@ -42,7 +43,7 @@ RUN LUA_VERSION=5.1.5 \
     && rm -rf lua-${LUA_VERSION} lua-${LUA_VERSION}.tar.gz
 
 # Install Node.js
-RUN NODE_VERSION=22.21.0 \
+RUN NODE_VERSION=22.21.1 \
     && ARCH=$(uname -m) \
     && if [ "$ARCH" = "aarch64" ]; then NODE_ARCH="arm64"; else NODE_ARCH="x64"; fi \
     && curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz \
@@ -55,7 +56,7 @@ RUN NODE_VERSION=22.21.0 \
     && npm cache clean --force
 
 # Install Go
-RUN GO_VERSION=1.25.4 \
+RUN GO_VERSION=1.25.5 \
     && ARCH=$(uname -m) \
     && if [ "$ARCH" = "aarch64" ]; then GO_ARCH="arm64"; else GO_ARCH="amd64"; fi \
     && curl -LO https://go.dev/dl/go${GO_VERSION}.linux-${GO_ARCH}.tar.gz \
@@ -102,13 +103,31 @@ RUN VERSION=v4.47.1 \
     && install yq -D -t /usr/local/bin/ \
     && rm -rf $TEMP_WORKDIR
 
-# Change default shell to zsh
-RUN chsh -s /bin/zsh $USERNAME
+# Install zsh
+RUN apt-get update && apt-get install -y curl zsh \
+    && chsh -s /bin/zsh $USERNAME \
+    && rm -rf /var/lib/apt/lists/*
+ENV SHELL=/bin/zsh
+
+RUN FZF_VERSION=0.67.0 \
+    && ARCH=$(uname -m) \
+    && if [ "$ARCH" = "aarch64" ]; then FZF_ARCH="linux_arm64"; else FZF_ARCH="linux_amd64"; fi \
+    && curl -LO https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-${FZF_ARCH}.tar.gz \
+    && tar -xzf fzf-${FZF_VERSION}-${FZF_ARCH}.tar.gz \
+    && mv fzf /usr/local/bin/ \
+    && rm fzf-${FZF_VERSION}-${FZF_ARCH}.tar.gz \
+    && mkdir -p /usr/share/fzf \
+    && curl -fLo /usr/share/fzf/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v${FZF_VERSION}/shell/completion.zsh \
+    && curl -fLo /usr/share/fzf/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v${FZF_VERSION}/shell/key-bindings.zsh \
+    && echo 'source /usr/share/fzf/completion.zsh' >> $SELFRC \
+    && echo 'source /usr/share/fzf/key-bindings.zsh' >> $SELFRC
+
+RUN set -eu \
+    && mkdir /workspace \
+    && chown -R $USERNAME:$USERNAME /home/$USERNAME \
+    && chown -R $USERNAME:$USERNAME /workspace
 
 USER $USERNAME
-
-# Set environment variables for zsh
-ENV SHELL=/bin/zsh
 
 # Rust
 RUN RUST_VERSION=1.91.1 \
@@ -122,7 +141,7 @@ RUN . $HOME/.cargo/env \
     && rm -rf /home/$USERNAME/.cargo/registry/cache \
     && rm -rf /home/$USERNAME/.cargo/git/db
 
-# Install global npm packages for Neovim
+# Install npm packages for Neovim
 # ここでは opt にフォルダを作成するため COPY で実施する
 ENV NPM_GLOBAL_DIR=/opt/npm-global
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/package*.json $NPM_GLOBAL_DIR/
@@ -131,13 +150,8 @@ RUN cd $NPM_GLOBAL_DIR \
     && npm cache clean --force
 ENV PATH="$NPM_GLOBAL_DIR/node_modules/.bin:$PATH"
 ENV NODE_PATH="$NPM_GLOBAL_DIR/node_modules:$NODE_PATH"
-RUN safe-chain setup --include-python
-
-# Install global python packages for Neovim
-ENV PIP_GLOBAL_DIR=/opt/pip-global
-COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/requirements-freeze.txt $PIP_GLOBAL_DIR/
-RUN cd $PIP_GLOBAL_DIR \
-    && pip install --no-cache-dir -r requirements-freeze.txt
+RUN safe-chain setup --include-python \
+    && echo 'source ~/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script' >> $SELFRC
 
 # Install go tools for Neovim
 RUN export GOPATH=/tmp/go \
@@ -155,11 +169,18 @@ RUN export GOPATH=/tmp/go \
     && rm -rf $GOPATH $GOCACHE
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
+# Install python packages for Neovim
+# Add uv path
+ENV PATH="/home/ubuntu/.local/bin/:$PATH"
+RUN cd $PIP_GLOBAL_DIR \
+    && pip install --no-cache-dir uv==0.9.15
+RUN set -eu \
+    && uv tool install pynvim==0.6.0
+
 # Dotfiles
 COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/dotfiles
 RUN SRC=/home/$USERNAME/dotfiles/.config \
     && DST=/home/$USERNAME/.config \
-    && ZSHRC=/home/$USERNAME/.zshrc \
     && mkdir -p $DST \
     && mkdir $DST/git \
     && ln -s $(realpath $SRC/../.gitconfig) /home/$USERNAME/.gitconfig \
@@ -170,15 +191,20 @@ RUN SRC=/home/$USERNAME/dotfiles/.config \
     && mkdir $DST/vifm \
     && ln -s $SRC/vifm/vifmrc $DST/vifm/vifmrc \
     && : "terminal で <Ctrl + h> で backspace となるように設定" \
-    && echo 'stty erase ^H' >> $ZSHRC \
+    && echo 'stty erase ^H' >> $SELFRC \
     && : "snacks.nvim からファイル削除で gio エラーが発生するため" \
-    && echo 'export GIO_USE_TRASH=0' >> $ZSHRC \
-    && echo ". $SRC/rc-settings.sh" >> $ZSHRC
-ENV GIO_USE_TRASH=0
+    && echo 'export GIO_USE_TRASH=0' >> $SELFRC \
+    && echo "source $SRC/rc-settings.sh" >> $SELFRC \
+    && echo "source $SELFRC" >> "/home/$USERNAME/.zshrc"
 
 # Setup Neovim plugins
 RUN nvim --headless "+Lazy! sync" +qa \
     && nvim --headless "+MasonToolsInstallSync" +qa \
     && nvim --headless "+TSUpdateSync" +qa
 
+COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/entrypoint.sh /home/$USERNAME/entrypoint.sh
+RUN chmod +x /home/$USERNAME/entrypoint.sh
+ENTRYPOINT ["/home/ubuntu/entrypoint.sh"]
+
 WORKDIR /workspace
+CMD ["nvim"]
