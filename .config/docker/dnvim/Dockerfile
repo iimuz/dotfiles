@@ -21,7 +21,14 @@ RUN apt-get update && apt-get install -y \
     vifm \
     wget \
     xz-utils \
+    passwd \
     && rm -rf /var/lib/apt/lists/*
+
+ARG UID=1000
+ARG GID=1000
+RUN groupmod -g $GID $USERNAME \
+    && usermod -u $UID -g $GID $USERNAME \
+    && chown -R $UID:$GID /home/$USERNAME
 
 # Set locale
 RUN apt-get update && apt-get install -y \

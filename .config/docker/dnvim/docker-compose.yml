@@ -4,6 +4,9 @@ services:
     build:
       context: ${DOTFILES_CONFIG_DIR}
       dockerfile: .config/docker/dnvim/Dockerfile
+      args:
+        - UID=${USER_UID:-1000}
+        - GID=${USER_GID:-1000}
     volumes:
       - .:/workspace:cached
       - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
