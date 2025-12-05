@@ -8,6 +8,7 @@ dnvim() {
   local -r LOCAL_DOTFILES_CONFIG_DIR=$(realpath "$_DOTFILES_CONFIG_DIR/..")
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
   local -r PROJECT_NAME="dnvim"
+  local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
 
   # docker composeのベースコマンド
   local -r BASE_CMD=(
@@ -35,11 +36,11 @@ dnvim() {
   exec)
     shift
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run --rm -it dev "$@"
+      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
     ;;
   shell)
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run --rm -it dev zsh
+      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev zsh
     ;;
   --help | -h | help)
     cat <<EOF
@@ -65,7 +66,7 @@ EOF
 
   *)
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run --rm -it dev nvim "$@"
+      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
     ;;
   esac
 }
