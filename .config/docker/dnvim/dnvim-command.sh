@@ -9,6 +9,8 @@ dnvim() {
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
   local -r PROJECT_NAME="dnvim"
   local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
+  local -r LOCAL_USER_UID=$(id -u)
+  local -r LOCAL_USER_GID=$(id -g)
 
   # docker composeのベースコマンド
   local -r BASE_CMD=(
@@ -22,24 +24,29 @@ dnvim() {
   build)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
       DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+        USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
         docker compose -f "$COMPOSE_FILE" build)
     ;;
   rebuild)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
       DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+        USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
         docker compose -f "$COMPOSE_FILE" build --no-cache)
     ;;
   logs)
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+      USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
       "${BASE_CMD[@]}" logs -f
     ;;
   exec)
     shift
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+      USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
       "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
     ;;
   shell)
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+      USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
       "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev zsh
     ;;
   --help | -h | help)
@@ -66,6 +73,7 @@ EOF
 
   *)
     DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
+      USER_UID="$LOCAL_USER_UID" USER_GID="$LOCAL_USER_GID" \
       "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
     ;;
   esac
