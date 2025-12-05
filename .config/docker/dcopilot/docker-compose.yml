@@ -1,0 +1,13 @@
+services:
+  dev:
+    image: dcopilot:latest
+    build:
+      context: ${DOTFILES_CONFIG_DIR}
+      dockerfile: .config/docker/dcopilot/Dockerfile
+    volumes:
+      - .:/workspace
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-""}
+    working_dir: /workspace
+    tty: true
+    stdin_open: true

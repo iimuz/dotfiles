@@ -32,6 +32,11 @@ doc/*.local.*
 .mise.local
 .mise.local.toml
 mise.local.toml
+mise-tasks
+mise-tasks/
+
+# === Neovim
+.lazy.lua
 
 # === Taskfile
 Taskfile.dist.yml
