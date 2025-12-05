@@ -23,13 +23,10 @@
         "get_symbols_overview",
         "insert_after_symbol",
         "insert_before_symbol",
-        "list_dir",
         "list_memories",
         "onboarding",
         "read_memory",
-        "replace_regex",
         "replace_symbol_body",
-        "search_for_pattern",
         "write_memory"
       ],
       "type": "local",
