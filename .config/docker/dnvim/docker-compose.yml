@@ -11,6 +11,7 @@ services:
       - .:/workspace:cached
       - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
       - $DOTFILES_CONFIG_DIR:/home/ubuntu/dotfiles:ro
+      - $DOTFILES_CONFIG_DIR/.config/nvim:/home/ubuntu/dotfiles/.config/nvim
     environment:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-""}
     working_dir: /workspace
