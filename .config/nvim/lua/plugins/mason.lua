@@ -44,6 +44,7 @@ return {
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					"bashls", -- Bash LSP
+					"copilot-language-server", -- GitHub Copilot LSP
 					"cspell", -- CSpell
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
