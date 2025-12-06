@@ -15,12 +15,17 @@ dnvim() {
     USER_UID=$(id -u)
     USER_GID=$(id -g)
   fi
+  readonly USER_UID
+  readonly USER_GID
 
   # docker composeのベースコマンド
-  local -r BASE_CMD=(
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR"
-    USER_UID="$USER_UID"
-    USER_GID="$USER_GID"
+  local -ar ENV_VARS=(
+    "DOTFILES_CONFIG_DIR=$LOCAL_DOTFILES_CONFIG_DIR"
+    "USER_UID=$USER_UID"
+    "USER_GID=$USER_GID"
+  )
+  local -ar BASE_CMD=(
+    env "${ENV_VARS[@]}"
     docker compose
     -f "$COMPOSE_FILE"
     --project-name "$PROJECT_NAME"
