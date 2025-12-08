@@ -11,12 +11,25 @@ dcopilot() {
   local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
 
   # docker composeのベースコマンド
+  local -a ENV_VARS=(
+    "DOTFILES_CONFIG_DIR=$LOCAL_DOTFILES_CONFIG_DIR"
+  )
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    env_vars+=(
+      "USER_UID=$(id -u)"
+      "USER_GID=$(id -g)"
+    )
+  fi
+  readonly ENV_VARS
+
   local -r BASE_CMD=(
+    env "${ENV_VARS[@]}"
     docker compose
     -f "$COMPOSE_FILE"
     --project-name "$PROJECT_NAME"
     --project-directory .
   )
+
   local -r DENY_TOOLS=(
     --deny-tool='shell(git checkout:*)'
     --deny-tool='shell(git push:*)'
@@ -33,26 +46,21 @@ dcopilot() {
   case "${1:-}" in
   build)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dcopilot" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        docker compose -f "$COMPOSE_FILE" build)
+      "${BASE_CMD[@]}" build)
     ;;
   rebuild)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dcopilot" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        docker compose -f "$COMPOSE_FILE" build --no-cache)
+      "${BASE_CMD[@]}" build --no-cache)
     ;;
   logs)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" logs -f
+    "${BASE_CMD[@]}" logs -f
     ;;
   exec)
     shift
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
     ;;
   shell)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev zsh
     ;;
   --help | -h | help)
     cat <<EOF
@@ -74,8 +82,7 @@ Examples:
 EOF
     ;;
   *)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev copilot "${DENY_TOOLS[@]}" "$@"
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev copilot "${DENY_TOOLS[@]}" "$@"
     ;;
   esac
 }

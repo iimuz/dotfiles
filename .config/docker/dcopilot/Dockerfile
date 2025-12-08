@@ -2,17 +2,29 @@ FROM public.ecr.aws/lts/ubuntu:24.04_stable
 
 ARG USERNAME=ubuntu
 
+ENV SELFRC="/home/$USERNAME/.selfrc"
+
 # Install tools
 RUN apt-get update && apt-get install -y \
     build-essential \
     ca-certificates \
     curl \
+    fd-find \
     git \
+    git-delta \
     gzip \
+    passwd \
+    ripgrep \
     tar \
     wget \
     xz-utils \
     && rm -rf /var/lib/apt/lists/*
+
+ARG UID=1000
+ARG GID=1000
+RUN groupmod -g $GID $USERNAME \
+    && usermod -u $UID -g $GID $USERNAME \
+    && chown -R $UID:$GID /home/$USERNAME
 
 # Set locale
 RUN apt-get update && apt-get install -y \
@@ -23,82 +35,81 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 
-# Install Node.js
-RUN NODE_VERSION=22.21.0 \
-    && ARCH=$(uname -m) \
-    && if [ "$ARCH" = "aarch64" ]; then NODE_ARCH="arm64"; else NODE_ARCH="x64"; fi \
-    && curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz \
-    && tar -xJf node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz \
-    && mv node-v${NODE_VERSION}-linux-${NODE_ARCH} /opt/node \
-    && ln -s /opt/node/bin/node /usr/bin/node \
-    && ln -s /opt/node/bin/npm /usr/bin/npm \
-    && ln -s /opt/node/bin/npx /usr/bin/npx \
-    && rm node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz \
-    && npm cache clean --force
-
-# Install Python
-# patch version を指定してインストールはできない
-RUN PYTHON_VERSION=3.11 \
-    && apt-get update && apt-get install -y \
-    software-properties-common \
-    && add-apt-repository ppa:deadsnakes/ppa -y \
-    && apt-get update \
-    && apt-get install -y \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-dev \
-        python${PYTHON_VERSION}-venv \
-        python3-pip \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 \
-    && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && python3 -m pip cache purge
-
-# Install GitHub CLI
-RUN set -eu \
-    && (type -p wget >/dev/null || (apt update && apt install wget -y)) \
-    && mkdir -p -m 755 /etc/apt/keyrings \
-    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-    && cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-    && mkdir -p -m 755 /etc/apt/sources.list.d \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && apt update \
-    && apt install gh -y \
+# Install zsh
+RUN apt-get update && apt-get install -y curl zsh \
+    && chsh -s /bin/zsh $USERNAME \
     && rm -rf /var/lib/apt/lists/*
+ENV SHELL=/bin/zsh
+
+# Install Mise
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CONFIG_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV PATH="/mise/shims:$PATH"
+RUN set -eu \
+    && MISE_VERSION=v2025.11.11 \
+    && curl https://mise.jdx.dev/install.sh | sh \
+    && mkdir "$MISE_DATA_DIR" \
+    && chown -R $USERNAME:$USERNAME "$MISE_DATA_DIR"
 
 RUN set -eu \
-    && mkdir -p /workspace \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME \
+    && mkdir /workspace \
     && chown -R $USERNAME:$USERNAME /workspace
 
 USER $USERNAME
 
-# Install global npm packages
-# ここでは opt にフォルダを作成するため COPY で実施する
-ENV NPM_GLOBAL_DIR=/opt/npm-global
-COPY --chown=$USERNAME:$USERNAME ./.config/docker/dcopilot/package*.json $NPM_GLOBAL_DIR/
-RUN cd $NPM_GLOBAL_DIR \
-    && npm ci --ignore-scripts \
-    && npm cache clean --force
-ENV PATH="$NPM_GLOBAL_DIR/node_modules/.bin:$PATH"
-ENV NODE_PATH="$NPM_GLOBAL_DIR/node_modules:$NODE_PATH"
-RUN safe-chain setup --include-python
+# Add path
+ENV PATH="$HOME/.local/bin/:$PATH"
+ENV PATH="$HOME/go/bin:$PATH"
 
-# Install global python packages for Neovim
-ENV PIP_GLOBAL_DIR=/opt/pip-global
-COPY --chown=$USERNAME:$USERNAME ./.config/docker/dcopilot/requirements-freeze.txt $PIP_GLOBAL_DIR/
-RUN cd $PIP_GLOBAL_DIR \
-    && pip install --no-cache-dir -r requirements-freeze.txt
+RUN set -eu \
+  && mise settings set experimental true \
+  && mise settings set pipx.uvx true \
+  && mise use -g go@1.25.5 \
+  && mise use -g rust@stable \
+  && mise use -g starship@1.24.1 \
+  && mise use -g node@22.21.1 \
+  && mise use -g npm:@aikidosec/safe-chain@1.1.10 \
+  && mise use -g python@3.13.11 \
+  && mise use -g uv@0.9.15
+
+# Install copilot tools
+RUN set -eu \
+  && mise use -g gh@2.83.1 \
+  && mise use -g npm:@github/copilot@0.0.367 \
+  && mise use -g pipx:oraios/serena@v0.1.4 \
+  && mise use -g pipx:markitdown-mcp@0.0.1a4 \
+  && mise use -g npm:mcp-remote@0.1.31
+
+# go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
+RUN set -eu \
+    && go install github.com/rakyll/gotest@v0.0.6 \
+    && go install github.com/fatih/gomodifytags@v1.17.0 \
+    && go install github.com/josharian/impl@v1.4.0 \
+    && go install github.com/haya14busa/goplay/cmd/goplay@v1.0.0 \
+    && go install github.com/go-delve/delve/cmd/dlv@v1.25.2 \
+    && go install golang.org/x/tools/gopls@v0.20.0
+ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
 # Dotfiles
 COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/dotfiles
+COPY --chown=$USERNAME:$USERNAME ./.config/docker/dcopilot/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
+COPY --chown=$USERNAME:$USERNAME ./.config/bash /home/$USERNAME/dotfiles/.config/bash
+COPY --chown=$USERNAME:$USERNAME ./.config/copilot /home/$USERNAME/dotfiles/.config/copilot
+COPY --chown=$USERNAME:$USERNAME ./.config/git /home/$USERNAME/dotfiles/.config/git
+COPY --chown=$USERNAME:$USERNAME ./.config/go /home/$USERNAME/dotfiles/.config/go
+COPY --chown=$USERNAME:$USERNAME ./.config/mise/mise-settings.sh /home/$USERNAME/dotfiles/.config/mise/mise-settings.sh
+COPY --chown=$USERNAME:$USERNAME ./.config/node /home/$USERNAME/dotfiles/.config/node
+COPY --chown=$USERNAME:$USERNAME ./.config/python /home/$USERNAME/dotfiles/.config/python
+COPY --chown=$USERNAME:$USERNAME ./.config/starship /home/$USERNAME/dotfiles/.config/starship
+COPY --chown=$USERNAME:$USERNAME ./.gitconfig /home/$USERNAME/.gitconfig
 RUN set -eu \
     && SRC=/home/$USERNAME/dotfiles/.config \
     && DST=/home/$USERNAME/.config \
-    && SELFRC=/home/$USERNAME/.selfrc \
     && mkdir -p $DST \
     && mkdir $DST/git \
-    && ln -s $(realpath $SRC/../.gitconfig) /home/$USERNAME/.gitconfig \
     && ln -s $SRC/git/ignore $DST/git/ignore \
     && mkdir $DST/.copilot \
     && ln -s $(realpath $SRC/copilot/agents) "$DST/.copilot/agents" \
@@ -107,11 +118,11 @@ RUN set -eu \
     && : "terminal で <Ctrl + h> で backspace となるように設定" \
     && echo 'stty erase ^H' >> $SELFRC \
     && echo ". $SRC/rc-settings.sh" >> $SELFRC \
-    && echo ". $SELFRC" >> "/home/$USERNAME/.bashrc"
+    && echo ". $SELFRC" >> "/home/$USERNAME/.zshrc"
 
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dcopilot/entrypoint.sh /home/$USERNAME/entrypoint.sh
 RUN chmod +x /home/$USERNAME/entrypoint.sh
 ENTRYPOINT ["/home/ubuntu/entrypoint.sh"]
 
 WORKDIR /workspace
-CMD ["bash"]
+CMD ["copilot"]
