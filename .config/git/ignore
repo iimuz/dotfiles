@@ -50,3 +50,7 @@ tmp_*/
 
 # === tools
 .tools.local
+
+# === VSCode
+.devcontainer
+.devcontainer/
