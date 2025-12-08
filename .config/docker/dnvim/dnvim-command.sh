@@ -9,23 +9,19 @@ dnvim() {
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
   local -r PROJECT_NAME="dnvim"
   local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
-  local USER_UID=1000
-  local USER_GID=1000
-  if [[ "$(uname -s)" == "Linux" ]]; then
-    USER_UID=$(id -u)
-    USER_GID=$(id -g)
-  fi
-  readonly USER_UID
-  readonly USER_GID
 
   # docker composeのベースコマンド
-  local -ar ENV_VARS=(
+  local -a env_vars=(
     "DOTFILES_CONFIG_DIR=$LOCAL_DOTFILES_CONFIG_DIR"
-    "USER_UID=$USER_UID"
-    "USER_GID=$USER_GID"
   )
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    env_vars+=(
+      "USER_UID=$(id -u)"
+      "USER_GID=$(id -g)"
+    )
+  fi
   local -ar BASE_CMD=(
-    env "${ENV_VARS[@]}"
+    env "${env_vars[@]}"
     docker compose
     -f "$COMPOSE_FILE"
     --project-name "$PROJECT_NAME"
@@ -35,15 +31,11 @@ dnvim() {
   case "${1:-}" in
   build)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        USER_UID="$USER_UID" USER_GID="$USER_GID" \
-        docker compose -f "$COMPOSE_FILE" build)
+      env "${env_vars[@]}" docker compose -f "$COMPOSE_FILE" build)
     ;;
   rebuild)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        USER_UID="$USER_UID" USER_GID="$USER_GID" \
-        docker compose -f "$COMPOSE_FILE" build --no-cache)
+      env "${env_vars[@]}" docker compose -f "$COMPOSE_FILE" build --no-cache)
     ;;
   logs)
     "${BASE_CMD[@]}" logs -f
@@ -78,7 +70,7 @@ EOF
     ;;
 
   *)
-    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
+    "${BASE_CMD[@]}" run -e TERM="$TERM" -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
     ;;
   esac
 }
