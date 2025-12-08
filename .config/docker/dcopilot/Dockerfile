@@ -90,7 +90,8 @@ RUN set -eu \
     && go install github.com/josharian/impl@v1.4.0 \
     && go install github.com/haya14busa/goplay/cmd/goplay@v1.0.0 \
     && go install github.com/go-delve/delve/cmd/dlv@v1.25.2 \
-    && go install golang.org/x/tools/gopls@v0.20.0
+    && go install golang.org/x/tools/gopls@v0.20.0 \
+    && go install gotest.tools/gotestsum@v1.13.0
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
 # Dotfiles

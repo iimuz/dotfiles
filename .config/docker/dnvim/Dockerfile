@@ -73,11 +73,17 @@ RUN set -eu \
   && mise settings set experimental true \
   && mise settings set pipx.uvx true \
   && mise use -g awscli@2.31.39 \
-  && mise use -g fzf@0.67.0 \
   && mise use -g gh@2.83.1 \
   && mise use -g lazygit@0.57.0 \
   && mise use -g starship@1.24.1 \
   && mise use -g yq@4.49.2
+
+ENV FZF_CONFIG=/home/$USERNAME/fzf
+RUN set -eu \
+  && mise use -g fzf@0.67.0 \
+  && mkdir $FZF_CONFIG \
+  && curl -fLo $FZF_CONFIG/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/completion.zsh \
+  && curl -fLo $FZF_CONFIG/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/key-bindings.zsh
 
 # Install Lua
 # neovim luarocksで要求しているバージョンが5.1
@@ -104,7 +110,8 @@ RUN set -eu \
     && go install github.com/josharian/impl@v1.4.0 \
     && go install github.com/haya14busa/goplay/cmd/goplay@v1.0.0 \
     && go install github.com/go-delve/delve/cmd/dlv@v1.25.2 \
-    && go install golang.org/x/tools/gopls@v0.20.0
+    && go install golang.org/x/tools/gopls@v0.20.0 \
+    && go install gotest.tools/gotestsum@v1.13.0
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
 # Install rust
