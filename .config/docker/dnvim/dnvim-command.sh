@@ -20,6 +20,7 @@ dnvim() {
       "USER_GID=$(id -g)"
     )
   fi
+
   local -ar BASE_CMD=(
     env "${env_vars[@]}"
     docker compose

@@ -31,7 +31,6 @@ services:
     stdin_open: true
 
 volumes:
-  # cache
   cache-go-build:
   cache-go-pkg:
   cache-gopls:

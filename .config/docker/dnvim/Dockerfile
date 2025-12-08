@@ -53,14 +53,14 @@ ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
 ENV PATH="/mise/shims:$PATH"
 RUN set -eu \
     && MISE_VERSION=v2025.11.11 \
-    && curl https://mise.jdx.dev/install.sh | sh
+    && curl https://mise.jdx.dev/install.sh | sh \
+    && mkdir "$MISE_DATA_DIR" \
+    && chown -R $USERNAME:$USERNAME "$MISE_DATA_DIR"
 
 RUN set -eu \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME \
     && mkdir /workspace \
-    && chown -R $USERNAME:$USERNAME /workspace \
-    && mkdir "$MISE_DATA_DIR" \
-    && chown -R $USERNAME:$USERNAME "$MISE_DATA_DIR"
+    && chown -R $USERNAME:$USERNAME /workspace
 
 USER $USERNAME
 
@@ -68,30 +68,36 @@ USER $USERNAME
 ENV PATH="$HOME/.local/bin/:$PATH"
 ENV PATH="$HOME/go/bin:$PATH"
 
+# Install tools
 RUN set -eu \
   && mise settings set experimental true \
   && mise settings set pipx.uvx true \
   && mise use -g awscli@2.31.39 \
   && mise use -g fzf@0.67.0 \
   && mise use -g gh@2.83.1 \
-  && mise use -g go@1.25.5 \
   && mise use -g lazygit@0.57.0 \
-  && : "neovim luarocksで要求しているバージョンが5.1" \
-  && mise use -g lua@5.1.5 \
-  && mise use -g neovim@0.11.5 \
-  && mise use -g rust@stable \
   && mise use -g starship@1.24.1 \
-  && mise use -g yq@4.49.2 \
-  && mise use -g node@22.21.1\
-  && mise use -g npm:@aikidosec/safe-chain@1.1.10 \
-  && mise use -g npm:mcp-hub@4.2.1 \
-  && mise use -g npm:neovim@5.4.0 \
-  && mise use -g python@3.13.11 \
-  && mise use -g uv@0.9.15 \
-  && mise use -g pipx:pynvim@0.6.0
+  && mise use -g yq@4.49.2
 
+# Install Lua
+# neovim luarocksで要求しているバージョンが5.1
+RUN set -eu \
+  && mise use -g lua@5.1.5
+
+# Install node.js
+RUN set -eu \
+  && mise use -g node@22.21.1 \
+  && mise use -g npm:@aikidosec/safe-chain@1.1.10
+
+# Install python
+RUN set -eu \
+  && mise use -g python@3.13.11 \
+  && mise use -g uv@0.9.15
+
+# Install go language
 # go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
 RUN set -eu \
+    && mise use -g go@1.25.5 \
     && go install github.com/jesseduffield/lazygit@v0.56.0 \
     && go install github.com/rakyll/gotest@v0.0.6 \
     && go install github.com/fatih/gomodifytags@v1.17.0 \
@@ -101,8 +107,20 @@ RUN set -eu \
     && go install golang.org/x/tools/gopls@v0.20.0
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
+# Install rust
+# バージョン指定で入れるとエラーする
+RUN set -eu \
+  && mise use -g rust@stable
+
+# Install neovim
+RUN set -eu \
+  && mise use -g neovim@0.11.5 \
+  && mise use -g npm:mcp-hub@4.2.1 \
+  && mise use -g npm:neovim@5.4.0 \
+  && mise use -g pipx:pynvim@0.6.0
+
 # Dotfiles
-COPY --chown=$USERNAME:$USERNAME ./.config/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
+COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
 COPY --chown=$USERNAME:$USERNAME ./.config/bash /home/$USERNAME/dotfiles/.config/bash
 COPY --chown=$USERNAME:$USERNAME ./.config/fzf /home/$USERNAME/dotfiles/.config/fzf
 COPY --chown=$USERNAME:$USERNAME ./.config/git /home/$USERNAME/dotfiles/.config/git
