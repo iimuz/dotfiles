@@ -33,11 +33,7 @@ elif [ "$(uname)" = "Linux" ]; then  # Linux
 fi
 
 # === current directory
-if [[ "$SHELL" == *bash ]]; then
-  current_directory="$(cd $(dirname $BASH_SOURCE); pwd)"
-elif [[ "$SHELL" == *zsh ]]; then
-  current_directory="$(cd $(dirname ${(%):-%N}); pwd)"
-fi
+current_directory="$(cd "$(dirname "${BASH_SOURCE[0]:-${(%):-%N}}")" && pwd)"
 
 # === Brewfileの場所を設定
 if [ "$(uname)" = "Darwin" ]; then  # MacOS
