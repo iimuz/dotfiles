@@ -104,6 +104,7 @@ RUN set -eu \
 # go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
 RUN set -eu \
     && mise use -g go@1.25.5 \
+    && mise use -g golangci-lint@2.7.2 \
     && go install github.com/jesseduffield/lazygit@v0.56.0 \
     && go install github.com/rakyll/gotest@v0.0.6 \
     && go install github.com/fatih/gomodifytags@v1.17.0 \

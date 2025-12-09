@@ -86,7 +86,6 @@ ENV PATH="$HOME/go/bin:$PATH"
 RUN set -eu \
   && mise settings set experimental true \
   && mise settings set pipx.uvx true \
-  && mise use -g go@1.25.5 \
   && mise use -g rust@stable \
   && mise use -g starship@1.24.1 \
   && mise use -g node@22.21.1 \
@@ -101,8 +100,11 @@ RUN set -eu \
   && mise use -g pipx:markitdown-mcp@0.0.1a4 \
   && mise use -g npm:mcp-remote@0.1.31
 
+# Install go and tools
 # go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
 RUN set -eu \
+    && mise use -g go@1.25.5 \
+    && mise use -g golangci-lint@2.7.2 \
     && go install github.com/rakyll/gotest@v0.0.6 \
     && go install github.com/fatih/gomodifytags@v1.17.0 \
     && go install github.com/josharian/impl@v1.4.0 \
