@@ -5,7 +5,8 @@ ARG USERNAME=ubuntu
 ENV SELFRC="/home/$USERNAME/.selfrc"
 
 # Install tools
-RUN apt-get update && apt-get install -y \
+RUN set -eu \
+    && apt-get update && apt-get install -y \
     build-essential \
     ca-certificates \
     curl \
@@ -22,12 +23,14 @@ RUN apt-get update && apt-get install -y \
 
 ARG UID=1000
 ARG GID=1000
-RUN groupmod -g $GID $USERNAME \
+RUN set -eu \
+    && groupmod -g $GID $USERNAME \
     && usermod -u $UID -g $GID $USERNAME \
     && chown -R $UID:$GID /home/$USERNAME
 
 # Set locale
-RUN apt-get update && apt-get install -y \
+RUN set -eu \
+    && apt-get update && apt-get install -y \
     locales \
     && locale-gen en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
@@ -36,10 +39,26 @@ ENV LC_ALL=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 
 # Install zsh
-RUN apt-get update && apt-get install -y curl zsh \
+RUN set -eu \
+    && apt-get update && apt-get install -y curl zsh \
     && chsh -s /bin/zsh $USERNAME \
     && rm -rf /var/lib/apt/lists/*
 ENV SHELL=/bin/zsh
+
+# Install gh command
+# gh command で git 認証しているため、 mise でインストールすると動作失敗するケースがあったのでネイティブでインストール
+RUN set -eu \
+    && apt-get update \
+    && apt-get install -y wget \
+    && mkdir -p -m 755 /etc/apt/keyrings \
+    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    && cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && mkdir -p -m 755 /etc/apt/sources.list.d \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update \
+    && apt-get install gh -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Mise
 ENV MISE_DATA_DIR="/mise"
@@ -77,7 +96,6 @@ RUN set -eu \
 
 # Install copilot tools
 RUN set -eu \
-  && mise use -g gh@2.83.1 \
   && mise use -g npm:@github/copilot@0.0.367 \
   && mise use -g pipx:oraios/serena@v0.1.4 \
   && mise use -g pipx:markitdown-mcp@0.0.1a4 \
@@ -95,7 +113,6 @@ RUN set -eu \
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
 # Dotfiles
-COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/dotfiles
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dcopilot/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
 COPY --chown=$USERNAME:$USERNAME ./.config/bash /home/$USERNAME/dotfiles/.config/bash
 COPY --chown=$USERNAME:$USERNAME ./.config/copilot /home/$USERNAME/dotfiles/.config/copilot

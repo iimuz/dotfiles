@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # スクリプトパスの特定
-readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-${(%):-%N}}")" && pwd)"
+readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
 
 # shell設定
 . "$_DOTFILES_CONFIG_DIR/bash/settings.sh"
