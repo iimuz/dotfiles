@@ -45,6 +45,21 @@ RUN apt-get update && apt-get install -y curl zsh \
     && rm -rf /var/lib/apt/lists/*
 ENV SHELL=/bin/zsh
 
+# Install gh command
+# gh command で git 認証しているため、 mise でインストールすると動作失敗するケースがあったのでネイティブでインストール
+RUN set -eu \
+    && apt-get update \
+    && apt-get install -y wget \
+    && mkdir -p -m 755 /etc/apt/keyrings \
+    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    && cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && mkdir -p -m 755 /etc/apt/sources.list.d \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update \
+    && apt-get install gh -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Mise
 ENV MISE_DATA_DIR="/mise"
 ENV MISE_CONFIG_DIR="/mise"
@@ -73,7 +88,6 @@ RUN set -eu \
   && mise settings set experimental true \
   && mise settings set pipx.uvx true \
   && mise use -g awscli@2.31.39 \
-  && mise use -g gh@2.83.1 \
   && mise use -g lazygit@0.57.0 \
   && mise use -g starship@1.24.1 \
   && mise use -g yq@4.49.2
@@ -84,6 +98,11 @@ RUN set -eu \
   && mkdir $FZF_CONFIG \
   && curl -fLo $FZF_CONFIG/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/completion.zsh \
   && curl -fLo $FZF_CONFIG/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/key-bindings.zsh
+
+# Install K8s
+RUN set -eu \
+  && mise use -g kind@0.30.0 \
+  && mise use -g kubectl@1.34.3
 
 # Install Lua
 # neovim luarocksで要求しているバージョンが5.1
@@ -115,10 +134,14 @@ RUN set -eu \
     && go install gotest.tools/gotestsum@v1.13.0
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
-# Install rust
-# バージョン指定で入れるとエラーする
+# Install shell
 RUN set -eu \
-  && mise use -g rust@stable
+  && mise use -g shellcheck@0.11.0 \
+  && mise use -g shfmt@3.12.0
+
+# Install rust
+RUN set -eu \
+  && mise use -g rust@1.91.1
 
 # Install neovim
 RUN set -eu \

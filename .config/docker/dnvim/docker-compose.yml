@@ -13,6 +13,7 @@ services:
       - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
       # config
       - $DOTFILES_CONFIG_DIR:/home/ubuntu/dotfiles:ro
+      - $DOTFILES_CONFIG_DIR/.config/nvim/lazy-lock.json:/home/ubuntu/dotfiles/.config/nvim/lazy-lock.json
       # cache
       - cache-go-build:/home/ubuntu/.cache/go-build
       - cache-gopls:/home/ubuntu/.cache/gopls
