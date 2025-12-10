@@ -99,26 +99,6 @@ RUN set -eu \
   && curl -fLo $FZF_CONFIG/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/completion.zsh \
   && curl -fLo $FZF_CONFIG/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/key-bindings.zsh
 
-# Install K8s
-RUN set -eu \
-  && mise use -g kind@0.30.0 \
-  && mise use -g kubectl@1.34.3
-
-# Install Lua
-# neovim luarocksで要求しているバージョンが5.1
-RUN set -eu \
-  && mise use -g lua@5.1.5
-
-# Install node.js
-RUN set -eu \
-  && mise use -g node@22.21.1 \
-  && mise use -g npm:@aikidosec/safe-chain@1.1.10
-
-# Install python
-RUN set -eu \
-  && mise use -g python@3.13.11 \
-  && mise use -g uv@0.9.15
-
 # Install go language
 # go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
 RUN set -eu \
@@ -134,14 +114,36 @@ RUN set -eu \
     && go install gotest.tools/gotestsum@v1.13.0
 ENV PATH="/home/$USERNAME/go/bin:$PATH"
 
-# Install shell
+# Install lua
+# neovim luarocksで要求しているバージョンが5.1
 RUN set -eu \
-  && mise use -g shellcheck@0.11.0 \
-  && mise use -g shfmt@3.12.0
+  && mise use -g lua@5.1.5
+
+# Install node.js
+RUN set -eu \
+  && mise use -g node@22.21.1 \
+  && mise use -g npm:@aikidosec/safe-chain@1.1.10
+
+# Install python
+RUN set -eu \
+  && mise use -g python@3.13.11 \
+  && mise use -g uv@0.9.15
 
 # Install rust
 RUN set -eu \
   && mise use -g rust@1.91.1
+
+# Install copilot tools
+RUN set -eu \
+  && mise use -g npm:@github/copilot@0.0.367 \
+  && mise use -g pipx:oraios/serena@v0.1.4 \
+  && mise use -g pipx:markitdown-mcp@0.0.1a4 \
+  && mise use -g npm:mcp-remote@0.1.31
+
+# Install k8s
+RUN set -eu \
+  && mise use -g kind@0.30.0 \
+  && mise use -g kubectl@1.34.3
 
 # Install neovim
 RUN set -eu \
@@ -150,9 +152,15 @@ RUN set -eu \
   && mise use -g npm:neovim@5.4.0 \
   && mise use -g pipx:pynvim@0.6.0
 
+# Install shell
+RUN set -eu \
+  && mise use -g shellcheck@0.11.0 \
+  && mise use -g shfmt@3.12.0
+
 # Dotfiles
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
 COPY --chown=$USERNAME:$USERNAME ./.config/bash /home/$USERNAME/dotfiles/.config/bash
+COPY --chown=$USERNAME:$USERNAME ./.config/copilot /home/$USERNAME/dotfiles/.config/copilot
 COPY --chown=$USERNAME:$USERNAME ./.config/fzf /home/$USERNAME/dotfiles/.config/fzf
 COPY --chown=$USERNAME:$USERNAME ./.config/git /home/$USERNAME/dotfiles/.config/git
 COPY --chown=$USERNAME:$USERNAME ./.config/go /home/$USERNAME/dotfiles/.config/go
@@ -170,6 +178,10 @@ RUN set -eu \
     && mkdir -p "$DST" \
     && mkdir "$DST/git" \
     && ln -s $SRC/git/ignore $DST/git/ignore \
+    && mkdir $DST/.copilot \
+    && ln -s $(realpath $SRC/copilot/agents) "$DST/.copilot/agents" \
+    && ln -s $(realpath $SRC/copilot/config.json) "$DST/.copilot/config.json" \
+    && ln -s $(realpath $SRC/copilot/mcp-config.json) "$DST/.copilot/mcp-config.json" \
     && mkdir $DST/lazygit \
     && ln -s $SRC/lazygit/config.yml $DST/lazygit/config.yml \
     && ln -s $SRC/nvim/ $DST/nvim \

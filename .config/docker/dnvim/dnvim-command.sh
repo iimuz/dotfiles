@@ -4,6 +4,23 @@
 
 if ! type docker >/dev/null 2>&1; then return 0; fi
 
+dcopilot() {
+  local -r DENY_TOOLS=(
+    --deny-tool='shell(git checkout:*)'
+    --deny-tool='shell(git push:*)'
+    --deny-tool='shell(git rebase:*)'
+    --deny-tool='shell(git reset:*)'
+    --deny-tool='shell(git switch:*)'
+    --deny-tool='shell(npm remove:*)'
+    --deny-tool='shell(npm uninstall:*)'
+    --deny-tool='shell(rm -f:*)'
+    --deny-tool='shell(rm -rf:*)'
+    --deny-tool='shell(sudo:*)'
+  )
+
+  dnvim exec copilot "${DENY_TOOLS[@]}" "$@"
+}
+
 dnvim() {
   local -r LOCAL_DOTFILES_CONFIG_DIR=$(realpath "$_DOTFILES_CONFIG_DIR/..")
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
@@ -71,7 +88,7 @@ EOF
     ;;
 
   *)
-    "${BASE_CMD[@]}" run -e TERM="$TERM" -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
     ;;
   esac
 }

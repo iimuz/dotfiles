@@ -23,5 +23,8 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 . "$_DOTFILES_CONFIG_DIR/node/npm.sh"
 . "$_DOTFILES_CONFIG_DIR/python/pipx-settings.sh"
 
+# copilot を mise でインストールしているので mise より後ろに設定が必要
+. "$_DOTFILES_CONFIG_DIR/copilot/copilot.sh"
+
 # 他の設定の影響を受けるので最後に実施
 . "$_DOTFILES_CONFIG_DIR/bash/path-post-settings.sh"

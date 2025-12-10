@@ -14,6 +14,7 @@ services:
       # config
       - $DOTFILES_CONFIG_DIR:/home/ubuntu/dotfiles:ro
       - $DOTFILES_CONFIG_DIR/.config/nvim/lazy-lock.json:/home/ubuntu/dotfiles/.config/nvim/lazy-lock.json
+      - $DOTFILES_CONFIG_DIR/.config/copilot/config.json:/home/ubuntu/.config/.copilot/config.json
       # cache
       - cache-go-build:/home/ubuntu/.cache/go-build
       - cache-gopls:/home/ubuntu/.cache/gopls
@@ -23,6 +24,9 @@ services:
       - cache-nvim:/home/ubuntu/.cache/nvim
       - cache-pip:/home/ubuntu/.cache/pip
       - cache-uv:/home/ubuntu/.cache/uv
+      # copilot cache
+      - cache-copilot:/home/ubuntu/.copilot
+      - cache-copilot-config:/home/ubuntu/.config/.copilot
     environment:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-""}
       - MISE_TRUSTED_CONFIG_PATHS=/workspace:~/dotfiles/.config/mise/config.toml:~/dotfiles/mise.toml
@@ -40,3 +44,5 @@ volumes:
   cache-nvim:
   cache-pip:
   cache-uv:
+  cache-copilot:
+  cache-copilot-config:
