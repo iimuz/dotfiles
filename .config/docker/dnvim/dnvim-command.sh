@@ -21,6 +21,18 @@ dcopilot() {
   dnvim exec copilot "${DENY_TOOLS[@]}" "$@"
 }
 
+dlazygit() {
+  dnvim exec lazygit "$@"
+}
+
+dgh() {
+  dnvim exec gh "$@"
+}
+
+dgit() {
+  dnvim exec git "$@"
+}
+
 dnvim() {
   local -r LOCAL_DOTFILES_CONFIG_DIR=$(realpath "$_DOTFILES_CONFIG_DIR/..")
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"

@@ -24,7 +24,6 @@ services:
       - cache-nvim:/home/ubuntu/.cache/nvim
       - cache-pip:/home/ubuntu/.cache/pip
       - cache-uv:/home/ubuntu/.cache/uv
-      # copilot cache
       - cache-copilot:/home/ubuntu/.copilot
       - cache-copilot-config:/home/ubuntu/.config/.copilot
     environment:
@@ -36,6 +35,8 @@ services:
     stdin_open: true
 
 volumes:
+  cache-copilot:
+  cache-copilot-config:
   cache-go-build:
   cache-go-pkg:
   cache-gopls:
@@ -44,5 +45,3 @@ volumes:
   cache-nvim:
   cache-pip:
   cache-uv:
-  cache-copilot:
-  cache-copilot-config:
