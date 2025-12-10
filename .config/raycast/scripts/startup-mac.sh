@@ -44,3 +44,4 @@ open -a "Microsoft Outlook"
 # work tools
 open -a "Alacritty"
 # open -a "Visual Studio Code"
+open -a "Rancher Desktop"
