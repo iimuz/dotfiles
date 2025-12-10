@@ -85,22 +85,21 @@ ENV PATH="$HOME/go/bin:$PATH"
 
 # Install tools
 RUN set -eu \
-  && mise settings set experimental true \
-  && mise settings set pipx.uvx true \
-  && mise use -g awscli@2.31.39 \
-  && mise use -g lazygit@0.57.0 \
-  && mise use -g starship@1.24.1 \
-  && mise use -g yq@4.49.2
+    && mise settings set experimental true \
+    && mise settings set pipx.uvx true \
+    && mise use -g awscli@2.31.39 \
+    && mise use -g lazygit@0.57.0 \
+    && mise use -g starship@1.24.1 \
+    && mise use -g yq@4.49.2
 
 ENV FZF_CONFIG=/home/$USERNAME/fzf
 RUN set -eu \
-  && mise use -g fzf@0.67.0 \
-  && mkdir $FZF_CONFIG \
-  && curl -fLo $FZF_CONFIG/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/completion.zsh \
-  && curl -fLo $FZF_CONFIG/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/key-bindings.zsh
+    && mise use -g fzf@0.67.0 \
+    && mkdir $FZF_CONFIG \
+    && curl -fLo $FZF_CONFIG/completion.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/completion.zsh \
+    && curl -fLo $FZF_CONFIG/key-bindings.zsh https://raw.githubusercontent.com/junegunn/fzf/v0.67.0/shell/key-bindings.zsh
 
 # Install go language
-# go tools を mise で入れると一部適切にインストールできない時があるので、普通にインストール
 RUN set -eu \
     && mise use -g go@1.25.5 \
     && mise use -g golangci-lint@2.7.2 \
@@ -117,45 +116,53 @@ ENV PATH="/home/$USERNAME/go/bin:$PATH"
 # Install lua
 # neovim luarocksで要求しているバージョンが5.1
 RUN set -eu \
-  && mise use -g lua@5.1.5
+    && mise use -g lua@5.1.5
 
 # Install node.js
 RUN set -eu \
-  && mise use -g node@22.21.1 \
-  && mise use -g npm:@aikidosec/safe-chain@1.1.10
+    && mise use -g node@22.21.1 \
+    && npm install -g @aikidosec/safe-chain@1.1.10
 
 # Install python
 RUN set -eu \
-  && mise use -g python@3.13.11 \
-  && mise use -g uv@0.9.15
+    && mise use -g python@3.13.11 \
+    && mise use -g uv@0.9.15
 
 # Install rust
 RUN set -eu \
-  && mise use -g rust@1.91.1
+    && mise use -g rust@1.91.1
 
 # Install copilot tools
 RUN set -eu \
-  && mise use -g npm:@github/copilot@0.0.367 \
-  && mise use -g pipx:oraios/serena@v0.1.4 \
-  && mise use -g pipx:markitdown-mcp@0.0.1a4 \
-  && mise use -g npm:mcp-remote@0.1.31
+    && npm install -g @github/copilot@0.0.367 \
+    && npm install -g mcp-remote@0.1.31 \
+    && uv tool install git+https://github.com/oraios/serena@v0.1.4 \
+    && uv tool install markitdown-mcp==0.0.1a4
+
+# Install jwt cli
+RUN set -eu \
+    && cargo install jwt-cli@6.2.0
 
 # Install k8s
 RUN set -eu \
-  && mise use -g kind@0.30.0 \
-  && mise use -g kubectl@1.34.3
+    && mise use -g kind@0.30.0 \
+    && mise use -g kubectl@1.34.3
 
 # Install neovim
 RUN set -eu \
-  && mise use -g neovim@0.11.5 \
-  && mise use -g npm:mcp-hub@4.2.1 \
-  && mise use -g npm:neovim@5.4.0 \
-  && mise use -g pipx:pynvim@0.6.0
+    && mise use -g neovim@0.11.5 \
+    && npm install -g mcp-hub@4.2.1 \
+    && npm install -g neovim@5.4.0 \
+    && uv tool install pynvim@0.6.0
 
 # Install shell
 RUN set -eu \
-  && mise use -g shellcheck@0.11.0 \
-  && mise use -g shfmt@3.12.0
+    && mise use -g shellcheck@0.11.0 \
+    && mise use -g shfmt@3.12.0
+
+# Install snowflake
+RUN set -eu \
+    && uv tool install snowflake-cli@3.14.0
 
 # Dotfiles
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/rc-settings.sh /home/$USERNAME/dotfiles/.config/rc-settings.sh
