@@ -5,6 +5,7 @@ ARG USERNAME=ubuntu
 ENV SELFRC="/home/$USERNAME/.selfrc"
 
 # Install tools
+# - libicu74: marksman で必要
 RUN set -eu \
     && apt-get update && apt-get install -y \
         build-essential \
@@ -15,6 +16,7 @@ RUN set -eu \
         git-delta \
         gzip \
         jq \
+        libicu74 \
         libreadline-dev \
         ripgrep \
         tar \
