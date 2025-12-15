@@ -5,39 +5,50 @@ ARG USERNAME=ubuntu
 ENV SELFRC="/home/$USERNAME/.selfrc"
 
 # Install tools
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    ca-certificates \
-    curl \
-    fd-find \
-    git \
-    git-delta \
-    gzip \
-    jq \
-    libreadline-dev \
-    ripgrep \
-    tar \
-    unzip \
-    vifm \
-    wget \
-    xz-utils \
-    passwd \
+RUN set -eu \
+    && apt-get update && apt-get install -y \
+        build-essential \
+        ca-certificates \
+        curl \
+        fd-find \
+        git \
+        git-delta \
+        gzip \
+        jq \
+        libreadline-dev \
+        ripgrep \
+        tar \
+        unzip \
+        vifm \
+        wget \
+        xz-utils \
+        passwd \
     && rm -rf /var/lib/apt/lists/*
 
 ARG UID=1000
 ARG GID=1000
-RUN groupmod -g $GID $USERNAME \
+RUN set -eu \
+    && groupmod -g $GID $USERNAME \
     && usermod -u $UID -g $GID $USERNAME \
     && chown -R $UID:$GID /home/$USERNAME
 
 # Set locale
-RUN apt-get update && apt-get install -y \
-    locales \
+RUN set -eu \
+    && apt-get update && apt-get install -y locales \
     && locale-gen en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
+
+# Set timezone
+RUN set -eu \
+    && apt-get update && apt-get install -y tzdata \
+    && rm -rf /var/lib/apt/lists/*
+ENV TZ=Asia/Tokyo
+RUN set -eu \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
 
 # Install zsh
 RUN apt-get update && apt-get install -y curl zsh \
@@ -134,7 +145,7 @@ RUN set -eu \
 
 # Install copilot tools
 RUN set -eu \
-    && npm install -g @github/copilot@0.0.367 \
+    && npm install -g @github/copilot@0.0.369 \
     && npm install -g mcp-remote@0.1.31 \
     && uv tool install git+https://github.com/oraios/serena@v0.1.4 \
     && uv tool install markitdown-mcp==0.0.1a4
