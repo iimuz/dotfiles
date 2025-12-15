@@ -21,6 +21,7 @@ RUN set -eu \
         unzip \
         vifm \
         wget \
+        xclip \
         xz-utils \
         passwd \
     && rm -rf /var/lib/apt/lists/*
