@@ -16,8 +16,10 @@ services:
       - $DOTFILES_CONFIG_DIR/.config/nvim/lazy-lock.json:/home/ubuntu/dotfiles/.config/nvim/lazy-lock.json
       - $DOTFILES_CONFIG_DIR/.config/copilot/config.json:/home/ubuntu/.config/.copilot/config.json
       # cache
+      - cache-aws-cli:/home/ubuntu/.aws/cli
       - cache-go-build:/home/ubuntu/.cache/go-build
       - cache-gopls:/home/ubuntu/.cache/gopls
+      - cache-golangci-lint:/home/ubuntu/.cache/golangci-lint
       - cache-go-pkg:/home/ubuntu/go/pkg
       - cache-node-gyp:/home/ubuntu/.cache/node-gyp
       - cache-npm:/home/ubuntu/.cache/npm
@@ -35,10 +37,12 @@ services:
     stdin_open: true
 
 volumes:
+  cache-aws-cli:
   cache-copilot:
   cache-copilot-config:
   cache-go-build:
   cache-go-pkg:
+  cache-golangci-lint:
   cache-gopls:
   cache-node-gyp:
   cache-npm:
