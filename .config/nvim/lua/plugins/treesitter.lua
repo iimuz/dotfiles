@@ -6,6 +6,7 @@ local condition = vim.g.vscode == nil
 
 return {
 	"nvim-treesitter/nvim-treesitter",
+	version = "v0.10.0",
 	cond = condition,
 	build = ":TSUpdate",
 	config = function()
