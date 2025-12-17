@@ -9,6 +9,7 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 	},
 	event = { "VimEnter" },
+	enable = false,
 	config = function()
 		require("treesitter-context").setup()
 	end,
