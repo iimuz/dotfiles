@@ -85,6 +85,7 @@ return {
 				branch = false, -- Gitブランチを無視
 				count = true, -- カウントは使用(異なる番号で複数作成可能)
 			},
+			win = { style = "float" },
 		},
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },

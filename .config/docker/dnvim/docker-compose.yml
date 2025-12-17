@@ -16,6 +16,7 @@ services:
       - $DOTFILES_CONFIG_DIR/.config/nvim/lazy-lock.json:/home/ubuntu/dotfiles/.config/nvim/lazy-lock.json
       - $DOTFILES_CONFIG_DIR/.config/copilot/config.json:/home/ubuntu/.config/.copilot/config.json
       # cache
+      - $HOME/.local/share/nvim/scratch:/home/ubuntu/.local/share/nvim/scratch:cached
       - cache-aws-cli:/home/ubuntu/.aws/cli
       - cache-go-build:/home/ubuntu/.cache/go-build
       - cache-gopls:/home/ubuntu/.cache/gopls
