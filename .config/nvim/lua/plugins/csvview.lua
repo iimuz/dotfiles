@@ -13,10 +13,10 @@ return {
 	cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
 	keys = {
 		{
-			"<Leader>se",
+			"<Leader>Se",
 			"<cmd>CsvViewEnable delimiter=, display_mode=border header_lnum=1<CR>",
 			desc = "CSVView: Enable.",
 		},
-		{ "<Leader>sd", "<cmd>CsvViewDisable<CR>", desc = "CSVView: Enable." },
+		{ "<Leader>Sd", "<cmd>CsvViewDisable<CR>", desc = "CSVView: Enable." },
 	},
 }

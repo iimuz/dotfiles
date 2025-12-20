@@ -61,7 +61,8 @@ return {
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
-			{ "<Leader>s", group = "Csvview" },
+			{ "<Leader>s", group = "Sidekick" },
+			{ "<Leader>S", group = "Csvview" },
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },
 			{ "<Leader>T", group = "ToggleTerm" },
