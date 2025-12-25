@@ -133,7 +133,14 @@ RUN set -eu \
     && mise use -g lua@5.1.5
 
 # Install node.js
+# docker 環境での node.js は volta で設定する。
+# mise でインストールした node.js で global tool をインストールすると、
+# mise による node.js のバージョン設定で global tool が使えなくなることがあるため、 node.js の global tool は volta でインストールする。
+ENV VOLTA_HOME="/home/$USERNAME/.volta" \
+    PATH="/home/$USERNAME/.volta/bin:$PATH"
 RUN set -eu \
+    && curl -fsSL https://get.volta.sh | bash \
+    && volta install node@22.21.1 \
     && mise use -g node@22.21.1 \
     && npm install -g @aikidosec/safe-chain@1.1.10
 
@@ -146,10 +153,8 @@ RUN set -eu \
 RUN set -eu \
     && mise use -g rust@1.91.1
 
-# Install copilot tools
 RUN set -eu \
-    && npm install -g @github/copilot@0.0.369 \
-    && npm install -g mcp-remote@0.1.31 \
+    && npm install -g @github/copilot@0.0.372 \
     && uv tool install git+https://github.com/oraios/serena@v0.1.4 \
     && uv tool install markitdown-mcp==0.0.1a4
 
