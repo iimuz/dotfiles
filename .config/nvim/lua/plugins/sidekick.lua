@@ -26,7 +26,27 @@ return {
 							"--allow-all-tools",
 						},
 						env = {
-							GITHUB_TOKEN = vim.env.COPILOT_GITHUB_TOKEN or vim.env.GITHUB_TOKEN,
+							GH_CONFIG_DIR = vim.env.HOME .. "/.config/gh-copilot",
+						},
+					},
+					copilot_resume = {
+						cmd = {
+							"copilot",
+							"--deny-tool=shell(git checkout:*)",
+							"--deny-tool=shell(git push:*)",
+							"--deny-tool=shell(git rebase:*)",
+							"--deny-tool=shell(git reset:*)",
+							"--deny-tool=shell(git switch:*)",
+							"--deny-tool=shell(npm remove:*)",
+							"--deny-tool=shell(npm uninstall:*)",
+							"--deny-tool=shell(rm -f:*)",
+							"--deny-tool=shell(rm -rf:*)",
+							"--deny-tool=shell(sudo:*)",
+							"--allow-all-tools",
+							"--resume",
+						},
+						env = {
+							GH_CONFIG_DIR = vim.env.HOME .. "/.config/gh-copilot",
 						},
 					},
 				},
