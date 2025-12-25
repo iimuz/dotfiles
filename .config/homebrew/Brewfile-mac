@@ -60,6 +60,7 @@ brew "jq"
 brew "mise"
 cask "obsidian"
 cask "visual-studio-code"
+cask "coteditor"
 
 # === recording
 brew "ffmpeg"
