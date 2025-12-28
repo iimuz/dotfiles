@@ -69,7 +69,7 @@ fi
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === git
+# === alacritty
 if type alacritty >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
 fi
@@ -106,6 +106,9 @@ if type git >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
+# === ghostty
+# ghostty が存在するかチェックできないため、設定ファイルは作成してしまう
+create_symlink $SCRIPT_DIR/.config/ghostty/config $HOME/.config/ghostty/config
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
