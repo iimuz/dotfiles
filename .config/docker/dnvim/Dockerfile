@@ -223,9 +223,9 @@ RUN set -eu \
     && echo "source $SELFRC" >> "/home/$USERNAME/.zshrc"
 
 # Setup Neovim plugins
-RUN nvim --headless "+Lazy! sync" +qa \
-    && nvim --headless "+MasonToolsInstallSync" +qa \
-    && nvim --headless "+TSUpdateSync" +qa
+RUN nvim --headless "+Lazy! sync" +qa || true \
+    && nvim --headless "+MasonToolsInstallSync" +qa || true \
+    && nvim --headless "+TSUpdateSync" +qa || true
 
 COPY --chown=$USERNAME:$USERNAME ./.config/docker/dnvim/entrypoint.sh /home/$USERNAME/entrypoint.sh
 RUN chmod +x /home/$USERNAME/entrypoint.sh

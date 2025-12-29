@@ -38,10 +38,20 @@ dnvim() {
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
   local -r PROJECT_NAME="dnvim"
   local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
+  local LOCAL_USER_UID=1000
+  local LOCAL_USER_GID=1000
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    LOCAL_USER_UID=$(id -u)
+    LOCAL_USER_GID=$(id -g)
+  fi
+  readonly LOCAL_USER_UID
+  readonly LOCAL_USER_GID
 
   # docker composeのベースコマンド
   local -a env_vars=(
     "DOTFILES_CONFIG_DIR=$LOCAL_DOTFILES_CONFIG_DIR"
+    "USER_UID=$LOCAL_USER_UID"
+    "USER_GID=$LOCAL_USER_GID"
   )
   if [[ "$(uname -s)" == "Linux" ]]; then
     env_vars+=(
