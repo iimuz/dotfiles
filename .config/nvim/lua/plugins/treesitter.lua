@@ -6,6 +6,7 @@ local condition = vim.g.vscode == nil
 
 return {
 	"nvim-treesitter/nvim-treesitter",
+	version = "v0.10.0",
 	cond = condition,
 	build = ":TSUpdate",
 	config = function()
@@ -67,13 +68,6 @@ return {
 	keys = {
 		{ "<Leader>Ke", "<cmd>TSContextEnable<CR>", desc = "TreeSitter: Enable Context." },
 		{ "<Leader>Kd", "<cmd>TSContextDisable<CR>", desc = "TreeSitter: Disable Context." },
-		{
-			"<Leader>Kj",
-			function()
-				require("treesitter-context").go_to_context(vim.v.count1)
-			end,
-			desc = "TreeSitter: Jumping to context(upwards).",
-		},
 		{ "<Leader>Ku", "<cmd>TSUpdate<CR>", desc = "TreeSitter: Update Tree-Sitter" },
 	},
 }

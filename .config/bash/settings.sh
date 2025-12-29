@@ -8,7 +8,7 @@ force_color_prompt=yes
 
 # Set bash_history setting.
 export HISTCONTROL=ignoreboth:erasedups
-if [[ "$SHELL" == *zsh* ]]; then
+if [ -n "$ZSH_VERSION" ]; then
   setopt histappend
 else
   shopt -u histappend

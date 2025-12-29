@@ -5,7 +5,7 @@
 if ! type direnv > /dev/null 2>&1; then return 0; fi
 
 # direnvの有効化
-if [[ "$SHELL" == *zsh* ]]; then
+if [ -n "$ZSH_VERSION" ]; then
   # zshの場合
   eval "$(direnv hook zsh)"
 else

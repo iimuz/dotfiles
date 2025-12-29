@@ -60,6 +60,7 @@ brew "jq"
 brew "mise"
 cask "obsidian"
 cask "visual-studio-code"
+cask "coteditor"
 
 # === recording
 brew "ffmpeg"
@@ -88,6 +89,7 @@ brew "fzf"  # fuzzy finder
 brew "gcc"
 brew "git-delta"  # diff viewer
 brew "gh"  # github cli
+cask "ghostty"
 brew "luarocks"  # for lazy.nvim plugin
 brew "neovim"  # neovim
 brew "pkg-config"

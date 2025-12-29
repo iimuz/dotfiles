@@ -3,7 +3,7 @@
 # zshの設定
 
 # Gurad if shell does not zsh.
-if [[ "$SHELL" != *zsh* ]]; then return 0; fi
+if [ -z "$ZSH_VERSION" ]; then return 0; fi
 
 # === コマンド履歴
 HISTFILE=~/.zsh_history # 履歴ファイルの場所を指定

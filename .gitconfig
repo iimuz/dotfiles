@@ -5,7 +5,7 @@
   ui = auto
 
 [core]
-  editor = vim
+  editor = nvim
   quotepath = false
   autocrlf = input
 
@@ -29,13 +29,13 @@
   syntax-theme = Monokai Extended
 
 [diff]
-  tool = vimdiff
+  tool = nvimdiff
 
 [difftool]
   prompt = false
 
-[difftool "vimdiff"]
-  cmd = "vim -R -d -c \"wincmd l\" -d \"$LOCAL\" \"$REMOTE\""
+[difftool "nvimdiff"]
+  cmd = "nvim -R -d -c \"wincmd l\" \"$LOCAL\" \"$REMOTE\""
 
 [filter "lfs"]
   clean = git-lfs clean -- %f
@@ -47,13 +47,13 @@
     diffFilter = delta --color-only
 
 [merge]
-  tool = vimdiff
+  tool = nvimdiff
 
 [mergetool]
   keepBackup = false
 
-[mergetool "vimdiff"]
-  cmd = "vim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"  \"$MERGED\""
+[mergetool "nvimdiff"]
+  cmd = "nvim -d -c \"4wincmd w | wincmd J\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\""
 
 [pager]
     diff = delta

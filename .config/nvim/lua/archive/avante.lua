@@ -2,9 +2,11 @@
 -- see: <https://github.com/yetone/avante.nvim>
 --
 -- Use your Noevim like using Curosr AI IDE.
+-- sidekick を導入したので使わなくなった。
 
 return {
 	"yetone/avante.nvim",
+	enable = false,
 	cmd = {
 		"AvanteAsk",
 		"AvanteChat",

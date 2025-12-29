@@ -35,8 +35,10 @@ return {
 	opts = {
 		bigfile = { enabled = false },
 		dashboard = { enabled = false },
+		dim = { enabled = false },
 		explorer = { enabled = true },
-		indent = { enabled = false },
+		gh = { enabled = true },
+		indent = { enabled = true },
 		input = { enabled = true },
 		picker = {
 			enabled = true,
@@ -61,6 +63,8 @@ return {
 					},
 				},
 				files = { hidden = true },
+				gh_issue = {},
+				gh_pr = {},
 				grep = { hidden = true },
 				grep_word = { hidden = true },
 			},
@@ -85,6 +89,7 @@ return {
 				branch = false, -- Gitブランチを無視
 				count = true, -- カウントは使用(異なる番号で複数作成可能)
 			},
+			win = { style = "float" },
 		},
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
@@ -224,6 +229,20 @@ return {
 			desc = "Snacks: LSP Workspace Symbols",
 		},
 		{
+			"<leader>wp",
+			function()
+				require("snacks").picker.gh_pr()
+			end,
+			desc = "GitHub Pull Requests (open)",
+		},
+		{
+			"<leader>wP",
+			function()
+				require("snacks").picker.gh_pr({ state = "all" })
+			end,
+			desc = "GitHub Pull Requests (all)",
+		},
+		{
 			"<Leader>wr",
 			function()
 				require("snacks").picker.lsp_references()
@@ -266,6 +285,20 @@ return {
 				require("snacks").picker.diagnostics()
 			end,
 			desc = "Snacks: Diagnostics",
+		},
+		{
+			"<leader>wu",
+			function()
+				require("snacks").picker.gh_issue()
+			end,
+			desc = "GitHub Issues (open)",
+		},
+		{
+			"<leader>wU",
+			function()
+				require("snacks").picker.gh_issue({ state = "all" })
+			end,
+			desc = "GitHub Issues (all)",
 		},
 		{
 			"<Leader>wy",

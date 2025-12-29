@@ -1,0 +1,44 @@
+# /font
+theme = ayu
+font-family = HackGen Console NF
+font-thicken
+font-size = 20
+
+# 日本語での文字化け対策とのこと。発生したら試す。
+# see: <https://zenn.dev/massa/articles/ghostty-usage>
+# font-feature = -dlig
+
+# command = /bin/zsh -l -c tmux new -A -s ghostty
+
+# Window
+title = " "
+window-padding-x = 5
+window-padding-y = 5
+window-padding-balance = true
+
+# macOS
+macos-titlebar-style = hidden
+macos-window-shadow = false
+
+# マウス設定
+mouse-hide-while-typing = true
+
+# Quick terminal
+quick-terminal-position = "left"
+quick-terminal-screen = "main"
+quick-terminal-animation-duration = 0
+keybind = global:cmd+backquote=toggle_quick_terminal
+
+# key bind は一旦全て消して必要なもののみ設定
+# keybind = clear
+#
+# keybind = ctrl+shift+comma=reload_config
+# keybind = ctrl+shift+i=inspector:toggle
+#
+# keybind = ctrl+shift+v=paste_from_clipboard
+# keybind = shift+insert=paste_from_selection
+# keybind = ctrl+shift+c=copy_to_clipboard
+#
+# keybind = ctrl+equal=increase_font_size:1
+# keybind = ctrl+minus=decrease_font_size:1
+# keybind = ctrl+zero=reset_font_size

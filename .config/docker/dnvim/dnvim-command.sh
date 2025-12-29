@@ -4,6 +4,35 @@
 
 if ! type docker >/dev/null 2>&1; then return 0; fi
 
+dcopilot() {
+  local -r DENY_TOOLS=(
+    --deny-tool='shell(git checkout:*)'
+    --deny-tool='shell(git push:*)'
+    --deny-tool='shell(git rebase:*)'
+    --deny-tool='shell(git reset:*)'
+    --deny-tool='shell(git switch:*)'
+    --deny-tool='shell(npm remove:*)'
+    --deny-tool='shell(npm uninstall:*)'
+    --deny-tool='shell(rm -f:*)'
+    --deny-tool='shell(rm -rf:*)'
+    --deny-tool='shell(sudo:*)'
+  )
+
+  dnvim exec copilot "${DENY_TOOLS[@]}" "$@"
+}
+
+dlazygit() {
+  dnvim exec lazygit "$@"
+}
+
+dgh() {
+  dnvim exec gh "$@"
+}
+
+dgit() {
+  dnvim exec git "$@"
+}
+
 dnvim() {
   local -r LOCAL_DOTFILES_CONFIG_DIR=$(realpath "$_DOTFILES_CONFIG_DIR/..")
   local -r COMPOSE_FILE="$_DOTFILES_CONFIG_DIR/docker/dnvim/docker-compose.yml"
@@ -11,7 +40,18 @@ dnvim() {
   local -r GITHUB_TOKEN=$(gh auth token 2>/dev/null || echo "")
 
   # docker composeのベースコマンド
-  local -r BASE_CMD=(
+  local -a env_vars=(
+    "DOTFILES_CONFIG_DIR=$LOCAL_DOTFILES_CONFIG_DIR"
+  )
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    env_vars+=(
+      "USER_UID=$(id -u)"
+      "USER_GID=$(id -g)"
+    )
+  fi
+
+  local -ar BASE_CMD=(
+    env "${env_vars[@]}"
     docker compose
     -f "$COMPOSE_FILE"
     --project-name "$PROJECT_NAME"
@@ -21,26 +61,21 @@ dnvim() {
   case "${1:-}" in
   build)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        docker compose -f "$COMPOSE_FILE" build)
+      env "${env_vars[@]}" docker compose -f "$COMPOSE_FILE" build)
     ;;
   rebuild)
     (cd "$_DOTFILES_CONFIG_DIR/docker/dnvim" &&
-      DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-        docker compose -f "$COMPOSE_FILE" build --no-cache)
+      env "${env_vars[@]}" docker compose -f "$COMPOSE_FILE" build --no-cache)
     ;;
   logs)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" logs -f
+    "${BASE_CMD[@]}" logs -f
     ;;
   exec)
     shift
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev "$@"
     ;;
   shell)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev zsh
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev zsh
     ;;
   --help | -h | help)
     cat <<EOF
@@ -65,8 +100,7 @@ EOF
     ;;
 
   *)
-    DOTFILES_CONFIG_DIR="$LOCAL_DOTFILES_CONFIG_DIR" \
-      "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
+    "${BASE_CMD[@]}" run -e GITHUB_TOKEN="$GITHUB_TOKEN" --rm -it dev nvim "$@"
     ;;
   esac
 }

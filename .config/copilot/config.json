@@ -1,6 +1,6 @@
 {
   "banner": "never",
-  "model": "claude-opus-4.5",
+  "model": "gemini-3-pro-preview",
   "render_markdown": true,
   "screen_reader": false,
   "theme": "auto",

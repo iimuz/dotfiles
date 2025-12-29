@@ -4,12 +4,50 @@ services:
     build:
       context: ${DOTFILES_CONFIG_DIR}
       dockerfile: .config/docker/dnvim/Dockerfile
+      args:
+        - UID=${USER_UID:-1000}
+        - GID=${USER_GID:-1000}
     volumes:
       - .:/workspace:cached
+      # credentials
       - $HOME/.config/github-copilot:/home/ubuntu/.config/github-copilot:ro # neovim の copilot.lua の認証情報の共有
+      # config
       - $DOTFILES_CONFIG_DIR:/home/ubuntu/dotfiles:ro
+      - $DOTFILES_CONFIG_DIR/.config/nvim/lazy-lock.json:/home/ubuntu/dotfiles/.config/nvim/lazy-lock.json
+      - $DOTFILES_CONFIG_DIR/.config/copilot/config.json:/home/ubuntu/.config/.copilot/config.json
+      # cache
+      - $HOME/.local/share/nvim/scratch:/home/ubuntu/.local/share/nvim/scratch:cached
+      - cache-aws-cli:/home/ubuntu/.aws/cli
+      - cache-go-build:/home/ubuntu/.cache/go-build
+      - cache-gopls:/home/ubuntu/.cache/gopls
+      - cache-golangci-lint:/home/ubuntu/.cache/golangci-lint
+      - cache-go-pkg:/home/ubuntu/go/pkg
+      - cache-node-gyp:/home/ubuntu/.cache/node-gyp
+      - cache-npm:/home/ubuntu/.cache/npm
+      - cache-nvim:/home/ubuntu/.cache/nvim
+      - cache-pip:/home/ubuntu/.cache/pip
+      - cache-uv:/home/ubuntu/.cache/uv
+      - cache-copilot:/home/ubuntu/.copilot
+      - cache-copilot-config:/home/ubuntu/.config/.copilot
     environment:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-""}
+      - COPILOT_GITHUB_TOKEN=${COPILOT_GITHUB_TOKEN:-${GITHUB_TOKEN:-""}}
+      - MISE_TRUSTED_CONFIG_PATHS=/workspace:~/dotfiles/.config/mise/config.toml:~/dotfiles/mise.toml
     working_dir: /workspace
+    mem_limit: 4g
     tty: true
     stdin_open: true
+
+volumes:
+  cache-aws-cli:
+  cache-copilot:
+  cache-copilot-config:
+  cache-go-build:
+  cache-go-pkg:
+  cache-golangci-lint:
+  cache-gopls:
+  cache-node-gyp:
+  cache-npm:
+  cache-nvim:
+  cache-pip:
+  cache-uv:
