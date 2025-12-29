@@ -13,12 +13,12 @@
   helper = manager
 
 [credential "https://github.com"]
-	helper =
-	helper = !gh auth git-credential
+  helper =
+  helper = !credential-gh-helper
 
 [credential "https://gist.github.com"]
 	helper =
-	helper = !gh auth git-credential
+  helper = !credential-gh-helper
 
 [delta]
   line-numbers = true

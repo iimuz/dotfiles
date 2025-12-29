@@ -105,6 +105,7 @@ fi
 if type git >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
+  create_symlink $SCRIPT_DIR/.config/git/credential-gh-helper $HOME/.local/bin/credential-gh-helper
 fi
 # === ghostty
 # ghostty が存在するかチェックできないため、設定ファイルは作成してしまう
