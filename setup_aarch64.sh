@@ -61,18 +61,21 @@ function set_bashrc() {
   fi
 
   # if setting exits in rc file, do nothing.
-  if grep $filename -l $rcfile > /dev/null 2>&1; then
+  if grep $filename -l $rcfile >/dev/null 2>&1; then
     echo "already setting in $rcfile: $filename"
     return 0
   fi
 
   # Add file path.
   echo "set load setting in $rcfile: $filename"
-  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >> $rcfile
+  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>$rcfile
 }
 
 # === 共通パスの設定
-readonly SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE:-0}); pwd)
+readonly SCRIPT_DIR=$(
+  cd $(dirname ${BASH_SOURCE:-0})
+  pwd
+)
 readonly CONFIG_PATH=$SCRIPT_DIR/.config
 
 # Installが確認できていないツール
@@ -98,63 +101,68 @@ sudo apt-get install -y --no-install-recommends \
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
 # === claude
-if type claude > /dev/null 2>&1; then
+if type claude >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
   create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
   create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
   create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
 fi
 # === docker
-if ! type docker > /dev/null 2>&1; then
+if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
   sudo usermod -aG docker $(whoami)
 fi
 # ===gh
-if type gh > /dev/null 2>&1; then
+if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
   create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
 fi
 # === git
-if type git > /dev/null 2>&1; then
+if type git >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
   create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
 fi
+# === github copoilot cli
+if type copilot >/dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
+  create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
+fi
 # === lazygit
-if ! type lazygit > /dev/null 2>&1; then _install_lazygit; fi
-if type lazygit > /dev/null 2>&1; then
+if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
+if type lazygit >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
 fi
 # === [mise](https://github.com/jdx/mise)
-if ! type mise > /dev/null 2>&1; then curl https://mise.run | sh; fi
-if type mise > /dev/null 2>&1; then
+if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
+if type mise >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/mise/config.toml $HOME/.config/mise/config.toml
 fi
 # === neovim
-if ! type nvim > /dev/null 2>&1; then _install_neovim; fi
-if type nvim > /dev/null 2>&1; then
+if ! type nvim >/dev/null 2>&1; then _install_neovim; fi
+if type nvim >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
 fi
 # === starship
-if ! type starship > /dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
+if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
 # === tailscale
 # see: <https://tailscale.com/download/linux>
-if ! type tailscale > /dev/null 2>&1; then curl -fsSL https://tailscale.com/install.sh | sh; fi
+if ! type tailscale >/dev/null 2>&1; then curl -fsSL https://tailscale.com/install.sh | sh; fi
 # === tmux
-if type tmux > /dev/null 2>&1; then
+if type tmux >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
 fi
 # === vifm
-if type vifm > /dev/null 2>&1; then
+if type vifm >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/vifm/vifmrc $HOME/.config/vifm/vifmrc
 fi
 # === vim
-if type vim > /dev/null 2>&1; then
+if type vim >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/vim/init.vim $HOME/.vimrc
   create_symlink $SCRIPT_DIR/.config/vim $HOME/.config/vim
 fi
 # === yq
-if ! type yq > /dev/null 2>&1; then _install_yq; fi
+if ! type yq >/dev/null 2>&1; then _install_yq; fi
 # === zsh
-if type zsh > /dev/null 2>&1; then
+if type zsh >/dev/null 2>&1; then
   sudo chsh -s $(which zsh) $(whoami)
 fi
