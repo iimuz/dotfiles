@@ -97,6 +97,9 @@ sudo apt-get install -y --no-install-recommends \
   tmux \
   unzip \
   zsh
+sudo apt-get install -y --no-install-recommends \
+  gpg \
+  pass
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
