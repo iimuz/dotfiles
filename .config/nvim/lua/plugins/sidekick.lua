@@ -9,7 +9,7 @@ return {
 		function github_copilot_token()
 			local e = {}
 			if vim.fn.executable("pass") == 1 then
-				local token = (vim.fn.systemlist("pass show github/copilot-token") or { "" })[1]
+				local token = (vim.fn.systemlist("pass show github/copilot-token 2>/dev/null") or { "" })[1]
 				if token and token ~= "" then
 					e.GITHUB_TOKEN = token
 				end
