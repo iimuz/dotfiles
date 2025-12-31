@@ -18,6 +18,8 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 
 # homebrew設定
 . "$_DOTFILES_CONFIG_DIR/homebrew/homebrew-bundle.sh"
+# mise 設定
+. "$_DOTFILES_CONFIG_DIR/mise/mise-settings.sh"
 
 # application設定
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings.sh"
@@ -35,13 +37,13 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 # 環境構築
 . "$_DOTFILES_CONFIG_DIR/asdf/asdf-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/direnv/direnv-settings.sh"
-. "$_DOTFILES_CONFIG_DIR/mise/mise-settings.sh"
-. "$_DOTFILES_CONFIG_DIR/claude/claude.sh" # cluadeをmiseでインストールしているのでmiseより後ろに設定が必要
-. "$_DOTFILES_CONFIG_DIR/copilot/copilot.sh" # copilot を mise でインストールしているので mise より後ろに設定が必要
 # go lang
 . "$_DOTFILES_CONFIG_DIR/go/go-settings.sh"
 # java
 . "$_DOTFILES_CONFIG_DIR/java/java-asdf-settings.sh"
+# llm
+. "$_DOTFILES_CONFIG_DIR/claude/claude.sh"
+. "$_DOTFILES_CONFIG_DIR/copilot/copilot.sh"
 # nodejs
 . "$_DOTFILES_CONFIG_DIR/node/nvm-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/node/npm.sh"
