@@ -6,15 +6,21 @@
 return {
 	"folke/sidekick.nvim",
 	config = function()
-		function github_copilot_token()
+		local function github_copilot_token()
 			local e = {}
-			if vim.fn.executable("pass") == 1 then
-				local token = (vim.fn.systemlist("pass show github/copilot-token 2>/dev/null") or { "" })[1]
+			local gh_env = vim.env.GH_CONFIG_DIR
+			local gh_default = vim.env.HOME .. "/.config/gh-copilot"
+			if gh_env and vim.fn.isdirectory(gh_env) == 1 then
+				e.GH_CONFIG_DIR = gh_env
+			elseif vim.fn.isdirectory(gh_default) == 1 then
+				e.GH_CONFIG_DIR = gh_default
+			elseif vim.fn.executable("bw") == 1 then
+				local token = (
+					vim.fn.systemlist("bw get password 712ab235-7bbd-40d8-ab1e-b3c400531ab5 2>/dev/null") or { "" }
+				)[1]
 				if token and token ~= "" then
 					e.GITHUB_TOKEN = token
 				end
-			else
-				e.GH_CONFIG_DIR = vim.env.HOME .. "/.config/gh-copilot"
 			end
 
 			return e
