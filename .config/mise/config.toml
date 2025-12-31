@@ -21,6 +21,7 @@ node = "22"
 "pipx:markitdown-mcp" = { version = "latest", all = "" } # for copilot
 "pipx:oraios/serena" = "latest"                          # for copilot
 "pipx:pynvim" = "latest"                                 # for neovim
+pnpm = "latest"
 python = "3.13"
 rust = "stable"
 shellcheck = "latest"
@@ -29,6 +30,9 @@ uv = "latest"
 
 [settings]
 experimental = true
+
+[settings.npm]
+package_manager = "pnpm"
 
 [settings.pipx]
 uvx = true
