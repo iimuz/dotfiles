@@ -6,6 +6,24 @@
 return {
 	"folke/sidekick.nvim",
 	config = function()
+		local function github_copilot_token()
+			local e = {}
+			local gh_env = vim.env.GH_CONFIG_DIR
+			local gh_default = vim.env.HOME .. "/.config/gh-copilot"
+			local bw_item_id = vim.env.BW_ITEM_ID_GH_COPILOT
+			if gh_env and vim.fn.isdirectory(gh_env) == 1 then
+				e.GH_CONFIG_DIR = gh_env
+			elseif vim.fn.isdirectory(gh_default) == 1 then
+				e.GH_CONFIG_DIR = gh_default
+			elseif bw_item_id and bw_item_id ~= "" and vim.fn.executable("bw") == 1 then
+				local token = (vim.fn.systemlist("bw get password " .. bw_item_id .. " 2>/dev/null") or { "" })[1]
+				if token and token ~= "" then
+					e.GITHUB_TOKEN = token
+				end
+			end
+
+			return e
+		end
 		require("sidekick").setup({
 			-- nes = { enabled = false },
 			cli = {
@@ -25,9 +43,7 @@ return {
 							"--deny-tool=shell(sudo:*)",
 							"--allow-all-tools",
 						},
-						env = {
-							GH_CONFIG_DIR = vim.env.HOME .. "/.config/gh-copilot",
-						},
+						env = github_copilot_token(),
 					},
 					copilot_resume = {
 						cmd = {
@@ -45,9 +61,7 @@ return {
 							"--allow-all-tools",
 							"--resume",
 						},
-						env = {
-							GH_CONFIG_DIR = vim.env.HOME .. "/.config/gh-copilot",
-						},
+						env = github_copilot_token(),
 					},
 				},
 			},

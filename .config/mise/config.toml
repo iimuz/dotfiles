@@ -9,6 +9,7 @@ node = "22"
 "npm:@aikidosec/safe-chain" = "latest"
 "npm:@anthropic-ai/sandbox-runtime" = "latest"
 # "npm:@anthropic-ai/claude-code" = "latest"
+"npm:@bitwarden/cli" = "latest"
 "npm:@github/copilot" = "latest"
 # "npm:@google/gemini-cli" = "latest"
 # "npm:@openai/codex" = "latest"
@@ -21,6 +22,7 @@ node = "22"
 "pipx:markitdown-mcp" = { version = "latest", all = "" } # for copilot
 "pipx:oraios/serena" = "latest"                          # for copilot
 "pipx:pynvim" = "latest"                                 # for neovim
+pnpm = "latest"
 python = "3.13"
 rust = "stable"
 shellcheck = "latest"
@@ -29,6 +31,9 @@ uv = "latest"
 
 [settings]
 experimental = true
+
+[settings.npm]
+package_manager = "pnpm"
 
 [settings.pipx]
 uvx = true
