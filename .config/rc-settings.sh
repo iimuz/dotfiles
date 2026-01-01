@@ -50,6 +50,7 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 # nodejs
 . "$_DOTFILES_CONFIG_DIR/node/nvm-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/node/npm.sh"
+. "$_DOTFILES_CONFIG_DIR/node/pnpm-settings.sh"
 # python
 . "$_DOTFILES_CONFIG_DIR/python/pipx-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/python/pyenv-settings.sh"
