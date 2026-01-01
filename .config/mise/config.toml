@@ -1,5 +1,6 @@
 [tools]
-awscli = "latest"
+aws-vault = "latest"
+awscli = { version = "latest", symlink_bins = "true" }
 cargo-binstall = "latest"
 "cargo:tree-sitter-cli" = "latest" # for neovim
 go = "1"
