@@ -10,13 +10,13 @@ return {
 			local e = {}
 			local gh_env = vim.env.GH_CONFIG_DIR
 			local gh_default = vim.env.HOME .. "/.config/gh-copilot"
-			local bw_item_id = vim.env.BW_ITEM_ID_GH_COPILOT
+			local pass_item_name = "github/copilot-token"
 			if gh_env and vim.fn.isdirectory(gh_env) == 1 then
 				e.GH_CONFIG_DIR = gh_env
 			elseif vim.fn.isdirectory(gh_default) == 1 then
 				e.GH_CONFIG_DIR = gh_default
-			elseif bw_item_id and bw_item_id ~= "" and vim.fn.executable("bw") == 1 then
-				local token = (vim.fn.systemlist("bw get password " .. bw_item_id .. " 2>/dev/null") or { "" })[1]
+			elseif vim.fn.executable("pass") == 1 then
+				local token = (vim.fn.systemlist("pass show " .. pass_item_name .. " 2>/dev/null") or { "" })[1]
 				if token and token ~= "" then
 					e.GITHUB_TOKEN = token
 				end
