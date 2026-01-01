@@ -135,6 +135,7 @@ fi
 # === github copoilot cli
 if type copilot >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
+  create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
 fi
 # === gpg
