@@ -104,6 +104,8 @@ sudo apt-get install -y --no-install-recommends \
   zsh
 # ssh agent の管理
 sudo apt-get install -y --no-install-recommends keychain
+# password manager
+sudo apt-get install -y --no-install-recommends gnupg pass
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
@@ -134,6 +136,10 @@ fi
 if type copilot >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
+fi
+# === gpg
+if type gpg >/dev/null 2>&1; then
+  create_symlink $SCRIPT_DIR/.config/gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
 fi
 # === lazygit
 if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
