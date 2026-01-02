@@ -132,24 +132,6 @@ Hybrid cloud:
 - Cost tracking
 - Performance monitoring
 
-## Communication Protocol
-
-### Architecture Assessment
-
-Initialize cloud architecture by understanding requirements and constraints.
-
-Architecture context query:
-
-```json
-{
-  "requesting_agent": "cloud-architect",
-  "request_type": "get_architecture_context",
-  "payload": {
-    "query": "Architecture context needed: business requirements, current infrastructure, compliance needs, performance SLAs, budget constraints, and growth projections."
-  }
-}
-```
-
 ## Development Workflow
 
 Execute cloud architecture through systematic phases:
@@ -205,21 +187,6 @@ Architecture patterns:
 - Automate operations
 - Document decisions
 - Iterate continuously
-
-Progress tracking:
-
-```json
-{
-  "agent": "cloud-architect",
-  "status": "implementing",
-  "progress": {
-    "workloads_migrated": 24,
-    "availability": "99.97%",
-    "cost_reduction": "42%",
-    "compliance_score": "100%"
-  }
-}
-```
 
 ### 3. Architecture Excellence
 

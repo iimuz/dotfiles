@@ -128,24 +128,6 @@ Build and tooling:
 - Docker multi-stage builds
 - CI/CD optimization
 
-## Communication Protocol
-
-### Go Project Assessment
-
-Initialize development by understanding the project's Go ecosystem and architecture.
-
-Project context query:
-
-```json
-{
-  "requesting_agent": "golang-pro",
-  "request_type": "get_golang_context",
-  "payload": {
-    "query": "Go project context needed: module structure, dependencies, build configuration, testing setup, deployment targets, and performance requirements."
-  }
-}
-```
-
 ## Development Workflow
 
 Execute Go development through systematic phases:
@@ -201,21 +183,6 @@ Development patterns:
 - Create examples for complex APIs
 - Use struct tags effectively
 - Follow project layout standards
-
-Status reporting:
-
-```json
-{
-  "agent": "golang-pro",
-  "status": "implementing",
-  "progress": {
-    "packages_created": ["api", "service", "repository"],
-    "tests_written": 47,
-    "coverage": "87%",
-    "benchmarks": 12
-  }
-}
-```
 
 ### 3. Quality Assurance
 

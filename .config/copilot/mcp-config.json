@@ -6,6 +6,21 @@
       "command": "mcp-remote",
       "args": ["https://mcp.atlassian.com/v1/sse"]
     },
+    "awslabs_aws-documentation-mcp-server": {
+      "type": "local",
+      "command": "awslabs.aws-documentation-mcp-server",
+      "args": [],
+      "tools": [
+        "get_available_services",
+        "read_documentation",
+        "recommend",
+        "search_documentation"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_DOCUMENTATION_PARTITION": "aws"
+      }
+    },
     "markitdown": {
       "tools": ["convert_to_markdown"],
       "type": "local",
@@ -17,7 +32,6 @@
         "activate_project",
         "check_onboarding_performed",
         "delete_memory",
-        "find_file",
         "find_referencing_symbols",
         "find_symbol",
         "get_symbols_overview",
@@ -35,3 +49,4 @@
     }
   }
 }
+

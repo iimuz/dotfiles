@@ -58,29 +58,29 @@ readonly COPILOT_SHELL_READ_TOOLS="\
   --allow-tool='shell(xargs:*)'\
 "
 readonly COPILOT_SHELL_DENY_TOOLS="\
-  --deny-tool='shell(curl:*)'\
-  --deny-tool='shell(git checkout:*)'\
-  --deny-tool='shell(git push:*)'\
-  --deny-tool='shell(git rebase:*)'\
-  --deny-tool='shell(git reset:*)'\
-  --deny-tool='shell(git switch:*)'\
-  --deny-tool='shell(nc:*)'\
-  --deny-tool='shell(npm remove:*)'\
-  --deny-tool='shell(npm uninstall:*)'\
-  --deny-tool='shell(rm -f:*)'\
-  --deny-tool='shell(rm -rf:*)'\
-  --deny-tool='shell(sudo:*)'\
-  --deny-tool='shell(wget:*)'\
+  --deny-tool=shell(curl:*)\
+  --deny-tool=shell(git checkout:*)\
+  --deny-tool=shell(git push:*)\
+  --deny-tool=shell(git rebase:*)\
+  --deny-tool=shell(git reset:*)\
+  --deny-tool=shell(git switch:*)\
+  --deny-tool=shell(nc:*)\
+  --deny-tool=shell(npm remove:*)\
+  --deny-tool=shell(npm uninstall:*)\
+  --deny-tool=shell(rm -f:*)\
+  --deny-tool=shell(rm -rf:*)\
+  --deny-tool=shell(sudo:*)\
+  --deny-tool=shell(wget:*)\
 "
 
 alias copilot_atlassian="copilot\
   $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
   $COPILOT_ATLASSIAN_READ_TOOLS $COPILOT_SERENA_READ_TOOLS --disable-mcp-server='markitdown'\
 "
-alias copilot_auto="copilot\
-  $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
-  $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
-"
+# alias copilot_auto="copilot\
+#   $COPILOT_SHELL_DENY_TOOLS --allow-tool='write'\
+#   $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SERENA_WRITE_MEMORY $COPILOT_MARKITDOWN_READ_TOOLS $COPILOT_SERENA_WRITE_TOOLS $COPILOT_SHELL_READ_TOOLS --disable-mcp-server='atlassian'\
+# "
 alias copilot_commit="copilot\
   $COPILOT_SHELL_DENY_TOOLS $COPILOT_SERENA_READ_TOOLS $COPILOT_SERENA_READ_MEMORY $COPILOT_SHELL_READ_TOOLS --allow-tool='shell(git commit:*)'\
   --deny-tool='shell(git add:*)'\
@@ -98,3 +98,26 @@ alias copilot_pr="copilot\
   --disable-mcp-server='atlassian'\
   --disable-mcp-server='markitdown'\
 "
+
+function copilot_auto() {
+  local -ar env_vars=(
+    "GH_CONFIG_DIR=$HOME/.config/gh-copilot"
+  )
+  local -ar OPTIONS=(
+    "--deny-tool=shell(curl:*)"
+    "--deny-tool=shell(git checkout:*)"
+    "--deny-tool=shell(git push:*)"
+    "--deny-tool=shell(git rebase:*)"
+    "--deny-tool=shell(git reset:*)"
+    "--deny-tool=shell(git switch:*)"
+    "--deny-tool=shell(nc:*)"
+    "--deny-tool=shell(npm remove:*)"
+    "--deny-tool=shell(npm uninstall:*)"
+    "--deny-tool=shell(rm -f:*)"
+    "--deny-tool=shell(rm -rf:*)"
+    "--deny-tool=shell(sudo:*)"
+    "--deny-tool=shell(wget:*)"
+    "--allow-all-tools"
+  )
+  env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
+}
