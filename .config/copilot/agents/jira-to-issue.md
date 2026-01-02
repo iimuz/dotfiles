@@ -1,7 +1,11 @@
 ---
-name: "Convert JIRA Bug to GitHub Issue"
-description: "Read a specified JIRA bug ticket and create a GitHub Issue with its details using a standardized Markdown template."
-tools: ["bash", "gh", "shell(gh issue create:*)", "atlassian/getJiraIssue"]
+name: Convert JIRA Bug to GitHub Issue
+description: Read a specified JIRA bug ticket and create a GitHub Issue with its details using a standardized Markdown template.
+tools:
+  - bash
+  - gh
+  - shell(gh issue create:*)
+  - atlassian/getJiraIssue
 ---
 
 Read the contents of the specified Jira ticket and create a GitHub Issue in the target repository.
