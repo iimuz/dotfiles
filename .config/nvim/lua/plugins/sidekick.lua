@@ -8,7 +8,7 @@ return {
 	config = function()
 		local function github_copilot_token()
 			local e = {}
-			local gh_env = vim.env.GH_CONFIG_DIR
+			local gh_env = vim.env.GH_COPILOT_CONFIG_DIR
 			local gh_default = vim.env.HOME .. "/.config/gh-copilot"
 			local pass_item_name = "github/copilot-token"
 			if gh_env and vim.fn.isdirectory(gh_env) == 1 then

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @raycast.schemaVersion 1
-# @raycast.title Add Selection to Daily Note
+# @raycast.title Daily Note - Add Selection
 # @raycast.mode silent
 # @raycast.icon 📥
 
@@ -10,19 +10,35 @@ set -Eeuo pipefail
 SCRIPT_NAME=$(basename "${0}")
 readonly SCRIPT_NAME
 
+DEBUG_FLAG=false
+readonly DEBUG_FLAG
+
+function _log_header() {
+  if [ "$DEBUG_FLAG" == "false" ]; then
+    echo ""
+    return
+  fi
+
+  local -r LEVEL="${1:-INFO}"
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ($SCRIPT_NAME) [$LEVEL]"
+}
+
 function log_info() {
-  local _message="$1"
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ($SCRIPT_NAME) [INFO] $_message" >&2
+  local -r _MESSAGE="$1"
+  local -r _HEADER="$(_log_header "INFO")"
+  echo "$_HEADER $_MESSAGE" >&2
 }
 
 function log_warn() {
-  local _message="$1"
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ($SCRIPT_NAME) [WARN] $_message" >&2
+  local -r _MESSAGE="$1"
+  local -r _HEADER="$(_log_header "WARN")"
+  echo "$_HEADER $_MESSAGE" >&2
 }
 
 function log_error() {
-  local _message="$1"
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] ($SCRIPT_NAME) [ERROR] $_message" >&2
+  local -r _MESSAGE="$1"
+  local -r _HEADER="$(_log_header "ERROR")"
+  echo "$_HEADER $_MESSAGE" >&2
 }
 
 function err() {
@@ -83,14 +99,14 @@ function main() {
 
   # 改行コードが適切に動作しない時があるので、 pbpaste を利用して選択箇所を取得
   local -r SELECTION=$(pbpaste)
-
   if [ -z "$SELECTION" ]; then
     log_warn "Nothing is selected"
-    return 1
+    return 0
   fi
 
   # %s を使うことで、SELECTION内の特殊文字による意図しない挙動を防ぐ
-  printf "\n## $(date +%H:%M:%S)\n\n%s\n\n" "$SELECTION" >>"$TARGET_FILE"
+  local -r TIMESTAMP="$(date +%Y-%m-%dT%H:%M:%S.000+09:00)"
+  printf '\n## %s\n\n%s\n\n' "$TIMESTAMP" "$SELECTION" >>"$TARGET_FILE"
 
   log_info "Appended to $TARGET_DATE note"
 }

@@ -1,8 +1,10 @@
 {
   "banner": "never",
-  "model": "gemini-3-pro-preview",
+  "model": "claude-sonnet-4.5",
   "render_markdown": true,
   "screen_reader": false,
   "theme": "auto",
-  "trusted_folders": ["/workspace"]
+  "trusted_folders": [
+    "/workspace"
+  ]
 }
