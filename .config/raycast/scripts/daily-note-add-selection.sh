@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @raycast.schemaVersion 1
-# @raycast.title Add Selection to Daily Note
+# @raycast.title Daily Note - Add Selection
 # @raycast.mode silent
 # @raycast.icon 📥
 
@@ -83,14 +83,14 @@ function main() {
 
   # 改行コードが適切に動作しない時があるので、 pbpaste を利用して選択箇所を取得
   local -r SELECTION=$(pbpaste)
-
   if [ -z "$SELECTION" ]; then
     log_warn "Nothing is selected"
-    return 1
+    return 0
   fi
 
   # %s を使うことで、SELECTION内の特殊文字による意図しない挙動を防ぐ
-  printf "\n## $(date +%H:%M:%S)\n\n%s\n\n" "$SELECTION" >>"$TARGET_FILE"
+  local -r TIMESTAMP="$(date +%Y-%m-%dT%H:%M:%S.000+09:00)"
+  printf '\n## %s\n\n%s\n\n' "$TIMESTAMP" "$SELECTION" >>"$TARGET_FILE"
 
   log_info "Appended to $TARGET_DATE note"
 }
