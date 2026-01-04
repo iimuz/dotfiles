@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title Daily Note - Open by Date
-# @raycast.mode compact
+# @raycast.mode silent
 # @raycast.icon 🗓️
 # @raycast.packageName Automation
 # @raycast.argument1 { "type": "text", "placeholder": "Empty for Today, -1 for Yesterday, or YYYY-MM-DD", "optional": true }
@@ -50,8 +50,7 @@ function err() {
 }
 
 function cleanup() {
-  rm -f "$TEMP_FILE"
-  rm -f "$LOCK_FILE"
+  echo "no cleanup actions needed currently" >/dev/null
 }
 
 trap 'err ${LINENO} "$BASH_COMMAND"' ERR
