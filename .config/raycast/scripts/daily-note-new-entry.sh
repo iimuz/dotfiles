@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title Daily Note - Quick Add
-# @raycast.mode compact
+# @raycast.mode silent
 # @raycast.icon 📥
 # @raycast.packageName Automation
 
