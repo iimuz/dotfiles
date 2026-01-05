@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title Daily Note - Open Today's Note
-# @raycast.mode compact
+# @raycast.mode silent
 # @raycast.icon 🗓️
 # @raycast.packageName Automation
 
@@ -49,8 +49,7 @@ function err() {
 }
 
 function cleanup() {
-  rm -f "$TEMP_FILE"
-  rm -f "$LOCK_FILE"
+  echo "no cleanup actions needed currently" >/dev/null
 }
 
 trap 'err ${LINENO} "$BASH_COMMAND"' ERR

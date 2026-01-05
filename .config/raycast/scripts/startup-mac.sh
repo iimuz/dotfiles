@@ -30,9 +30,9 @@ open -a "Scroll Reverser" # マウスによるscrollの逆転
 open -a "Cisco Secure Client"
 
 # browser
-open -a "Google Chrome"
+# open -a "Google Chrome"
 open -a "Microsoft Edge"
-open -a "Brave browser"
+# open -a "Brave browser"
 # open -a "firefox"
 
 # communication tool
@@ -42,6 +42,6 @@ open -a "Microsoft Teams"
 open -a "Microsoft Outlook"
 
 # work tools
-open -a "Alacritty"
+open -a "Ghostty"
 # open -a "Visual Studio Code"
 open -a "Rancher Desktop"
