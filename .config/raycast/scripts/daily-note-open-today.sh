@@ -106,7 +106,7 @@ function main() {
     log_error "ghostty not found or not executable at $GHOSTTY_BIN"
     return 1
   fi
-  "$GHOSTTY_BIN" -e sh -c "nvim +$ '$TARGET_FILE'" &
+  "$GHOSTTY_BIN" -e sh -c "nvim +$ '$TARGET_FILE'"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
