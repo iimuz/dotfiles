@@ -35,7 +35,7 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 ### Single Type Changes
 
 ```
-<type>: <description>
+<type>: <emoji code as string> <description>
 <BLANK LINE>
 [optional <body>]
 <BLANK LINE>
@@ -45,7 +45,7 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 ### Multiple Type Changes
 
 ```
-<type>: <emoji> <description>
+<type>: <emoji code as string> <description>
 <BLANK LINE>
 [optional <body> of type 1]
 <BLANK LINE>
@@ -240,7 +240,7 @@ n });
 
 OUTPUT:
 
-:recycle: refactor(server): optimize server port configuration
+refactor: :recycle: optimize server port configuration
 
 - rename port variable to uppercase (PORT) to follow constant naming convention
 - add environment variable port support for flexible deployment
@@ -265,7 +265,7 @@ index af76bc0..781d472 100644
   "lint:debug": "eslint . --debug",
 
 OUTPUT:
-:wrench: chore: update lint-staged script to use mjs config file
+chore: :wrench: update lint-staged script to use mjs config file
 
 - change lint-staged script command to use lint-staged.config.mjs instead of lint-staged.config.ts
 
