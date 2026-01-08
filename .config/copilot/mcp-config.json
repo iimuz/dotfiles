@@ -26,27 +26,6 @@
       "type": "local",
       "command": "markitdown-mcp",
       "args": []
-    },
-    "serena": {
-      "tools": [
-        "activate_project",
-        "check_onboarding_performed",
-        "delete_memory",
-        "find_referencing_symbols",
-        "find_symbol",
-        "get_symbols_overview",
-        "insert_after_symbol",
-        "insert_before_symbol",
-        "list_memories",
-        "onboarding",
-        "read_memory",
-        "replace_symbol_body",
-        "write_memory"
-      ],
-      "type": "local",
-      "command": "serena",
-      "args": ["start-mcp-server", "--context", "ide-assistant"]
     }
   }
 }
-
