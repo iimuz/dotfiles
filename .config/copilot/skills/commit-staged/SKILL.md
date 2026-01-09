@@ -9,11 +9,6 @@ description: Commit staged changes only using Conventional Commit parameters (va
 
 This skill provides standardized git commit message formatting and execution according to Conventional Commits 1.0.0 specification. It ensures consistent commit message structure with proper type validation and emojis.
 
-## Clarification: this skill does not generate messages
-
-This skill **does not** decide the commit message content from diffs by itself; it only **validates** and **executes** a commit using the provided `--type`/`--description`/`--body`.
-If you want automatic message generation with a specific LLM model, use a dedicated agent to derive those parameters from `git diff --staged`, and then call `commit.sh` to perform the commit.
-
 ## Contract
 
 - Use only the scripts shipped with this skill (do not run extra git commands)
