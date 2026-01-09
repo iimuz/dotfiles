@@ -16,35 +16,44 @@ If you want automatic message generation with a specific LLM model, use a dedica
 
 ## Contract
 
+- Use only the scripts shipped with this skill (do not run extra git commands)
+  - Review staged changes via `bash scripts/staged-files.sh`
+  - Create the commit via `bash scripts/commit.sh ...`
 - Commits **only** what is already staged (never stages/unstages files)
 - Requires `--description` to be a natural-language summary (not file paths)
 - Subject/body must be English; subject is imperative, no trailing period
 
 ## Workflow
 
-1. Ensure there are staged changes (stop if empty):
+1. Review staged changes (file list + diff; stop if empty):
 
    ```bash
-   git diff --staged --name-only
+   bash scripts/staged-files.sh
    ```
 
-2. Review the staged diff:
-
-   ```bash
-   git diff --staged
-   ```
-
-3. Choose `--type`, `--description`, and optional `--body` based on the staged diff.
+2. Choose `--type`, `--description`, and optional `--body` based on the staged diff.
    - Subject/body must be English; subject is imperative, no trailing period
    - If using `--body`, write bullet points starting with "-"
 
-4. Execute the commit using `scripts/commit.sh` (it runs `git commit` internally):
+3. Execute the commit using `scripts/commit.sh` (it runs `git commit` internally):
 
    ```bash
    bash scripts/commit.sh --type <type> --description "<summary>" [--body "<bullets>"]
    ```
 
 ## Available Tools
+
+### staged-files.sh
+
+A bash script that prints staged file paths and the staged diff (fails if nothing is staged).
+
+**Location**: `scripts/staged-files.sh`
+
+**Usage**:
+
+```bash
+bash scripts/staged-files.sh
+```
 
 ### commit.sh
 
