@@ -55,9 +55,9 @@ local M = {}
 -- ```
 local function getFrontMatter(select_query)
 	local command = [[
-rg --json --multiline --multiline-dotall --max-count=1 --color=never --no-line-number --heading '^---\n(.*?)^(---)' '.' |
+rg --pcre2 --json --multiline --multiline-dotall --max-count=1 --color=never --no-line-number -g '*.md' '\A---\n(.*?)\n---\n' . |
   jq -r 'select(.type == "match") | {path: .data.path.text, text: .data.lines.text | split("\n") | .[1:-2] | join("\n  ")} | "- path: \(.path)\n  \(.text)"' |
-  yq -p yaml]] .. " '" .. select_query .. " | @json'"
+  yq -p yaml -o json]] .. " '" .. select_query .. "'"
 	local data = vim.fn.system(command)
 	local metadata_table = vim.json.decode(data)
 
