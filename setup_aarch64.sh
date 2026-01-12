@@ -86,15 +86,12 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # Installが確認できていないツール
 # - eza
 # aptでインストール可能なコマンドはaptでインストールする
-#
-# - libreadline-dev: miseからluaをインストールする際に必要
 sudo apt-get install -y --no-install-recommends \
   build-essential \
   fzf \
   gh \
   git-delta \
   jq \
-  libreadline-dev \
   ripgrep \
   rsync \
   vifm \
@@ -106,6 +103,10 @@ sudo apt-get install -y --no-install-recommends \
 sudo apt-get install -y --no-install-recommends keychain
 # password manager
 sudo apt-get install -y --no-install-recommends gnupg pass
+# miseからluaをインストールする際に必要
+sudo apt-get install -y --no-install-recommends libreadline-dev
+# mise から tree sitter cli の cargo build でパッケージが不足するため
+sudo apt-get install -y --no-install-recommends libclang-dev
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
