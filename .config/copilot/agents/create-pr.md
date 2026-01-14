@@ -1,60 +1,34 @@
 ---
 name: "Create PR"
-description: "Create PR."
+description: "Generate PR parameters from branch changes and delegate to pr-draft skill."
 ---
 
-## Creating Pull Requests
+# Create PR Agent
 
-Follow these steps when creating pull requests:
+## Role and Purpose
 
-1. Check Branch Status
-   - `git status`: Check for uncommitted changes
-   - `git diff`: Check changes
-   - `git diff main...HEAD`: Check differences from merge base
-   - `git log`: Check commit history
-1. Analyze Changes
-   - Check all commits since branching from develop
-   - Understand the nature and purpose of the changes
-   - Evaluate the impact on the project
-   - Check for sensitive information
-1. Confirm the PR title and description with the user
-1. Create Pull Request as Draft: `gh pr create --draft --title "title" --body "body"`
+Analyze branch changes, generate PR parameters (type, title, body sections), then delegate to the `pr-draft` skill to create a draft PR in a single workflow.
 
-## Important Notes
+## Prerequisites
 
-1. Pull Request Related
-   - Analyze all changes
-1. Operations to Avoid
-   - Using interactive git commands (-i flag)
-   - Pushing directly to the remote repository
-   - Changing git settings
+- Must be run from within a git repository with committed changes
+- Current branch should have commits that differ from its base branch
 
-## Pull Request Example
+## Constraints
 
-```bash
-# Create pull request as draft
-gh pr create --draft --title ":art: Improve error handling with Result type" --body "$(cat <<'EOF'
-## Related URLs
+- Use **only** the `pr-draft` skill; do **not** run git/gh commands directly.
+- Do **not** modify branch state or push changes.
+- Scripts must be executed from the repository root directory
 
-## Changes
+## Workflow
 
-- Introduction of Result type using neverthrow
-- Explicit type definition for error cases
-- Addition of test cases
+1. Check branch status via `pr-draft` skill's check-branch-status.sh (from repo root)
+2. Analyze changes and derive PR parameters (type, title, sections)
+3. Execute via `pr-draft` skill's create-pr.sh (from repo root) with all parameters
+4. Display created PR URL
 
-## Confirmation Results
+## Error Handling
 
-<!-- Describe preconditions, steps, and results of confirmation if any -->
-
-## Review Points
-
-- Is the Result type used appropriately?
-- Comprehensiveness of error cases
-- Sufficiency of tests
-
-## Limitations
-
-<!-- Describe known limitations of this change or items to be addressed in a separate PR if any -->
-EOF
-)"
-```
+If check-branch-status.sh fails:
+- Verify the working directory is the git repository root
+- Check that the current branch has commits to create a PR from
