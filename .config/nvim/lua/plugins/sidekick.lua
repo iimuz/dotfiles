@@ -42,6 +42,8 @@ return {
 							"--deny-tool=shell(rm -rf:*)",
 							"--deny-tool=shell(sudo:*)",
 							"--allow-all-tools",
+							-- 共通 skills のアクセスチェックが入るため
+							"--add-dir=~/.config/.copilot/skills",
 						},
 						env = github_copilot_token(),
 					},
