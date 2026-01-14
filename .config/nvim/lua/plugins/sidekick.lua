@@ -66,6 +66,18 @@ return {
 						env = github_copilot_token(),
 					},
 				},
+				prompts = {
+					commit = ""
+						.. "Commit ONLY the already staged changes using the commit message generator agent. "
+						.. "Be sure to start the agent and use the skill through the agent. "
+						.. "Do not start the skill directly.",
+					pr_create = ""
+						.. "Create a pull request based on the changes in the current branch. "
+						.. "Use the 'create pr' agent to generate the pull request. "
+						.. "Write the pull request description in Japanese. "
+						.. "Be sure to start the agent and use the skill through the agent. "
+						.. "Do not start the skill directly.",
+				},
 			},
 		})
 	end,
