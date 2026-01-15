@@ -1,8 +1,8 @@
 [tools]
-aws-vault = "latest"
+aws-vault = "7.2.0"
 awscli = { version = "latest", symlink_bins = "true" }
 cargo-binstall = "latest"
-"cargo:tree-sitter-cli" = "latest" # for neovim
+"cargo:tree-sitter-cli" = "latest"                     # for neovim
 go = "1"
 # java = "openjdk-25"
 lua = "5.1"                                    # neovim luarocksで要求しているバージョンが5.1
