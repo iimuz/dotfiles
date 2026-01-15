@@ -11,6 +11,8 @@ doc/*.local.*
 .envrc
 
 # === LLM Agent
+.agent
+.agent/
 # aider
 .aider*
 # cline
