@@ -73,6 +73,10 @@ return {
 						.. "Commit ONLY the already staged changes using the commit message generator agent. "
 						.. "Be sure to start the agent and use the skill through the agent. "
 						.. "Do not start the skill directly.",
+					design_doc_summary = ""
+						.. "Based on the design documents and implementation so far, please use the design document summarizer agent to reorganize and consolidate the design documents. "
+						.. "Please create the design document as a new file in the work session memory. "
+						.. "The content of the design document should be written in Japanese.",
 					pr_create = ""
 						.. "Create a pull request based on the changes in the current branch. "
 						.. "Use the 'create pr' agent to generate the pull request. "
