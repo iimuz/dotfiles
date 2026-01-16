@@ -86,10 +86,20 @@ def main() -> None:
     client = _connect_obs(
         host=OBS_HOST, port=OBS_PORT, password=OBS_PASSWORD, retries=5, delay=2
     )
-    status = client.get_record_status()
-    if status.output_active:
-        _logger.info("Recording already in progress")
-        return
+
+    # OBSが完全に準備されるまで待機
+    for i in range(10):
+        try:
+            status = client.get_record_status()
+            if status.output_active:
+                _logger.info("Recording already in progress")
+                return
+            break
+        except Exception:
+            if i < 9:
+                time.sleep(1)
+                continue
+            raise
 
     # 撮影するシーンに切り替え
     client.set_current_program_scene(name=TARGET_SCENE)

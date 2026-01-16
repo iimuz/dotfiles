@@ -42,6 +42,19 @@ return {
 			"-",
 		}
 
+		-- eslint_dの設定カスタマイズ
+		-- monorepoでrootのeslint.config.jsが各プロジェクトを除外している場合の警告を抑制
+		lint.linters.eslint_d.args = {
+			"--no-warn-ignored",
+			"--format",
+			"json",
+			"--stdin",
+			"--stdin-filename",
+			function()
+				return vim.api.nvim_buf_get_name(0)
+			end,
+		}
+
 		-- バッファの書き込み時にlintを実行
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 		vim.api.nvim_create_autocmd({

@@ -83,7 +83,15 @@ def _get_destination_path(src: Path, dst_dir: Path, meeting_name: str) -> Path:
 
 
 def _quit_obs() -> None:
-    subprocess.run(["osascript", "-e", 'quit app "OBS"'])
+    try:
+        subprocess.run(
+            ["osascript", "-e", 'quit app "OBS"'],
+            check=False,
+            capture_output=True,
+            timeout=5,
+        )
+    except Exception:
+        _logger.warning("Failed to quit OBS via AppleScript, ignoring")
 
 
 def main() -> None:

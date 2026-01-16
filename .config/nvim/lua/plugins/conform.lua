@@ -71,7 +71,7 @@ return {
 						local parser_map = {
 							markdown = "markdown",
 							json = "json",
-							yaml = "toml",
+							yaml = "yaml",
 						}
 						local parser = parser_map[vim.bo[ctx.buf].filetype]
 						if parser then

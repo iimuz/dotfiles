@@ -36,7 +36,7 @@ Requirements:
   - Create the PR via `bash scripts/create-pr.sh ...` (from repo root)
 - Creates draft PRs only
 - Requires `--title` to be a natural-language summary (not file paths)
-- Title/body must be English; title is imperative, no trailing period
+- Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
 
 ## Workflow
 
@@ -55,7 +55,7 @@ Requirements:
    The script displays repository information and compares with the remote HEAD branch
 
 3. Choose `--type`, `--title`, `--changes`, and optional sections based on the changes.
-   - Title/body must be English; title is imperative, no trailing period
+   - Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
    - `--changes` should use bullet points starting with "-"
 
 4. Execute the PR creation using `scripts/create-pr.sh`:
@@ -163,7 +163,7 @@ Write **natural language** based on branch changes:
 
 - Summarize _what_ changed (and ideally _why_) in a few words
 - Do **not** use a file-path list as the title (e.g. ".github/.../file.go, ...")
-- Must be in English, imperative mood, no trailing period
+- Default to English (use specified language if explicitly requested), imperative mood, no trailing period
 
 ## Type Reference
 
@@ -221,14 +221,14 @@ bash scripts/create-pr.sh \
    - No capitalization
    - No period at the end
    - Max 100 characters per line
-   - Must be in English
+   - Default to English (use specified language if explicitly requested)
 
 2. **Body Sections**:
    - Use bullet points with "-" for lists
    - Max 100 characters per line
    - Use line breaks for long bullet points
    - Explain what and why
-   - Must be in English
+   - Default to English (use specified language if explicitly requested)
 
 3. **Validation**:
    - Unknown parameters will cause an error
