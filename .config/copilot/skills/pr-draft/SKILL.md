@@ -49,10 +49,10 @@ Requirements:
 2. Review branch status (uncommitted changes, commit history, diff; stop if issues):
 
    ```bash
-   bash /path/to/skill/scripts/check-branch-status.sh
+   bash /path/to/skill/scripts/check-branch-status.sh [--base <branch>]
    ```
 
-   The script displays repository information and compares with the remote HEAD branch
+   The script displays repository information and compares with the specified base branch (or remote HEAD branch if not specified)
 
 3. Choose `--type`, `--title`, `--changes`, and optional sections based on the changes.
    - Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
@@ -69,7 +69,8 @@ Requirements:
      [--confirmation "<results>"] \
      [--review-points "<points>"] \
      [--limitations "<limitations>"] \
-     [--additional "<notes>"]
+     [--additional "<notes>"] \
+     [--base "<branch>"]
    ```
 
 ## Available Tools
@@ -83,15 +84,19 @@ A bash script that displays branch status information for PR creation.
 **Usage**:
 
 ```bash
-bash scripts/check-branch-status.sh
+bash scripts/check-branch-status.sh [--base <branch>]
 ```
 
+**Parameters**:
+
+- `--base`: (Optional) Base branch name to compare against. If not specified, uses the remote HEAD branch
+
 **Output**:
-- Repository information (current branch, remote HEAD branch)
+- Repository information (current branch, base branch for comparison)
 - Uncommitted changes (git status)
-- Commit history comparing with remote HEAD branch
-- Diff statistics from merge base with remote HEAD branch
-- Note: `gh pr create` will automatically determine the actual base branch
+- Commit history comparing with base branch
+- Diff statistics from merge base with base branch
+- Note: When --base is not specified, displays a note that `gh pr create` will automatically determine the actual base branch
 
 ### create-pr.sh
 
@@ -110,7 +115,8 @@ bash scripts/create-pr.sh \
   [--confirmation <results>] \
   [--review-points <points>] \
   [--limitations <limitations>] \
-  [--additional <notes>]
+  [--additional <notes>] \
+  [--base <branch>]
 ```
 
 **Parameters**:
@@ -123,6 +129,7 @@ bash scripts/create-pr.sh \
 - `--review-points`: (Optional) Points to review
 - `--limitations`: (Optional) Known limitations
 - `--additional`: (Optional) Additional notes
+- `--base`: (Optional) Base branch name for the pull request. If not specified, GitHub will use the default branch
 
 **Output Format**:
 
@@ -211,6 +218,19 @@ bash scripts/create-pr.sh \
 - error message clarity
 - backward compatibility" \
   --limitations "- requires frontend update for new error codes"
+```
+
+### PR with custom base branch
+
+```bash
+# Create PR from feature branch to develop branch
+bash scripts/create-pr.sh \
+  --type feat \
+  --title "add user profile editing" \
+  --changes "- implement profile edit form
+- add validation for user inputs
+- update API endpoints" \
+  --base develop
 ```
 
 ## Rules and Guidelines
