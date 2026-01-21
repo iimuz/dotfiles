@@ -65,6 +65,7 @@ return {
 					"taplo", -- TOML LSP
 					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
 					"vtsls", -- Javascript and Typescript LSP
+					"yamlls", -- YAML LSP
 				},
 				auto_update = true,
 				run_on_start = true,
