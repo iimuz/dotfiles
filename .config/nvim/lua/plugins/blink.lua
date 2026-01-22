@@ -8,7 +8,6 @@ return {
 	version = "1.*",
 	dependencies = {
 		"fang2hou/blink-copilot",
-		"Kaiser-Yang/blink-cmp-avante",
 		"L3MON4D3/LuaSnip",
 	},
 	---@module 'blink.cmp'
@@ -29,15 +28,8 @@ return {
 		},
 		completion = { documentation = { auto_show = true } },
 		sources = {
-			default = { "avante", "copilot", "lsp", "path", "snippets", "buffer" },
+			default = { "snippets", "copilot", "lsp", "path", "buffer" },
 			providers = {
-				avante = {
-					module = "blink-cmp-avante",
-					name = "Avante",
-					opts = {
-						-- options for blink-cmp-avante
-					},
-				},
 				copilot = {
 					name = "copilot",
 					module = "blink-copilot",
