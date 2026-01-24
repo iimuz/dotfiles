@@ -1,81 +1,44 @@
 ---
 name: work-sessions
-description: Manage markdown work-session files in .agent/work-sessions to save, resume, search, and update progress across Copilot or LLM sessions.
+description: Read-only access to markdown work-session files to list, view, and search session records.
 ---
 
 # Work Sessions
 
 ## Contract
 
-- Use only the scripts shipped with this skill (do not read and edit memory file)
+- Read-only skill (editing is done directly)
+- Use only the scripts shipped with this skill
 - All commands require --root <path> to locate <root>/.agent/work-sessions
-- <filename> / <task_slug> inputs MUST be provided without .md extension
-- Avoid network calls.
+- <filename> inputs MUST be provided without .md extension
+- Avoid network calls
 
 ## Workflow
 
-### 既存のセッションの確認
+### セッション一覧の取得
 
-1. List sessions: `python3 scripts/list.py --root <root>`
-2. Read a session.
-
-   ```bash
-   # セッション内容の全体を確認する場合
-   python3 scripts/read.py --root <root> 20260109_implement_auth
-
-   # セッション内容の概要を確認する場合
-   python3 scripts/read.py --root <root> 20260109_implement_auth --description
-   ```
-
-### Create a new session
-
-Store each session as `{task_slug}` where `task_slug` is snake_case ASCII.
+List all sessions in the work-sessions directory:
 
 ```bash
-python3 scripts/create.py --root <root> implement_auth --title "implement auth" --description "Implement JWT auth"
+python3 scripts/list.py --root <root>
 ```
 
-### Update a session
+### セッション内容の取得
 
-Update front matter values:
+Read a specific session file:
 
 ```bash
-python3 scripts/update.py --root <root> 20260109_implement_auth --description "Implement JWT auth (token issuance done)"
+# セッション内容の全体を確認する場合
+python3 scripts/read.py --root <root> 20260109_implement_auth
+
+# セッション内容の概要（description）のみを確認する場合
+python3 scripts/read.py --root <root> 20260109_implement_auth --description
 ```
 
-Replace a section (keep its heading):
+### セッション横断検索
 
-```bash
-python3 scripts/replace.py --root <root> 20260109_implement_auth --section "Summary" --content "Did X\nDid Y"
-```
-
-Insert a new section:
-
-```bash
-# 特定のセクションの前に追加する場合
-python3 scripts/insert.py --root <root> 20260109_implement_auth --new-section "Progress" --level 2 --content "- Done A\n- Done B" --before "Summary"
-
-# 特定のセクションの後に追加する場合
-python3 scripts/insert.py --root <root> 20260109_implement_auth --new-section "Progress" --level 2 --content "- Done A\n- Done B" --after "Summary"
-
-# 末尾にセクションを追加する場合
-python3 scripts/insert.py --root <root> 20260109_implement_auth --new-section "Progress" --level 2 --content "- Done A\n- Done B"
-```
-
-Delete a section:
-
-```bash
-python3 scripts/delete.py --root <root> 20260109_implement_auth --section "Progress"
-```
-
-### Search across sessions
+Search for a keyword across all sessions:
 
 ```bash
 python3 scripts/search.py --root <root> "JWT"
-```
-
-### Delete a session
-
-```bash
-python3 scripts/delete.py --root <root> 20260109_implement_auth
 ```
