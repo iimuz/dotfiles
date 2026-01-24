@@ -39,6 +39,7 @@ CONFIRMATION=""
 REVIEW_POINTS=""
 LIMITATIONS=""
 ADDITIONAL=""
+BASE=""
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -75,9 +76,13 @@ while [[ $# -gt 0 ]]; do
     ADDITIONAL="$2"
     shift 2
     ;;
+  --base)
+    BASE="$2"
+    shift 2
+    ;;
   *)
     echo "Error: Unknown parameter '$1'" >&2
-    echo "Allowed parameters: --type, --title, --related-urls, --changes, --confirmation, --review-points, --limitations, --additional" >&2
+    echo "Allowed parameters: --type, --title, --related-urls, --changes, --confirmation, --review-points, --limitations, --additional, --base" >&2
     exit 1
     ;;
   esac
@@ -159,4 +164,8 @@ ${ADDITIONAL}"
 fi
 
 # Execute gh pr create
-gh pr create --draft --title "$PR_TITLE" --body "$PR_BODY"
+if [[ -n "$BASE" ]]; then
+  gh pr create --draft --base "$BASE" --title "$PR_TITLE" --body "$PR_BODY"
+else
+  gh pr create --draft --title "$PR_TITLE" --body "$PR_BODY"
+fi
