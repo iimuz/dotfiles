@@ -145,6 +145,7 @@ if type code >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
   create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
+  create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
   # Cline
   create_symlink $SCRIPT_DIR/.config/cline/Rules $HOME/Documents/Cline/Rules
 fi
