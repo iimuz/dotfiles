@@ -31,8 +31,6 @@ tools:
   - execute/createAndRunTask
   - execute/getTaskOutput
   - execute/runTask
-references:
-  - https://github.com/github/awesome-copilot/blob/main/agents/implementation-plan.agent.md
 ---
 
 # Implementation Plan Generation Mode

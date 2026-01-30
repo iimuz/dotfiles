@@ -13,8 +13,6 @@ tools:
   - web/fetch
   - web/githubRepo
   - execute/runTests
-references:
-  - https://github.com/github/awesome-copilot/blob/main/agents/debug.agent.md
 ---
 
 # Debug Mode Instructions

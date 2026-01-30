@@ -24,8 +24,6 @@ tools:
   - vscodeAPI
   - microsoft.docs.mcp
   - github
-references:
-  - https://github.com/github/awesome-copilot/blob/main/agents/specification.agent.md
 ---
 
 # Specification mode instructions
