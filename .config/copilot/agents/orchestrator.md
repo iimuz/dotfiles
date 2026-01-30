@@ -16,7 +16,7 @@ Decompose requests into subtasks → Delegate to specialized agents → Synthesi
 
 1. Decompose: Identify independent, parallelizable subtasks
 2. Delegate: Call subagents with task tool (parallel when independent)
-3. Synthesize: Collect results, verify completeness, provide unified response
+3. Synthesize: Collect results, verify completeness, provide inline summary (3-5 sentences), update dashboard
 
 ## Delegation Template
 
@@ -26,6 +26,7 @@ For each subtask:
 - Context: Minimal required info (file paths, not full contents; specific questions, not broad goals)
 - Scope: What to do AND what NOT to do
 - Success: Expected output format/signal
+- Output: (Optional) "If analysis is substantial, create output: YYYYMMDD*HHMMSS*<topic>.md [at repository/path if exception]"
 
 ## Parallelization
 
@@ -85,58 +86,45 @@ For each subtask:
 
 If subagent fails: Refine prompt once → Retry → If still fails, report to user with context.
 
-## Report Generation
+## Output Management
 
-After task completion, create a formal report.
+### Orchestrator Responsibilities
 
-### Report Format
+dashboard.md Only
 
-Structure:
+- Single file tracking overall task status
+- Update at task completion (not during delegation)
+- Check if exists → update; otherwise create
+- Structure: Pending / Questions / Completed (see format below)
+- Include: Agent used, task performed, outcome, timestamp
+
+Dashboard Structure:
 
 - Pending: Tasks needing user decision
 - Questions: Unresolved ambiguities
 - Completed: Results from each subtask (agent, task, outcome, timestamp)
 
-Exclude: Process details, full agent responses, redundant context
+### Delegating Output to Subagents
 
-### Report Output
+When subtask warrants documentation:
 
-1. Always provide inline summary (3-5 sentences) in chat response
-2. Save detailed report as file when:
-   - Investigation/analysis tasks (security audits, bug analysis, code review)
-   - Multi-step implementation with multiple subagent results
-   - User explicitly requests report/documentation
-   - Complex tasks spanning multiple agents
-3. Do NOT save report file when:
-   - Simple single-step tasks (read one file, run one command)
-   - Quick fixes or trivial changes
-   - User only asked for verbal explanation
+**Include in subagent prompt:**
+"If your analysis is substantial, create output: YYYYMMDD*HHMMSS*<topic>.md"
 
-### File Location Rules
+Examples to provide:
 
-- Session artifacts (`~/.copilot/session-state/{sessionId}/files/`):
-  - Work-in-progress notes
-  - Intermediate analysis
-  - Planning documents
-- Repository root** or **relevant subdirectory:
-  - Investigation reports (e.g., `YYYYMMDD_vulnerability_report.md`)
-  - Security audit results
-  - Performance analysis
-  - Decision records
+- `20250119_143022_api_vulnerability_analysis.md`
+- `20250119_150815_performance_investigation.md`
+- `20250119_163405_database_schema_review.md`
 
-### Report File Naming
+### File Locations
 
-Use descriptive names with date prefix:
+Session folder (`~/.copilot/session-state/{sessionId}/files/`)
 
-- `YYYYMMDD_<topic>_report.md` - Investigation/analysis results
-- `YYYYMMDD_<topic>_analysis.md` - Detailed technical analysis
-- `YYYYMMDD_<feature>_implementation.md` - Implementation summary
+### Simple Tasks - No Files Needed
 
-### Report Creation Process
+Do NOT create files when:
 
-When report file is needed:
-
-1. Delegate to appropriate language-specific or general-purpose agent
-2. Specify exact file path and format requirements
-3. Include all essential findings from subagent results
-4. Verify file creation and inform user of location
+- Simple single-step tasks
+- Quick fixes or trivial changes
+- All results fit in inline summary
