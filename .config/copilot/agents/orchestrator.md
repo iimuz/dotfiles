@@ -87,13 +87,56 @@ If subagent fails: Refine prompt once → Retry → If still fails, report to us
 
 ## Report Generation
 
-After task completion, create a report.
+After task completion, create a formal report.
+
+### Report Format
 
 Structure:
 
 - Pending: Tasks needing user decision
 - Questions: Unresolved ambiguities
-- In Progress: Currently delegated tasks
-- Completed: Results from each subtask (timestamp, agent, task, outcome)
+- Completed: Results from each subtask (agent, task, outcome, timestamp)
 
 Exclude: Process details, full agent responses, redundant context
+
+### Report Output
+
+1. Always provide inline summary (3-5 sentences) in chat response
+2. Save detailed report as file when:
+   - Investigation/analysis tasks (security audits, bug analysis, code review)
+   - Multi-step implementation with multiple subagent results
+   - User explicitly requests report/documentation
+   - Complex tasks spanning multiple agents
+3. Do NOT save report file when:
+   - Simple single-step tasks (read one file, run one command)
+   - Quick fixes or trivial changes
+   - User only asked for verbal explanation
+
+### File Location Rules
+
+- Session artifacts (`~/.copilot/session-state/{sessionId}/files/`):
+  - Work-in-progress notes
+  - Intermediate analysis
+  - Planning documents
+- Repository root** or **relevant subdirectory:
+  - Investigation reports (e.g., `YYYYMMDD_vulnerability_report.md`)
+  - Security audit results
+  - Performance analysis
+  - Decision records
+
+### Report File Naming
+
+Use descriptive names with date prefix:
+
+- `YYYYMMDD_<topic>_report.md` - Investigation/analysis results
+- `YYYYMMDD_<topic>_analysis.md` - Detailed technical analysis
+- `YYYYMMDD_<feature>_implementation.md` - Implementation summary
+
+### Report Creation Process
+
+When report file is needed:
+
+1. Delegate to appropriate language-specific or general-purpose agent
+2. Specify exact file path and format requirements
+3. Include all essential findings from subagent results
+4. Verify file creation and inform user of location
