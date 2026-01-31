@@ -42,6 +42,12 @@ if [[ "$(uname -r)" == *oracle* ]]; then
     FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.bash"
   fi
 fi
+# github codespaces (= azure) で手動で key-bindings を設定
+if [[ "$(uname -r)" == *oracle* ]]; then
+  FZF_CONFIG="$HOME/.config/fzf"
+  FZF_KEYBINDINGS="$FZF_CONFIG/completion.zsh"
+  FZF_KEYBINDINGS="$FZF_CONFIG/key-bindings.zsh"
+fi
 # wslでのkeybindings
 if [[ "$(uname -r)" == *WSL* ]]; then
   if [[ "$SHELL" == *zsh* ]]; then

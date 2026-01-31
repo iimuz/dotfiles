@@ -22,8 +22,6 @@ tools:
   - testFailure
   - usages
   - vscodeAPI
-references:
-  - https://github.com/github/awesome-copilot/blob/main/agents/expert-react-frontend-engineer.agent.md
 ---
 
 # Expert React Frontend Engineer
