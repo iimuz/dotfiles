@@ -79,7 +79,7 @@ if [ -f $FZF_KEYBINDINGS ]; then . $FZF_KEYBINDINGS; fi
 
 # Aliases.
 # Find repositories under golang directory structure
-alias ffghq='cd $(find ${SOURCE_ROOT:-$HOME/src} -follow  -maxdepth 3 -mindepth 3 -type d | fzf)'
+alias ffghq='cd $(find ${SOURCE_ROOT:-$HOME/src} -follow  -maxdepth ${FFGHQ_MAXDEPTH:-3} -mindepth ${FFGHQ_MINDEPTH:-3} -type d | fzf)'
 
 # using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
