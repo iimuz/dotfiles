@@ -21,94 +21,45 @@ Invoke this skill when:
 
 ## Core Capabilities
 
-### 1. Structured Plan Generation
-
-Generate implementation plans with:
 - **Discrete phases**: Independent work units with measurable completion criteria
 - **Atomic tasks**: Specific actions with file paths, function names, exact details
 - **Dependency mapping**: Explicit cross-phase and cross-task dependencies
 - **Validation criteria**: Automatically verifiable success conditions
+- **AI-optimized formatting**: Zero-ambiguity language with machine-parseable structures
+- **Lifecycle tracking**: Status badges (Planned, In Progress, Completed, On Hold, Deprecated)
 
-### 2. AI-Optimized Formatting
+## Workflow
 
-Structure all content for machine parsing:
-- Explicit, zero-ambiguity language
-- Machine-parseable formats (tables, lists, structured data)
-- Specific file paths, line numbers, code references
-- Standardized identifier prefixes (REQ-, TASK-, PHASE-)
-- Complete context within each task description
+### Step 1: Analyze Request and Gather Context
 
-### 3. Plan Lifecycle Management
+Investigate the requirement:
+- Identify specific feature, refactor, or change to implement
+- Explore codebase structure, dependencies, and current state
+- Document technical constraints and requirements
+- Define target outcomes and success criteria
 
-Track plan evolution through statuses:
-- **Planned** (blue badge) - Ready but not started
-- **In progress** (yellow badge) - Actively executing
-- **Completed** (green badge) - All tasks finished
-- **On Hold** (orange badge) - Paused temporarily
-- **Deprecated** (red badge) - No longer relevant
+### Step 2: Generate Structured Plan
 
-## How to Use
+Create implementation plan with:
+- Discrete phases broken into atomic, parallelizable tasks
+- Explicit dependency mapping between tasks and phases
+- Measurable completion criteria for each phase
+- File paths, function names, and exact implementation details
+- Validation criteria for automated verification
 
-### Multi-Agent Cross-Review Workflow
+Follow template structure in `references/template.md`:
+- Front matter with metadata and status
+- Introduction with context and scope
+- Phases table with tasks in structured format
+- Dependency declarations using standardized IDs (TASK-###)
+- Validation criteria for each phase
 
-This skill implements a multi-model consensus approach for high-quality planning:
+**Multi-Agent Approach**: For complex plans, use parallel subagent analysis and cross-review workflow. See `references/implementation_patterns.md` for detailed patterns.
 
-#### Step 1: Analyze the Request (Multi-Agent)
+### Step 3: Save and Track
 
-**Execution**: Delegate to multiple subagents in parallel with identical context:
-- **Models**: `gpt-5.2-codex`, `gemini-3-pro-preview`, `claude-sonnet-4.5`
-- **Task**: Gather context about:
-  - Specific feature, refactor, or change to implement
-  - Codebase structure, dependencies, current state
-  - Technical constraints and requirements
-  - Target outcomes and success criteria
-
-**Cross-Review**: Pass all analysis results to the same subagents for evaluation
-- Each agent reviews outputs from all other agents
-- Identifies gaps, conflicts, and complementary insights
-- Produces consolidated analysis with confidence levels
-
-**Consolidation**: Merge subagent results into unified context document
-
-#### Step 2: Structure the Plan (Multi-Agent)
-
-**Execution**: Delegate to multiple subagents in parallel with consolidated context from Step 1:
-- **Models**: `gpt-5.2-codex`, `gemini-3-pro-preview`, `claude-sonnet-4.5`
-- **Task**: Break work into phases:
-  - Each phase has measurable completion criteria
-  - Tasks within phases executable in parallel (unless dependencies specified)
-  - No task requires human interpretation or decision-making
-  - All identifiers use standardized prefixes
-
-**Cross-Review**: Pass all structure proposals to the same subagents for evaluation
-- Each agent reviews phase breakdowns from all other agents
-- Identifies optimal task granularity and dependency mapping
-- Produces refined structure with risk assessments
-
-**Consolidation**: Merge subagent results into optimal phase structure
-
-#### Step 3: Generate the Plan (Multi-Agent)
-
-**Execution**: Delegate to multiple subagents in parallel with consolidated structure from Step 2:
-- **Models**: `gpt-5.2-codex`, `gemini-3-pro-preview`, `claude-sonnet-4.5`
-- **Task**: Create plan file following template structure (see `references/template.md`):
-  - Front matter with metadata and status
-  - Introduction with context and scope
-  - Detailed phases with tasks in table format
-  - Dependencies explicitly declared
-  - Validation criteria for each phase
-
-**Cross-Review**: Pass all generated plans to the same subagents for evaluation
-- Each agent reviews complete plans from all other agents
-- Validates template compliance and execution feasibility
-- Produces final plan with quality scores
-
-**Consolidation**: Select best plan or merge strengths from multiple plans
-
-#### Step 4: Save and Track
-
-Output plan to:
-- **Location**: Session files folder (`~/.copilot/session-state/{session-id}/files/`)
+Output plan to session files folder:
+- **Location**: `~/.copilot/session-state/{session-id}/files/`
 - **Naming**: `[purpose]-[component]-[version].md`
 - **Purpose prefixes**: upgrade | refactor | feature | data | infrastructure | process | architecture | design
 
@@ -116,17 +67,6 @@ Examples:
 - `upgrade-node-runtime-2.md`
 - `feature-auth-module-1.md`
 - `refactor-command-system-3.md`
-
-### Implementation Details
-
-The workflow uses subagents at every stage:
-- **Parallel Execution**: Same task sent to `gpt-5.2-codex`, `gemini-3-pro-preview`, `claude-sonnet-4.5`
-- **Cross-Review**: All outputs reviewed by all agents
-- **Consolidation**: Subagents aggregate findings, resolve conflicts, validate insights, synthesize final output
-
-Each conflict is resolved by a dedicated subagent invocation (not batched).
-
-See `references/implementation_patterns.md` for detailed code examples and patterns.
 
 ## Plan Structure Standards
 
@@ -144,15 +84,6 @@ See `references/implementation_patterns.md` for detailed code examples and patte
 - `architecture`: Structural design changes
 - `design`: UI/UX implementation
 
-### Required Sections
-
-1. **Front Matter**: Status, version, identifiers, metadata
-2. **Introduction**: Context, scope, objectives, status badge
-3. **Phases**: Discrete work units with completion criteria
-4. **Tasks**: Atomic actions in table format with specifics
-5. **Dependencies**: Explicit mappings between tasks/phases
-6. **Validation**: Automated verification criteria
-
 ### Task Specification Format
 
 Each task includes:
@@ -162,7 +93,7 @@ Each task includes:
 - **Dependencies**: Prerequisites (TASK-### IDs)
 - **Validation**: How to verify completion
 
-See `references/template.md` for the complete mandatory template structure.
+See `references/template.md` for complete template structure and required sections.
 
 ## Examples
 
