@@ -6,16 +6,24 @@ Detailed implementation examples for the multi-agent cross-review workflow.
 
 All subagent outputs must be saved to session files for proper workflow coordination.
 
+**CRITICAL: Always use the complete path with session-id**
+
 **Location**: `~/.copilot/session-state/{session-id}/files/`
+
+**INCORRECT (DO NOT USE)**: `~/.copilot/session-state/files/` ❌ (missing session-id)
+
+**CORRECT**: `~/.copilot/session-state/{session-id}/files/` ✅
 
 **Naming Convention**: `[step]-[model]-[component]-[timestamp].md`
 
 Examples:
+
 - `step1-gpt-analysis-20260205.md`
 - `step2-gemini-review-20260205.md`
 - `consolidated-findings-20260205.md`
 
 **Benefits**:
+
 - Persistent outputs across subagent invocations
 - Clear audit trail of multi-agent workflow
 - Easy reference passing between subagents
@@ -26,6 +34,10 @@ Examples:
 Execute the same task across multiple models simultaneously, each writing to session files:
 
 ```python
+# IMPORTANT: Always include {session-id} in the path
+# CORRECT: ~/.copilot/session-state/{session-id}/files/
+# WRONG:   ~/.copilot/session-state/files/
+
 # Step 1 execution across three models
 step_prompt = f"""
 {step_context}

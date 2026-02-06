@@ -2,6 +2,8 @@
 
 Detailed examples of generated implementation plans for various scenarios.
 
+**Important**: All example plans shown below are saved to `~/.copilot/session-state/{session-id}/files/` during actual workflow execution.
+
 ## Example 1: Feature Addition
 
 **Input**: "Add JWT-based user authentication"
@@ -12,9 +14,10 @@ Detailed examples of generated implementation plans for various scenarios.
 
 ```markdown
 PHASE-1: Database Schema Updates
+
 - TASK-001: Add users table with auth fields
   - Files: migrations/001_create_users.sql
-  - Validation: SELECT * FROM users LIMIT 1 succeeds
+  - Validation: SELECT \* FROM users LIMIT 1 succeeds
 - TASK-002: Create sessions table for token storage
   - Files: migrations/002_create_sessions.sql
   - Validation: Table exists with correct indexes
@@ -23,6 +26,7 @@ PHASE-1: Database Schema Updates
   - Validation: Script executes without errors
 
 PHASE-2: JWT Service Implementation
+
 - TASK-004: Implement token generation (src/auth/jwt.js)
   - Files: src/auth/jwt.js
   - Dependencies: TASK-001
@@ -37,6 +41,7 @@ PHASE-2: JWT Service Implementation
   - Validation: Refresh endpoint returns new valid token
 
 PHASE-3: Authentication Endpoints
+
 - TASK-007: Create /login endpoint (src/routes/auth.js)
   - Files: src/routes/auth.js, src/controllers/auth.js
   - Dependencies: TASK-004, TASK-005
@@ -51,6 +56,7 @@ PHASE-3: Authentication Endpoints
   - Validation: POST /refresh returns new token
 
 PHASE-4: Integration & Testing
+
 - TASK-010: Add unit tests for JWT service
   - Files: tests/unit/auth/jwt.test.js
   - Dependencies: TASK-004, TASK-005, TASK-006
@@ -75,6 +81,7 @@ PHASE-4: Integration & Testing
 
 ```markdown
 PHASE-1: Define Plugin Interface
+
 - TASK-001: Create IPlugin interface (src/plugins/IPlugin.ts)
   - Files: src/plugins/IPlugin.ts
   - Validation: Interface compiles without errors
@@ -88,6 +95,7 @@ PHASE-1: Define Plugin Interface
   - Validation: All hooks documented with examples
 
 PHASE-2: Extract Existing Commands
+
 - TASK-004: Convert HelpCommand to plugin
   - Files: src/plugins/help/HelpPlugin.ts
   - Dependencies: TASK-001, TASK-002
@@ -102,6 +110,7 @@ PHASE-2: Extract Existing Commands
   - Validation: Search command works via plugin system
 
 PHASE-3: Implement Plugin Loader
+
 - TASK-007: Create PluginManager (src/plugins/PluginManager.ts)
   - Files: src/plugins/PluginManager.ts
   - Dependencies: TASK-001, TASK-002
@@ -116,6 +125,7 @@ PHASE-3: Implement Plugin Loader
   - Validation: Plugins register and deregister correctly
 
 PHASE-4: Migration Validation
+
 - TASK-010: Verify all commands functional as plugins
   - Files: tests/integration/plugin-migration.test.ts
   - Dependencies: TASK-004, TASK-005, TASK-006, TASK-009
@@ -140,6 +150,7 @@ PHASE-4: Migration Validation
 
 ```markdown
 PHASE-1: Compatibility Audit
+
 - TASK-001: Audit dependencies for Node 20 support
   - Files: audit-results.md
   - Validation: List of incompatible packages identified
@@ -151,6 +162,7 @@ PHASE-1: Compatibility Audit
   - Validation: Impact assessment for each change
 
 PHASE-2: Configuration Updates
+
 - TASK-004: Update package.json engines field
   - Files: package.json
   - Dependencies: TASK-001
@@ -163,22 +175,24 @@ PHASE-2: Configuration Updates
   - Validation: FROM node:20-alpine
 
 PHASE-3: Code Compatibility
+
 - TASK-007: Replace deprecated Buffer() constructor
-  - Files: src/**/*.js (identified in TASK-002)
+  - Files: src/\*_/_.js (identified in TASK-002)
   - Dependencies: TASK-002
   - Validation: No Buffer() constructor calls remain
 - TASK-008: Update stream handling for new APIs
-  - Files: src/streams/*.js
+  - Files: src/streams/\*.js
   - Dependencies: TASK-002
   - Validation: Streams use Node 20 recommended patterns
 - TASK-009: Fix crypto module usage
-  - Files: src/crypto/*.js
+  - Files: src/crypto/\*.js
   - Dependencies: TASK-002
   - Validation: Crypto calls compatible with Node 20
 
 PHASE-4: CI/CD Updates
+
 - TASK-010: Update GitHub Actions workflow
-  - Files: .github/workflows/*.yml
+  - Files: .github/workflows/\*.yml
   - Dependencies: TASK-004, TASK-005
   - Validation: node-version: '20.x' in all workflows
 - TASK-011: Update Docker build pipeline
@@ -194,6 +208,7 @@ PHASE-4: CI/CD Updates
 ## Plan File Locations
 
 All plans are saved to the session files folder:
+
 - Path: `~/.copilot/session-state/{session-id}/files/`
 - Naming: `[purpose]-[component]-[version].md`
 - Examples:
