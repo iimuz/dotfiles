@@ -68,7 +68,7 @@ Execute reviews across 4 independent aspects (from [references/review-criteria.m
 
 For each aspect, use these three models:
 
-- `claude-sonnet-4.5` - Balanced analysis
+- `claude-opus-4.6` - Balanced analysis
 - `gemini-3-pro-preview` - Alternative perspective
 - `gpt-5.2-codex` - Code-focused insights with extended thinking (xhigh)
 
@@ -85,22 +85,22 @@ Execute all 12 agents (4 aspects × 3 models) in parallel within a single respon
 
 ```
 # Security aspect (3 models)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", description="Security review - Claude", prompt="<template + Security Checks criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Security review - Claude", prompt="<template + Security Checks criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Security review - Gemini", prompt="<template + Security Checks criteria>")
 task(agent_type="general-purpose", model="gpt-5.2-codex", description="Security review - GPT", prompt="<template + Security Checks criteria>", thinking_level="xhigh")
 
 # Code Quality aspect (3 models)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", description="Quality review - Claude", prompt="<template + Code Quality criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Quality review - Claude", prompt="<template + Code Quality criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Quality review - Gemini", prompt="<template + Code Quality criteria>")
 task(agent_type="general-purpose", model="gpt-5.2-codex", description="Quality review - GPT", prompt="<template + Code Quality criteria>", thinking_level="xhigh")
 
 # Performance aspect (3 models)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", description="Performance review - Claude", prompt="<template + Performance criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Performance review - Claude", prompt="<template + Performance criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Performance review - Gemini", prompt="<template + Performance criteria>")
 task(agent_type="general-purpose", model="gpt-5.2-codex", description="Performance review - GPT", prompt="<template + Performance criteria>", thinking_level="xhigh")
 
 # Best Practices aspect (3 models)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", description="Best Practices review - Claude", prompt="<template + Best Practices criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Best Practices review - Claude", prompt="<template + Best Practices criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Best Practices review - Gemini", prompt="<template + Best Practices criteria>")
 task(agent_type="general-purpose", model="gpt-5.2-codex", description="Best Practices review - GPT", prompt="<template + Best Practices criteria>", thinking_level="xhigh")
 ```
@@ -111,7 +111,7 @@ Each agent saves to: `~/.copilot/session-state/{session-id}/files/<aspect>-<mode
 
 Examples:
 
-- `security-claude-sonnet-4.5-review.md`
+- `security-claude-opus-4.6-review.md`
 - `quality-gemini-3-pro-preview-review.md`
 - `performance-gpt-5.2-codex-review.md`
 
@@ -126,8 +126,8 @@ When changes are extensive (>1000 lines or >20 files):
 
 Example with 2 chunks:
 
-- `frontend-security-claude-sonnet-4.5-review.md`
-- `backend-security-claude-sonnet-4.5-review.md`
+- `frontend-security-claude-opus-4.6-review.md`
+- `backend-security-claude-opus-4.6-review.md`
 - etc.
 
 ## Cross-Check Review
@@ -164,7 +164,7 @@ Call all cross-check agents in parallel within a single response:
 ```
 # Example: Within Security aspect, Claude missed issue A, Gemini missed B
 # Example: Within Quality aspect, GPT missed issue C
-task(agent_type="general-purpose", model="claude-sonnet-4.5", description="Cross-check Security - Claude", prompt="<cross-check-prompt.md for Security with concern A>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Cross-check Security - Claude", prompt="<cross-check-prompt.md for Security with concern A>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Cross-check Security - Gemini", prompt="<cross-check-prompt.md for Security with concern B>")
 task(agent_type="general-purpose", model="gpt-5.2-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt.md for Quality with concern C>", thinking_level="xhigh")
 ```

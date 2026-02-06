@@ -49,7 +49,7 @@ Execute all steps using multi-agent delegation for higher quality and parallel e
 **Subagents (4 parallel invocations)**:
 
 1. **Requirements & Scope** (gpt-5.2-codex): Extract functional/non-functional requirements, scope boundaries, success criteria
-2. **Architecture & Feasibility** (claude-sonnet-4.5): Evaluate technical approach, codebase patterns, integration points
+2. **Architecture & Feasibility** (claude-opus-4.6): Evaluate technical approach, codebase patterns, integration points
 3. **Dependencies & Impact** (gemini-3-pro-preview): Map file/module dependencies, assess cross-component impacts
 4. **Risk Assessment** (gpt-5.1-codex): Identify technical risks, resource constraints, security considerations
 
@@ -80,7 +80,7 @@ See `references/implementation_patterns.md` for complete code examples.
 Each agent reads all 4 Step 1 analysis files and generates complete implementation plan following `references/template.md` structure.
 
 1. **GPT-5.2-Codex**: Generate plan draft from consolidated analysis
-2. **Claude Sonnet 4.5**: Generate independent plan draft
+2. **Claude Opus 4.6**: Generate independent plan draft
 3. **Gemini 3 Pro**: Generate independent plan draft
 
 **Sub-Step 2B - Cross-Review (3 parallel invocations)**:
@@ -110,7 +110,7 @@ Sub-Step 2B: Each agent reads step2-*-plan-draft-*.md files from ~/.copilot/sess
 
 **Sub-Steps (sequential, 3-5 subagent invocations)**:
 
-**3A. Consensus Aggregation** (1 agent, claude-sonnet-4.5):
+**3A. Consensus Aggregation** (1 agent, claude-opus-4.6):
 Read all review files, extract shared insights and universally agreed-upon best practices.
 Output: `~/.copilot/session-state/{session-id}/files/step3a-consensus-{timestamp}.md`
 
