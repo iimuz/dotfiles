@@ -1,6 +1,6 @@
 ---
-name: copilot-instruction-create
-description: Create or update AGENTS.md or copilot-instructions.md files to provide repository context for AI agents. Use when a repository needs structured documentation about its architecture, commands, and conventions.
+name: create-agents
+description: This skill creates or updates AGENTS.md files to provide repository context for AI agents. This skill should be used when a repository needs structured documentation about its architecture, commands, and conventions.
 ---
 
 # Goal
@@ -9,7 +9,7 @@ Analyze the codebase and create a concise project context file that helps AI age
 
 # When to Use This Skill
 
-- Repository lacks AGENTS.md or copilot-instructions.md
+- Repository lacks AGENTS.md
 - Existing project context file is outdated or incomplete
 - User explicitly asks to create/update project documentation for AI agents
 
@@ -18,6 +18,7 @@ Analyze the codebase and create a concise project context file that helps AI age
 ## 1. Analyze the Repository
 
 Explore the codebase to identify:
+
 - Project type and main technologies (framework, language, libraries)
 - Directory structure and architectural patterns
 - Build/test/lint commands (check package.json, Makefile, etc.)
@@ -31,14 +32,17 @@ Use the `explore` agent or grep/glob tools to efficiently gather this informatio
 Generate a markdown file with these sections (adapt based on project type):
 
 **Project Header**
+
 - One-line description of the project and its tech stack
 
 **Code Style** (if applicable)
+
 - Language-specific conventions
 - Import/export patterns
 - Styling approach
 
 **Commands**
+
 - Development server
 - Build process
 - Testing (unit, integration, e2e)
@@ -46,11 +50,13 @@ Generate a markdown file with these sections (adapt based on project type):
 - Database migrations
 
 **Architecture**
+
 - Directory structure with brief explanations
 - Key design patterns
 - Important modules/components
 
 **Important Notes**
+
 - Security warnings (secrets, authentication)
 - Deployment considerations
 - Common pitfalls
@@ -67,39 +73,12 @@ Generate a markdown file with these sections (adapt based on project type):
 ## 4. Output Format
 
 Save as one of these filenames (ask user preference if unclear):
+
 - `AGENTS.md` - General AI agent context
-- `copilot-instructions.md` - GitHub Copilot specific
-- `.github/copilot-instructions.md` - GitHub Copilot (alternative location)
 
 ## Example Structure
 
-```markdown
-# Project: [Name]
-
-[One-line description with tech stack]
-
-## Code Style
-
-- [Key conventions]
-- [Import patterns]
-- [Style guide]
-
-## Commands
-
-- `command`: Description
-- `command`: Description
-
-## Architecture
-
-- `/path`: Purpose
-- `/path`: Purpose
-
-## Important Notes
-
-- [Security considerations]
-- [Critical warnings]
-- [Reference to detailed docs]
-```
+See `references/template.md` for a complete template structure.
 
 # Success Criteria
 
