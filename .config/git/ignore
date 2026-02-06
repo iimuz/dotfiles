@@ -13,6 +13,7 @@ doc/*.local.*
 # === LLM Agent
 .agent
 .agent/
+AGENTS.md
 # aider
 .aider*
 # cline
