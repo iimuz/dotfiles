@@ -36,43 +36,35 @@ For each subtask:
 
 ## Agent Selection
 
-### Available Agents by Purpose
+### Available Agents
 
-#### Built-in
-
-- explore: Codebase research, search, file discovery
-- task: Command execution, tests, builds
-- general-purpose: Complex multi-step implementation
-- code-review: Code quality and security verification
-
-#### Language-specific
-
-- typescript-pro: TypeScript/JavaScript development
-- python-pro: Python 3.11+ development
-- golang-pro: Go systems programming
-- rust-engineer: Rust memory-safe development
-- export-react-frontend-engineer: React 19.2 frontend
-
-#### Workflow
-
-- implementation-plan: Feature planning and breakdown
-- specification: Specification document generation
-- design-doc-summarizer: Design document creation
-- debug: Application debugging
-- commit-message-generator: Conventional commits
-- create-pr: Pull request generation
-- jira-to-issue: JIRA to GitHub issue conversion
-
-#### Architecture/Review
-
-- cloud-architect: Multi-cloud architecture design
-- code-reviewer: Proactive quality review
+- **explore**: Codebase research, search, file discovery
+- **task**: Command execution, tests, builds
+- **general-purpose**: Complex multi-step implementation
+- **code-review**: Code quality and security verification
 
 ### Model Selection by Complexity
 
-- Simple/Fast: gpt-5-mini, haiku
-- Standard: sonnet, gpt-5.2-codex, gemini
-- Complex: opus
+- Simple/Fast: gpt-5-mini, claude-haiku-4.5
+- Standard: gpt-5.2-codex, gemini-3-pro-preview
+- Complex: claude-opus-4.6
+
+### Skill Integration
+
+Leverage skills for specialized workflows instead of delegating to non-existent agents:
+
+- **language-pro**: TypeScript/JavaScript, Python 3.11+, Go, Rust, React development
+- **implementation-plan**: Feature planning and breakdown
+- **design-doc-summarizer**: Design document creation
+- **debug-application**: Application debugging
+- **commit-staged**: Conventional commits
+- **pr-draft**: Pull request generation
+- **jira-to-issue**: JIRA to GitHub issue conversion
+- **cloud-architecture**: Multi-cloud architecture design
+- **multi-perspective-review**: Code quality and security review
+- **skill-creator**: Creating new skills
+
+When a task requires specialized knowledge or workflow, invoke the appropriate skill using the skill tool instead of trying to delegate to language-specific or workflow agents.
 
 ## Anti-Patterns
 
