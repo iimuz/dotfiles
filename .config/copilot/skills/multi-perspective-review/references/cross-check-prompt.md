@@ -19,6 +19,7 @@ You are performing a focused re-check of specific concerns identified by other r
 [This section will be populated with specific issues from other reviews]
 
 For each concern:
+
 - **Issue**: [Description of the concern]
 - **Location**: [File and line number if specified]
 - **Category**: [Security/Quality/Performance/Best Practice]
@@ -56,9 +57,12 @@ Reasoning: <Your analysis>
 
 ## Output Location
 
-Save your cross-check results to: `<session-folder>/files/<model-name>-crosscheck.md`
+Save your cross-check results to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-crosscheck.md`
 
-Replace `<model-name>` with your model identifier.
+Where:
+
+- `<aspect>` is the review aspect being cross-checked
+- `<model-name>` is your model identifier
 
 ## Example Assessment
 

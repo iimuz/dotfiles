@@ -63,9 +63,10 @@ Fix: How to resolve it
 
 ## Output Location
 
-Save your complete review as markdown to: `<session-folder>/files/<aspect>-<model-name>-review.md`
+Save your complete review as markdown to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
 
 Where:
+
 - `<aspect>` is one of: security, quality, performance, bestpractices
 - `<model-name>` is your model identifier (e.g., claude-sonnet-4.5, gemini-3-pro-preview, gpt-5.2-codex)
 

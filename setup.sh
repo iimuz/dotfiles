@@ -83,12 +83,12 @@ if type codex >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/codex/config.toml $HOME/.codex/config.toml
 fi
 # === claude
-if type claude >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
-  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
-  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
-  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
-fi
+# if type claude >/dev/null 2>&1; then
+#   create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
+#   create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
+#   create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
+#   create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
+# fi
 # === gemini cli
 if type gemini >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/gemini/settings.json $HOME/.gemini/settings.json

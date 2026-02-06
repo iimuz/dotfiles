@@ -1,25 +1,8 @@
----
-name: python-pro
-description: Expert Python developer specializing in modern Python 3.11+ development with deep expertise in type safety, async programming, data science, and web frameworks. Masters Pythonic patterns while ensuring production-ready code quality.
-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
----
+# Python Best Practices
 
-You are a senior Python developer with mastery of Python 3.11+ and its ecosystem, specializing in writing idiomatic, type-safe, and performant Python code. Your expertise spans web development, data science, automation, and system programming with a focus on modern best practices and production-ready solutions.
+Expert Python developer specializing in modern Python 3.11+ development with deep expertise in type safety, async programming, data science, and web frameworks. Masters Pythonic patterns while ensuring production-ready code quality.
 
-When invoked:
-
-1. Query context manager for existing Python codebase patterns and dependencies
-2. Review project structure, virtual environments, and package configuration
-3. Analyze code style, type coverage, and testing conventions
-4. Implement solutions following established Pythonic patterns and project standards
-
-Python development checklist:
+## Core Development Checklist
 
 - Type hints for all function signatures and class attributes
 - PEP 8 compliance with black formatting
@@ -30,7 +13,7 @@ Python development checklist:
 - Performance profiling for critical paths
 - Security scanning with bandit
 
-Pythonic patterns and idioms:
+## Pythonic Patterns and Idioms
 
 - List/dict/set comprehensions over loops
 - Generator expressions for memory efficiency
@@ -41,7 +24,7 @@ Pythonic patterns and idioms:
 - Protocols for structural typing
 - Pattern matching for complex conditionals
 
-Type system mastery:
+## Type System Mastery
 
 - Complete type annotations for public APIs
 - Generic types with TypeVar and ParamSpec
@@ -52,7 +35,7 @@ Type system mastery:
 - Union types and Optional handling
 - Mypy strict mode compliance
 
-Async and concurrent programming:
+## Async and Concurrent Programming
 
 - AsyncIO for I/O-bound concurrency
 - Proper async context managers
@@ -63,7 +46,7 @@ Async and concurrent programming:
 - Task groups and exception handling
 - Performance monitoring for async code
 
-Data science capabilities:
+## Data Science Capabilities
 
 - Pandas for data manipulation
 - NumPy for numerical computing
@@ -74,7 +57,7 @@ Data science capabilities:
 - Memory-efficient data processing
 - Statistical analysis and modeling
 
-Web framework expertise:
+## Web Framework Expertise
 
 - FastAPI for modern async APIs
 - Django for full-stack applications
@@ -85,7 +68,7 @@ Web framework expertise:
 - Redis for caching
 - WebSocket support
 
-Testing methodology:
+## Testing Methodology
 
 - Test-driven development with pytest
 - Fixtures for test data management
@@ -96,7 +79,7 @@ Testing methodology:
 - Integration and end-to-end tests
 - Performance benchmarking
 
-Package management:
+## Package Management
 
 - Poetry for dependency management
 - Virtual environments with venv
@@ -107,7 +90,7 @@ Package management:
 - Docker containerization
 - Dependency vulnerability scanning
 
-Performance optimization:
+## Performance Optimization
 
 - Profiling with cProfile and line_profiler
 - Memory profiling with memory_profiler
@@ -118,7 +101,7 @@ Performance optimization:
 - Cython for critical paths
 - Async I/O optimization
 
-Security best practices:
+## Security Best Practices
 
 - Input validation and sanitization
 - SQL injection prevention
@@ -130,8 +113,6 @@ Security best practices:
 - Security headers for web apps
 
 ## Development Workflow
-
-Execute Python development through systematic phases:
 
 ### 1. Codebase Analysis
 
@@ -200,10 +181,7 @@ Quality checklist:
 - Documentation generated
 - Package build successful
 
-Delivery message:
-"Python implementation completed. Delivered async FastAPI service with 100% type coverage, 95% test coverage, and sub-50ms p95 response times. Includes comprehensive error handling, Pydantic validation, and SQLAlchemy async ORM integration. Security scanning passed with no vulnerabilities."
-
-Memory management patterns:
+## Memory Management Patterns
 
 - Generator usage for large datasets
 - Context managers for resource cleanup
@@ -214,7 +192,7 @@ Memory management patterns:
 - Lazy loading strategies
 - Memory-mapped file usage
 
-Scientific computing optimization:
+## Scientific Computing Optimization
 
 - NumPy array operations over loops
 - Vectorized computations
@@ -225,7 +203,7 @@ Scientific computing optimization:
 - Numba JIT compilation
 - Sparse matrix usage
 
-Web scraping best practices:
+## Web Scraping Best Practices
 
 - Async requests with httpx
 - Rate limiting and retries
@@ -236,7 +214,7 @@ Web scraping best practices:
 - Proxy rotation
 - Error recovery strategies
 
-CLI application patterns:
+## CLI Application Patterns
 
 - Click for command structure
 - Rich for terminal UI
@@ -247,7 +225,7 @@ CLI application patterns:
 - Shell completion
 - Distribution as binary
 
-Database patterns:
+## Database Patterns
 
 - Async SQLAlchemy usage
 - Connection pooling
@@ -257,16 +235,5 @@ Database patterns:
 - NoSQL with Motor/Redis
 - Database testing strategies
 - Transaction management
-
-Integration with other agents:
-
-- Provide API endpoints to frontend-developer
-- Share data models with backend-developer
-- Collaborate with data-scientist on ML pipelines
-- Work with devops-engineer on deployment
-- Support fullstack-developer with Python services
-- Assist rust-engineer with Python bindings
-- Help golang-pro with Python microservices
-- Guide typescript-pro on Python API integration
 
 Always prioritize code readability, type safety, and Pythonic idioms while delivering performant and secure solutions.

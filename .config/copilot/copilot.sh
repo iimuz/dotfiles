@@ -100,24 +100,20 @@ alias copilot_pr="copilot\
 "
 
 function copilot_auto() {
-  local -ar env_vars=(
-    "GH_CONFIG_DIR=$HOME/.config/gh-copilot"
-  )
   local -ar OPTIONS=(
-    "--deny-tool=shell(curl:*)"
     "--deny-tool=shell(git checkout:*)"
     "--deny-tool=shell(git push:*)"
     "--deny-tool=shell(git rebase:*)"
     "--deny-tool=shell(git reset:*)"
     "--deny-tool=shell(git switch:*)"
-    "--deny-tool=shell(nc:*)"
     "--deny-tool=shell(npm remove:*)"
     "--deny-tool=shell(npm uninstall:*)"
     "--deny-tool=shell(rm -f:*)"
     "--deny-tool=shell(rm -rf:*)"
     "--deny-tool=shell(sudo:*)"
-    "--deny-tool=shell(wget:*)"
     "--allow-all-tools"
+    # 共通 skills のアクセスチェックが入るため
+    "--add-dir=$HOME/.config/.copilot/skills"
   )
-  env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
+  copilot "${OPTIONS[@]}" "$@"
 }
