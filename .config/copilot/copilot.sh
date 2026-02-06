@@ -113,7 +113,7 @@ function copilot_auto() {
     "--deny-tool=shell(sudo:*)"
     "--allow-all-tools"
     # 共通 skills のアクセスチェックが入るため
-    "--add-dir=~/.config/.copilot/skills"
+    "--add-dir=$HOME/.config/.copilot/skills"
   )
   copilot "${OPTIONS[@]}" "$@"
 }
