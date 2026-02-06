@@ -79,6 +79,7 @@ Structure the consolidated review as:
 ## Cross-Check Results
 
 [Summary of cross-check assessments]
+
 - Issues validated (VALID): [N]
 - Issues refuted (INVALID): [N]
 - Uncertain issues requiring developer judgment: [N]
@@ -91,7 +92,7 @@ Structure the consolidated review as:
 
 ## Output Location
 
-Save the consolidated review to: `<session-folder>/files/consolidated-review.md`
+Save the consolidated review to: `~/.copilot/session-state/{session-id}/files/consolidated-review.md`
 
 ## Guidelines
 

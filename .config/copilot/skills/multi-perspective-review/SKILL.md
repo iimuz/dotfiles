@@ -22,7 +22,7 @@ Use this skill when:
 - Works with PRs (checked out), uncommitted changes, or local commits
 - Never modifies code (review only)
 - Uses aspect-based parallel review (4 aspects × 3 models = 12 parallel agents)
-- Outputs all review results to session folder files/ directory
+- Outputs all review results to `~/.copilot/session-state/{session-id}/files/`
 - Produces aspect-specific reviews + cross-checks + one consolidated review document
 
 ## Workflow
@@ -37,19 +37,19 @@ Use this skill when:
    - 4 review aspects: Security, Quality, Performance, Best Practices
    - For each aspect, launch 3 agents with different AI models (12 agents total)
    - All agents analyze the same changes in parallel
-   - Each agent outputs to: `<session-folder>/files/<aspect>-<model-name>-review.md`
+   - Each agent outputs to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
    - For large changes, may chunk code and multiply agent count accordingly
 
 3. **Cross-Check Review**: Verify coverage of all review perspectives
    - Identify issues flagged by some agents but not others
    - Re-check specific issues with agents that didn't flag them
-   - Output cross-check results to separate files in session folder files/ directory
+   - Output cross-check results to `~/.copilot/session-state/{session-id}/files/`
 
 4. **Consolidate Results**: Synthesize all reviews into unified report
    - Launch integration agent to merge findings from initial reviews and cross-checks
    - Deduplicate overlapping issues
    - Validate findings and flag potential false positives
-   - Output consolidated review to session folder files/ directory
+   - Output consolidated review to `~/.copilot/session-state/{session-id}/files/`
 
 ## Parallel Review Execution
 
@@ -107,9 +107,10 @@ task(agent_type="general-purpose", model="gpt-5.2-codex", description="Best Prac
 
 **Output Files:**
 
-Each agent saves to: `<session-folder>/files/<aspect>-<model-name>-review.md`
+Each agent saves to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
 
 Examples:
+
 - `security-claude-sonnet-4.5-review.md`
 - `quality-gemini-3-pro-preview-review.md`
 - `performance-gpt-5.2-codex-review.md`
@@ -124,6 +125,7 @@ When changes are extensive (>1000 lines or >20 files):
 4. Update output filenames: `<chunk-name>-<aspect>-<model-name>-review.md`
 
 Example with 2 chunks:
+
 - `frontend-security-claude-sonnet-4.5-review.md`
 - `backend-security-claude-sonnet-4.5-review.md`
 - etc.
@@ -135,7 +137,7 @@ After aspect-based reviews complete, identify gaps within each aspect and perfor
 **Cross-Check Process:**
 
 1. **Analyze Initial Reviews**: Compare findings within each aspect across models
-   - Read all `<aspect>-*-review.md` files from session folder files/ directory
+   - Read all `<aspect>-*-review.md` files from `~/.copilot/session-state/{session-id}/files/`
    - For each aspect, identify issues flagged by some models but not others
    - Create mapping: which model missed which specific concerns within each aspect
 
@@ -143,12 +145,12 @@ After aspect-based reviews complete, identify gaps within each aspect and perfor
    - For each (aspect, model) pair where the model missed issues, prepare targeted cross-check prompt
    - Include only specific concerns that specific model missed in that specific aspect
    - Execute all cross-checks in parallel (not sequentially)
-   - Each saves to: `<session-folder>/files/<aspect>-<model-name>-crosscheck.md`
+   - Each saves to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-crosscheck.md`
 
 3. **Cross-Check Prompt Template**:
 
    Use the template from [references/cross-check-prompt.md](references/cross-check-prompt.md).
-   
+
    Key elements:
    - Specify the aspect being cross-checked
    - Provide specific issues/patterns to verify (unique per aspect and model)
@@ -190,14 +192,14 @@ After parallel reviews and cross-checks complete, consolidate all findings into 
 2. **Integration Agent Prompt**:
 
    Use the template from [references/integration-prompt.md](references/integration-prompt.md).
-   
+
    Key tasks:
-   - Read all `<aspect>-*-review.md` and `<aspect>-*-crosscheck.md` files from session folder files/ directory
+   - Read all `<aspect>-*-review.md` and `<aspect>-*-crosscheck.md` files from `~/.copilot/session-state/{session-id}/files/`
    - Merge duplicate findings from initial reviews and cross-checks across aspects
    - Validate findings against actual code
    - Mark potentially incorrect findings
    - Consider cross-check assessments (VALID/INVALID/UNCERTAIN) when consolidating
-   - Output to: `<session-folder>/files/consolidated-review.md`
+   - Output to: `~/.copilot/session-state/{session-id}/files/consolidated-review.md`
 
 3. **Output Structure**: Consolidated review should include:
    - Executive summary with statistics
