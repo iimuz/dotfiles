@@ -61,7 +61,7 @@ Leverage skills for specialized workflows instead of delegating to non-existent 
 - **pr-draft**: Pull request generation
 - **jira-to-issue**: JIRA to GitHub issue conversion
 - **cloud-architecture**: Multi-cloud architecture design
-- **multi-perspective-review**: Code quality and security review
+- **code-review**: Code quality and security review
 - **skill-creator**: Creating new skills
 
 When a task requires specialized knowledge or workflow, invoke the appropriate skill using the skill tool instead of trying to delegate to language-specific or workflow agents.
