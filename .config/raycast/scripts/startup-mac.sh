@@ -44,4 +44,4 @@ open -a "Microsoft Outlook"
 # work tools
 open -a "Ghostty"
 # open -a "Visual Studio Code"
-open -a "Rancher Desktop"
+# open -a "Rancher Desktop"

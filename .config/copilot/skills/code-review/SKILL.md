@@ -1,5 +1,5 @@
 ---
-name: multi-perspective-review
+name: code-review
 description: Review code changes using multiple AI models in parallel to provide comprehensive feedback from diverse perspectives. Works with PRs, uncommitted changes, and local commits. This skill should be used when thorough multi-perspective code analysis is needed.
 ---
 
