@@ -24,7 +24,7 @@ Standardized git commits following Conventional Commits 1.0.0 with type validati
    bash scripts/staged-files.sh
    ```
 
-2. Analyze the diff and determine appropriate `--type`, `--description`, and optional `--body`
+2. **Automatically** analyze the diff and determine appropriate `--type`, `--description`, and optional `--body` **without asking the user**
 
 3. Execute the commit:
 
