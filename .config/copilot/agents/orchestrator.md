@@ -46,7 +46,7 @@ For each subtask:
 ### Model Selection by Complexity
 
 - Simple/Fast: gpt-5-mini, claude-haiku-4.5
-- Standard: claude-opus-4.6, gpt-5.2-codex, gemini-3-pro-preview
+- Standard: claude-opus-4.6, gpt-5.3-codex, gemini-3-pro-preview
 - Complex: claude-opus-4.6
 
 ### Skill Integration

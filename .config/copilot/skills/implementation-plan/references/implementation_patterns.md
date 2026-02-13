@@ -45,7 +45,7 @@ step_prompt = f"""
 Output: Save analysis to session files as step1-gpt-analysis-20260205.md
 Location: ~/.copilot/session-state/{{session-id}}/files/
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=step_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step_prompt)
 task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=step_prompt)
 ```
@@ -70,7 +70,7 @@ Output: Save review to step2-{{model}}-review-20260205.md
 """
 
 # Each agent reviews all outputs from session files
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=review_context)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_context, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_context)
 task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=review_context)
 ```
@@ -95,7 +95,7 @@ Location: ~/.copilot/session-state/{{session-id}}/files/
 Task: Identify consensus points and shared insights.
 Output: Save to consolidated-findings-20260205.md
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=aggregation_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=aggregation_prompt, thinking_level="xhigh")
 ```
 
 ### 2. Conflict Resolution (Per-Conflict Subagent)
@@ -150,7 +150,7 @@ Location: ~/.copilot/session-state/{{session-id}}/files/
 Task: Produce unified, coherent result for this step.
 Output: Save to step2-final-synthesis-20260205.md
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=synthesis_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=synthesis_prompt, thinking_level="xhigh")
 ```
 
 ## Complete Workflow Example
@@ -166,7 +166,7 @@ Analyze: Add JWT authentication to Express API
 
 Output: Save analysis to {session_files}step1-{{model}}-analysis-{timestamp}.md
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=step1_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step1_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step1_prompt)
 task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=step1_prompt)
 
@@ -182,7 +182,7 @@ Location: {session_files}
 Identify gaps, conflicts, best insights.
 Output: Save review to {session_files}step2-{{model}}-review-{timestamp}.md
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=review_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_prompt)
 task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=review_prompt)
 
@@ -207,5 +207,5 @@ Read consolidated analysis: {session_files}step2-consolidated-{timestamp}.md
 Generate implementation plan following template.md structure.
 Output: Save final plan to {session_files}feature-jwt-auth-1.md
 """
-task(agent_type="general-purpose", model="gpt-5.2-codex", prompt=plan_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=plan_prompt, thinking_level="xhigh")
 ```
