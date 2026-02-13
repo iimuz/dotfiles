@@ -16,6 +16,19 @@ Standardized git commits following Conventional Commits 1.0.0 with type validati
 - Description must be natural-language summary (not file paths)
 - Subject/body in English; subject is imperative, no trailing period
 
+**IMPORTANT**: All scripts must be executed from the **git repository root directory** where you want to commit changes.
+
+```bash
+# Incorrect usage - executing from skill directory
+# May operate on wrong repo!
+cd /path/to/skills/commit-staged
+bash scripts/commit.sh --type feat --description "add feature"
+
+# Correct usage - execute from target repository
+cd /path/to/your/repo
+bash /path/to/skills/commit-staged/scripts/commit.sh --type feat --description "add feature"
+```
+
 ## Workflow
 
 1. Review staged changes:
@@ -35,16 +48,19 @@ Standardized git commits following Conventional Commits 1.0.0 with type validati
 ## Scripts
 
 **staged-files.sh** - Show staged files and diff:
+
 ```bash
 bash scripts/staged-files.sh
 ```
 
 **commit.sh** - Execute commit with validation:
+
 ```bash
 bash scripts/commit.sh --type <type> --description <description> [--body <body>]
 ```
 
 Parameters:
+
 - `--type`: Required. Valid types in `references/types.md`
 - `--description`: Required. Natural language summary (max 100 chars with type/emoji)
 - `--body`: Optional. Bullet points starting with "-"
@@ -59,11 +75,13 @@ Parameters:
 ## Examples
 
 Simple commit:
+
 ```bash
 bash scripts/commit.sh --type feat --description "add user authentication"
 ```
 
 With body:
+
 ```bash
 bash scripts/commit.sh \
   --type fix \
