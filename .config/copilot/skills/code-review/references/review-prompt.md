@@ -68,7 +68,7 @@ Save your complete review as markdown to: `~/.copilot/session-state/{session-id}
 Where:
 
 - `<aspect>` is one of: security, quality, performance, bestpractices
-- `<model-name>` is your model identifier (e.g., claude-sonnet-4.5, gemini-3-pro-preview, gpt-5.2-codex)
+- `<model-name>` is your model identifier (e.g., claude-sonnet-4.5, gemini-3-pro-preview, gpt-5.3-codex)
 
 Example: `<session-folder>/files/security-claude-sonnet-4.5-review.md`
 

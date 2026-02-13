@@ -87,7 +87,7 @@ Reasoning: The algorithm is O(n log n) using the built-in Array.sort(), which is
 ```
 [CONCERN #3] Missing error handling in async function
 File: src/services/data.ts:28
-Original Reviewer: gpt-5.2-codex
+Original Reviewer: gpt-5.3-codex
 Assessment: UNCERTAIN
 Reasoning: The function does have a try-catch block (lines 30-35), but it only catches specific error types. Whether additional error handling is needed depends on the broader error handling strategy of the application, which isn't clear from this code alone.
 ```

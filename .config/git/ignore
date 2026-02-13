@@ -1,38 +1,15 @@
-# === local documents
-doc.local
-doc.local/
-doc/*.local
-doc/*.local
-doc/*.local.*
-
 # === env
 .env
-# direnv
-.envrc
 
 # === LLM Agent
 .agent
 .agent/
 AGENTS.md
-# aider
-.aider*
-# cline
-.clineignore
-.clinerules
-.clinerules/
-# claude
-**/.claude/settings.local.json
-# Roo code
-.roo
-.roo/
-.rooignore
-.roomodes
 
 # === Mac
 .DS_Store
 
 # === mise
-.mise.local
 .mise.local.toml
 mise.local.toml
 mise-tasks
@@ -40,20 +17,3 @@ mise-tasks/
 
 # === Neovim
 .lazy.lua
-
-# === Taskfile
-Taskfile.dist.yml
-taskfile.dist.yml
-Taskfile.dist.yaml
-taskfile.dist.yaml
-
-# === temporary files and folders
-tmp_*
-tmp_*/
-
-# === tools
-.tools.local
-
-# === VSCode
-.devcontainer
-.devcontainer/

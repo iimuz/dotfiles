@@ -48,7 +48,7 @@ Execute all steps using multi-agent delegation for higher quality and parallel e
 
 **Subagents (4 parallel invocations)**:
 
-1. **Requirements & Scope** (gpt-5.2-codex): Extract functional/non-functional requirements, scope boundaries, success criteria
+1. **Requirements & Scope** (gpt-5.3-codex): Extract functional/non-functional requirements, scope boundaries, success criteria
 2. **Architecture & Feasibility** (claude-opus-4.6): Evaluate technical approach, codebase patterns, integration points
 3. **Dependencies & Impact** (gemini-3-pro-preview): Map file/module dependencies, assess cross-component impacts
 4. **Risk Assessment** (gpt-5.1-codex): Identify technical risks, resource constraints, security considerations
@@ -79,7 +79,7 @@ See `references/implementation_patterns.md` for complete code examples.
 **Sub-Step 2A - Plan Generation (3 parallel invocations)**:
 Each agent reads all 4 Step 1 analysis files and generates complete implementation plan following `references/template.md` structure.
 
-1. **GPT-5.2-Codex**: Generate plan draft from consolidated analysis
+1. **GPT-5.3-Codex**: Generate plan draft from consolidated analysis
 2. **Claude Opus 4.6**: Generate independent plan draft
 3. **Gemini 3 Pro**: Generate independent plan draft
 
@@ -114,7 +114,7 @@ Sub-Step 2B: Each agent reads step2-*-plan-draft-*.md files from ~/.copilot/sess
 Read all review files, extract shared insights and universally agreed-upon best practices.
 Output: `~/.copilot/session-state/{session-id}/files/step3a-consensus-{timestamp}.md`
 
-**3B. Conflict Resolution** (1 agent per conflict, gpt-5.2-codex):
+**3B. Conflict Resolution** (1 agent per conflict, gpt-5.3-codex):
 For each identified conflict, invoke dedicated subagent to resolve using evidence-based analysis.
 Output: `~/.copilot/session-state/{session-id}/files/step3b-conflict-{id}-{timestamp}.md`
 
@@ -122,7 +122,7 @@ Output: `~/.copilot/session-state/{session-id}/files/step3b-conflict-{id}-{times
 Assess model-specific unique insights for technical feasibility and value-add.
 Output: `~/.copilot/session-state/{session-id}/files/step3c-insights-{timestamp}.md`
 
-**3D. Final Synthesis** (1 agent, gpt-5.2-codex):
+**3D. Final Synthesis** (1 agent, gpt-5.3-codex):
 Read all consolidation outputs and generate final authoritative plan following `references/template.md` structure exactly.
 Output: `~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md`
 
