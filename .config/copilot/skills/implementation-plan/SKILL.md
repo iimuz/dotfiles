@@ -46,29 +46,53 @@ Execute all steps using multi-agent delegation for higher quality and parallel e
 
 **Purpose**: Analyze requirements from multiple specialized perspectives in parallel
 
-**Subagents (4 parallel invocations)**:
+**Subagents (12 parallel invocations - 4 aspects × 3 models)**:
 
-1. **Requirements & Scope** (gpt-5.3-codex): Extract functional/non-functional requirements, scope boundaries, success criteria
-2. **Architecture & Feasibility** (claude-opus-4.6): Evaluate technical approach, codebase patterns, integration points
-3. **Dependencies & Impact** (gemini-3-pro-preview): Map file/module dependencies, assess cross-component impacts
-4. **Risk Assessment** (gpt-5.1-codex): Identify technical risks, resource constraints, security considerations
+1. **Requirements & Scope**: Extract functional/non-functional requirements, scope boundaries, success criteria
+2. **Architecture & Feasibility**: Evaluate technical approach, codebase patterns, integration points
+3. **Dependencies & Impact**: Map file/module dependencies, assess cross-component impacts
+4. **Risk Assessment**: Identify technical risks, resource constraints, security considerations
 
 **Delegation Pattern**:
 
 ```
-For each specialized agent, invoke task tool with:
-- Agent type: general-purpose
-- Model: Specified above
-- Prompt: Analysis focus + output file specification
-- Output: Save to ~/.copilot/session-state/{session-id}/files/step1{a-d}-{focus}-{timestamp}.md
+Execute all 12 agents (4 aspects × 3 models) in parallel within a single response:
+
+# Requirements & Scope aspect (3 models)
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Requirements analysis - Claude", prompt="...")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Requirements analysis - Gemini", prompt="...")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Requirements analysis - GPT", prompt="...", thinking_level="xhigh")
+
+# Architecture & Feasibility aspect (3 models)
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Architecture analysis - Claude", prompt="...")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Architecture analysis - Gemini", prompt="...")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Architecture analysis - GPT", prompt="...", thinking_level="xhigh")
+
+# Dependencies & Impact aspect (3 models)
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Dependencies analysis - Claude", prompt="...")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Dependencies analysis - Gemini", prompt="...")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Dependencies analysis - GPT", prompt="...", thinking_level="xhigh")
+
+# Risk Assessment aspect (3 models)
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Risk analysis - Claude", prompt="...")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Risk analysis - Gemini", prompt="...")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Risk analysis - GPT", prompt="...", thinking_level="xhigh")
 ```
 
-**Outputs**: 4 analysis files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
+**Outputs**: 12 analysis files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
 
-- `step1a-requirements-{timestamp}.md`
-- `step1b-architecture-{timestamp}.md`
-- `step1c-dependencies-{timestamp}.md`
-- `step1d-risks-{timestamp}.md`
+- `step1-requirements-claude-opus-4.6-{timestamp}.md`
+- `step1-requirements-gemini-3-pro-preview-{timestamp}.md`
+- `step1-requirements-gpt-5.3-codex-{timestamp}.md`
+- `step1-architecture-claude-opus-4.6-{timestamp}.md`
+- `step1-architecture-gemini-3-pro-preview-{timestamp}.md`
+- `step1-architecture-gpt-5.3-codex-{timestamp}.md`
+- `step1-dependencies-claude-opus-4.6-{timestamp}.md`
+- `step1-dependencies-gemini-3-pro-preview-{timestamp}.md`
+- `step1-dependencies-gpt-5.3-codex-{timestamp}.md`
+- `step1-risks-claude-opus-4.6-{timestamp}.md`
+- `step1-risks-gemini-3-pro-preview-{timestamp}.md`
+- `step1-risks-gpt-5.3-codex-{timestamp}.md`
 
 See `references/implementation_patterns.md` for complete code examples.
 
@@ -93,7 +117,7 @@ Each agent reads all 3 plan drafts and identifies:
 **Delegation Pattern**:
 
 ```
-Sub-Step 2A: Each agent reads step1{a-d}-*.md files from ~/.copilot/session-state/{session-id}/files/
+Sub-Step 2A: Each agent reads step1-*-{claude-opus-4.6,gemini-3-pro-preview,gpt-5.3-codex}-*.md files from ~/.copilot/session-state/{session-id}/files/
             Outputs to ~/.copilot/session-state/{session-id}/files/step2-{model}-plan-draft-{timestamp}.md
 Sub-Step 2B: Each agent reads step2-*-plan-draft-*.md files from ~/.copilot/session-state/{session-id}/files/
             Outputs to ~/.copilot/session-state/{session-id}/files/step2-{model}-review-{timestamp}.md
