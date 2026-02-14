@@ -112,19 +112,12 @@ sudo apt-get install -y --no-install-recommends libclang-dev
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === claude
-if type claude >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
-  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
-  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
-  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
-fi
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
   sudo usermod -aG docker $(whoami)
 fi
-# ===gh
+# === gh
 if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
   create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
@@ -140,6 +133,7 @@ if type copilot >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
   create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
+  create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
 fi
 # === gpg
 if type gpg >/dev/null 2>&1; then
