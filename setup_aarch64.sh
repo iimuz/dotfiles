@@ -99,6 +99,8 @@ sudo apt-get install -y --no-install-recommends \
   tmux \
   unzip \
   zsh
+# プロセス監視
+sudo apt-get install -y --no-install-recommends htop
 # ssh agent の管理
 sudo apt-get install -y --no-install-recommends keychain
 # password manager
