@@ -89,11 +89,6 @@ sudo apt-get install -y --no-install-recommends \
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === alacritty
-# if type alacritty > /dev/null 2>&1; then
-#   mkdir -p $HOME/.config/alacritty
-#   create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
-# fi
 # === cica font
 if [ $(fc-list | grep -i cica | wc -l) == 0 ]; then _install_cica; fi
 # === git

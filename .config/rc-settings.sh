@@ -25,27 +25,24 @@ if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh";
 . "$_DOTFILES_CONFIG_DIR/aws-vault/aws-vault-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings-gui.sh"
-. "$_DOTFILES_CONFIG_DIR/docker/colima-settings.sh"
-. "$_DOTFILES_CONFIG_DIR/docker/dnvim/dnvim-command.sh"
+
 . "$_DOTFILES_CONFIG_DIR/fzf/fzf.bash"
 . "$_DOTFILES_CONFIG_DIR/git/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/gnupg/gpg-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/nvim/nvim-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/ssh/ssh-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/starship/starship-settings.sh"
-. "$_DOTFILES_CONFIG_DIR/vscode/vscode.sh"
+
 . "$_DOTFILES_CONFIG_DIR/xcode/xcode-settings.sh"
 
 # プログラミング言語設定
 # 環境構築
-. "$_DOTFILES_CONFIG_DIR/asdf/asdf-settings.sh"
-. "$_DOTFILES_CONFIG_DIR/direnv/direnv-settings.sh"
+
 # go lang
 . "$_DOTFILES_CONFIG_DIR/go/go-settings.sh"
 # java
-. "$_DOTFILES_CONFIG_DIR/java/java-asdf-settings.sh"
 # llm
-. "$_DOTFILES_CONFIG_DIR/claude/claude.sh"
+
 . "$_DOTFILES_CONFIG_DIR/copilot/copilot.sh"
 # nodejs
 . "$_DOTFILES_CONFIG_DIR/node/nvm-settings.sh"

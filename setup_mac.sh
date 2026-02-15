@@ -69,31 +69,14 @@ fi
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === alacritty
-if type alacritty >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
-fi
+
 # === bash
 if type bash >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
 fi
-# === codex
-if type codex >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/codex/AGENTS.md $HOME/.codex/AGENTS.md
-  create_symlink $SCRIPT_DIR/.config/codex/config.toml $HOME/.codex/config.toml
-fi
-# === claude
-# if type claude >/dev/null 2>&1; then
-#   create_symlink $SCRIPT_DIR/.config/claude/agents $HOME/.claude/agents
-#   create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
-#   create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
-#   create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
-# fi
-# === gemini cli
-if type gemini >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/gemini/settings.json $HOME/.gemini/settings.json
-  create_symlink $SCRIPT_DIR/.config/gemini/GEMINI.md $HOME/.gemini/GEMINI.md
-fi
+
+
+
 # === git
 if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
@@ -136,16 +119,11 @@ if type vim >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.config/vim/init.vim $HOME/.vimrc
   create_symlink $SCRIPT_DIR/.config/vim $HOME/.config/vim
 fi
-# === vscode / copilot cli
+# === copilot cli
 if type code >/dev/null 2>&1; then
-  # Copilot
-  create_symlink $SCRIPT_DIR/.config/vscode/instructions $HOME/.vscode/instructions
-  create_symlink $SCRIPT_DIR/.config/vscode/prompts $HOME/.vscode/prompts
   # Copilot CLI
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
   create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
   create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
-  # Cline
-  create_symlink $SCRIPT_DIR/.config/cline/Rules $HOME/Documents/Cline/Rules
 fi

@@ -68,13 +68,7 @@ pkg install -y \
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc $CONFIG_PATH/rc-settings.sh
-# === claude
-# claudeはaliasで登録されているため直接指定する必要がある
-if type $HOME/.claude/local/claude > /dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/claude/commands $HOME/.claude/commands
-  create_symlink $SCRIPT_DIR/.config/claude/settings.json $HOME/.claude/settings.json
-  create_symlink $SCRIPT_DIR/.config/claude/CLAUDE.md $HOME/.claude/CLAUDE.md
-fi
+
 # === git
 if type git > /dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
