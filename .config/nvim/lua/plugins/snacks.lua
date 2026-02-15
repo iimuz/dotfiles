@@ -259,9 +259,25 @@ return {
 		},
 		{
 			-- どのようなファイルであってもメモ用のmarkdownファイルを開く
-			"<Leader>ws",
+			"<Leader>wsb",
 			function()
-				require("snacks").scratch({ ft = "markdown" })
+				require("snacks").scratch({ ft = "markdown", win = { style = "split" } })
+			end,
+			desc = "⭐︎Snacks: Toggle Scratch Buffer",
+		},
+		{
+			-- どのようなファイルであってもメモ用のmarkdownファイルを開く
+			"<Leader>wsf",
+			function()
+				require("snacks").scratch({ ft = "markdown", win = { style = "float" } })
+			end,
+			desc = "⭐︎Snacks: Toggle Scratch Buffer",
+		},
+		{
+			-- どのようなファイルであってもメモ用のmarkdownファイルを開く
+			"<Leader>wss",
+			function()
+				require("snacks").scratch({ ft = "markdown", win = { style = "scratch" } })
 			end,
 			desc = "⭐︎Snacks: Toggle Scratch Buffer",
 		},
