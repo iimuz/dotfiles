@@ -2,7 +2,7 @@
 
 **Initial Setup:**
 
-- `bash setup.sh` - Main setup for Mac environments
+- `bash setup_mac.sh` - Main setup for Mac environments
 - `bash setup_aarch64.sh` - ARM64 Linux setup with custom package installations
 - `bash setup_codespaces.sh` - GitHub Codespaces environment-specific setup
 - `bash setup_proot_arm64.sh` - PRoot ARM64 environment setup with custom installations
@@ -49,7 +49,7 @@ This is a cross-platform dotfiles repository using a symlink-based deployment st
 
 **Package Installation Patterns:**
 
-- **setup.sh**: Homebrew-based with `brew bundle` automation
+- **setup_mac.sh**: Homebrew-based with `brew bundle` automation
 - **setup_aarch64.sh**: apt-based with custom installations (lazygit, neovim, yq via curl/wget)
 - **setup_codespaces.sh**: Homebrew-based for GitHub Codespaces environment
 - **setup_proot_arm64.sh**: Mixed apt + manual installations with custom functions

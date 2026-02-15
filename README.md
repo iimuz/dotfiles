@@ -6,7 +6,7 @@
 
 各環境での構築はインストールスクリプトを利用して下記のように実行します。
 
-- Linux/Mac: `bash setup.sh`
+- Linux/Mac: `bash setup_mac.sh`
 - Windows: TBD
 
 各環境におけるパッケージ管理について下記に記載します。
