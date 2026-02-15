@@ -44,8 +44,8 @@ This is a cross-platform dotfiles repository using a symlink-based deployment st
 **Homebrew Bundle System:**
 
 - Environment detection in `.config/homebrew/homebrew-bundle.sh` sets `HOMEBREW_BUNDLE_FILE`
-- Platform-specific Brewfiles: `Brewfile-mac`, `Brewfile-wsl`, `Brewfile-ec2`, `Brewfile-rosetta`
-- Architecture detection (Apple Silicon vs Intel) for macOS installations
+- Platform-specific Brewfile: `Brewfile-mac` (macOS ARM64 only)
+- Only macOS Apple Silicon (ARM64) environment is supported for Homebrew
 
 **Package Installation Patterns:**
 

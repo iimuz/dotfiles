@@ -11,7 +11,7 @@
 
 各環境におけるパッケージ管理について下記に記載します。
 
-### Linux/Mac/WSL
+### Mac (Apple Silicon)
 
 [homebrew](https://brew.sh/)を利用してソフトウェアのインストールを行います。
 また、インストールしたソフトウェアの一覧などの管理は [homebrew-bundle](https://github.com/Homebrew/homebrew-bundle) を利用します。
