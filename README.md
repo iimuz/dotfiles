@@ -6,35 +6,16 @@
 
 各環境での構築はインストールスクリプトを利用して下記のように実行します。
 
-- Linux/Mac: `bash setup.sh`
-- Windows: TBD
+- Mac: `bash setup_mac.sh`
+- Linux
+  - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
+- Codespaces: `bash setup_codespaces.sh`
+- Android/Termux:
+  - termux: `bash setup_termux.sh`
+  - termux + proot: `bash setup_proot_arm64.sh`
+- WSL: `bash setup_wsl_ubuntu.sh`
 
 各環境におけるパッケージ管理について下記に記載します。
-
-### Linux/Mac/WSL
-
-[homebrew](https://brew.sh/)を利用してソフトウェアのインストールを行います。
-また、インストールしたソフトウェアの一覧などの管理は [homebrew-bundle](https://github.com/Homebrew/homebrew-bundle) を利用します。
-homebrew + homebrew bundleを利用した環境構築方法を下記に記載します。
-
-```sh
-# install homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# homebrew buundleを利用してソフトウェアを一括でインストール
-# homebrew bundleは関連コマンドを実行した初回に自動でインストールされるので明示的に実施しない
-brew bundle
-```
-
-インストールするソフトウェアおよび各ソフトウェアのTipsは下記になります。
-
-- [bat](https://github.com/sharkdp/bat)
-- [bitwarden-cli](https://github.com/bitwarden/clients)
-- [exa](https://github.com/ogham/exa)
-- [fd](https://github.com/sharkdp/fd)
-- [fzf](https://github.com/junegunn/fzf)
-- [git](https://github.com/git/git): [tips](https://iimuz.github.io/scrapbook/zettelkasten/scrapbook-20221127091453/)
-- [ripgrep](https://github.com/BurntSushi/ripgrep)
-- [tmux](https://github.com/tmux/tmux)
 
 ### Windows
 
@@ -53,11 +34,3 @@ scoop import .config/scoop/scoopfile.json
 ```ps1
 scoop export > .config/scoop/scoopfile.json
 ```
-
-インストールするソフトウェアおよび各ソフトウェアに対するTipsは下記になります。
-
-- [git](https://github.com/git/git): [tips](https://iimuz.github.io/scrapbook/zettelkasten/scrapbook-20221127091453/)
-- [neovim](https://github.com/neovim/neovim)
-- [scoop](https://scoop.sh/): [tips](https://iimuz.github.io/scrapbook/zettelkasten/scrapbook-20221217120338/)
-- [vscode](https://github.com/microsoft/vscode)
-- [windows terminal](https://github.com/microsoft/terminal)
