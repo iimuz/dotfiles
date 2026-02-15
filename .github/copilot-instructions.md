@@ -70,7 +70,7 @@ Each tool has its own directory in `.config/` with:
 - **Neovim**: Extensive Lua configuration with custom plugins and keymaps in `.config/nvim/`
 - **Shell Environments**: Separate bash/zsh configurations with shared aliases and commands
 - **Language Environments**: Isolated settings for Python (pyenv, poetry), Node (nvm), Go, Ruby, etc.
-- **Development Tools**: Git, Docker (Colima), mise/asdf for version management
+- **Development Tools**: Git, mise for version management
 
 ### Symlink Deployment Strategy
 

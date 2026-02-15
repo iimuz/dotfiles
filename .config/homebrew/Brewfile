@@ -54,7 +54,6 @@ brew "jq"
 
 # === programming tools
 # brew "cargo-make"
-# brew "direnv"
 # brew "dprint"  # markdown formatter
 # brew "go-task"
 brew "mise"
@@ -101,4 +100,3 @@ brew "vifm"  # tui filer
 brew "wget"
 brew "yq"
 # brew "zellij" # terminal multiplexers
-cask "alacritty" # terminal emurator
