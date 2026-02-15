@@ -15,7 +15,7 @@ set -Eeuo pipefail
 # x86_64 archの方を呼び出す方法がわからない。
 brew update
 brew upgrade
-brew bundle --file ../../homebrew/Brewfile-mac cleanup --force
+brew bundle --file ../../homebrew/Brewfile cleanup --force
 # 自動でアップロードする機能をもつパッケージについてもhomebrewでアップデートできる。
 # ただし、homebrewの思想として自前でアップデート機能を持つものは自分で実施なので、基本は有効にしない。
 # ref: <https://qiita.com/bonji/items/183160eab52919aaf93e>

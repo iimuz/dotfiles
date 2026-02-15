@@ -44,12 +44,12 @@ This is a cross-platform dotfiles repository using a symlink-based deployment st
 **Homebrew Bundle System:**
 
 - Environment detection in `.config/homebrew/homebrew-bundle.sh` sets `HOMEBREW_BUNDLE_FILE`
-- Platform-specific Brewfile: `Brewfile-mac` (macOS ARM64 only)
+- Platform-specific Brewfile: `Brewfile` (macOS ARM64 only)
 - Only macOS Apple Silicon (ARM64) environment is supported for Homebrew
 
 **Package Installation Patterns:**
 
-- **setup.sh**: Homebrew-based with `brew bundle` automation using platform-specific Brewfiles
+- **setup.sh**: Homebrew-based with `brew bundle` automation
 - **setup_aarch64.sh**: apt-based with custom installations (lazygit, neovim, yq via curl/wget)
 - **setup_codespaces.sh**: Homebrew-based for GitHub Codespaces environment
 - **setup_proot_arm64.sh**: Mixed apt + manual installations with custom functions

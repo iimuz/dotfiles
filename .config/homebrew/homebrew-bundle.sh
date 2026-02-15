@@ -11,8 +11,5 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# === current directory
-current_directory="$(cd "$(dirname "${BASH_SOURCE[0]:-${(%):-%N}}")" && pwd)"
-
 # === Brewfileの場所を設定
-export HOMEBREW_BUNDLE_FILE="$current_directory/Brewfile-mac"
+export HOMEBREW_BUNDLE_FILE="${_DOTFILES_CONFIG_DIR}/homebrew/Brewfile"
