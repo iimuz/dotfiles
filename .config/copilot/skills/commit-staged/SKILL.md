@@ -37,7 +37,7 @@ bash /path/to/skills/commit-staged/scripts/commit.sh --type feat --description "
    bash scripts/staged-files.sh
    ```
 
-2. Analyze the diff and determine appropriate `--type`, `--description`, and optional `--body`
+2. **Automatically** analyze the diff and determine appropriate `--type`, `--description`, and optional `--body` **without asking the user**
 
 3. Execute the commit:
 
