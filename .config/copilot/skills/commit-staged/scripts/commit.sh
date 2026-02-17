@@ -2,26 +2,8 @@
 
 set -euo pipefail
 
-# Type to emoji mapping (portable)
+# Allowed commit types
 ALLOWED_TYPES=(build chore ci docs feat fix perf refactor revert style test i18n)
-
-get_emoji() {
-  case "$1" in
-  build) echo ":building_construction:" ;;
-  chore) echo ":wrench:" ;;
-  ci) echo ":construction_worker:" ;;
-  docs) echo ":memo:" ;;
-  feat) echo ":sparkles:" ;;
-  fix) echo ":bug:" ;;
-  perf) echo ":zap:" ;;
-  refactor) echo ":recycle:" ;;
-  revert) echo ":rewind:" ;;
-  style) echo ":lipstick:" ;;
-  test) echo ":white_check_mark:" ;;
-  i18n) echo ":globe_with_meridians:" ;;
-  *) echo "" ;;
-  esac
-}
 
 # Initialize variables
 TYPE=""
@@ -81,16 +63,16 @@ if ! git diff --staged --name-only | grep -q .; then
   exit 1
 fi
 
-# Get emoji for type and validate
-EMOJI=$(get_emoji "$TYPE")
-if [[ -z "$EMOJI" ]]; then
+# Validate type
+pattern=" ${TYPE} "
+if [[ ! " ${ALLOWED_TYPES[*]} " =~ $pattern ]]; then
   echo "Error: Invalid type '$TYPE'" >&2
   echo "Allowed types: ${ALLOWED_TYPES[*]}" >&2
   exit 1
 fi
 
 # Build commit message
-COMMIT_MSG="${TYPE}: ${EMOJI} ${DESCRIPTION}"
+COMMIT_MSG="${TYPE}: ${DESCRIPTION}"
 
 if [[ -n "$BODY" ]]; then
   COMMIT_MSG="${COMMIT_MSG}

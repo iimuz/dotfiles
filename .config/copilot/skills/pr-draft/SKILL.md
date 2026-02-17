@@ -7,7 +7,7 @@ description: Create GitHub pull request drafts using Conventional Commit paramet
 
 ## Purpose
 
-This skill provides standardized GitHub pull request creation with Conventional Commits style formatting. It ensures consistent PR structure with proper type validation and emojis.
+This skill provides standardized GitHub pull request creation with Conventional Commits style formatting. It ensures consistent PR structure with proper type validation.
 
 ## Prerequisites
 
@@ -122,7 +122,7 @@ bash scripts/create-pr.sh \
 **Parameters**:
 
 - `--type`: (Required) PR type. Must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test, i18n
-- `--title`: (Required) Short description of the change (max 100 chars including type and emoji)
+- `--title`: (Required) Short description of the change (max 100 chars including type)
 - `--changes`: (Required) Description of changes with bullet points
 - `--related-urls`: (Optional) Related URLs or issue links
 - `--confirmation`: (Optional) Confirmation test results
@@ -135,7 +135,7 @@ bash scripts/create-pr.sh \
 
 PR Title:
 ```
-<type>: <emoji> <title>
+<type>: <title>
 ```
 
 PR Body:
@@ -236,7 +236,7 @@ bash scripts/create-pr.sh \
 ## Rules and Guidelines
 
 1. **Title**:
-   - Format: `<type>: <emoji> <title>`
+   - Format: `<type>: <title>`
    - Use imperative mood
    - No capitalization
    - No period at the end

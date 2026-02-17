@@ -9,26 +9,8 @@ if ! git rev-parse --git-dir >/dev/null 2>&1; then
   exit 1
 fi
 
-# Type to emoji mapping (portable)
+# Allowed PR types
 ALLOWED_TYPES=(build chore ci docs feat fix perf refactor revert style test i18n)
-
-get_emoji() {
-  case "$1" in
-  build) echo ":building_construction:" ;;
-  chore) echo ":wrench:" ;;
-  ci) echo ":construction_worker:" ;;
-  docs) echo ":memo:" ;;
-  feat) echo ":sparkles:" ;;
-  fix) echo ":bug:" ;;
-  perf) echo ":zap:" ;;
-  refactor) echo ":recycle:" ;;
-  revert) echo ":rewind:" ;;
-  style) echo ":lipstick:" ;;
-  test) echo ":white_check_mark:" ;;
-  i18n) echo ":globe_with_meridians:" ;;
-  *) echo "" ;;
-  esac
-}
 
 # Initialize variables
 TYPE=""
@@ -104,16 +86,15 @@ if [[ -z "$CHANGES" ]]; then
   exit 1
 fi
 
-# Get emoji for type and validate
-EMOJI=$(get_emoji "$TYPE")
-if [[ -z "$EMOJI" ]]; then
+# Validate type
+if [[ ! " ${ALLOWED_TYPES[*]} " =~  ${TYPE}  ]]; then
   echo "Error: Invalid type '$TYPE'" >&2
   echo "Allowed types: ${ALLOWED_TYPES[*]}" >&2
   exit 1
 fi
 
-# Build PR title: <type>: <emoji> <title>
-PR_TITLE="${TYPE}: ${EMOJI} ${TITLE}"
+# Build PR title: <type>: <title>
+PR_TITLE="${TYPE}: ${TITLE}"
 
 # Build PR body
 PR_BODY="## Related URLs"

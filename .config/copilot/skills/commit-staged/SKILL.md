@@ -7,7 +7,7 @@ description: Commit staged changes using Conventional Commit parameters (validat
 
 ## Purpose
 
-Standardized git commits following Conventional Commits 1.0.0 with type validation and emojis.
+Standardized git commits following Conventional Commits 1.0.0 with type validation.
 
 ## Contract
 
@@ -62,7 +62,7 @@ bash scripts/commit.sh --type <type> --description <description> [--body <body>]
 Parameters:
 
 - `--type`: Required. Valid types in `references/types.md`
-- `--description`: Required. Natural language summary (max 100 chars with type/emoji)
+- `--description`: Required. Natural language summary (max 100 chars with type)
 - `--body`: Optional. Bullet points starting with "-"
 
 ## Message Guidelines
@@ -90,4 +90,4 @@ bash scripts/commit.sh \
 - add error handling for expired tokens"
 ```
 
-Output format: `<type>: <emoji> <description>`
+Output format: `<type>: <description>`
