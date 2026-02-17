@@ -1,19 +1,18 @@
----
-name: update-agents
-description: This skill updates AGENTS.md based on recent repository changes identified from git diff and work history. This skill should be used after significant code changes to keep project context current for AI agents.
----
+# Update Workflow
+
+Review recent repository changes and update `.github/copilot-instructions.md` to reflect current state.
 
 ## Goal
 
-Review recent repository changes and update AGENTS.md to reflect current architecture, commands, and conventions.
+Review recent repository changes and update copilot-instructions.md to reflect current architecture, commands, and conventions.
 
-## When to Use This Skill
+## When to Use
 
 - After completing feature implementation or refactoring
 - Repository structure has changed (new directories, moved files)
 - Build/test/deploy commands have been modified
 - New code conventions or patterns have been established
-- User explicitly requests AGENTS.md update
+- User explicitly requests copilot-instructions.md update
 
 ## Instructions
 
@@ -22,10 +21,10 @@ Review recent repository changes and update AGENTS.md to reflect current archite
 Check recent work and modifications:
 
 ```bash
-## Review last 5 commits (adjust range based on scope of changes; use fewer for young repos)
+# Review last 5 commits (adjust range based on scope of changes; use fewer for young repos)
 git --no-pager diff HEAD~5..HEAD -- . ':!*.lock' ':!package-lock.json' ':!yarn.lock'
 
-## Recent commit history for broader context
+# Recent commit history for broader context
 git --no-pager log --oneline -10
 ```
 
@@ -36,7 +35,7 @@ Look for:
 - Modified build/test scripts
 - Changed configuration files
 
-### 2. Update AGENTS.md Sections
+### 2. Update copilot-instructions.md Sections
 
 Use concise, actionable, imperative-form content when updating. For each section:
 
@@ -78,11 +77,11 @@ If updates made:
 
 If no updates needed:
 
-- Report "No updates required - AGENTS.md is current"
+- Report "No updates required - copilot-instructions.md is current"
 
 ## Success Criteria
 
-- AGENTS.md reflects current repository state
+- copilot-instructions.md reflects current repository state
 - All commands are accurate and verified
 - New architecture changes are documented
 - Obsolete information is removed
