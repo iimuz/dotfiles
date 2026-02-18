@@ -47,7 +47,7 @@ Location: ~/.copilot/session-state/{{session-id}}/files/
 """
 task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=step_prompt)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=step_prompt)
 ```
 
 ## Cross-Review Pattern
@@ -72,7 +72,7 @@ Output: Save review to step2-{{model}}-review-20260205.md
 # Each agent reviews all outputs from session files
 task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_context, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_context)
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=review_context)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=review_context)
 ```
 
 ## Consolidation Strategy (Subagent-Driven)
@@ -113,7 +113,7 @@ Conflict: {identified_conflict_description}
 Task: Determine optimal resolution using evidence-based analysis.
 Output: Save resolution to conflict-resolution-{conflict_id}-20260205.md
 """
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=conflict_prompt)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=conflict_prompt)
 ```
 
 **Important**: Each conflict gets its own subagent invocation. Do not batch conflicts. All outputs saved to session files.
@@ -168,7 +168,7 @@ Output: Save analysis to {session_files}step1-{{model}}-analysis-{timestamp}.md
 """
 task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step1_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step1_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=step1_prompt)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=step1_prompt)
 
 # Cross-review - Reference session files from Step 1
 review_prompt = f"""
@@ -184,7 +184,7 @@ Output: Save review to {session_files}step2-{{model}}-review-{timestamp}.md
 """
 task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_prompt, thinking_level="xhigh")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=review_prompt)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=review_prompt)
 
 # Consolidation - Reference all review session files
 consolidation_prompt = f"""
@@ -198,7 +198,7 @@ Location: {session_files}
 Consolidate findings, resolve conflicts, validate insights.
 Output: Save to {session_files}step2-consolidated-{timestamp}.md
 """
-task(agent_type="general-purpose", model="claude-sonnet-4.6-thinking-high", prompt=consolidation_prompt)
+task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", prompt=consolidation_prompt)
 
 # Step 3: Generate Final Plan - Reference consolidated session file
 plan_prompt = f"""
