@@ -47,6 +47,9 @@ FINAL RANKING:
 
 ## Responses to Evaluate
 
-{anonymized_responses}
+Read the anonymized responses from:
+`{anonymized_input_filepath}`
+
+Use the `view` tool to read this file, then evaluate every response label present.
 
 ## Your Evaluation
