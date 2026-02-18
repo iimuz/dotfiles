@@ -1,18 +1,17 @@
----
-name: refactor-agents
-description: This skill should be used when a comprehensive review of AGENTS.md is needed, comparing the entire repository state against current documentation to identify and apply updates.
----
+# Refactor Workflow
+
+Perform comprehensive repository analysis and compare against `.github/copilot-instructions.md`, presenting changes for user approval.
 
 ## Goal
 
-Perform a thorough repository analysis and compare findings against AGENTS.md, presenting specific suggested changes for user approval before applying updates.
+Perform a thorough repository analysis and compare findings against copilot-instructions.md, presenting specific suggested changes for user approval before applying updates.
 
-## When to Use This Skill
+## When to Use
 
-- AGENTS.md feels outdated but recent commits don't reveal full scope of drift
+- copilot-instructions.md feels outdated but recent commits don't reveal full scope of drift
 - Major refactoring or restructuring has occurred over time
-- Need comprehensive verification of all AGENTS.md sections
-- User explicitly requests full AGENTS.md validation
+- Need comprehensive verification of all copilot-instructions.md sections
+- User explicitly requests full copilot-instructions.md validation
 - Periodic maintenance to ensure documentation accuracy
 
 ## Instructions
@@ -24,7 +23,7 @@ Analyze the entire codebase to understand current state:
 **Architecture & Structure**
 
 ```bash
-### Directory structure
+# Directory structure
 tree -L 3 -d --gitignore || find . -maxdepth 3 -type d -not -path '*/.git/*'
 ```
 
@@ -50,11 +49,11 @@ Use the glob tool to discover key file patterns: `**/*.{json,toml,yaml,yml,md,sh
 
 Use the `explore` agent for complex analysis tasks. Make parallel grep/glob calls for efficiency.
 
-### 2. Load and Parse Existing AGENTS.md
+### 2. Load and Parse Existing copilot-instructions.md
 
-First verify AGENTS.md exists. If it does not exist, inform the user and suggest using the `create-agents` skill instead.
+First verify `.github/copilot-instructions.md` exists. If it does not exist, inform the user and suggest using the create workflow instead.
 
-Read AGENTS.md and identify all documented sections:
+Read copilot-instructions.md and identify all documented sections:
 
 - Project description
 - Code style conventions
@@ -63,7 +62,7 @@ Read AGENTS.md and identify all documented sections:
 - Directory structure
 - Important notes and warnings
 
-### 3. Compare Findings Against AGENTS.md
+### 3. Compare Findings Against copilot-instructions.md
 
 For each section, identify discrepancies:
 
@@ -111,7 +110,7 @@ Otherwise, use the ask_user tool to request which changes to apply:
 
 For each approved update:
 
-- Make precise edits to AGENTS.md using edit tool. If an edit fails, retry with expanded context or apply manually.
+- Make precise edits to copilot-instructions.md using edit tool. If an edit fails, retry with expanded context or apply manually.
 - Preserve existing formatting and style
 - Maintain concise, imperative-form language
 - Keep bullet-point structure
@@ -129,6 +128,6 @@ After updates:
 - Complete repository analysis covers all major aspects (architecture, commands, conventions)
 - Comparison report clearly shows current vs. actual state with specific suggestions
 - User has opportunity to review and approve changes before application
-- Only approved changes are applied to AGENTS.md
+- Only approved changes are applied to copilot-instructions.md
 - Updated content is accurate, concise, and matches repository reality
 - Final report confirms all changes applied successfully

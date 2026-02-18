@@ -29,6 +29,18 @@ Invoke this skill when:
 - **AI-optimized formatting**: Zero-ambiguity language with machine-parseable structures
 - **Lifecycle tracking**: Status badges (Planned, In Progress, Completed, On Hold, Deprecated)
 
+## Model Configuration
+
+| Role | Model | Provider | Purpose |
+|------|-------|----------|---------|
+| Analyzer 1 | `claude-opus-4.6` | Anthropic | Deep reasoning and architecture insights |
+| Analyzer 2 | `gemini-3-pro-preview` | Google | Broad knowledge and alternative perspectives |
+| Analyzer 3 | `gpt-5.3-codex` | OpenAI | Structured thinking and code-focused analysis |
+| Consolidator | `claude-opus-4.6` | Anthropic | Consensus aggregation (Step 3A) |
+| Conflict Resolver | `gpt-5.3-codex` | OpenAI | Evidence-based conflict resolution (Step 3B) |
+| Insight Validator | `gemini-3-pro-preview` | Google | Technical feasibility assessment (Step 3C) |
+| Synthesizer | `gpt-5.3-codex` | OpenAI | Final authoritative plan generation (Step 3D) |
+
 ## Critical File Output Requirements
 
 **ALL intermediate and final outputs MUST be saved to the session files folder:**
@@ -46,62 +58,34 @@ Execute all steps using multi-agent delegation for higher quality and parallel e
 
 **Purpose**: Analyze requirements from multiple specialized perspectives in parallel
 
-**Subagents (12 parallel invocations - 4 aspects × 3 models)**:
-
-1. **Requirements & Scope**: Extract functional/non-functional requirements, scope boundaries, success criteria
-2. **Architecture & Feasibility**: Evaluate technical approach, codebase patterns, integration points
-3. **Dependencies & Impact**: Map file/module dependencies, assess cross-component impacts
-4. **Risk Assessment**: Identify technical risks, resource constraints, security considerations
-
-**Delegation Pattern**:
+1. Read [references/analysis-prompt.md](references/analysis-prompt.md).
+2. Inject `{user_request}` with the implementation task description.
+3. Inject `{codebase_context}` with relevant codebase information (file structure, existing patterns, key components).
+4. Inject `{output_filepath}` = `~/.copilot/session-state/{session-id}/files/step1-{model}-{timestamp}.md` for each agent, where `{timestamp}` uses format `YYYYMMDDHHMMSS`.
+5. Launch 3 parallel `task()` calls:
 
 ```
-Execute all 12 agents (4 aspects × 3 models) in parallel within a single response:
-
-# Requirements & Scope aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Requirements analysis - Claude", prompt="...")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Requirements analysis - Gemini", prompt="...")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Requirements analysis - GPT", prompt="...", thinking_level="xhigh")
-
-# Architecture & Feasibility aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Architecture analysis - Claude", prompt="...")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Architecture analysis - Gemini", prompt="...")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Architecture analysis - GPT", prompt="...", thinking_level="xhigh")
-
-# Dependencies & Impact aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Dependencies analysis - Claude", prompt="...")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Dependencies analysis - Gemini", prompt="...")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Dependencies analysis - GPT", prompt="...", thinking_level="xhigh")
-
-# Risk Assessment aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Risk analysis - Claude", prompt="...")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Risk analysis - Gemini", prompt="...")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Risk analysis - GPT", prompt="...", thinking_level="xhigh")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 1 Analysis - Claude", prompt=<analysis-prompt with injected request and filepath>)
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 1 Analysis - Gemini", prompt=<analysis-prompt with injected request and filepath>)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 1 Analysis - GPT", prompt=<analysis-prompt with injected request and filepath>)
 ```
 
-**Outputs**: 12 analysis files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
+6. Collect responses. If fewer than 2 succeed, abort with error: "Analysis quorum not met: fewer than 2 analyses received." If exactly 2 succeed, continue with a degraded-mode notice appended to the final output.
 
-- `step1-requirements-claude-opus-4.6-{timestamp}.md`
-- `step1-requirements-gemini-3-pro-preview-{timestamp}.md`
-- `step1-requirements-gpt-5.3-codex-{timestamp}.md`
-- `step1-architecture-claude-opus-4.6-{timestamp}.md`
-- `step1-architecture-gemini-3-pro-preview-{timestamp}.md`
-- `step1-architecture-gpt-5.3-codex-{timestamp}.md`
-- `step1-dependencies-claude-opus-4.6-{timestamp}.md`
-- `step1-dependencies-gemini-3-pro-preview-{timestamp}.md`
-- `step1-dependencies-gpt-5.3-codex-{timestamp}.md`
-- `step1-risks-claude-opus-4.6-{timestamp}.md`
-- `step1-risks-gemini-3-pro-preview-{timestamp}.md`
-- `step1-risks-gpt-5.3-codex-{timestamp}.md`
+**Outputs**: 3 analysis files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
 
-See `references/implementation_patterns.md` for complete code examples.
+| File | Content |
+|------|---------|
+| `step1-claude-opus-4.6-{timestamp}.md` | Claude's multi-perspective analysis |
+| `step1-gemini-3-pro-preview-{timestamp}.md` | Gemini's multi-perspective analysis |
+| `step1-gpt-5.3-codex-{timestamp}.md` | GPT's multi-perspective analysis |
 
 ### Step 2: Multi-Agent Plan Generation & Cross-Review
 
 **Purpose**: Generate multiple independent plan drafts and cross-review for quality
 
 **Sub-Step 2A - Plan Generation (3 parallel invocations)**:
-Each agent reads all 4 Step 1 analysis files and generates complete implementation plan following `references/template.md` structure.
+Each agent reads all 3 Step 1 analysis files and generates complete implementation plan following `references/template.md` structure.
 
 1. **GPT-5.3-Codex**: Generate plan draft from consolidated analysis
 2. **Claude Opus 4.6**: Generate independent plan draft
@@ -114,13 +98,20 @@ Each agent reads all 3 plan drafts and identifies:
 - Conflicts (contradictory approaches, incompatible dependencies)
 - Best practices (superior task breakdowns, better validation criteria)
 
-**Delegation Pattern**:
+**Sub-Step 2A Delegation** (launch 3 parallel tasks):
 
 ```
-Sub-Step 2A: Each agent reads step1-*-{claude-opus-4.6,gemini-3-pro-preview,gpt-5.3-codex}-*.md files from ~/.copilot/session-state/{session-id}/files/
-            Outputs to ~/.copilot/session-state/{session-id}/files/step2-{model}-plan-draft-{timestamp}.md
-Sub-Step 2B: Each agent reads step2-*-plan-draft-*.md files from ~/.copilot/session-state/{session-id}/files/
-            Outputs to ~/.copilot/session-state/{session-id}/files/step2-{model}-review-{timestamp}.md
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2A Draft - Claude", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-claude-opus-4.6-plan-draft-{timestamp}.md>)
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2A Draft - Gemini", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-gemini-3-pro-preview-plan-draft-{timestamp}.md>)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A Draft - GPT", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>)
+```
+
+**Sub-Step 2B Delegation** (launch 3 parallel tasks):
+
+```
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2B Review - Claude", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-claude-opus-4.6-review-{timestamp}.md>)
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2B Review - Gemini", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-gemini-3-pro-preview-review-{timestamp}.md>)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2B Review - GPT", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-gpt-5.3-codex-review-{timestamp}.md>)
 ```
 
 **Outputs**: 6 files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
@@ -132,15 +123,15 @@ Sub-Step 2B: Each agent reads step2-*-plan-draft-*.md files from ~/.copilot/sess
 
 **Purpose**: Consolidate multi-agent outputs into single authoritative plan
 
-**Sub-Steps (sequential, 3-5 subagent invocations)**:
+**Sub-Steps (3A first, then 3B and 3C in parallel, then 3D)**:
 
 **3A. Consensus Aggregation** (1 agent, claude-opus-4.6):
 Read all review files, extract shared insights and universally agreed-upon best practices.
 Output: `~/.copilot/session-state/{session-id}/files/step3a-consensus-{timestamp}.md`
 
-**3B. Conflict Resolution** (1 agent per conflict, gpt-5.3-codex):
-For each identified conflict, invoke dedicated subagent to resolve using evidence-based analysis.
-Output: `~/.copilot/session-state/{session-id}/files/step3b-conflict-{id}-{timestamp}.md`
+**3B. Conflict Resolution** (1 agent, gpt-5.3-codex):
+Read the 3A consensus output, identify all conflicts, and resolve each one with evidence-based analysis in a single pass.
+Output: `~/.copilot/session-state/{session-id}/files/step3b-resolutions-{timestamp}.md`
 
 **3C. Insight Validation** (1 agent, gemini-3-pro-preview):
 Assess model-specific unique insights for technical feasibility and value-add.
@@ -150,15 +141,31 @@ Output: `~/.copilot/session-state/{session-id}/files/step3c-insights-{timestamp}
 Read all consolidation outputs and generate final authoritative plan following `references/template.md` structure exactly.
 Output: `~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md`
 
-**Delegation Pattern**:
+**Delegation Pattern** (3A → [3B + 3C in parallel] → 3D):
 
+**3A** (run first):
 ```
-Sequential execution:
-1. Read step2-*-review-*.md from ~/.copilot/session-state/{session-id}/files/ → Consensus
-2. Read reviews + drafts from ~/.copilot/session-state/{session-id}/files/ → Resolve each conflict independently
-3. Read drafts + reviews from ~/.copilot/session-state/{session-id}/files/ → Validate unique insights
-4. Read step3{a-c}-*.md + drafts from ~/.copilot/session-state/{session-id}/files/ → Synthesize final plan
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 3A Consensus", prompt=<read all step2-*-review-{timestamp}.md from session folder; extract shared insights and universally agreed best practices; identify conflicts for 3B; save to step3a-consensus-{timestamp}.md>)
 ```
+
+**3B and 3C** (launch in parallel after 3A completes):
+
+3B (single task):
+```
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict Resolution", prompt=<read step3a-consensus-{timestamp}.md from session folder at ~/.copilot/session-state/{session-id}/files/; identify all conflicts listed; resolve each one with evidence-based analysis; save all resolutions to step3b-resolutions-{timestamp}.md>)
+```
+
+3C:
+```
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 3C Insight Validation", prompt=<read step2-*-plan-draft-{timestamp}.md and step2-*-review-{timestamp}.md from session folder; assess feasibility and value of model-specific unique insights; save to step3c-insights-{timestamp}.md>)
+```
+
+**3D** (after 3B and 3C complete):
+```
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis", prompt=<read synthesis-prompt.md; session-id={session-id}; user_request={user_request}; output_filepath=~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md; synthesis-prompt.md instructs the agent to self-discover all step2/step3 intermediate files from the session folder, selecting only the most recent file per step (highest timestamp) when multiple exist; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
+```
+
+**After Step 3D completes**: Return the file path of the final plan (`~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md`) to the caller. Do NOT read the file content into the main agent context -- the caller can read it directly.
 
 **Final Output**: Implementation plan in session files folder
 
@@ -240,9 +247,62 @@ Brief overview of use cases. See `references/examples.md` for complete implement
 - Dependencies explicitly declared with TASK-### IDs
 - Phases independent unless cross-phase dependencies noted
 
+## Session Files
+
+All files are saved to `~/.copilot/session-state/{session-id}/files/`:
+
+| File | Content |
+|------|---------|
+| `step1-claude-opus-4.6-{timestamp}.md` | Claude's multi-perspective analysis |
+| `step1-gemini-3-pro-preview-{timestamp}.md` | Gemini's multi-perspective analysis |
+| `step1-gpt-5.3-codex-{timestamp}.md` | GPT's multi-perspective analysis |
+| `step2-claude-opus-4.6-plan-draft-{timestamp}.md` | Claude's plan draft |
+| `step2-gemini-3-pro-preview-plan-draft-{timestamp}.md` | Gemini's plan draft |
+| `step2-gpt-5.3-codex-plan-draft-{timestamp}.md` | GPT's plan draft |
+| `step2-claude-opus-4.6-review-{timestamp}.md` | Claude's cross-review |
+| `step2-gemini-3-pro-preview-review-{timestamp}.md` | Gemini's cross-review |
+| `step2-gpt-5.3-codex-review-{timestamp}.md` | GPT's cross-review |
+| `step3a-consensus-{timestamp}.md` | Consensus aggregation |
+| `step3b-resolutions-{timestamp}.md` | All conflict resolutions (single file) |
+| `step3c-insights-{timestamp}.md` | Validated unique insights |
+| `{purpose}-{component}-{version}.md` | Final implementation plan |
+
+Timestamps use format `YYYYMMDDHHMMSS` (e.g., `20260218064435`). The `{session-id}` is the actual session UUID from `~/.copilot/session-state/`.
+
+## Error Handling
+
+| Condition | Behavior |
+|-----------|----------|
+| Step 1: Fewer than 2 analyses succeed | Abort with "Analysis quorum not met" error |
+| Step 1: Exactly 2 analyses succeed | Continue in degraded mode; note it in final output |
+| Step 2A: Fewer than 2 plan drafts generated | Abort; restart Step 2A with adjusted prompt |
+| Step 2B: All reviewers fail | Abort; restart Step 2B with adjusted prompts |
+| Step 2B: Review parse failure on 1 reviewer | Skip that reviewer; note in Step 3A consolidation |
+| Step 3A or 3C: Failure | Pass available outputs directly to Step 3D with fallback notice |
+| Step 3B: No conflicts identified | Skip Step 3B; proceed directly to Step 3C |
+| Step 3D: Failure | Present the highest-quality Step 2A draft as fallback with notice |
+
+## Invocation Example
+
+```
+# Step 1: invoke the skill
+skill: implementation-plan
+
+# Step 2: describe your implementation task in the conversation
+"Add JWT-based authentication to the Express API"
+```
+
+Example tasks well-suited for the Implementation Plan skill:
+- "Refactor the legacy command system to a plugin architecture"
+- "Upgrade from Node 16 to Node 20"
+- "Implement a database migration from MySQL to PostgreSQL"
+- "Add real-time WebSocket notifications to the existing REST API"
+
 ## Reference Materials
 
 - `references/template.md` - Mandatory plan template structure
-- `references/implementation_patterns.md` - Multi-agent workflow code examples
+- `references/analysis-prompt.md` - Step 1 multi-perspective analysis prompt
+- `references/synthesis-prompt.md` - Step 3D final synthesis prompt
+- `references/implementation_patterns.md` - Workflow coordination guide
 - `references/examples.md` - Complete plan examples for various scenarios
 - `references/api_reference.md` - Quick reference guide with patterns and conventions

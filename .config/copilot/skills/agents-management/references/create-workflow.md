@@ -1,33 +1,32 @@
----
-name: create-agents
-description: This skill creates or updates AGENTS.md files to provide repository context for AI agents. This skill should be used when a repository needs structured documentation about its architecture, commands, and conventions.
----
+# Create Workflow
 
-# Goal
+Generate `.github/copilot-instructions.md` from scratch by analyzing the entire codebase.
+
+## Goal
 
 Analyze the codebase and create a concise project context file that helps AI agents understand the repository quickly and work effectively.
 
-# When to Use This Skill
+## When to Use
 
-- Repository lacks AGENTS.md
+- Repository lacks `.github/copilot-instructions.md`
 - Existing project context file is outdated or incomplete
-- User explicitly asks to create/update project documentation for AI agents
+- User explicitly asks to create project documentation for AI agents from scratch
 
-# Instructions
+## Instructions
 
-## 1. Analyze the Repository
+### 1. Analyze the Repository
 
 Explore the codebase to identify:
 
 - Project type and main technologies (framework, language, libraries)
 - Directory structure and architectural patterns
-- Build/test/lint commands (check package.json, Makefile, etc.)
+- Build/test/lint commands (check package.json, Makefile, mise.toml, pyproject.toml, etc.)
 - Code conventions (imports style, formatting, naming patterns)
 - Critical security/deployment notes
 
 Use the `explore` agent or grep/glob tools to efficiently gather this information.
 
-## 2. Create Structured Documentation
+### 2. Create Structured Documentation
 
 Generate a markdown file with these sections (adapt based on project type):
 
@@ -62,7 +61,7 @@ Generate a markdown file with these sections (adapt based on project type):
 - Common pitfalls
 - References to detailed docs if available
 
-## 3. Keep It Concise
+### 3. Keep It Concise
 
 - Use bullet points, not paragraphs
 - Focus on actionable information
@@ -70,17 +69,24 @@ Generate a markdown file with these sections (adapt based on project type):
 - Reference external docs with `@path/to/doc.md` when appropriate
 - Aim for 20-40 lines total
 
-## 4. Output Format
+### 4. Output Format
 
-Save as one of these filenames (ask user preference if unclear):
+Save as `.github/copilot-instructions.md` (create `.github/` directory if needed).
 
-- `AGENTS.md` - General AI agent context
+For reference structure, see:
+- `references/template.md` - Blank template
+- `references/example.md` - Concrete example
 
-## Example Structure
+**Note:** For path-specific instructions, use `.github/instructions/NAME.instructions.md` with frontmatter:
+```yaml
+---
+applyTo: "src/**/*.ts"
+---
+```
 
-See `references/template.md` for a complete template structure.
+Legacy `AGENTS.md` at repository root is still supported but `.github/copilot-instructions.md` is preferred.
 
-# Success Criteria
+## Success Criteria
 
 - File is created and contains all relevant sections
 - Information is accurate based on actual codebase analysis

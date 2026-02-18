@@ -75,8 +75,6 @@ if type bash >/dev/null 2>&1; then
   create_symlink $SCRIPT_DIR/.inputrc $HOME/.inputrc
 fi
 
-
-
 # === git
 if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
@@ -123,7 +121,8 @@ fi
 if type code >/dev/null 2>&1; then
   # Copilot CLI
   create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
+  create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
+  create_symlink $SCRIPT_DIR/.config/copilot/lsp-config.json $HOME/.config/.copilot/lsp-config.json
   create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
   create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
-  create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
 fi

@@ -1,5 +1,6 @@
 [tools]
+"aqua:LuaLS/lua-language-server" = "latest"
+"npm:bash-language-server" = "latest"
 
 [env]
 mise.file = ".env"
-

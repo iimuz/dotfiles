@@ -1,6 +1,6 @@
 # Implementation Patterns
 
-Detailed implementation examples for the multi-agent cross-review workflow.
+Workflow coordination guide for the multi-agent implementation planning process.
 
 ## Session Files Protocol
 
@@ -8,204 +8,102 @@ All subagent outputs must be saved to session files for proper workflow coordina
 
 **CRITICAL: Always use the complete path with session-id**
 
-**Location**: `~/.copilot/session-state/{session-id}/files/`
-
-**INCORRECT (DO NOT USE)**: `~/.copilot/session-state/files/` ❌ (missing session-id)
-
-**CORRECT**: `~/.copilot/session-state/{session-id}/files/` ✅
-
-**Naming Convention**: `[step]-[model]-[component]-[timestamp].md`
+- **Location**: `~/.copilot/session-state/{session-id}/files/`
+- **INCORRECT (DO NOT USE)**: `~/.copilot/session-state/files/` (missing session-id)
+- **CORRECT**: `~/.copilot/session-state/{session-id}/files/`
+- **Naming Convention**: `[step]-[model]-[timestamp].md` or `[step]-[model]-[component]-[timestamp].md`
 
 Examples:
-
-- `step1-gpt-analysis-20260205.md`
-- `step2-gemini-review-20260205.md`
-- `consolidated-findings-20260205.md`
+- `step1-claude-opus-4.6-20260218064435.md`
+- `step2-gemini-3-pro-preview-plan-draft-20260218064435.md`
+- `step2-gpt-5.3-codex-review-20260218064435.md`
+- `feature-jwt-auth-1.md`
 
 **Benefits**:
-
 - Persistent outputs across subagent invocations
 - Clear audit trail of multi-agent workflow
 - Easy reference passing between subagents
 - Enables parallel execution without context conflicts
 
-## Parallel Subagent Invocation
+## Step 1: Parallel Analysis
 
-Execute the same task across multiple models simultaneously, each writing to session files:
+Launch 3 `task()` calls simultaneously, each injecting the user's implementation request and a unique `{output_filepath}`:
 
-```python
-# IMPORTANT: Always include {session-id} in the path
-# CORRECT: ~/.copilot/session-state/{session-id}/files/
-# WRONG:   ~/.copilot/session-state/files/
+```
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 1 Analysis - Claude",
+     prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-claude-opus-4.6-{timestamp}.md>)
 
-# Step 1 execution across three models
-step_prompt = f"""
-{step_context}
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 1 Analysis - Gemini",
+     prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-gemini-3-pro-preview-{timestamp}.md>)
 
-Output: Save analysis to session files as step1-gpt-analysis-20260205.md
-Location: ~/.copilot/session-state/{{session-id}}/files/
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step_prompt, thinking_level="xhigh")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=step_prompt)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 1 Analysis - GPT",
+     prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-gpt-5.3-codex-{timestamp}.md>)
 ```
 
-## Cross-Review Pattern
+Each agent analyzes all four aspects: Requirements & Scope, Architecture & Feasibility, Dependencies & Impact, and Risk Assessment.
 
-Reference session files from previous step for peer review:
+## Step 2A: Plan Drafting
 
-```python
-review_context = f"""
-Review these analyses saved in session files:
+After Step 1 outputs are available, launch 3 parallel `task()` calls. Each agent reads all Step 1 analysis files from the session folder and generates a complete implementation plan following `references/template.md`:
 
-Read and analyze:
-- step1-gpt-analysis-20260205.md
-- step1-gemini-analysis-20260205.md
-- step1-claude-analysis-20260205.md
+```
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2A Draft - Claude",
+     prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-claude-opus-4.6-plan-draft-{timestamp}.md>)
 
-Location: ~/.copilot/session-state/{{session-id}}/files/
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2A Draft - Gemini",
+     prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-gemini-3-pro-preview-plan-draft-{timestamp}.md>)
 
-Task: Identify gaps, conflicts, best insights, confidence levels
-Output: Save review to step2-{{model}}-review-20260205.md
-"""
-
-# Each agent reviews all outputs from session files
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_context, thinking_level="xhigh")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_context)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=review_context)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A Draft - GPT",
+     prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>)
 ```
 
-## Consolidation Strategy (Subagent-Driven)
+## Step 2B: Cross-Review
 
-Each consolidation task is delegated to specialized subagents.
+After Step 2A outputs are available, launch 3 parallel `task()` calls. Each agent reads all three plan drafts and identifies gaps, conflicts, and best practices:
 
-### 1. Common Findings Aggregation
+```
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2B Review - Claude",
+     prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-claude-opus-4.6-review-{timestamp}.md>)
 
-Extract consensus points from all agent reviews in session files:
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2B Review - Gemini",
+     prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-gemini-3-pro-preview-review-{timestamp}.md>)
 
-```python
-aggregation_prompt = f"""
-Read these review files from session files:
-- step2-gpt-review-20260205.md
-- step2-gemini-review-20260205.md
-- step2-claude-review-20260205.md
-
-Location: ~/.copilot/session-state/{{session-id}}/files/
-
-Task: Identify consensus points and shared insights.
-Output: Save to consolidated-findings-20260205.md
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=aggregation_prompt, thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2B Review - GPT",
+     prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-gpt-5.3-codex-review-{timestamp}.md>)
 ```
 
-### 2. Conflict Resolution (Per-Conflict Subagent)
+## Step 3: Consolidation Strategy
 
-Resolve each conflict independently with dedicated subagent, referencing session files:
+Execute 3A first, then launch 3B and 3C in parallel, then 3D after both complete.
 
-```python
-conflict_prompt = f"""
-Read review files to resolve this conflict:
-Files: step2-*-review-20260205.md
-Location: ~/.copilot/session-state/{{session-id}}/files/
+### 3A. Consensus Aggregation (run first)
 
-Conflict: {identified_conflict_description}
-
-Task: Determine optimal resolution using evidence-based analysis.
-Output: Save resolution to conflict-resolution-{conflict_id}-20260205.md
-"""
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=conflict_prompt)
+```
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 3A Consensus",
+     prompt=<read step2-*-review-{timestamp}.md from session folder; extract shared insights and universally agreed best practices; identify conflicts for 3B; save to step3a-consensus-{timestamp}.md>)
 ```
 
-**Important**: Each conflict gets its own subagent invocation. Do not batch conflicts. All outputs saved to session files.
+### 3B and 3C (launch in parallel after 3A completes)
 
-### 3. Unique Insights Validation
+#### 3B. Conflict Resolution (single task)
 
-Assess feasibility and value of model-specific insights from session files:
+Read the 3A consensus output, identify all conflicts, and resolve them in a single pass:
 
-```python
-insights_prompt = f"""
-Read analysis and review files to extract unique insights:
-Files: step1-*-analysis-20260205.md, step2-*-review-20260205.md
-Location: ~/.copilot/session-state/{{session-id}}/files/
-
-Task: Assess feasibility and value of each unique insight.
-Output: Save to validated-insights-20260205.md
-"""
-task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=insights_prompt)
+```
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict Resolution",
+     prompt=<read step3a-consensus-{timestamp}.md from session folder at ~/.copilot/session-state/{session-id}/files/; identify all conflicts listed; resolve each one with evidence-based analysis; save all resolutions to step3b-resolutions-{timestamp}.md>)
 ```
 
-### 4. Final Synthesis
+#### 3C. Insight Validation
 
-Merge all consolidated results from session files into unified output:
-
-```python
-synthesis_prompt = f"""
-Read consolidated outputs from session files:
-- consolidated-findings-20260205.md
-- conflict-resolution-*-20260205.md
-- validated-insights-20260205.md
-
-Location: ~/.copilot/session-state/{{session-id}}/files/
-
-Task: Produce unified, coherent result for this step.
-Output: Save to step2-final-synthesis-20260205.md
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=synthesis_prompt, thinking_level="xhigh")
+```
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 3C Insight Validation",
+     prompt=<read step2-*-plan-draft-{timestamp}.md and step2-*-review-{timestamp}.md from session folder; assess feasibility and value of model-specific unique insights; save to step3c-insights-{timestamp}.md>)
 ```
 
-## Complete Workflow Example
+### 3D. Final Synthesis (after 3B and 3C complete)
 
-```python
-# Session files location
-session_files = "~/.copilot/session-state/{session-id}/files/"
-timestamp = "20260205"
-
-# Step 1: Analyze Request - Parallel execution with session file outputs
-step1_prompt = f"""
-Analyze: Add JWT authentication to Express API
-
-Output: Save analysis to {session_files}step1-{{model}}-analysis-{timestamp}.md
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=step1_prompt, thinking_level="xhigh")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=step1_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=step1_prompt)
-
-# Cross-review - Reference session files from Step 1
-review_prompt = f"""
-Read and review these analyses from session files:
-- step1-gpt-analysis-{timestamp}.md
-- step1-gemini-analysis-{timestamp}.md
-- step1-claude-analysis-{timestamp}.md
-
-Location: {session_files}
-
-Identify gaps, conflicts, best insights.
-Output: Save review to {session_files}step2-{{model}}-review-{timestamp}.md
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=review_prompt, thinking_level="xhigh")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", prompt=review_prompt)
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=review_prompt)
-
-# Consolidation - Reference all review session files
-consolidation_prompt = f"""
-Read these review files:
-- step2-gpt-review-{timestamp}.md
-- step2-gemini-review-{timestamp}.md
-- step2-claude-review-{timestamp}.md
-
-Location: {session_files}
-
-Consolidate findings, resolve conflicts, validate insights.
-Output: Save to {session_files}step2-consolidated-{timestamp}.md
-"""
-task(agent_type="general-purpose", model="claude-sonnet-4.5", prompt=consolidation_prompt)
-
-# Step 3: Generate Final Plan - Reference consolidated session file
-plan_prompt = f"""
-Read consolidated analysis: {session_files}step2-consolidated-{timestamp}.md
-
-Generate implementation plan following template.md structure.
-Output: Save final plan to {session_files}feature-jwt-auth-1.md
-"""
-task(agent_type="general-purpose", model="gpt-5.3-codex", prompt=plan_prompt, thinking_level="xhigh")
+```
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis",
+     prompt=<read synthesis-prompt.md; session-id={session-id}; user_request={user_request}; output_filepath=~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md; the synthesis-prompt.md contains instructions to self-discover all step2 and step3 intermediate files from the session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
 ```
