@@ -61,7 +61,7 @@ Save your cross-check results to: `~/.copilot/session-state/{session-id}/files/<
 
 Where:
 
-- `<aspect>` is the review aspect being cross-checked
+- `<aspect>` is the review aspect being cross-checked — one of: `security`, `quality`, `performance`, `best-practices`
 - `<model-name>` is your model identifier
 
 ## Example Assessment

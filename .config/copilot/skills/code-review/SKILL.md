@@ -112,6 +112,7 @@ task(
   Aspects: security, quality, performance, best-practices.
 
   Build per-aspect missed-concern mappings, then launch targeted cross-check workers in parallel.
+  Each cross-check worker must use the same model that missed the concern in Stage 1 (model parity).
   Each worker must use <skill_root>/references/cross-check-prompt.md and write
   ~/.copilot/session-state/{session-id}/files/{aspect}-{model}-crosscheck.md.
 
@@ -124,6 +125,15 @@ task(
   Do not return intermediate file content."
 )
 ```
+
+**Cross-check execution constraints:**
+
+| Constraint | Rule |
+|------------|------|
+| Parallelism | Execute all cross-check workers in a single parallel response |
+| Aspect scope | Cross-check only within the same aspect (do not mix aspects) |
+| Selectivity | Only launch cross-checks for (aspect, model) pairs that actually missed issues |
+| Model parity | Each cross-check worker must use the same model as the Stage 1 run that missed the concern |
 
 2. **Await orchestrator completion** and route to Stage 3 using summary fields only.
 
