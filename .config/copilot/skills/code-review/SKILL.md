@@ -3,11 +3,18 @@ name: code-review
 description: Review code changes using multiple AI models in parallel to provide comprehensive feedback from diverse perspectives. Works with PRs, uncommitted changes, and local commits. This skill should be used when thorough multi-perspective code analysis is needed.
 ---
 
-# Code Review Skill
+# Code Review
 
-## Purpose
+## Overview
 
-This skill provides comprehensive code reviews by leveraging multiple AI models in parallel. It orchestrates three general-purpose agents (using different models) to analyze code changes from different perspectives, then synthesizes their feedback into a unified review report.
+This skill provides comprehensive code reviews by leveraging multiple AI models in parallel across 4 review aspects, followed by targeted cross-checks and consolidation into a single report.
+
+4-stage workflow:
+
+1. **Stage 1 - Parallel Aspect Review**: 12 agents (4 aspects × 3 models) independently analyze the same code changes simultaneously.
+2. **Stage 2 - Targeted Cross-Check**: Gaps identified within each aspect are re-verified by the models that missed them (skip if no gaps).
+3. **Stage 3 - Consolidate Findings**: An integration agent merges, deduplicates, and validates all findings.
+4. **Stage 4 - Deliver Results**: Present the consolidated review to the user.
 
 Use this skill when:
 
@@ -16,72 +23,35 @@ Use this skill when:
 - Seeking diverse insights on code quality, security, and best practices
 - Needing consolidated review output from multiple AI models
 
-## Contract
+Produces: aspect-specific reviews, optional targeted cross-checks, and one consolidated review document — all saved to `~/.copilot/session-state/{session-id}/files/`.
 
-- Reviews code changes in the current directory (must be a git repository)
-- Works with PRs (checked out), uncommitted changes, or local commits
-- Never modifies code (review only)
-- Uses aspect-based parallel review (4 aspects × 3 models = 12 parallel agents)
-- Outputs all review results to `~/.copilot/session-state/{session-id}/files/`
-- Produces aspect-specific reviews + cross-checks + one consolidated review document
+## Reviewer Configuration
+
+| Role | Model | Provider | Focus |
+|------|-------|----------|-------|
+| Reviewer A | `claude-opus-4.6` | Anthropic | Balanced analysis across all aspects |
+| Reviewer B | `gemini-3-pro-preview` | Google | Alternative perspective and pattern recognition |
+| Reviewer C | `gpt-5.3-codex` | OpenAI | Code-focused insights (extended thinking: xhigh) |
+| Integrator | `general-purpose` agent | — | Synthesis, deduplication, and validation |
+
+Each reviewer operates on all 4 aspects simultaneously. The integrator runs once after all aspect reviews and cross-checks complete.
 
 ## Workflow
 
-1. **Identify Changes**: Determine what to review in the current directory
-   - PR changes (if PR is checked out)
+### Stage 1: Parallel Aspect Review
+
+1. **Determine the review scope** in the current git repository:
+   - PR changes (if a PR branch is checked out)
    - Uncommitted changes (staged or unstaged)
-   - Local commits not yet pushed
-   - The current working directory must be a git repository
+   - Local commits not yet pushed to remote
 
-2. **Parallel Review**: Launch aspect-based reviews simultaneously
-   - 4 review aspects: Security, Quality, Performance, Best Practices
-   - For each aspect, launch 3 agents with different AI models (12 agents total)
-   - All agents analyze the same changes in parallel
-   - Each agent outputs to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
-   - For large changes, may chunk code and multiply agent count accordingly
+2. **Construct review prompts** for each aspect:
+   - Read the template from [references/review-prompt.md](references/review-prompt.md)
+   - Read the specific aspect criteria from [references/review-criteria.md](references/review-criteria.md)
+   - Replace `[INSERT SPECIFIC ASPECT FROM review-criteria.md HERE]` in the template with the chosen aspect
+   - If code is chunked for large changes, fill the optional scope section accordingly
 
-3. **Cross-Check Review**: Verify coverage of all review perspectives
-   - Identify issues flagged by some agents but not others
-   - Re-check specific issues with agents that didn't flag them
-   - Output cross-check results to `~/.copilot/session-state/{session-id}/files/`
-
-4. **Consolidate Results**: Synthesize all reviews into unified report
-   - Launch integration agent to merge findings from initial reviews and cross-checks
-   - Deduplicate overlapping issues
-   - Validate findings and flag potential false positives
-   - Output consolidated review to `~/.copilot/session-state/{session-id}/files/`
-
-## Parallel Review Execution
-
-Launch aspect-based reviews with multiple AI models in parallel.
-
-**Review Aspects:**
-
-Execute reviews across 4 independent aspects (from [references/review-criteria.md](references/review-criteria.md)):
-
-1. **Security Checks (CRITICAL)** - Security vulnerabilities and risks
-2. **Code Quality (HIGH)** - Maintainability and coding practices
-3. **Performance (MEDIUM)** - Efficiency and optimization
-4. **Best Practices (MEDIUM)** - Standards and conventions
-
-**Model Selection:**
-
-For each aspect, use these three models:
-
-- `claude-opus-4.6` - Balanced analysis
-- `gemini-3-pro-preview` - Alternative perspective
-- `gpt-5.3-codex` - Code-focused insights with extended thinking (xhigh)
-
-**Prompt Construction:**
-
-1. Read the template from [references/review-prompt.md](references/review-prompt.md)
-2. Read the specific aspect criteria from [references/review-criteria.md](references/review-criteria.md)
-3. Replace `[INSERT SPECIFIC ASPECT FROM review-criteria.md HERE]` in the template with the chosen aspect
-4. If code changes are large, optionally specify code scope in `[OPTIONAL: If code is chunked for large changes]` section
-
-**Execution Pattern:**
-
-Execute all 12 agents (4 aspects × 3 models) in parallel within a single response:
+3. **Launch all 12 agents in parallel** (4 aspects × 3 models) within a single response:
 
 ```
 # Security aspect (3 models)
@@ -105,127 +75,142 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Be
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Practices review - GPT", prompt="<template + Best Practices criteria>", thinking_level="xhigh")
 ```
 
-**Output Files:**
+**Review aspects** (full criteria in [references/review-criteria.md](references/review-criteria.md)):
 
-Each agent saves to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
+1. **Security Checks (CRITICAL)** - Security vulnerabilities and risks
+2. **Code Quality (HIGH)** - Maintainability and coding practices
+3. **Performance (MEDIUM)** - Efficiency and optimization
+4. **Best Practices (MEDIUM)** - Standards and conventions
 
-Examples:
+**Code chunking for large changes** (>1000 lines or >20 files):
 
-- `security-claude-opus-4.6-review.md`
-- `quality-gemini-3-pro-preview-review.md`
-- `performance-gpt-5.3-codex-review.md`
+1. Divide code into logical chunks by directory, module, or feature
+2. For each chunk, execute the full 4 aspects × 3 models review
+3. Update output filenames: `{chunk}-{aspect}-{model}-review.md`
 
-**Code Chunking (for large changes):**
+### Stage 2: Targeted Cross-Check
 
-When changes are extensive (>1000 lines or >20 files):
+After Stage 1 completes, identify per-aspect gaps and re-verify in parallel. Skip this stage entirely if no gaps are found.
 
-1. Divide code into logical chunks (by directory, module, or feature)
-2. For each chunk, execute the full aspect-based review (4 aspects × 3 models)
-3. Multiply agent count: (chunks × aspects × models)
-4. Update output filenames: `<chunk-name>-<aspect>-<model-name>-review.md`
-
-Example with 2 chunks:
-
-- `frontend-security-claude-opus-4.6-review.md`
-- `backend-security-claude-opus-4.6-review.md`
-- etc.
-
-## Cross-Check Review
-
-After aspect-based reviews complete, identify gaps within each aspect and perform targeted re-checks in parallel.
-
-**Cross-Check Process:**
-
-1. **Analyze Initial Reviews**: Compare findings within each aspect across models
-   - Read all `<aspect>-*-review.md` files from `~/.copilot/session-state/{session-id}/files/`
+1. **Analyze initial reviews** within each aspect:
+   - Read all `{aspect}-*-review.md` files from `~/.copilot/session-state/{session-id}/files/`
    - For each aspect, identify issues flagged by some models but not others
-   - Create mapping: which model missed which specific concerns within each aspect
+   - Build a mapping of (aspect, model) pairs that missed specific concerns
 
-2. **Parallel Targeted Re-Check**: Launch all cross-checks simultaneously
-   - For each (aspect, model) pair where the model missed issues, prepare targeted cross-check prompt
-   - Include only specific concerns that specific model missed in that specific aspect
-   - Execute all cross-checks in parallel (not sequentially)
-   - Each saves to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-crosscheck.md`
-
-3. **Cross-Check Prompt Template**:
-
-   Use the template from [references/cross-check-prompt.md](references/cross-check-prompt.md).
-
-   Key elements:
-   - Specify the aspect being cross-checked
-   - Provide specific issues/patterns to verify (unique per aspect and model)
-   - Ask agent to confirm or refute the concerns
-   - Focus on targeted analysis, not full re-review
-
-**Execution Pattern:**
-
-Call all cross-check agents in parallel within a single response:
+2. **Launch targeted re-checks in parallel** — one per (aspect, model) pair with gaps:
+   - Use [references/cross-check-prompt.md](references/cross-check-prompt.md) as the prompt template
+   - Include only the specific concerns that model missed in that aspect
+   - Use the same model and `thinking_level` configuration as Stage 1
 
 ```
-# Example: Within Security aspect, Claude missed issue A, Gemini missed B
-# Example: Within Quality aspect, GPT missed issue C
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Cross-check Security - Claude", prompt="<cross-check-prompt.md for Security with concern A>")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Cross-check Security - Gemini", prompt="<cross-check-prompt.md for Security with concern B>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt.md for Quality with concern C>", thinking_level="xhigh")
+# Example: Claude missed issue A in Security; GPT missed issue C in Quality
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Cross-check Security - Claude", prompt="<cross-check-prompt for Security, concern A>")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt for Quality, concern C>", thinking_level="xhigh")
 ```
 
-**Guidelines:**
+**Cross-check execution rules:**
 
-- Execute all cross-checks in parallel, not sequentially
-- Cross-check within aspects (compare models within same aspect)
-- Only cross-check (aspect, model) pairs that actually missed issues
-- Focus on specific issues per aspect and model
-- Use same model and configuration (including thinking_level for GPT) as initial review
-- Output filenames include aspect: `<aspect>-<model-name>-crosscheck.md`
-- If no gaps found in any aspect, skip cross-check phase entirely
+| Rule | Requirement |
+|------|-------------|
+| Parallelism | Execute all cross-checks in a single parallel response, never sequentially |
+| Aspect scope | Cross-check only within the same aspect (compare models on the same aspect) |
+| Selectivity | Only launch cross-checks for (aspect, model) pairs that actually missed issues |
+| Model parity | Use the same model and thinking_level as the Stage 1 run for that aspect |
 
-## Review Consolidation
+### Stage 3: Consolidate Findings
 
-After parallel reviews and cross-checks complete, consolidate all findings into a unified report.
-
-**Consolidation Process:**
-
-1. **Launch Integration Agent**: Use general-purpose agent to synthesize results
-   - Do not read individual reviews directly
-   - Delegate synthesis to agent with access to all review files
-
-2. **Integration Agent Prompt**:
-
-   Use the template from [references/integration-prompt.md](references/integration-prompt.md).
-
-   Key tasks:
-   - Read all `<aspect>-*-review.md` and `<aspect>-*-crosscheck.md` files from `~/.copilot/session-state/{session-id}/files/`
-   - Merge duplicate findings from initial reviews and cross-checks across aspects
-   - Validate findings against actual code
-   - Mark potentially incorrect findings
-   - Consider cross-check assessments (VALID/INVALID/UNCERTAIN) when consolidating
+1. **Launch one integration agent** using [references/integration-prompt.md](references/integration-prompt.md):
+   - Read all `{aspect}-{model}-review.md` and `{aspect}-{model}-crosscheck.md` files
+   - Merge duplicate findings, validate against actual code, flag false positives
+   - Consider cross-check assessments (VALID/INVALID/UNCERTAIN) when merging
    - Output to: `~/.copilot/session-state/{session-id}/files/consolidated-review.md`
 
-3. **Output Structure**: Consolidated review should include:
-   - Executive summary with statistics
+2. **Consolidated output structure** must include:
+   - Executive summary with issue counts by severity
    - Critical issues (grouped and deduplicated)
    - Warnings and suggestions
-   - Validation notes for questionable findings
+   - Validation notes for uncertain findings
 
-## Rules and Guidelines
+### Stage 4: Deliver Results
 
-**Execution Rules:**
+Present the consolidated review to the user using the Output Format below. Do not read individual review files directly — point the user to `consolidated-review.md` or summarize the integration agent's output.
 
-- Always launch exactly three general-purpose agents in parallel
-- Each agent must use a different model from the specified list
-- All agents must target the current working directory
-- Never read or analyze code directly - delegate to agents
-- Include full review checklist in each agent's prompt
+## Output Format
 
-**Output Requirements:**
+```markdown
+## Code Review Summary
 
-- Individual reviews: `<session-folder>/files/<model-name>-review.md`
-- Consolidated review: `<session-folder>/files/consolidated-review.md`
-- All files must be in session folder files/ directory (not committed to repo)
+Brief assessment of overall change quality and scope.
 
-**Review Quality:**
+### Critical Issues (Blocking)
+- **[file:line]** Description. Why it matters. Suggested fix.
 
-- Focus on substantive issues (bugs, security, logic errors)
-- Validate findings before including in final report
-- Preserve false positives but clearly mark them
-- Provide actionable recommendations
+### Improvements (Non-Blocking)
+- **[file:line]** Description. Rationale.
+
+### Positive Observations
+- Notable good patterns worth highlighting.
+
+---
+*Reviewed by: claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex*
+*Session files: ~/.copilot/session-state/{session-id}/files/*
+```
+
+**Quality standards for all findings:**
+
+| Check | Standard |
+|-------|----------|
+| File reference | Every critical issue must include file path and line number |
+| Confidence label | Uncertain findings must be tagged High/Medium/Low confidence |
+| False positives | Preserve in report but mark clearly as unverified |
+| Scope | Focus on bugs, security, and logic errors; exclude style-only comments |
+
+## Error Handling
+
+| Condition | Behavior |
+|-----------|----------|
+| Not a git repository | Abort: "Current directory is not a git repository." |
+| No changes detected | Abort: "No reviewable changes found. Stage changes, create commits, or check out a PR branch." |
+| Fewer than 2 model responses in Stage 1 | Abort: insufficient review coverage. |
+| Exactly 2 of 3 models respond | Continue in degraded mode; note missing model in consolidated report. |
+| Model timeout or API failure | Log failure; continue if at least 2 models succeed. |
+| Diff exceeds context limit (>1000 lines / >20 files) | Chunk by directory or module; multiply agent count accordingly. |
+| Missing prompt template reference file | Abort with message identifying the missing file path. |
+| No gaps found in Stage 2 analysis | Skip Stage 2 entirely; proceed directly to Stage 3. |
+| Stage 3 integration agent failure | Present the highest-priority findings from individual reviews with a note that consolidation failed. |
+
+## Session Files
+
+All files are saved to `~/.copilot/session-state/{session-id}/files/`:
+
+| File | Content |
+|------|---------|
+| `{aspect}-claude-opus-4.6-review.md` | Claude's review for that aspect |
+| `{aspect}-gemini-3-pro-preview-review.md` | Gemini's review for that aspect |
+| `{aspect}-gpt-5.3-codex-review.md` | GPT's review for that aspect |
+| `{aspect}-{model}-crosscheck.md` | Targeted cross-check output (Stage 2, when applicable) |
+| `consolidated-review.md` | Final integrated review report |
+
+`{aspect}` is one of: `security`, `quality`, `performance`, `best-practices`.
+
+For chunked reviews, prefix with chunk name: `{chunk}-{aspect}-{model}-review.md`.
+
+Example filenames:
+- `security-claude-opus-4.6-review.md`
+- `quality-gpt-5.3-codex-crosscheck.md`
+- `consolidated-review.md`
+
+## Invocation Example
+
+```
+# Step 1: invoke the skill
+skill: code-review
+
+# Step 2: review begins automatically — no additional input needed
+# The skill detects PR changes, staged/unstaged changes, or local unpushed commits
+```
+
+Example scenarios well-suited for this skill:
+- "Review my latest commits before I push"
+- "Review this PR I've checked out"
+- "Do a thorough review of my staged changes"
