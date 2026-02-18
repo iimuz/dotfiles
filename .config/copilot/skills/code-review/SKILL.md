@@ -16,6 +16,8 @@ This skill provides comprehensive code reviews by leveraging multiple AI models 
 3. **Stage 3 - Consolidate Findings**: An integration agent merges, deduplicates, and validates all findings.
 4. **Stage 4 - Deliver Results**: Present the consolidated review to the user.
 
+**Main-agent I/O invariant:** The main agent never reads Stage 1/2 intermediate files (`*-review.md`, `*-crosscheck.md`). Intermediate file reads are delegated to sub-agents. In Stage 4, the main agent reads only `~/.copilot/session-state/{session-id}/files/consolidated-review.md`.
+
 Use this skill when:
 
 - Conducting thorough code reviews requiring multiple perspectives
@@ -45,34 +47,39 @@ Each reviewer operates on all 4 aspects simultaneously. The integrator runs once
    - Uncommitted changes (staged or unstaged)
    - Local commits not yet pushed to remote
 
-2. **Construct review prompts** for each aspect:
-   - Read the template from [references/review-prompt.md](references/review-prompt.md)
-   - Read the specific aspect criteria from [references/review-criteria.md](references/review-criteria.md)
-   - Replace `[INSERT SPECIFIC ASPECT FROM review-criteria.md HERE]` in the template with the chosen aspect
-   - If code is chunked for large changes, fill the optional scope section accordingly
+2. **Prepare delegated reviewer prompts** for each aspect:
+   - Do not read template/criteria content in the main agent.
+   - Pass each reviewer sub-agent: `skill_root`, `session_id`, assigned aspect header, and optional chunk scope.
+   - Instruct each reviewer sub-agent to read `<skill_root>/references/review-prompt.md` and `<skill_root>/references/review-criteria.md` locally.
+   - Instruct each reviewer sub-agent to replace `[INSERT SPECIFIC ASPECT FROM review-criteria.md HERE]` with its assigned criteria section before review execution.
 
 3. **Launch all 12 agents in parallel** (4 aspects × 3 models) within a single response:
 
 ```
+# Prompt pattern used for all 12 reviewer tasks:
+# "Use skill_root=<skill_root>. Read <skill_root>/references/review-prompt.md.
+#  Read <skill_root>/references/review-criteria.md. Extract <ASPECT_HEADER>.
+#  Replace placeholder, run review, and write to ~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md."
+
 # Security aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Security review - Claude", prompt="<template + Security Checks criteria>")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Security review - Gemini", prompt="<template + Security Checks criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Security review - GPT", prompt="<template + Security Checks criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Security review - Claude", prompt="<self-read pattern; ASPECT_HEADER=Security Checks>")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Security review - Gemini", prompt="<self-read pattern; ASPECT_HEADER=Security Checks>")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Security review - GPT", prompt="<self-read pattern; ASPECT_HEADER=Security Checks>")
 
 # Code Quality aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Quality review - Claude", prompt="<template + Code Quality criteria>")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Quality review - Gemini", prompt="<template + Code Quality criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Quality review - GPT", prompt="<template + Code Quality criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Quality review - Claude", prompt="<self-read pattern; ASPECT_HEADER=Code Quality>")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Quality review - Gemini", prompt="<self-read pattern; ASPECT_HEADER=Code Quality>")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Quality review - GPT", prompt="<self-read pattern; ASPECT_HEADER=Code Quality>")
 
 # Performance aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Performance review - Claude", prompt="<template + Performance criteria>")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Performance review - Gemini", prompt="<template + Performance criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Performance review - GPT", prompt="<template + Performance criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Performance review - Claude", prompt="<self-read pattern; ASPECT_HEADER=Performance>")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Performance review - Gemini", prompt="<self-read pattern; ASPECT_HEADER=Performance>")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Performance review - GPT", prompt="<self-read pattern; ASPECT_HEADER=Performance>")
 
 # Best Practices aspect (3 models)
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Best Practices review - Claude", prompt="<template + Best Practices criteria>")
-task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Best Practices review - Gemini", prompt="<template + Best Practices criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Practices review - GPT", prompt="<template + Best Practices criteria>")
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Best Practices review - Claude", prompt="<self-read pattern; ASPECT_HEADER=Best Practices>")
+task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Best Practices review - Gemini", prompt="<self-read pattern; ASPECT_HEADER=Best Practices>")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Practices review - GPT", prompt="<self-read pattern; ASPECT_HEADER=Best Practices>")
 ```
 
 **Review aspects** (full criteria in [references/review-criteria.md](references/review-criteria.md)):
@@ -90,39 +97,42 @@ task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Prac
 
 ### Stage 2: Targeted Cross-Check
 
-After Stage 1 completes, identify per-aspect gaps and re-verify in parallel. Skip this stage entirely if no gaps are found.
+After Stage 1 completes, launch one cross-check orchestrator sub-agent. The main agent does not read any `*-review.md` files.
 
-1. **Analyze initial reviews** within each aspect:
-   - Read all `{aspect}-*-review.md` files from `~/.copilot/session-state/{session-id}/files/`
-   - For each aspect, identify issues flagged by some models but not others
-   - Build a mapping of (aspect, model) pairs that missed specific concerns
-
-2. **Launch targeted re-checks in parallel** — one per (aspect, model) pair with gaps:
-   - Use [references/cross-check-prompt.md](references/cross-check-prompt.md) as the prompt template
-   - Include only the specific concerns that model missed in that aspect
-   - Use the same model as Stage 1
+1. **Launch one orchestrator task**:
 
 ```
-# Example: Claude missed issue A in Security; GPT missed issue C in Quality
-task(agent_type="general-purpose", model="claude-opus-4.6", description="Cross-check Security - Claude", prompt="<cross-check-prompt for Security, concern A>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt for Quality, concern C>")
+task(
+  agent_type="general-purpose",
+  description="Cross-check orchestrator",
+  prompt="Use skill_root=<skill_root> and session_id=<session-id>.
+  Read Stage 1 outputs from ~/.copilot/session-state/{session-id}/files/ using both:
+  - {aspect}-*-review.md
+  - {chunk}-{aspect}-{model}-review.md
+  Aspects: security, quality, performance, best-practices.
+
+  Build per-aspect missed-concern mappings, then launch targeted cross-check workers in parallel.
+  Each worker must use <skill_root>/references/cross-check-prompt.md and write
+  ~/.copilot/session-state/{session-id}/files/{aspect}-{model}-crosscheck.md.
+
+  If no gaps are found, skip fan-out.
+  If running in degraded mode, compare available models only.
+
+  Return one summary string only:
+  gaps_found: <N>; cross_checks_launched: <N>; cross_checks_completed: <N>; failures: <N>; notes: <short summary>
+
+  Do not return intermediate file content."
+)
 ```
 
-**Cross-check execution rules:**
-
-| Rule | Requirement |
-|------|-------------|
-| Parallelism | Execute all cross-checks in a single parallel response, never sequentially |
-| Aspect scope | Cross-check only within the same aspect (compare models on the same aspect) |
-| Selectivity | Only launch cross-checks for (aspect, model) pairs that actually missed issues |
-| Model parity | Use the same model as the Stage 1 run for that aspect |
+2. **Await orchestrator completion** and route to Stage 3 using summary fields only.
 
 ### Stage 3: Consolidate Findings
 
 1. **Launch one integration agent** using [references/integration-prompt.md](references/integration-prompt.md):
-   - Read all `{aspect}-{model}-review.md` and `{aspect}-{model}-crosscheck.md` files
-   - Merge duplicate findings, validate against actual code, flag false positives
-   - Consider cross-check assessments (VALID/INVALID/UNCERTAIN) when merging
+   - Integration sub-agent (not the main agent) reads all `{aspect}-{model}-review.md` and `{aspect}-{model}-crosscheck.md` files
+   - Integration sub-agent merges duplicate findings, validates against actual code, and flags false positives
+   - Integration sub-agent considers cross-check assessments (VALID/INVALID/UNCERTAIN) when merging
    - Output to: `~/.copilot/session-state/{session-id}/files/consolidated-review.md`
 
 2. **Consolidated output structure** must include:
@@ -133,7 +143,7 @@ task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-che
 
 ### Stage 4: Deliver Results
 
-Present the consolidated review to the user using the Output Format below. Do not read individual review files directly — point the user to `consolidated-review.md` or summarize the integration agent's output.
+Read only `~/.copilot/session-state/{session-id}/files/consolidated-review.md`, then present the consolidated review to the user using the Output Format below. Do not read Stage 1/2 intermediate files directly.
 
 ## Output Format
 
@@ -175,8 +185,9 @@ Brief assessment of overall change quality and scope.
 | Exactly 2 of 3 models respond | Continue in degraded mode; note missing model in consolidated report. |
 | Model timeout or API failure | Log failure; continue if at least 2 models succeed. |
 | Diff exceeds context limit (>1000 lines / >20 files) | Chunk by directory or module; multiply agent count accordingly. |
-| Missing prompt template reference file | Abort with message identifying the missing file path. |
-| No gaps found in Stage 2 analysis | Skip Stage 2 entirely; proceed directly to Stage 3. |
+| Missing prompt template reference file | Sub-agent reports missing file path; main agent continues only if coverage remains >=2 models for required comparisons. |
+| No gaps found in Stage 2 analysis | Cross-check orchestrator returns `gaps_found: 0`; skip cross-check fan-out and proceed directly to Stage 3. |
+| Cross-check orchestrator failure | Log failure, continue to Stage 3 using Stage 1 artifacts only, and note reduced confidence in consolidated output. |
 | Stage 3 integration agent failure | Present the highest-priority findings from individual reviews with a note that consolidation failed. |
 
 ## Session Files
