@@ -7,5 +7,5 @@ return {
 	"Bekaboo/dropbar.nvim",
 	event = { "BufReadPost", "BufNewFile" },
 	dependencies = {},
-	config = function() end,
+	opts = {},
 }
