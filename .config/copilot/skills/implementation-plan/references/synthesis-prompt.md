@@ -18,7 +18,7 @@ All intermediate outputs are located in the session files folder: `~/.copilot/se
 
 Before synthesizing, locate and read the following files from the session files folder.
 
-**File selection rule**: If multiple files match a pattern (e.g., due to retries), select only the **most recent** file per step by choosing the highest timestamp suffix. Discard older versions of the same step output.
+**File selection rule**: If multiple files share the same filename prefix (e.g., due to retries producing `step2-claude-opus-4.6-plan-draft-20260218*.md`), select only the **most recent** file by choosing the highest timestamp suffix. Do not collapse files from different models or roles into one.
 
 Use glob to find these files (applying the selection rule above), then read each one before proceeding to synthesis:
 
