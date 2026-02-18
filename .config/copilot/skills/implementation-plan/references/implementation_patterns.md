@@ -85,16 +85,14 @@ task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 3A
 
 ### 3B and 3C (launch in parallel after 3A completes)
 
-#### 3B. Conflict Resolution (one task per conflict from 3A)
+#### 3B. Conflict Resolution (single task)
 
-For each conflict identified in Step 3A, launch a dedicated `task()` call:
+Read the 3A consensus output, identify all conflicts, and resolve them in a single pass:
 
 ```
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict - {conflict_id}",
-     prompt=<read step2-*-review-{timestamp}.md from session folder; resolve specific conflict: {conflict_description}; save to step3b-conflict-{id}-{timestamp}.md>)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict Resolution",
+     prompt=<read step3a-consensus-{timestamp}.md from session folder at ~/.copilot/session-state/{session-id}/files/; identify all conflicts listed; resolve each one with evidence-based analysis; save all resolutions to step3b-resolutions-{timestamp}.md>)
 ```
-
-**Important**: Each conflict gets its own `task()` call. Do not batch multiple conflicts into one task.
 
 #### 3C. Insight Validation
 
@@ -107,5 +105,5 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
 
 ```
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis",
-     prompt=<read synthesis-prompt.md; inject step3a-consensus, step3b-conflict-*, step3c-insights, step2-*-plan-draft, and step2-*-review files from session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
+     prompt=<read synthesis-prompt.md; session-id={session-id}; user_request={user_request}; output_filepath=~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md; the synthesis-prompt.md contains instructions to self-discover all step2 and step3 intermediate files from the session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
 ```
