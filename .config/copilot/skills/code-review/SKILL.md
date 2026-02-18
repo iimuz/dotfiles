@@ -16,7 +16,7 @@ This skill provides comprehensive code reviews by leveraging multiple AI models 
 3. **Stage 3 - Consolidate Findings**: An integration agent merges, deduplicates, and validates all findings.
 4. **Stage 4 - Deliver Results**: Present the consolidated review to the user.
 
-**Main-agent I/O invariant:** The main agent never reads Stage 1/2 intermediate files (`*-review.md`, `*-crosscheck.md`). Intermediate file reads are delegated to sub-agents. In Stage 4, the main agent reads only `~/.copilot/session-state/{session-id}/files/consolidated-review.md`.
+**Main-agent I/O invariant:** Sub-agents cannot use the `task` tool. The main agent never reads Stage 1/2 intermediate review outputs (`*-review.md`, `*-crosscheck.md`). In Stage 2, the main agent may read only `~/.copilot/session-state/{session-id}/files/gap-list.md`; in Stage 4, the main agent may read only `~/.copilot/session-state/{session-id}/files/consolidated-review.md`.
 
 Use this skill when:
 
@@ -97,34 +97,83 @@ task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Prac
 
 ### Stage 2: Targeted Cross-Check
 
-After Stage 1 completes, launch one cross-check orchestrator sub-agent. The main agent does not read any `*-review.md` files.
+> [!IMPORTANT]
+> **PLATFORM CONSTRAINT:** Sub-agents cannot use the `task` tool. Only the main agent can launch sub-agents.
 
-1. **Launch one orchestrator task**:
+After Stage 1 completes, run Stage 2 in two sub-stages. The main agent does not read any `*-review.md` files.
+
+1. **Stage 2a — Gap Analysis (single sub-agent)**
+
+   Launch exactly one gap-analysis task:
 
 ```
 task(
   agent_type="general-purpose",
-  description="Cross-check orchestrator",
+  model="claude-haiku-4.5",
+  description="Stage 2a gap analysis",
   prompt="Use skill_root=<skill_root> and session_id=<session-id>.
   Read Stage 1 outputs from ~/.copilot/session-state/{session-id}/files/ using both:
   - {aspect}-*-review.md
   - {chunk}-{aspect}-{model}-review.md
   Aspects: security, quality, performance, best-practices.
 
-  Build per-aspect missed-concern mappings, then launch targeted cross-check workers in parallel.
-  Each cross-check worker must use the same model that missed the concern in Stage 1 (model parity).
-  Each worker must use <skill_root>/references/cross-check-prompt.md and write
-  ~/.copilot/session-state/{session-id}/files/{aspect}-{model}-crosscheck.md.
+  Compare findings only within the same aspect.
+  Identify concerns found by one model and missed by another model.
+  If one or more Stage 1 review files are missing, compare available models only.
 
-  If no gaps are found, skip fan-out.
-  If running in degraded mode, compare available models only.
+  Write ~/.copilot/session-state/{session-id}/files/gap-list.md using this exact format:
 
-  Return one summary string only:
-  gaps_found: <N>; cross_checks_launched: <N>; cross_checks_completed: <N>; failures: <N>; notes: <short summary>
+  gaps_found: N
 
-  Do not return intermediate file content."
+  ## {Aspect}
+  - missed_by: {missed_by_model} | concern: \"{one-line summary}\" | location: {file:line} | found_by: {found_by_model}
+
+  Format rules:
+  - missed_by = the model that missed this concern (Stage 2b routing key).
+  - found_by  = the model that found this concern (provenance).
+  - These two fields must never contain the same model name on the same entry.
+  - Deduplicate by (aspect, missed_by_model, location, normalized_summary).
+  - concern must be one line — no embedded newline characters, no literal | characters.
+  - When gaps_found = 0, write only: gaps_found: 0  (no aspect headers or entries).
+
+  Return exactly one line only:
+  gaps_found: <N>"
 )
 ```
+
+   Notes:
+   - A haiku-class model is acceptable for Stage 2a.
+   - Stage 2a returns only `gaps_found: <N>` and does not return file content.
+
+   `gap-list.md` format (required):
+
+```md
+gaps_found: N
+
+## {Aspect}
+- missed_by: {missed_by_model} | concern: "{one-line summary}" | location: {file:line} | found_by: {found_by_model}
+```
+
+   Format rules:
+   - `missed_by` = the model that missed the concern (Stage 2b routing key).
+   - `found_by` = the model that found the concern (provenance).
+   - These two fields must never contain the same model name on the same entry.
+   - Deduplicate by `(aspect, missed_by_model, location, normalized_summary)`.
+   - `concern` must be one line (no embedded newlines, no literal `|` characters).
+   - When `gaps_found: 0`, write only `gaps_found: 0` — no aspect headers or entries.
+
+2. **Stage 2b — Main-agent fan-out (conditional)**
+
+   - Main agent reads only `~/.copilot/session-state/{session-id}/files/gap-list.md` (compact routing file).
+   - If Stage 2a returned `gaps_found: 0`, skip Stage 2b and continue to Stage 3.
+   - Parse `gap-list.md` and group concerns by unique `(aspect, missed_by_model)` pairs with gaps.
+   - Launch N cross-check workers in parallel (one worker per `(aspect, missed_by_model)` pair with gaps).
+   - For each worker:
+     - set `model` to the grouped `missed_by_model` value (model parity)
+     - read `<skill_root>/references/cross-check-prompt.md`
+     - receive only assigned concerns from `gap-list.md` in the worker prompt, mapped as:
+       `concern → Issue`, `location → Location`, `aspect → Category`, `found_by → Original Reviewer`
+     - write `~/.copilot/session-state/{session-id}/files/{aspect}-{model}-crosscheck.md`
 
 **Cross-check execution constraints:**
 
@@ -134,8 +183,6 @@ task(
 | Aspect scope | Cross-check only within the same aspect (do not mix aspects) |
 | Selectivity | Only launch cross-checks for (aspect, model) pairs that actually missed issues |
 | Model parity | Each cross-check worker must use the same model as the Stage 1 run that missed the concern |
-
-2. **Await orchestrator completion** and route to Stage 3 using summary fields only.
 
 ### Stage 3: Consolidate Findings
 
@@ -196,8 +243,11 @@ Brief assessment of overall change quality and scope.
 | Model timeout or API failure | Log failure; continue if at least 2 models succeed. |
 | Diff exceeds context limit (>1000 lines / >20 files) | Chunk by directory or module; multiply agent count accordingly. |
 | Missing prompt template reference file | Sub-agent reports missing file path; main agent continues only if coverage remains >=2 models for required comparisons. |
-| No gaps found in Stage 2 analysis | Cross-check orchestrator returns `gaps_found: 0`; skip cross-check fan-out and proceed directly to Stage 3. |
-| Cross-check orchestrator failure | Log failure, continue to Stage 3 using Stage 1 artifacts only, and note reduced confidence in consolidated output. |
+| No gaps found in Stage 2a analysis | Stage 2a returns `gaps_found: 0`; main agent skips Stage 2b fan-out entirely and continues to Stage 3. |
+| Stage 2a (gap analysis) failure | Log failure, continue to Stage 3 using Stage 1 artifacts only, and note reduced confidence in consolidated output. |
+| Stage 2b worker partial failure | Log failed workers; continue with successful outputs; note incomplete cross-checks in consolidated report. |
+| Stage 2b: `gap-list.md` missing after Stage 2a | Treat as `gaps_found: 0`; skip Stage 2b; note missing file in consolidated report. |
+| `gap-list.md` parse failure | Skip Stage 2b; note parse error in consolidated report. |
 | Stage 3 integration agent failure | Present the highest-priority findings from individual reviews with a note that consolidation failed. |
 
 ## Session Files
@@ -209,7 +259,8 @@ All files are saved to `~/.copilot/session-state/{session-id}/files/`:
 | `{aspect}-claude-opus-4.6-review.md` | Claude's review for that aspect |
 | `{aspect}-gemini-3-pro-preview-review.md` | Gemini's review for that aspect |
 | `{aspect}-gpt-5.3-codex-review.md` | GPT's review for that aspect |
-| `{aspect}-{model}-crosscheck.md` | Targeted cross-check output (Stage 2, when applicable) |
+| `gap-list.md` | Stage 2a gap analysis results (compact routing file read by main agent) |
+| `{aspect}-{model}-crosscheck.md` | Targeted cross-check output (Stage 2b, when applicable) |
 | `consolidated-review.md` | Final integrated review report |
 
 `{aspect}` is one of: `security`, `quality`, `performance`, `best-practices`.
