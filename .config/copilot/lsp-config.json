@@ -1,0 +1,55 @@
+{
+  "lspServers": {
+    "bash-language-server": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "fileExtensions": {
+        ".sh": "bash",
+        ".zsh": "zsh"
+      }
+    },
+    "gopls": {
+      "command": "gopls",
+      "args": [],
+      "fileExtensions": {
+        ".go": "go"
+      }
+    },
+    "lua-language-server": {
+      "command": "lua-language-server",
+      "args": [],
+      "fileExtensions": {
+        ".lua": "lua"
+      }
+    },
+    "pyright": {
+      "command": "pyright-langserver",
+      "args": ["--stdio"],
+      "fileExtensions": {
+        ".py": "python"
+      }
+    },
+    "rust-analyzer": {
+      "command": "rust-analyzer",
+      "args": [],
+      "fileExtensions": {
+        ".rs": "rust"
+      }
+    },
+    "solidity-language-server": {
+      "command": "nomicfoundation-solidity-language-server",
+      "args": ["--stdio"],
+      "fileExtensions": {
+        ".sol": "solidity"
+      }
+    },
+    "typescript": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"],
+      "fileExtensions": {
+        ".ts": "typescript",
+        ".tsx": "typescript"
+      }
+    }
+  }
+}
