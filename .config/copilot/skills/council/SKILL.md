@@ -102,7 +102,11 @@ task(agent_type="general-purpose", model="claude-sonnet-4.6", description="Counc
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Council Stage 3 - Chairman Synthesis", prompt=<stage3-prompt with injected file paths>)
 ```
 
-4. If the chairman task fails, launch a fallback synthesis sub-agent that reads intermediate files and writes `~/.copilot/session-state/{session-id}/files/council-stage3-fallback-{timestamp}.md`.
+4. If the chairman task fails, launch a fallback synthesis sub-agent using `references/fallback-synthesis-prompt.md`:
+
+```
+task(agent_type="general-purpose", model="claude-sonnet-4.6", description="Council Stage 3 - Fallback Synthesis", prompt=<fallback-synthesis-prompt with injected file paths, output_filepath set to council-stage3-fallback-{timestamp}.md>)
+```
 
 ## Output Format
 
