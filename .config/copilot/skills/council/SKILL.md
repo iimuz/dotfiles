@@ -1,5 +1,5 @@
 ---
-name: llm-council
+name: council
 description: Orchestrate a council of three diverse LLMs to answer a question through parallel response generation, anonymized peer review with ranking, and chairman synthesis. This skill should be used when seeking high-quality, comprehensive answers that benefit from multiple AI perspectives and collective deliberation.
 ---
 
@@ -194,7 +194,7 @@ Timestamps use format `YYYYMMDDHHMMSS` (e.g., `20260218030000`). The `{session-i
 
 ```
 # Step 1: invoke the skill
-skill: llm-council
+skill: council
 
 # Step 2: ask your question in the conversation
 "Compare microservices vs monolith architectures for a startup"
