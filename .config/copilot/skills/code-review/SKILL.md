@@ -31,7 +31,7 @@ Produces: aspect-specific reviews, optional targeted cross-checks, and one conso
 |------|-------|----------|-------|
 | Reviewer A | `claude-opus-4.6` | Anthropic | Balanced analysis across all aspects |
 | Reviewer B | `gemini-3-pro-preview` | Google | Alternative perspective and pattern recognition |
-| Reviewer C | `gpt-5.3-codex` | OpenAI | Code-focused insights (extended thinking: xhigh) |
+| Reviewer C | `gpt-5.3-codex` | OpenAI | Code-focused insights |
 | Integrator | `general-purpose` agent | — | Synthesis, deduplication, and validation |
 
 Each reviewer operates on all 4 aspects simultaneously. The integrator runs once after all aspect reviews and cross-checks complete.
@@ -57,22 +57,22 @@ Each reviewer operates on all 4 aspects simultaneously. The integrator runs once
 # Security aspect (3 models)
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Security review - Claude", prompt="<template + Security Checks criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Security review - Gemini", prompt="<template + Security Checks criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Security review - GPT", prompt="<template + Security Checks criteria>", thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Security review - GPT", prompt="<template + Security Checks criteria>")
 
 # Code Quality aspect (3 models)
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Quality review - Claude", prompt="<template + Code Quality criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Quality review - Gemini", prompt="<template + Code Quality criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Quality review - GPT", prompt="<template + Code Quality criteria>", thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Quality review - GPT", prompt="<template + Code Quality criteria>")
 
 # Performance aspect (3 models)
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Performance review - Claude", prompt="<template + Performance criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Performance review - Gemini", prompt="<template + Performance criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Performance review - GPT", prompt="<template + Performance criteria>", thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Performance review - GPT", prompt="<template + Performance criteria>")
 
 # Best Practices aspect (3 models)
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Best Practices review - Claude", prompt="<template + Best Practices criteria>")
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Best Practices review - Gemini", prompt="<template + Best Practices criteria>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Practices review - GPT", prompt="<template + Best Practices criteria>", thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Best Practices review - GPT", prompt="<template + Best Practices criteria>")
 ```
 
 **Review aspects** (full criteria in [references/review-criteria.md](references/review-criteria.md)):
@@ -100,12 +100,12 @@ After Stage 1 completes, identify per-aspect gaps and re-verify in parallel. Ski
 2. **Launch targeted re-checks in parallel** — one per (aspect, model) pair with gaps:
    - Use [references/cross-check-prompt.md](references/cross-check-prompt.md) as the prompt template
    - Include only the specific concerns that model missed in that aspect
-   - Use the same model and `thinking_level` configuration as Stage 1
+   - Use the same model as Stage 1
 
 ```
 # Example: Claude missed issue A in Security; GPT missed issue C in Quality
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Cross-check Security - Claude", prompt="<cross-check-prompt for Security, concern A>")
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt for Quality, concern C>", thinking_level="xhigh")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-check Quality - GPT", prompt="<cross-check-prompt for Quality, concern C>")
 ```
 
 **Cross-check execution rules:**
@@ -115,7 +115,7 @@ task(agent_type="general-purpose", model="gpt-5.3-codex", description="Cross-che
 | Parallelism | Execute all cross-checks in a single parallel response, never sequentially |
 | Aspect scope | Cross-check only within the same aspect (compare models on the same aspect) |
 | Selectivity | Only launch cross-checks for (aspect, model) pairs that actually missed issues |
-| Model parity | Use the same model and thinking_level as the Stage 1 run for that aspect |
+| Model parity | Use the same model as the Stage 1 run for that aspect |
 
 ### Stage 3: Consolidate Findings
 

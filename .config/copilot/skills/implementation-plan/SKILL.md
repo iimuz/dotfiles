@@ -67,7 +67,7 @@ Execute all steps using multi-agent delegation for higher quality and parallel e
 ```
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 1 Analysis - Claude", prompt=<analysis-prompt with injected request and filepath>)
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 1 Analysis - Gemini", prompt=<analysis-prompt with injected request and filepath>)
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 1 Analysis - GPT", prompt=<analysis-prompt with injected request and filepath>, thinking_level="high")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 1 Analysis - GPT", prompt=<analysis-prompt with injected request and filepath>)
 ```
 
 6. Collect responses. If fewer than 2 succeed, abort with error: "Analysis quorum not met: fewer than 2 analyses received." If exactly 2 succeed, continue with a degraded-mode notice appended to the final output.
@@ -103,7 +103,7 @@ Each agent reads all 3 plan drafts and identifies:
 ```
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2A Draft - Claude", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-claude-opus-4.6-plan-draft-{timestamp}.md>)
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2A Draft - Gemini", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-gemini-3-pro-preview-plan-draft-{timestamp}.md>)
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A Draft - GPT", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>, thinking_level="high")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A Draft - GPT", prompt=<read step1-*-{timestamp}.md files from session folder; generate full plan following references/template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>)
 ```
 
 **Sub-Step 2B Delegation** (launch 3 parallel tasks):
@@ -111,7 +111,7 @@ task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A D
 ```
 task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 2B Review - Claude", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-claude-opus-4.6-review-{timestamp}.md>)
 task(agent_type="general-purpose", model="gemini-3-pro-preview", description="Step 2B Review - Gemini", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-gemini-3-pro-preview-review-{timestamp}.md>)
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2B Review - GPT", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-gpt-5.3-codex-review-{timestamp}.md>, thinking_level="high")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2B Review - GPT", prompt=<read all step2-*-plan-draft-{timestamp}.md files from session folder; identify gaps, conflicts, and best practices; save review to step2-gpt-5.3-codex-review-{timestamp}.md>)
 ```
 
 **Outputs**: 6 files in session files folder (`~/.copilot/session-state/{session-id}/files/`)
@@ -152,7 +152,7 @@ task(agent_type="general-purpose", model="claude-opus-4.6", description="Step 3A
 
 3B (one task per identified conflict from 3A):
 ```
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict Resolution", prompt=<read step2-*-review-{timestamp}.md from session folder; resolve this specific conflict: {conflict_description}; save to step3b-conflict-{id}-{timestamp}.md>, thinking_level="high")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict Resolution", prompt=<read step2-*-review-{timestamp}.md from session folder; resolve this specific conflict: {conflict_description}; save to step3b-conflict-{id}-{timestamp}.md>)
 ```
 
 3C:
@@ -162,7 +162,7 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
 
 **3D** (after 3B and 3C complete):
 ```
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis", prompt=<read synthesis-prompt.md; inject step3 outputs and step2 drafts/reviews from session folder; generate final authoritative plan following references/template.md; save as {purpose}-{component}-{version}.md>, thinking_level="high")
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis", prompt=<read synthesis-prompt.md; inject step3 outputs and step2 drafts/reviews from session folder; generate final authoritative plan following references/template.md; save as {purpose}-{component}-{version}.md>)
 ```
 
 **Final Output**: Implementation plan in session files folder

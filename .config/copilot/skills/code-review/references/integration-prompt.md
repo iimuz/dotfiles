@@ -12,7 +12,7 @@ Synthesize multiple aspect-based code review reports and cross-check results int
    - Initial aspect-based reviews: `<aspect>-<model-name>-review.md`
    - Cross-check results: `<aspect>-<model-name>-crosscheck.md`
    - Aspects: security, quality, performance, bestpractices
-   - Models: claude-opus-4.6-thinking-high, gemini-3-pro-preview, gpt-5.3-codex
+   - Models: claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex
 
 2. **Process cross-check assessments**:
    - For each cross-check file, note the assessments (VALID/INVALID/UNCERTAIN)

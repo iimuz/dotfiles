@@ -69,7 +69,7 @@ Where:
 ```
 [CONCERN #1] Hardcoded API key
 File: src/api/client.ts:42
-Original Reviewer: claude-opus-4.6-thinking-high
+Original Reviewer: claude-opus-4.6
 Assessment: VALID
 Reasoning: Upon re-examination, line 42 does contain what appears to be a production API key hardcoded in the source. I initially missed this during my review, but it is indeed a critical security issue that should be moved to environment variables.
 

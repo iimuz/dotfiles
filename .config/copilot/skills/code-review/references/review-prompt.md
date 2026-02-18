@@ -68,9 +68,9 @@ Save your complete review as markdown to: `~/.copilot/session-state/{session-id}
 Where:
 
 - `<aspect>` is one of: security, quality, performance, bestpractices
-- `<model-name>` is your model identifier (e.g., claude-opus-4.6-thinking-high, gemini-3-pro-preview, gpt-5.3-codex)
+- `<model-name>` is your model identifier (e.g., claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex)
 
-Example: `<session-folder>/files/security-claude-opus-4.6-thinking-high-review.md`
+Example: `<session-folder>/files/security-claude-opus-4.6-review.md`
 
 ## Guidelines
 

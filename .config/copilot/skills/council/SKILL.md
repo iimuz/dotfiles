@@ -24,7 +24,7 @@ The skill produces an aggregate ranking table showing council consensus and a ch
 | Council Member 1 | `claude-opus-4.6` | Anthropic | Deep reasoning and nuanced analysis |
 | Council Member 2 | `gemini-3-pro-preview` | Google | Broad knowledge and alternative perspectives |
 | Council Member 3 | `gpt-5.3-codex` | OpenAI | Structured thinking and code-focused insights |
-| Chairman | `claude-opus-4.6-thinking-high` | Anthropic | Extended thinking synthesis (fallback: `claude-opus-4.6`) |
+| Chairman | `claude-opus-4.6` | Anthropic | Extended thinking synthesis |
 
 ## Workflow
 
@@ -110,7 +110,7 @@ Save the aggregate ranking table to `~/.copilot/session-state/{session-id}/files
 3. Launch 1 task:
 
 ```
-task(agent_type="general-purpose", model="claude-opus-4.6-thinking-high", description="Council Stage 3 - Chairman Synthesis", prompt=<stage3-prompt with all injected context>)
+task(agent_type="general-purpose", model="claude-opus-4.6", description="Council Stage 3 - Chairman Synthesis", prompt=<stage3-prompt with all injected context>)
 ```
 
 4. If the chairman task fails, present the top-ranked Stage 1 response as a fallback with a note explaining the chairman synthesis was unavailable.

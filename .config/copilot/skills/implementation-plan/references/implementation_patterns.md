@@ -37,8 +37,7 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
      prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-gemini-3-pro-preview-{timestamp}.md>)
 
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 1 Analysis - GPT",
-     prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-gpt-5.3-codex-{timestamp}.md>,
-     thinking_level="high")
+     prompt=<analysis-prompt.md with {user_request}, {codebase_context}, {output_filepath}=step1-gpt-5.3-codex-{timestamp}.md>)
 ```
 
 Each agent analyzes all four aspects: Requirements & Scope, Architecture & Feasibility, Dependencies & Impact, and Risk Assessment.
@@ -55,8 +54,7 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
      prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-gemini-3-pro-preview-plan-draft-{timestamp}.md>)
 
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2A Draft - GPT",
-     prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>,
-     thinking_level="high")
+     prompt=<read step1-*-{timestamp}.md from session folder; generate full plan per template.md; save to step2-gpt-5.3-codex-plan-draft-{timestamp}.md>)
 ```
 
 ## Step 2B: Cross-Review
@@ -71,8 +69,7 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
      prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-gemini-3-pro-preview-review-{timestamp}.md>)
 
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 2B Review - GPT",
-     prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-gpt-5.3-codex-review-{timestamp}.md>,
-     thinking_level="high")
+     prompt=<read step2-*-plan-draft-{timestamp}.md from session folder; identify gaps, conflicts, best practices; save to step2-gpt-5.3-codex-review-{timestamp}.md>)
 ```
 
 ## Step 3: Consolidation Strategy
@@ -94,8 +91,7 @@ For each conflict identified in Step 3A, launch a dedicated `task()` call:
 
 ```
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3B Conflict - {conflict_id}",
-     prompt=<read step2-*-review-{timestamp}.md from session folder; resolve specific conflict: {conflict_description}; save to step3b-conflict-{id}-{timestamp}.md>,
-     thinking_level="high")
+     prompt=<read step2-*-review-{timestamp}.md from session folder; resolve specific conflict: {conflict_description}; save to step3b-conflict-{id}-{timestamp}.md>)
 ```
 
 **Important**: Each conflict gets its own `task()` call. Do not batch multiple conflicts into one task.
@@ -111,6 +107,5 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
 
 ```
 task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis",
-     prompt=<read synthesis-prompt.md; inject step3a-consensus, step3b-conflict-*, step3c-insights, step2-*-plan-draft, and step2-*-review files from session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>,
-     thinking_level="high")
+     prompt=<read synthesis-prompt.md; inject step3a-consensus, step3b-conflict-*, step3c-insights, step2-*-plan-draft, and step2-*-review files from session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
 ```
