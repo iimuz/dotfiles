@@ -16,17 +16,17 @@ You have access to plan drafts, cross-reviews, and consolidation outputs from pr
 
 All intermediate outputs are located in the session files folder: `~/.copilot/session-state/{session-id}/files/`
 
-Before synthesizing, locate and read the following files from the session files folder:
+Before synthesizing, locate and read the following files from the session files folder.
+
+**File selection rule**: If multiple files match a pattern (e.g., due to retries), select only the **most recent** file per step by choosing the highest timestamp suffix. Discard older versions of the same step output.
+
+Use glob to find these files (applying the selection rule above), then read each one before proceeding to synthesis:
 
 1. **Step 2 Plan Drafts**: All files matching `step2-*-plan-draft-*.md`
 2. **Step 2 Cross-Reviews**: All files matching `step2-*-review-*.md`
 3. **Step 3A Consensus**: The file matching `step3a-consensus-*.md`
 4. **Step 3B Conflict Resolutions**: All files matching `step3b-resolutions-*.md` (if any exist)
 5. **Step 3C Validated Insights**: The file matching `step3c-insights-*.md`
-
-Use glob to find these files, then read each one before proceeding to synthesis.
-
-**File selection rule**: If multiple files match a pattern (e.g., due to retries), select only the **most recent** file per step by choosing the highest timestamp suffix. Discard older versions of the same step output.
 
 ## Synthesis Instructions
 

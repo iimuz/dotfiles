@@ -162,7 +162,7 @@ task(agent_type="general-purpose", model="gemini-3-pro-preview", description="St
 
 **3D** (after 3B and 3C complete):
 ```
-task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis", prompt=<read synthesis-prompt.md; session-id={session-id}; user_request={user_request}; output_filepath=~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md; the synthesis-prompt.md contains instructions to self-discover all step2 and step3 intermediate files from the session folder; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
+task(agent_type="general-purpose", model="gpt-5.3-codex", description="Step 3D Final Synthesis", prompt=<read synthesis-prompt.md; session-id={session-id}; user_request={user_request}; output_filepath=~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md; synthesis-prompt.md instructs the agent to self-discover all step2/step3 intermediate files from the session folder, selecting only the most recent file per step (highest timestamp) when multiple exist; generate authoritative final plan per template.md; save as {purpose}-{component}-{version}.md>)
 ```
 
 **After Step 3D completes**: Return the file path of the final plan (`~/.copilot/session-state/{session-id}/files/{purpose}-{component}-{version}.md`) to the caller. Do NOT read the file content into the main agent context -- the caller can read it directly.
