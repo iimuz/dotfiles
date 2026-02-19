@@ -16,18 +16,25 @@ Runs a 5-phase development cycle (Plan → Implement → Commit → Review → S
 ```typescript
 /**
  * @skill structured-workflow
- * @input  { task: string }
+ * @input  { task: string; tdd_mode?: boolean }
  * @output { summary: FinalSummary }
  */
 
-type Issue = { severity: "Critical" | "High" | "Medium" | "Low"; description: string };
+type Issue = {
+  severity: "Critical" | "High" | "Medium" | "Low";
+  description: string;
+};
 type ReviewResult = { issues: Issue[] };
 type PlanResult = { session_state_file: string; summary: string };
 type CommitRef = { sha: string; message: string };
-type IterationRecord = { iteration: number; commit: CommitRef; review: ReviewResult };
+type IterationRecord = {
+  iteration: number;
+  commit: CommitRef;
+  review: ReviewResult;
+};
 type FinalSummary = {
-  fixed: Issue[];            // 修正完了した指摘
-  unfixed: Issue[];          // 未修正の指摘
+  fixed: Issue[]; // 修正完了した指摘
+  unfixed: Issue[]; // 未修正の指摘
   history: IterationRecord[]; // イテレーション履歴
   recommendations: string[]; // 推奨事項
 };
@@ -50,10 +57,9 @@ op plan(task: string) -> PlanResult {
   invariant: (plan_empty) => abort("implementation-plan produced no output");
 }
 
-op implement(plan: PlanResult, iteration: number, prior_issues: Issue[]) -> void {
-  invariant: (iteration == 1) => read(plan.session_state_file);
-  invariant: (iteration > 1)  => scope_to(prior_issues.filter("Critical" | "High"));
-  // Do not fix pre-existing issues unrelated to current plan goal
+op implement(plan: PlanResult, iteration: number, prior_issues: Issue[], tdd_mode: boolean) -> void {
+  task(agent_type: "general-purpose", prompt: @references/implement-prompt.md, vars: { plan, iteration, prior_issues, tdd_mode });
+  invariant: (subagent_fails) => abort("Implementation subagent failed; halt and report");
 }
 
 op commit(iteration: number) -> CommitRef {
