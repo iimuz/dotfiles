@@ -1,93 +1,100 @@
-# Cross-Check Review Prompt Template
+# Cross-Check Review Prompt
 
-Use this prompt template for targeted re-checks of specific issues.
+## Invocation
 
-## Context
-
-During initial parallel review, certain issues were flagged by some reviewers but not by others. This cross-check verifies whether these concerns are valid or were appropriately omitted.
-
-## Task
-
-You are performing a focused re-check of specific concerns identified by other reviewers.
-
-1. Run `git diff` to see the same changes reviewed earlier
-2. Focus only on the specific concerns listed below
-3. Determine if these concerns are valid or not
-
-## Specific Concerns to Verify
-
-[This section will be populated with specific issues from other reviews]
-
-For each concern:
-
-- **Issue**: [Description of the concern]
-- **Location**: [File and line number if specified]
-- **Category**: [Security/Quality/Performance/Best Practice]
-- **Original Reviewer**: [Model that flagged this]
-
-## Your Task
-
-For each concern listed above:
-
-1. **Examine the code** at the specified location
-2. **Determine validity**:
-   - Valid: The concern is legitimate and should be addressed
-   - Invalid: The concern is not applicable or incorrect
-   - Uncertain: Need more context or it's a judgment call
-
-3. **Provide assessment** using this format:
-
-```
-[CONCERN #N] <Brief description>
-File: <path/to/file.ext>:<line_number>
-Original Reviewer: <model-name>
-Assessment: [VALID / INVALID / UNCERTAIN]
-Reasoning: <Your analysis>
-
-[Code snippet if relevant]
+```typespec
+op invoke_cross_check(context: CrossCheckContext) -> CrossCheckOutput {
+  task(agent_type: "general-purpose", model: context.model_name, prompt: rendered_template(context));
+  invariant: (model_mismatch) => abort("Cross-check worker model must match missed_by value from gap-list.md");
+  invariant: (response_empty) => mark_failed(context.model_name, context.aspect);
+}
 ```
 
-## Guidelines
+## Failure Handling
 
-- Be thorough but focus only on the listed concerns
-- Don't perform a full review (that was done in the initial pass)
-- If you find the issue valid, explain why you missed it initially
-- If invalid, explain why it's not a concern
-- Be honest about uncertainties
-
-## Output Location
-
-Save your cross-check results to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-crosscheck.md`
-
-Where:
-
-- `<aspect>` is the review aspect being cross-checked — one of: `security`, `quality`, `performance`, `best-practices`
-- `<model-name>` is your model identifier
-
-## Example Assessment
-
-```
-[CONCERN #1] Hardcoded API key
-File: src/api/client.ts:42
-Original Reviewer: claude-opus-4.6
-Assessment: VALID
-Reasoning: Upon re-examination, line 42 does contain what appears to be a production API key hardcoded in the source. I initially missed this during my review, but it is indeed a critical security issue that should be moved to environment variables.
-
-const apiKey = "sk-prod-abc123xyz";  // This is a hardcoded credential
+```typespec
+op handle_cross_check_failure(failed: CrossCheckContext, outputs: CrossCheckOutput[]) -> CrossCheckOutput[] {
+  invariant: (worker_fails) => continue("log failure; note incomplete cross-checks in consolidated report");
+}
 ```
 
-```
-[CONCERN #2] Inefficient algorithm in sort function
-File: src/utils/sort.ts:15
-Original Reviewer: gemini-3-pro-preview
-Assessment: INVALID
-Reasoning: The algorithm is O(n log n) using the built-in Array.sort(), which is appropriate for this use case. The concern about O(n²) complexity is not applicable here. This is a false positive.
+---
+
+# Subagent Prompt Template
+
+## Role
+
+Focused verifier for specific concerns flagged by other reviewers but not originally caught by this model.
+
+## Interface
+
+```typescript
+/**
+ * @input  { context: CrossCheckContext }
+ * @output { result: CrossCheckOutput }
+ */
+
+type Concern = {
+  issue: string;
+  location: string;
+  category: ReviewAspect;
+  original_reviewer: string;
+};
+
+type ConcernAssessment = {
+  concern: Concern;
+  assessment: "VALID" | "INVALID" | "UNCERTAIN";
+  reasoning: string;
+};
+
+type CrossCheckFileContent = {
+  aspect: ReviewAspect;
+  model: string;
+  assessments: ConcernAssessment[];
+};
 ```
 
+## Operations
+
+```typespec
+op verify_concerns(context: CrossCheckContext) -> CrossCheckFileContent {
+  // Examine each concern at the specified location; do not perform a full review
+  invariant: (full_review_attempted) => abort("Scope is limited to listed concerns only; do not perform a full review");
+  invariant: (assessment_value_invalid) => abort("Assessment must be one of: VALID | INVALID | UNCERTAIN");
+  invariant: (aspect_mixing) => abort("Do not mix aspects within a single cross-check");
+}
+
+op write_output(result: CrossCheckOutput) -> void {
+  // Write assessments to {output_path}
+  invariant: (missing_reasoning) => require("Each assessment must include reasoning explaining the determination");
+}
 ```
-[CONCERN #3] Missing error handling in async function
-File: src/services/data.ts:28
-Original Reviewer: gpt-5.3-codex
-Assessment: UNCERTAIN
-Reasoning: The function does have a try-catch block (lines 30-35), but it only catches specific error types. Whether additional error handling is needed depends on the broader error handling strategy of the application, which isn't clear from this code alone.
+
+## Execution
+
+```
+verify_concerns -> write_output
+```
+
+## Input Context
+
+```typescript
+interface CrossCheckContext {
+  session_id: string;
+  aspect: "security" | "quality" | "performance" | "best-practices";
+  model_name: string; // must match missed_by value from gap-list.md
+  concerns: Concern[]; // populated from gap-list.md entries for this (aspect, model_name) pair
+}
+```
+
+Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-crosscheck.md`
+
+Assessment format per concern:
+
+```
+[CONCERN #N] Brief description
+File: path/to/file.ext:line_number
+Original Reviewer: model-name
+Assessment: VALID | INVALID | UNCERTAIN
+Reasoning: Analysis explaining the determination
 ```

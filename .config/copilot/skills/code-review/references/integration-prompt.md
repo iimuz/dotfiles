@@ -1,52 +1,85 @@
-# Integration Agent Prompt Template
+# Integration Agent Prompt
 
-Use this prompt template for the consolidation agent.
+## Invocation
 
-## Task
+```typespec
+op invoke_consolidation(context: IntegrationContext) -> ConsolidatedReview {
+  task(agent_type: "general-purpose", prompt: rendered_template(context));
+}
+```
 
-Synthesize multiple aspect-based code review reports and cross-check results into a single unified review.
+## Failure Handling
 
-## Process
+```typespec
+op handle_consolidation_failure(context: IntegrationContext) -> ConsolidatedReview {
+  invariant: (response_empty) => present_highest_priority_from_individual_reviews("note that consolidation failed");
+}
+```
 
-1. **Read all review files** from session folder files/ directory:
-   - Initial aspect-based reviews: `<aspect>-<model-name>-review.md`
-   - Cross-check results: `<aspect>-<model-name>-crosscheck.md`
-   - Aspects: security, quality, performance, best-practices
-   - Models: claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex
+---
 
-2. **Process cross-check assessments**:
-   - For each cross-check file, note the assessments (VALID/INVALID/UNCERTAIN)
-   - Use these assessments to refine the consolidated findings
-   - If an issue was marked INVALID in cross-check, remove or downgrade it
-   - If marked VALID, ensure it's included in final report
-   - If UNCERTAIN, flag for developer attention
+# Subagent Prompt Template
 
-3. **Merge duplicate findings**:
-   - Identify issues reported by multiple reviewers
-   - Combine them into single entries
-   - Preserve unique perspectives from each review
-   - Note when multiple reviewers confirmed the same issue
+## Role
 
-4. **Validate findings**:
-   - Check each issue against the actual code
-   - Verify file paths and line numbers are correct
-   - Confirm issues are genuine problems
-   - Consider cross-check assessments in validation
+Integration agent responsible for synthesizing multiple aspect-based code review reports and cross-check results into a single unified review.
 
-5. **Flag questionable findings**:
-   - If a finding appears incorrect, keep it but mark as "potentially incorrect"
-   - Explain why it might be a false positive
-   - Note if cross-check marked it as INVALID or UNCERTAIN
-   - Let the developer make the final decision
+## Interface
 
-6. **Organize output**:
-   - Group by priority (Critical → Warning → Suggestion)
-   - Within each priority, group by category (Security, Quality, Performance, Best Practices)
-   - Deduplicate similar issues
+```typescript
+/**
+ * @input  { context: IntegrationContext }
+ * @output { report: ConsolidatedReview }
+ */
 
-## Output Format
+type ConsolidatedReview = {
+  files_reviewed: number;
+  total_issues: number;
+  critical: number;
+  warnings: number;
+  suggestions: number;
+  cross_checks: { valid: number; invalid: number; uncertain: number };
+};
+```
 
-Structure the consolidated review as:
+## Operations
+
+```typespec
+op consolidate(context: IntegrationContext) -> ConsolidatedReview {
+  // Read all {aspect}-{model}-review.md and {aspect}-{model}-crosscheck.md from session folder
+  // Merge duplicates, validate findings against actual code, apply cross-check assessments
+  invariant: (cross_check_invalid) => remove_or_downgrade_finding;
+  invariant: (cross_check_uncertain) => flag_for_developer_attention;
+  invariant: (cross_check_valid) => ensure_finding_included;
+  invariant: (finding_appears_incorrect) => preserve_but_mark_as("potentially incorrect");
+  invariant: (duplicate_findings) => merge_preserving_unique_perspectives;
+}
+
+op write_report(review: ConsolidatedReview) -> void {
+  // Write consolidated-review.md to session folder
+  invariant: (output_shape_invalid) => abort("Report must include: Executive Summary, Critical Issues, Warnings, Suggestions, Cross-Check Results, Validation Notes");
+}
+```
+
+## Execution
+
+```
+consolidate -> write_report
+```
+
+## Input Context
+
+```typescript
+interface IntegrationContext {
+  session_id: string;
+  aspects: string[]; // ["security", "quality", "performance", "best-practices"]
+  models: string[]; // ["claude-opus-4.6", "gemini-3-pro-preview", "gpt-5.3-codex"]
+}
+```
+
+Output path: `~/.copilot/session-state/{session_id}/files/consolidated-review.md`
+
+Output structure:
 
 ```md
 # Consolidated Code Review
@@ -54,31 +87,23 @@ Structure the consolidated review as:
 ## Executive Summary
 
 - Total files reviewed: [N]
-- Total issues found: [N]
-  - Critical: [N]
-  - Warnings: [N]
-  - Suggestions: [N]
+- Total issues found: [N] (Critical: [N], Warnings: [N], Suggestions: [N])
 - Reviewers: [model names]
 - Cross-checks performed: [N]
 
 ## Critical Issues
 
-[List critical issues grouped and deduplicated]
-[Indicate if confirmed by multiple reviewers or cross-checks]
+[List critical issues grouped and deduplicated; note if confirmed by multiple reviewers or cross-checks]
 
 ## Warnings
 
 [List warnings grouped and deduplicated]
-[Indicate if confirmed by multiple reviewers or cross-checks]
 
 ## Suggestions
 
 [List suggestions grouped and deduplicated]
-[Indicate if confirmed by multiple reviewers or cross-checks]
 
 ## Cross-Check Results
-
-[Summary of cross-check assessments]
 
 - Issues validated (VALID): [N]
 - Issues refuted (INVALID): [N]
@@ -86,18 +111,5 @@ Structure the consolidated review as:
 
 ## Validation Notes
 
-[Any findings flagged as potentially incorrect with explanations]
-[Include cross-check assessments that marked issues as INVALID or UNCERTAIN]
+[Findings flagged as potentially incorrect; cross-check assessments marked INVALID or UNCERTAIN]
 ```
-
-## Output Location
-
-Save the consolidated review to: `~/.copilot/session-state/{session-id}/files/consolidated-review.md`
-
-## Guidelines
-
-- Be thorough in deduplication
-- Preserve all unique insights
-- Mark false positives clearly (especially those identified in cross-checks)
-- Provide actionable summary
-- Focus on helping the developer improve their code

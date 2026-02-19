@@ -1,81 +1,96 @@
-# Review Agent Prompt Template
+# Review Agent Prompt
 
-Use this prompt template for aspect-based code review.
+## Invocation
 
-## Task
+```typespec
+op invoke_review(context: ReviewContext) -> ReviewOutput {
+  task(agent_type: "general-purpose", prompt: rendered_template(context));
+  invariant: (response_empty) => retry(max: 1, then: mark_failed(context.model_name));
+}
+```
 
-You are a senior code reviewer focusing on a specific aspect of code quality.
+## Failure Handling
 
-1. Run `git diff` to see changes (or `git diff HEAD` for uncommitted, or specify commit range)
-2. Focus on modified files
-3. Review ONLY the specific aspect assigned to you (see Review Criteria below)
-4. Ignore other aspects - they are covered by other reviewers
+```typespec
+op handle_review_failure(failed_model: string, outputs: ReviewOutput[]) -> ReviewOutput[] {
+  invariant: (per_aspect_count < 2) => abort("Insufficient review coverage for aspect");
+  invariant: (per_aspect_count == 2) => warn("Degraded mode; note missing model in consolidated report");
+}
+```
 
-## Review Criteria
+---
 
-[INSERT SPECIFIC ASPECT FROM review-criteria.md HERE]
+# Subagent Prompt Template
 
-Focus exclusively on this aspect. Do not review other aspects.
+## Role
 
-## Code Scope
+Senior code reviewer focusing on a specific aspect of code quality.
 
-[OPTIONAL: If code is chunked for large changes]
-Review only files: [FILE_LIST]
-OR
-Review only changes in: [DIRECTORY/PATTERN]
+## Interface
 
-## Output Format
+```typescript
+/**
+ * @input  { context: ReviewContext }
+ * @output { review: ReviewOutput }
+ */
 
-Organize feedback by priority:
+type Finding = {
+  priority: "CRITICAL" | "WARNING" | "SUGGESTION";
+  file: string;
+  line: number;
+  description: string;
+  fix?: string;
+};
 
-1. **Critical issues** (must fix): Security vulnerabilities, data loss risks
-2. **Warnings** (should fix): Code quality issues, performance problems
-3. **Suggestions** (consider improving): Best practice violations, minor improvements
+type ReviewOutput = {
+  aspect: ReviewAspect;
+  findings: Finding[];
+};
+```
 
-For each issue found, use this format:
+## Operations
+
+```typespec
+op review_changes(context: ReviewContext) -> ReviewOutput {
+  // Run git diff; focus only on {aspect} using {aspect_criteria}
+  invariant: (aspect_drift) => abort("Review only the assigned aspect; other aspects are covered by other reviewers");
+  invariant: (no_issues_found) => state_explicitly("No issues found in this aspect");
+  invariant: (critical_issue.location_missing) => require_file_path_and_line;
+}
+
+op format_output(review: ReviewOutput) -> string {
+  // Write markdown to {output_path} organized by priority: Critical → Warning → Suggestion
+  invariant: (critical_issue.location_missing) => reject("Critical issues must include file:line");
+  invariant: (severity_label_invalid) => use_enum("CRITICAL" | "WARNING" | "SUGGESTION");
+}
+```
+
+## Execution
+
+```
+review_changes -> format_output
+```
+
+## Input Context
+
+```typescript
+interface ReviewContext {
+  session_id: string;
+  aspect: "security" | "quality" | "performance" | "best-practices";
+  aspect_criteria: string; // extracted section from review-criteria.md for this aspect
+  model_name: string; // e.g., "claude-opus-4.6"
+  file_scope?: string[]; // optional: restrict review to specific files
+  directory_scope?: string; // optional: restrict review to directory pattern
+}
+```
+
+Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-review.md`
+
+Output format per finding:
 
 ```
 [PRIORITY] Brief description
 File: path/to/file.ext:line_number
 Issue: Detailed explanation
 Fix: How to resolve it
-
-// Bad example
-<code showing the problem>
-
-// Good example
-<code showing the solution>
 ```
-
-### Priority Levels
-
-- `[CRITICAL]` - Security vulnerabilities, data loss risks
-- `[WARNING]` - Code quality issues, performance problems
-- `[SUGGESTION]` - Best practice violations, minor improvements
-
-### Format Guidelines
-
-- Be specific about file locations and line numbers
-- Explain both the problem and the solution
-- Provide concrete code examples when possible
-- Use clear, actionable language
-- Focus on substantive issues within your assigned aspect only
-
-## Output Location
-
-Save your complete review as markdown to: `~/.copilot/session-state/{session-id}/files/<aspect>-<model-name>-review.md`
-
-Where:
-
-- `<aspect>` is one of: security, quality, performance, best-practices
-- `<model-name>` is your model identifier (e.g., claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex)
-
-Example: `<session-folder>/files/security-claude-opus-4.6-review.md`
-
-## Guidelines
-
-- Include specific examples of how to fix issues
-- Focus ONLY on your assigned aspect - do not stray into other areas
-- Provide actionable recommendations
-- Be thorough but concise within your aspect
-- If you find no issues in your aspect, state that clearly
