@@ -34,13 +34,13 @@ tags: [category, technology, component]
 
 ### Status Values
 
-| Status | Color | Badge | Meaning |
-|--------|-------|-------|---------|
-| Planned | blue | ![Planned](https://img.shields.io/badge/Status-Planned-blue) | Ready but not started |
-| In progress | yellow | ![In Progress](https://img.shields.io/badge/Status-In%20Progress-yellow) | Actively executing |
-| Completed | green | ![Completed](https://img.shields.io/badge/Status-Completed-brightgreen) | All tasks finished |
-| On Hold | orange | ![On Hold](https://img.shields.io/badge/Status-On%20Hold-orange) | Paused temporarily |
-| Deprecated | red | ![Deprecated](https://img.shields.io/badge/Status-Deprecated-red) | No longer relevant |
+| Status      | Color  | Badge                                                                    | Meaning               |
+| ----------- | ------ | ------------------------------------------------------------------------ | --------------------- |
+| Planned     | blue   | ![Planned](https://img.shields.io/badge/Status-Planned-blue)             | Ready but not started |
+| In progress | yellow | ![In Progress](https://img.shields.io/badge/Status-In%20Progress-yellow) | Actively executing    |
+| Completed   | green  | ![Completed](https://img.shields.io/badge/Status-Completed-brightgreen)  | All tasks finished    |
+| On Hold     | orange | ![On Hold](https://img.shields.io/badge/Status-On%20Hold-orange)         | Paused temporarily    |
+| Deprecated  | red    | ![Deprecated](https://img.shields.io/badge/Status-Deprecated-red)        | No longer relevant    |
 
 ## Document Structure
 
@@ -66,9 +66,11 @@ tags: [category, technology, component]
 ## Scope
 
 **In Scope:**
+
 - [Explicit items included in this plan]
 
 **Out of Scope:**
+
 - [Explicit items NOT included in this plan]
 
 ## Success Criteria
@@ -83,18 +85,20 @@ tags: [category, technology, component]
 ```markdown
 ## Requirements
 
-| Req ID | Type | Description | Priority | Status |
-|--------|------|-------------|----------|--------|
-| REQ-001 | Functional | [Specific requirement] | High | Defined |
-| REQ-002 | Non-Functional | [Specific requirement] | Medium | Defined |
-| REQ-003 | Technical | [Specific requirement] | High | Defined |
+| Req ID  | Type           | Description            | Priority | Status  |
+| ------- | -------------- | ---------------------- | -------- | ------- |
+| REQ-001 | Functional     | [Specific requirement] | High     | Defined |
+| REQ-002 | Non-Functional | [Specific requirement] | Medium   | Defined |
+| REQ-003 | Technical      | [Specific requirement] | High     | Defined |
 
 ### Requirement Types
+
 - **Functional**: Feature or behavior requirements
 - **Non-Functional**: Performance, security, scalability
 - **Technical**: Technology, architecture, infrastructure
 
 ### Priorities
+
 - **Critical**: Blocking, must-have
 - **High**: Important, should-have
 - **Medium**: Desirable, nice-to-have
@@ -110,10 +114,10 @@ tags: [category, technology, component]
 
 ## Design Decisions
 
-| Decision ID | Description | Rationale | Alternatives Considered |
-|-------------|-------------|-----------|------------------------|
-| DEC-001 | [Decision made] | [Why this choice] | [What else was considered] |
-| DEC-002 | [Decision made] | [Why this choice] | [What else was considered] |
+| Decision ID | Description     | Rationale         | Alternatives Considered    |
+| ----------- | --------------- | ----------------- | -------------------------- |
+| DEC-001     | [Decision made] | [Why this choice] | [What else was considered] |
+| DEC-002     | [Decision made] | [Why this choice] | [What else was considered] |
 
 ## Technical Stack
 
@@ -132,6 +136,7 @@ tags: [category, technology, component]
 ### PHASE-1: [Phase Name]
 
 **Completion Criteria:**
+
 - [Measurable criteria 1]
 - [Measurable criteria 2]
 
@@ -139,13 +144,14 @@ tags: [category, technology, component]
 
 **Tasks:**
 
-| Task ID | Description | Files Modified | Dependencies | Owner | Status |
-|---------|-------------|----------------|--------------|-------|--------|
-| TASK-001 | [Specific action with file paths] | `src/file1.js`, `src/file2.js` | None | [Name] | Not Started |
-| TASK-002 | [Specific action with file paths] | `test/file1.test.js` | TASK-001 | [Name] | Not Started |
-| TASK-003 | [Specific action with file paths] | `docs/api.md` | TASK-001 | [Name] | Not Started |
+| Task ID  | Description                       | Files Modified                 | Dependencies | Owner  | Status      |
+| -------- | --------------------------------- | ------------------------------ | ------------ | ------ | ----------- |
+| TASK-001 | [Specific action with file paths] | `src/file1.js`, `src/file2.js` | None         | [Name] | Not Started |
+| TASK-002 | [Specific action with file paths] | `test/file1.test.js`           | TASK-001     | [Name] | Not Started |
+| TASK-003 | [Specific action with file paths] | `docs/api.md`                  | TASK-001     | [Name] | Not Started |
 
 **Validation:**
+
 - VAL-001: [How to verify completion]
 - VAL-002: [Automated test or check]
 
@@ -167,29 +173,30 @@ tags: [category, technology, component]
 
 ### External Dependencies
 
-| Dep ID | Description | Type | Status | Impact if Unavailable |
-|--------|-------------|------|--------|----------------------|
-| DEP-001 | [External service/API] | External | Available | [Impact] |
-| DEP-002 | [Third-party library] | External | Available | [Impact] |
+| Dep ID  | Description            | Type     | Status    | Impact if Unavailable |
+| ------- | ---------------------- | -------- | --------- | --------------------- |
+| DEP-001 | [External service/API] | External | Available | [Impact]              |
+| DEP-002 | [Third-party library]  | External | Available | [Impact]              |
 
 ### Internal Dependencies
 
-| Dep ID | From Task | To Task | Type | Status |
-|--------|-----------|---------|------|--------|
-| DEP-101 | TASK-002 | TASK-001 | Blocking | Active |
-| DEP-102 | TASK-005 | TASK-003 | Blocking | Active |
+| Dep ID  | From Task | To Task  | Type     | Status |
+| ------- | --------- | -------- | -------- | ------ |
+| DEP-101 | TASK-002  | TASK-001 | Blocking | Active |
+| DEP-102 | TASK-005  | TASK-003 | Blocking | Active |
 
 ### Dependency Types
+
 - **Blocking**: Must complete before dependent task can start
 - **Related**: Should be aware of, but not blocking
 - **Optional**: Nice to have, but not required
 
 ## Risks & Mitigation
 
-| Risk ID | Description | Probability | Impact | Mitigation Strategy | Owner |
-|---------|-------------|-------------|--------|---------------------|-------|
-| RISK-001 | [Potential problem] | High/Med/Low | High/Med/Low | [How to mitigate] | [Name] |
-| RISK-002 | [Potential problem] | High/Med/Low | High/Med/Low | [How to mitigate] | [Name] |
+| Risk ID  | Description         | Probability  | Impact       | Mitigation Strategy | Owner  |
+| -------- | ------------------- | ------------ | ------------ | ------------------- | ------ |
+| RISK-001 | [Potential problem] | High/Med/Low | High/Med/Low | [How to mitigate]   | [Name] |
+| RISK-002 | [Potential problem] | High/Med/Low | High/Med/Low | [How to mitigate]   | [Name] |
 ```
 
 ### 6. Testing & Validation
@@ -199,22 +206,22 @@ tags: [category, technology, component]
 
 ### Unit Tests
 
-| Test ID | Component | Coverage Target | Status |
-|---------|-----------|-----------------|--------|
-| TEST-001 | [Component] | 90% | Not Started |
-| TEST-002 | [Component] | 85% | Not Started |
+| Test ID  | Component   | Coverage Target | Status      |
+| -------- | ----------- | --------------- | ----------- |
+| TEST-001 | [Component] | 90%             | Not Started |
+| TEST-002 | [Component] | 85%             | Not Started |
 
 ### Integration Tests
 
-| Test ID | Components | Scenario | Status |
-|---------|-----------|----------|--------|
+| Test ID | Components   | Scenario        | Status      |
+| ------- | ------------ | --------------- | ----------- |
 | INT-001 | [Components] | [Test scenario] | Not Started |
 | INT-002 | [Components] | [Test scenario] | Not Started |
 
 ### End-to-End Tests
 
-| Test ID | Workflow | Success Criteria | Status |
-|---------|----------|------------------|--------|
+| Test ID | Workflow        | Success Criteria   | Status      |
+| ------- | --------------- | ------------------ | ----------- |
 | E2E-001 | [User workflow] | [Expected outcome] | Not Started |
 
 ## Validation Checklist
@@ -236,20 +243,20 @@ tags: [category, technology, component]
 
 ### Deployment Phases
 
-| Phase | Environment | Percentage | Duration | Rollback Trigger |
-|-------|-------------|------------|----------|------------------|
-| 1 | Staging | 100% | 2 days | Any critical issue |
-| 2 | Production | 10% | 1 day | Error rate >1% |
-| 3 | Production | 50% | 1 day | Error rate >0.5% |
-| 4 | Production | 100% | - | Error rate >0.1% |
+| Phase | Environment | Percentage | Duration | Rollback Trigger   |
+| ----- | ----------- | ---------- | -------- | ------------------ |
+| 1     | Staging     | 100%       | 2 days   | Any critical issue |
+| 2     | Production  | 10%        | 1 day    | Error rate >1%     |
+| 3     | Production  | 50%        | 1 day    | Error rate >0.5%   |
+| 4     | Production  | 100%       | -        | Error rate >0.1%   |
 
 ### Monitoring Metrics
 
-| Metric | Target | Alert Threshold | Dashboard |
-|--------|--------|-----------------|-----------|
-| [Metric name] | [Target value] | [Alert at] | [Dashboard link] |
-| Error Rate | <0.1% | >0.5% | [Link] |
-| Latency p99 | <200ms | >500ms | [Link] |
+| Metric        | Target         | Alert Threshold | Dashboard        |
+| ------------- | -------------- | --------------- | ---------------- |
+| [Metric name] | [Target value] | [Alert at]      | [Dashboard link] |
+| Error Rate    | <0.1%          | >0.5%           | [Link]           |
+| Latency p99   | <200ms         | >500ms          | [Link]           |
 
 ### Rollback Procedure
 
@@ -263,19 +270,19 @@ tags: [category, technology, component]
 ```markdown
 ## Documentation Updates
 
-| Doc ID | Document | Changes Required | Owner | Status |
-|--------|----------|------------------|-------|--------|
-| DOC-001 | API Documentation | [Changes] | [Name] | Not Started |
-| DOC-002 | User Guide | [Changes] | [Name] | Not Started |
-| DOC-003 | Architecture Docs | [Changes] | [Name] | Not Started |
+| Doc ID  | Document          | Changes Required | Owner  | Status      |
+| ------- | ----------------- | ---------------- | ------ | ----------- |
+| DOC-001 | API Documentation | [Changes]        | [Name] | Not Started |
+| DOC-002 | User Guide        | [Changes]        | [Name] | Not Started |
+| DOC-003 | Architecture Docs | [Changes]        | [Name] | Not Started |
 
 ## Communication Plan
 
-| Audience | Message | Channel | Timing |
-|----------|---------|---------|--------|
-| [Stakeholder group] | [Key message] | [Email/Slack/etc] | [When] |
-| Development Team | Implementation details | Slack #dev | Before Phase 1 |
-| End Users | Feature announcement | Email | After rollout |
+| Audience            | Message                | Channel           | Timing         |
+| ------------------- | ---------------------- | ----------------- | -------------- |
+| [Stakeholder group] | [Key message]          | [Email/Slack/etc] | [When]         |
+| Development Team    | Implementation details | Slack #dev        | Before Phase 1 |
+| End Users           | Feature announcement   | Email             | After rollout  |
 
 ## Training Requirements
 
@@ -290,8 +297,8 @@ tags: [category, technology, component]
 ```markdown
 ## Appendix A: Glossary
 
-| Term | Definition |
-|------|------------|
+| Term   | Definition   |
+| ------ | ------------ |
 | [Term] | [Definition] |
 
 ## Appendix B: References
@@ -302,10 +309,10 @@ tags: [category, technology, component]
 
 ## Appendix C: Change Log
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | YYYY-MM-DD | [Name] | Initial version |
-| 1.1 | YYYY-MM-DD | [Name] | [Changes made] |
+| Version | Date       | Author | Changes         |
+| ------- | ---------- | ------ | --------------- |
+| 1.0     | YYYY-MM-DD | [Name] | Initial version |
+| 1.1     | YYYY-MM-DD | [Name] | [Changes made]  |
 ```
 
 ## Identifier Conventions
@@ -314,22 +321,22 @@ tags: [category, technology, component]
 
 All identifiers must use standardized prefixes:
 
-| Prefix | Purpose | Format | Example |
-|--------|---------|--------|---------|
-| PLAN- | Plan identifier | PLAN-### | PLAN-042 |
-| OBJ- | Objective | OBJ-### | OBJ-001 |
-| REQ- | Requirement | REQ-### | REQ-015 |
-| PHASE- | Implementation phase | PHASE-# | PHASE-3 |
-| TASK- | Task | TASK-### | TASK-127 |
-| DEC- | Design decision | DEC-### | DEC-003 |
-| DEP- | Dependency | DEP-### | DEP-042 |
-| RISK- | Risk | RISK-### | RISK-008 |
-| TEST- | Test case | TEST-### | TEST-055 |
-| INT- | Integration test | INT-### | INT-012 |
-| E2E- | End-to-end test | E2E-### | E2E-004 |
-| VAL- | Validation | VAL-### | VAL-009 |
-| DOC- | Documentation | DOC-### | DOC-017 |
-| CRIT- | Success criteria | CRIT-### | CRIT-002 |
+| Prefix | Purpose              | Format   | Example  |
+| ------ | -------------------- | -------- | -------- |
+| PLAN-  | Plan identifier      | PLAN-### | PLAN-042 |
+| OBJ-   | Objective            | OBJ-###  | OBJ-001  |
+| REQ-   | Requirement          | REQ-###  | REQ-015  |
+| PHASE- | Implementation phase | PHASE-#  | PHASE-3  |
+| TASK-  | Task                 | TASK-### | TASK-127 |
+| DEC-   | Design decision      | DEC-###  | DEC-003  |
+| DEP-   | Dependency           | DEP-###  | DEP-042  |
+| RISK-  | Risk                 | RISK-### | RISK-008 |
+| TEST-  | Test case            | TEST-### | TEST-055 |
+| INT-   | Integration test     | INT-###  | INT-012  |
+| E2E-   | End-to-end test      | E2E-###  | E2E-004  |
+| VAL-   | Validation           | VAL-###  | VAL-009  |
+| DOC-   | Documentation        | DOC-###  | DOC-017  |
+| CRIT-  | Success criteria     | CRIT-### | CRIT-002 |
 
 ### Numbering Rules
 
@@ -390,11 +397,13 @@ Currently, the system does not track user session events, making it difficult to
 ## Scope
 
 **In Scope:**
+
 - Session create/destroy events
 - Session activity tracking
 - Log storage and retrieval
 
 **Out of Scope:**
+
 - User behavior analytics
 - Machine learning on session data
 
@@ -406,17 +415,18 @@ Currently, the system does not track user session events, making it difficult to
 
 ## Requirements
 
-| Req ID | Type | Description | Priority | Status |
-|--------|------|-------------|----------|--------|
-| REQ-001 | Functional | Log session creation with user ID, timestamp, IP | Critical | Defined |
-| REQ-002 | Non-Functional | Logging overhead <10ms per event | High | Defined |
-| REQ-003 | Technical | Use structured JSON logging format | High | Defined |
+| Req ID  | Type           | Description                                      | Priority | Status  |
+| ------- | -------------- | ------------------------------------------------ | -------- | ------- |
+| REQ-001 | Functional     | Log session creation with user ID, timestamp, IP | Critical | Defined |
+| REQ-002 | Non-Functional | Logging overhead <10ms per event                 | High     | Defined |
+| REQ-003 | Technical      | Use structured JSON logging format               | High     | Defined |
 
 ## Implementation Phases
 
 ### PHASE-1: Logging Infrastructure
 
 **Completion Criteria:**
+
 - Logger class implemented and tested
 - Log storage configured
 
@@ -424,19 +434,21 @@ Currently, the system does not track user session events, making it difficult to
 
 **Tasks:**
 
-| Task ID | Description | Files Modified | Dependencies | Owner | Status |
-|---------|-------------|----------------|--------------|-------|--------|
-| TASK-001 | Create SessionLogger class | `src/logging/SessionLogger.ts` | None | Dev | Not Started |
-| TASK-002 | Configure log storage backend | `config/logging.yml` | TASK-001 | Dev | Not Started |
-| TASK-003 | Add unit tests for logger | `test/SessionLogger.test.ts` | TASK-001 | Dev | Not Started |
+| Task ID  | Description                   | Files Modified                 | Dependencies | Owner | Status      |
+| -------- | ----------------------------- | ------------------------------ | ------------ | ----- | ----------- |
+| TASK-001 | Create SessionLogger class    | `src/logging/SessionLogger.ts` | None         | Dev   | Not Started |
+| TASK-002 | Configure log storage backend | `config/logging.yml`           | TASK-001     | Dev   | Not Started |
+| TASK-003 | Add unit tests for logger     | `test/SessionLogger.test.ts`   | TASK-001     | Dev   | Not Started |
 
 **Validation:**
+
 - VAL-001: Logger writes to configured backend
 - VAL-002: Unit tests achieve >90% coverage
 
 ### PHASE-2: Session Event Integration
 
 **Completion Criteria:**
+
 - All session lifecycle events logged
 - Performance benchmarks met
 
@@ -444,13 +456,14 @@ Currently, the system does not track user session events, making it difficult to
 
 **Tasks:**
 
-| Task ID | Description | Files Modified | Dependencies | Owner | Status |
-|---------|-------------|----------------|--------------|-------|--------|
-| TASK-004 | Add logging to session create | `src/session/SessionManager.ts` | TASK-001 | Dev | Not Started |
-| TASK-005 | Add logging to session destroy | `src/session/SessionManager.ts` | TASK-001 | Dev | Not Started |
-| TASK-006 | Performance benchmark tests | `test/performance/session.bench.ts` | TASK-004, TASK-005 | Dev | Not Started |
+| Task ID  | Description                    | Files Modified                      | Dependencies       | Owner | Status      |
+| -------- | ------------------------------ | ----------------------------------- | ------------------ | ----- | ----------- |
+| TASK-004 | Add logging to session create  | `src/session/SessionManager.ts`     | TASK-001           | Dev   | Not Started |
+| TASK-005 | Add logging to session destroy | `src/session/SessionManager.ts`     | TASK-001           | Dev   | Not Started |
+| TASK-006 | Performance benchmark tests    | `test/performance/session.bench.ts` | TASK-004, TASK-005 | Dev   | Not Started |
 
 **Validation:**
+
 - VAL-003: All session events logged correctly
 - VAL-004: Performance overhead <10ms
 
@@ -458,14 +471,14 @@ Currently, the system does not track user session events, making it difficult to
 
 ### Unit Tests
 
-| Test ID | Component | Coverage Target | Status |
-|---------|-----------|-----------------|--------|
-| TEST-001 | SessionLogger | 95% | Not Started |
+| Test ID  | Component     | Coverage Target | Status      |
+| -------- | ------------- | --------------- | ----------- |
+| TEST-001 | SessionLogger | 95%             | Not Started |
 
 ### Integration Tests
 
-| Test ID | Components | Scenario | Status |
-|---------|-----------|----------|--------|
+| Test ID | Components              | Scenario               | Status      |
+| ------- | ----------------------- | ---------------------- | ----------- |
 | INT-001 | SessionLogger + Storage | Log write and retrieve | Not Started |
 
 ## Rollout Plan
@@ -473,13 +486,13 @@ Currently, the system does not track user session events, making it difficult to
 ### Deployment Phases
 
 | Phase | Environment | Percentage | Duration | Rollback Trigger |
-|-------|-------------|------------|----------|------------------|
-| 1 | Staging | 100% | 1 day | Any failure |
-| 2 | Production | 100% | - | Critical errors |
+| ----- | ----------- | ---------- | -------- | ---------------- |
+| 1     | Staging     | 100%       | 1 day    | Any failure      |
+| 2     | Production  | 100%       | -        | Critical errors  |
 
 ## Documentation Updates
 
-| Doc ID | Document | Changes Required | Owner | Status |
-|--------|----------|------------------|-------|--------|
-| DOC-001 | API Docs | Add session logging endpoints | Dev | Not Started |
+| Doc ID  | Document | Changes Required              | Owner | Status      |
+| ------- | -------- | ----------------------------- | ----- | ----------- |
+| DOC-001 | API Docs | Add session logging endpoints | Dev   | Not Started |
 ```
