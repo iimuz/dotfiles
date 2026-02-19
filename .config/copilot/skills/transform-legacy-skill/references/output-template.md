@@ -97,14 +97,14 @@ description: >
  * @output { synthesis: string }
  */
 
-type Response     = { model: string; content: string; filepath: string };
-type Review       = { reviewer: string; ranking: number[]; filepath: string };
-type LabelMapping = Record<string, string>;  // response-label -> model-name
+type Response = { model: string; content: string; filepath: string };
+type Review = { reviewer: string; ranking: number[]; filepath: string };
+type LabelMapping = Record<string, string>; // response-label -> model-name
 
 type ModelRoles = {
-  Member1:  "claude-opus-4.6";
-  Member2:  "gemini-3-pro-preview";
-  Member3:  "gpt-5.3-codex";
+  Member1: "claude-opus-4.6";
+  Member2: "gemini-3-pro-preview";
+  Member3: "gpt-5.3-codex";
   Chairman: "claude-opus-4.6";
 };
 
@@ -161,6 +161,80 @@ Present `synthesize` output directly to user. Main agent must not read intermedi
 
 ---
 
+## Reference File Template
+
+Reference files containing subagent prompts use the same Hybrid-3 op/invariant notation for both the outer scaffolding (invocation and failure handling) and the inner prompt content (role, typed I/O, ops, execution pipeline).
+
+### Complete Example: `stage1-prompt.md`
+
+```markdown
+# Outer Scaffolding
+
+## Invocation
+
+op invoke_stage1(question: string, model: ModelRoles.Member) -> Response {
+task(agent_type: "general-purpose", prompt: rendered_template(question));
+invariant: (response_empty) => retry(max: 1, then: mark_failed(model));
+invariant: (timeout > 120s) => abort_member(model);
+}
+
+## Failure Handling
+
+op handle_stage1_failure(failed: ModelRoles.Member[], responses: Response[]) -> Response[] {
+invariant: (len(responses) < 2) => abort("Council quorum not met");
+invariant: (len(responses) == 2) => warn("Degraded mode: 2/3 responses");
+}
+
+---
+
+# Subagent Prompt Template
+
+## Role
+
+You are an expert analyst contributing to a multi-model council deliberation.
+
+## Interface
+
+\`\`\`typescript
+/\*\*
+
+- @input { question: string }
+- @output { analysis: string }
+  \*/
+
+type AnalysisOutput = {
+reasoning: string;
+conclusion: string;
+confidence: "high" | "medium" | "low";
+};
+\`\`\`
+
+## Operations
+
+\`\`\`typespec
+op analyze_question(question: string) -> AnalysisOutput {
+invariant: (question_ambiguous) => state_assumptions_explicitly;
+invariant: (domain_outside_expertise) => declare_limitation;
+}
+
+op structure_response(analysis: AnalysisOutput) -> string {
+invariant: (conclusion_unsupported) => add_caveats;
+}
+\`\`\`
+
+## Execution
+
+analyze_question -> structure_response
+
+## Input Context
+
+Question: {{question}}
+
+Provide your independent analysis. Do not reference other models or prior answers.
+```
+
+---
+
 ## Notes on Format Compliance
 
 1. **YAML frontmatter is mandatory** — `name` and `description` fields required for skill discovery.
@@ -169,3 +243,4 @@ Present `synthesize` output directly to user. Main agent must not read intermedi
 4. **Invariants are per-op** — place each `invariant:` line in the op that owns the condition.
 5. **Cross-op invariants** belong in the `@invariants` JSDoc comment in the Interface block.
 6. **Reference stubs** — every `@references/file.md` citation requires a corresponding file.
+7. **Reference file format** — Reference files containing subagent prompts must use Hybrid-3 format. Both outer scaffolding and inner prompt content use op/invariant notation. Plain-text code fence wrappers around entire templates are prohibited.

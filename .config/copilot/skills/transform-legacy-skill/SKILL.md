@@ -20,21 +20,34 @@ Convert a legacy procedural Markdown skill file into the **Hybrid-3** format: a 
 
 type SkillAnatomy = {
   description: string;
-  workflow:     WorkflowStep[];
-  models:       ModelConfig[];
-  errors:       ErrorRow[];
+  workflow: WorkflowStep[];
+  models: ModelConfig[];
+  errors: ErrorRow[];
   long_prompts: PromptRef[];
 };
 
-type WorkflowStep = { id: string; action: string; inputs: string[]; outputs: string[] };
-type ModelConfig  = { role: string; legacy_model: string; purpose: string };
-type ErrorRow     = { condition: string; behavior: string };
-type PromptRef    = { placeholder: string; content: string };
+type WorkflowStep = {
+  id: string;
+  action: string;
+  inputs: string[];
+  outputs: string[];
+};
+type ModelConfig = { role: string; legacy_model: string; purpose: string };
+type ErrorRow = { condition: string; behavior: string };
+type PromptRef = { placeholder: string; content: string };
+
+type RefFileAnatomy = {
+  sections: string[];
+  placeholders: string[];
+  has_outer_fence: boolean;
+  has_imperative: boolean;
+  input_context_vars: string[];
+};
 
 type MappingRegistry = {
   "claude-opus": "claude-opus-4.6";
-  "gpt-4":       "gpt-5.3-codex";
-  "gemini-pro":  "gemini-3-pro-preview";
+  "gpt-4": "gpt-5.3-codex";
+  "gemini-pro": "gemini-3-pro-preview";
 };
 
 /**
@@ -42,6 +55,10 @@ type MappingRegistry = {
  * 1. Zero_Verbosity:      imperative sentences ("First, do X") => remove entirely
  * 2. Signature_Integrity: every `op` => typed (input: T) -> U defined
  * 3. Minimal_Token:       natural-language redundancy => symbolic/typespec notation
+ * 4. Ref_File_Parity:    every @references stub => valid Hybrid-3 with >=1 op
+ * 5. No_Outer_Fence:     reference file templates => no plain-text code fence wrapper
+ * 6. All_Placeholders_Declared: {var} in reference => declared in ## Input Context
+ * 7. Semantic_Contract_Preserved: transformed output => same observable behavior as legacy
  */
 ```
 
@@ -70,8 +87,10 @@ op synthesize_invariants(anatomy: SkillAnatomy) -> Invariant[] {
 
 op externalize_prompts(anatomy: SkillAnatomy) -> { anatomy: SkillAnatomy; stubs: File[] } {
   // Replace inline prompt content longer than 10 lines with @references/filename.md
-  // Emit stub files preserving original content
+  // Emit stub files transforming both layers: outer scaffolding and inner prompt content
   invariant: (prompt_under_10_lines) => passthrough("retain inline");
+  invariant: (stub_has_placeholders) => extract_to_input_context_section(stub);
+  invariant: (stub_wraps_in_plain_fence) => remove_outer_fence(stub);
 }
 
 op render(
@@ -82,6 +101,7 @@ op render(
 ) -> string {
   // Assemble final Hybrid-3 output following @references/output-template.md
   invariant: (render_fail) => abort("Could not render output");
+  invariant: (stub_contains_imperative_steps) => abort("Reference file not fully converted");
 }
 ```
 
