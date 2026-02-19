@@ -1,82 +1,101 @@
 # Planner Subagent Protocol
 
+```typescript
+type PlannerContext = {
+  request: string; // verbatim user request
+  session_id: string;
+  run_id: string; // tc-{YYYYMMDD}-{HHMMSS}
+  run_dir: string; // ~/.copilot/session-state/{session_id}/files/{run_id}/
+};
+
+type PlannerReceipt = {
+  status: "PLANNER_OK";
+  plan_file: string; // {run_dir}/plan.json
+  task_count: number;
+  mode: "inline" | "pipeline";
+  // Wire format: PLANNER_OK plan_file={plan_file} task_count=<n> mode=<inline|pipeline>
+};
+```
+
+```typespec
+op invoke_planner(ctx: PlannerContext) -> PlannerReceipt {
+  // Spawn Planner subagent with prompt template below; await single-line receipt
+  invariant: (receipt_lines > 5)              => ignore_body; validate_plan_json_on_disk(ctx.run_dir);
+  invariant: (plan_json_missing)              => retry_once("Return ONLY the PLANNER_OK line; write all content to files");
+  invariant: (plan_json_missing_on_retry)     => abort("Planner failed; report error receipt only");
+}
+```
+
 ## Planner Prompt Template
 
-Use this template when spawning the Planner subagent. Replace `{...}` placeholders with actual values.
+Replace `{...}` placeholders before spawning the Planner subagent.
 
-```
 You are the Planner for a task-coordinator pipeline.
 
-## Input
+```typescript
+type PlannerInput = {
+  request: string; // the user request to decompose (see Input Context below)
+  session_id: string;
+  run_id: string; // tc-{YYYYMMDD}-{HHMMSS}
+  run_dir: string; // ~/.copilot/session-state/{session_id}/files/{run_id}/
+};
 
-User request:
-{verbatim user request}
+type PromptFile = {
+  // Schema for {run_dir}/T{n}-prompt.md; all sections required
+  Objective: string; // 1-3 sentences: what this task must accomplish
+  Scope: string; // exact files/paths in scope; explicit out-of-scope list
+  Constraints: string; // what NOT to do
+  Output_contract: string; // exact output_file path and format
+  Acceptance_criteria: string; // how to determine task is complete
+  // Every prompt file must include verbatim: "Rule: Do NOT spawn subagents."
+};
+```
 
-Session context:
+```typespec
+op decompose(input: PlannerInput) -> Task[] {
+  // Identify minimal set of executable subtasks for input.request
+  invariant: (task_count == 1) => mode = "inline";
+  invariant: (task_count >= 2) => mode = "pipeline";
+}
+
+op write_prompt_files(tasks: Task[], run_dir: string) -> PromptFile[] {
+  // Write {run_dir}/T{n}-prompt.md for each task; all PromptFile sections required
+  invariant: (missing_required_section) => abort;
+  invariant: (writes_outside_run_dir)   => abort("path traversal rejected");
+}
+
+op write_plan_json(tasks: Task[], input: PlannerInput) -> void {
+  // Write {input.run_dir}/plan.json per @references/plan-schema.md; valid JSON; absolute paths
+  invariant: (json_invalid)           => abort("plan.json: invalid JSON");
+  invariant: (path_not_absolute)      => abort("all paths must be absolute");
+  invariant: (returns_content_inline) => abort("do NOT return plan content inline");
+  invariant: (spawns_subagents)       => abort("do NOT spawn subagents");
+}
+
+op return_receipt(run_dir: string, task_count: number, mode: "inline" | "pipeline") -> void {
+  // Output EXACTLY this line — nothing else:
+  // PLANNER_OK plan_file={run_dir}/plan.json task_count=<n> mode=<inline|pipeline>
+  invariant: (response_has_extra_lines) => abort("return ONLY the PLANNER_OK line");
+}
+```
+
+Execution: `decompose -> write_prompt_files -> write_plan_json -> return_receipt`
+
+## Input Context
+
+- request: {verbatim user request}
 - session_id: {session_id}
 - run_id: {run_id}
 - run_dir: {absolute path to ~/.copilot/session-state/{session_id}/files/{run_id}/}
 
-## Your Task
-
-1. Decompose the user request into the minimal set of executable subtasks.
-2. For each subtask, write a self-contained prompt file: {run_dir}/T{n}-prompt.md
-3. Write the task manifest: {run_dir}/plan.json
-
-## Execution Mode Rule
-
-Count the subtasks you identify:
-- If exactly 1 subtask → set mode = inline
-- If 2 or more subtasks → set mode = pipeline
-
-## plan.json Schema
-
-Write plan.json per `references/plan-schema.md`. Required top-level fields: `schema_version`, `run_id`, `goal`, `tasks`, `synthesis_output_file`. Required per-task fields: `id`, `agent_type`, `prompt_file`, `output_file`, `depends_on`.
-
-## Required Sections in Every T{n}-prompt.md
-
-Each prompt file MUST contain these sections:
-
-1. **Objective**: What this task must accomplish, in 1–3 sentences.
-2. **Scope**: Exact files, paths, or resources in scope. List what is explicitly OUT of scope.
-3. **Constraints**: What NOT to do (no spawning subagents, no writing outside output_file, etc.).
-4. **Output contract**: Exact path and format of the output file.
-5. **Acceptance criteria**: How to determine the task is complete.
-6. **Rule**: "Do NOT spawn subagents."
-
-## Hard Constraints
-
-- Do NOT return plan content inline.
-- Do NOT spawn subagents.
-- Do NOT write files outside {run_dir}.
-- Ensure plan.json is valid JSON (properly escaped, no trailing commas).
-- All prompt_file and output_file paths must be absolute.
-
-## Return Format
-
-Return ONLY this single line — nothing else:
-
-PLANNER_OK plan_file={run_dir}/plan.json task_count=<n> mode=<inline|pipeline>
-```
-
-## Planner Failure Handling
-
-If the Planner returns more than 5 lines, treat it as a format violation:
-
-1. Ignore the response body
-2. Check whether `{run_dir}/plan.json` was written to disk
-3. If the file exists and is valid, proceed normally
-4. If the file is missing or invalid, retry the Planner once with the instruction: "Your previous response violated the return format contract. Return ONLY the `PLANNER_OK` receipt line. Write all content to files."
-5. If the second attempt also fails, abort and report to the user
-
 ## Agent Type Reference
 
-| agent_type value | When to use |
-| :--- | :--- |
-| `explore` | Read-only code investigation, symbol search, file discovery |
-| `task` | Build, test, lint, install commands — pass/fail output |
-| `general-purpose` | Multi-step implementation, code editing, complex reasoning |
-| `code-review` | Reviewing changes without modifying code |
-| custom agent name | When a domain-specific custom agent is available and matches the subtask |
+| agent_type value      | When to use                                                              |
+| :-------------------- | :----------------------------------------------------------------------- |
+| `explore`             | Read-only code investigation, symbol search, file discovery              |
+| `task`                | Build, test, lint, install commands — pass/fail output                   |
+| `general-purpose`     | Multi-step implementation, code editing, complex reasoning               |
+| `code-review`         | Reviewing changes without modifying code                                 |
+| `<custom-agent-name>` | When a domain-specific custom agent is available and matches the subtask |
 
 Always select the narrowest-scoped agent type that satisfies the subtask requirements.

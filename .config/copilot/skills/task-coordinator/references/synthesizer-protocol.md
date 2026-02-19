@@ -1,77 +1,78 @@
 # Synthesizer Subagent Protocol
 
+```typescript
+type SynthesizerContext = {
+  goal: string; // from plan.json
+  output_files: string[]; // worker output_file paths, ordered
+  synthesis_output_file: string; // absolute path to write synthesis
+};
+
+type SynthesisReceipt = {
+  summary: string; // 2-4 sentences
+  synthesis_output_file: string;
+  // Wire format: <2-4 sentence summary>\nSYNTHESIS_FILE: {synthesis_output_file}
+};
+```
+
+```typespec
+op invoke_synthesizer(ctx: SynthesizerContext) -> SynthesisReceipt {
+  // Spawn Synthesizer subagent with prompt template below; validate compact receipt
+  invariant: (synthesizer_fails)                    => retry_once("Write to {ctx.synthesis_output_file}; return only 2-4 sentence receipt + SYNTHESIS_FILE: line");
+  invariant: (synthesizer_fails_again)              => abort; report_paths(ctx.synthesis_output_file, ctx.output_files);  // do NOT load content inline
+  invariant: (receipt_missing_SYNTHESIS_FILE_line)  => check_file_on_disk(ctx.synthesis_output_file);
+  invariant: (receipt_lines > 6)                    => check_file_on_disk(ctx.synthesis_output_file);
+  invariant: (file_exists_after_invalid_receipt)    => extract_path; proceed;
+  invariant: (file_missing_after_invalid_receipt)   => treat_as_synthesizer_failure;
+}
+```
+
 ## Synthesizer Prompt Template
 
-Use this template when spawning the Synthesizer subagent in pipeline mode. Replace `{...}` placeholders with actual values.
+Replace `{...}` placeholders before spawning the Synthesizer subagent (pipeline mode only).
 
-```
 You are the Synthesizer for a task-coordinator pipeline run.
 
-## Input
+```typescript
+type SynthesizerInput = {
+  goal: string; // from plan.json (see Input Context below)
+  output_files: string[]; // worker output_file paths, ordered
+  synthesis_output_file: string; // absolute path to write synthesis
+};
 
-Goal (from plan.json):
-{goal}
-
-Worker output files to read (in order):
-{list of output_file paths, one per line}
-
-Synthesis output file to write:
-{synthesis_output_file}
-
-## Your Task
-
-1. Read each worker output file listed above.
-2. Synthesize the results into a coherent, unified response to the original goal.
-3. Write the full synthesis to: {synthesis_output_file}
-4. If any output files are missing or empty, include a "Gaps" section in the synthesis noting which tasks did not produce output.
-
-## synthesis.md Structure
-
-Write the synthesis file with this structure:
-
-# Synthesis: {goal}
-
-## Summary
-[2–4 sentence executive summary]
-
-## Findings
-[Full synthesized content from all worker outputs]
-
-## Gaps (if any)
-[Note any missing or incomplete task outputs]
-
-## Hard Constraints
-
-- Do NOT return the full synthesis inline.
-- Do NOT spawn subagents.
-- Do NOT write files outside the run directory.
-- The inline receipt must be concise: 2–4 sentences maximum.
-
-## Return Format
-
-Return ONLY the following — a compact prose receipt (2–4 sentences) followed by the file path line:
-
-<2–4 sentence summary of the synthesis findings>
-SYNTHESIS_FILE: {synthesis_output_file}
+type SynthesisFile = {
+  // Write to: input.synthesis_output_file
+  // Document title: "# Synthesis: {goal}"
+  summary: string; // ## Summary — 2-4 sentences
+  findings: string; // ## Findings — unified content from all worker outputs
+  gaps?: string; // ## Gaps (if any) — list missing/incomplete outputs
+};
 ```
 
-## Synthesizer Failure Handling
+```typespec
+op read_worker_outputs(input: SynthesizerInput) -> WorkerContent[] {
+  // Read each path in input.output_files in order
+  invariant: (file_missing or file_empty) => record_gap(path);
+}
 
-If the Synthesizer fails on first attempt:
+op synthesize(outputs: WorkerContent[], input: SynthesizerInput) -> SynthesisFile {
+  // Write unified response to input.synthesis_output_file matching SynthesisFile schema
+  invariant: (returns_full_synthesis_inline) => abort("do NOT return synthesis inline");
+  invariant: (writes_outside_run_dir)        => abort("do NOT write outside run directory");
+  invariant: (spawns_subagents)              => abort("do NOT spawn subagents");
+}
 
-1. Retry once with a refined prompt: "Write the synthesis to `{synthesis_output_file}`. Return only the 2–4 sentence receipt and the `SYNTHESIS_FILE:` line."
-2. If the second attempt fails, abort synthesis and report to the user:
-   - State that synthesis failed after two attempts
-   - Provide the `synthesis_output_file` path (for manual review if a partial file was written)
-   - Provide the list of completed `output_file` paths
-   - Do NOT load any output file content inline
+op return_receipt(synthesis: SynthesisFile, input: SynthesizerInput) -> void {
+  // Output EXACTLY: <2-4 sentence summary>\nSYNTHESIS_FILE: {input.synthesis_output_file}
+  invariant: (receipt_lines > 6)                    => abort;
+  invariant: (missing_SYNTHESIS_FILE_line)           => abort;
+  invariant: (summary_sentence_count not in [2, 4]) => adjust_to_2_to_4_sentences;
+}
+```
 
-## Receipt Validation
+Execution: `read_worker_outputs -> synthesize -> return_receipt`
 
-A valid Synthesizer receipt must:
+## Input Context
 
--   Contain exactly 1 `SYNTHESIS_FILE:` line as the last line
--   Have 2–4 prose sentences before the `SYNTHESIS_FILE:` line
--   Total no more than 6 lines
-
-If the receipt is invalid (missing the `SYNTHESIS_FILE:` line, or excessively long), check whether `synthesis_output_file` was written to disk. If the file exists, extract the path and proceed. If not, treat as a Synthesizer failure.
+- goal: {goal}
+- output_files: {list of output_file paths, one per line}
+- synthesis_output_file: {synthesis_output_file}

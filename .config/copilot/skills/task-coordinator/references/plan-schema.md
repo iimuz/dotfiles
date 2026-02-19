@@ -1,5 +1,40 @@
 # plan.json Schema Reference
 
+```typescript
+type Plan = {
+  schema_version: string; // "1.0"
+  run_id: string; // tc-{YYYYMMDD}-{HHMMSS}; pattern: ^tc-\d{8}-\d{6}$
+  goal: string; // one-line summary of user request
+  tasks: Task[]; // 1..15 items
+  synthesis_output_file: string; // absolute path under run_dir
+};
+
+type Task = {
+  id: string; // unique within plan, e.g. "T1"
+  agent_type: string; // "explore" | "task" | "general-purpose" | "code-review" | <custom>
+  prompt_file: string; // absolute path under run_dir; must exist before workers spawn
+  output_file: string; // absolute path under run_dir
+  depends_on: string[]; // task IDs; empty array if no dependencies
+  description?: string; // optional — short label for dashboard
+  model?: string; // optional — model override
+};
+```
+
+```typespec
+op validate(raw: unknown) -> Plan {
+  // Verify JSON structure, field completeness, graph integrity, and path confinement
+  invariant: (json_parse_error)                          => abort("plan.json: parse failure");
+  invariant: (missing_required_field)                    => abort("plan.json: missing field");
+  invariant: (duplicate_task_id)                         => abort("plan.json: duplicate task ID");
+  invariant: (circular_dependency)                       => abort("plan.json: dependency cycle");
+  invariant: (path_escapes_run_dir)                      => abort("plan.json: path traversal rejected");
+  invariant: (prompt_file_absent)                        => abort("plan.json: prompt file not found");
+  invariant: (tasks.length < 1 or tasks.length > 15)    => abort("plan.json: task count out of [1, 15] range");
+  invariant: (run_id !~ /^tc-\d{8}-\d{6}$/)            => abort("plan.json: run_id format invalid");
+  invariant: (depends_on_id_unknown)                     => abort("plan.json: unknown depends_on reference");
+}
+```
+
 ## Full Schema
 
 ```json
@@ -33,52 +68,37 @@
 
 ### Top-level (all required)
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `schema_version` | string | Always `"1.0"` |
-| `run_id` | string | Unique run identifier: `tc-{YYYYMMDD}-{HHMMSS}` |
-| `goal` | string | One-line summary of the user request (for dashboard and Synthesizer context) |
-| `tasks` | array | Ordered list of task objects (`tasks.length >= 1`) |
+| Field                   | Type   | Description                                                                                             |
+| :---------------------- | :----- | :------------------------------------------------------------------------------------------------------ |
+| `schema_version`        | string | Always `"1.0"`                                                                                          |
+| `run_id`                | string | Unique run identifier: `tc-{YYYYMMDD}-{HHMMSS}`                                                         |
+| `goal`                  | string | One-line summary of the user request (for dashboard and Synthesizer context)                            |
+| `tasks`                 | array  | Ordered list of task objects (`tasks.length >= 1`)                                                      |
 | `synthesis_output_file` | string | Absolute path to write the Synthesizer output (pipeline mode only; required even for single-task plans) |
 
 ### Per-task (required fields)
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | string | Unique task identifier within the run (e.g., `T1`, `T2`) |
-| `agent_type` | string | One of: `explore`, `task`, `general-purpose`, `code-review`, or a custom agent name |
-| `prompt_file` | string | Absolute path to the worker's prompt file under the run directory |
-| `output_file` | string | Absolute path to the worker's output file under the run directory |
-| `depends_on` | array | List of task `id` values that must complete before this task starts (empty array if none) |
+| Field         | Type   | Description                                                                               |
+| :------------ | :----- | :---------------------------------------------------------------------------------------- |
+| `id`          | string | Unique task identifier within the run (e.g., `T1`, `T2`)                                  |
+| `agent_type`  | string | One of: `explore`, `task`, `general-purpose`, `code-review`, or `<custom-agent-name>`     |
+| `prompt_file` | string | Absolute path to the worker's prompt file under the run directory                         |
+| `output_file` | string | Absolute path to the worker's output file under the run directory                         |
+| `depends_on`  | array  | List of task `id` values that must complete before this task starts (empty array if none) |
 
 ### Per-task (optional fields)
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `description` | string | Short human-readable label for dashboard entries |
-| `model` | string | Model override for this task (see SKILL.md Agent Selection) |
-
-## Validation Rules
-
-Before dispatching workers, validate the plan:
-
-1. Valid JSON — reject on parse error
-2. All required top-level fields present
-3. All required per-task fields present for every task object
-4. Task `id` values are unique within the plan
-5. All `depends_on` values reference existing task `id` values
-6. Dependency graph is acyclic (no circular dependencies)
-7. `tasks.length` is between 1 and 15 (inclusive)
-8. All `prompt_file` paths exist on disk before workers are spawned
-9. All paths are absolute; resolve each to canonical form and verify it begins with the expected `~/.copilot/session-state/{session_id}/files/{run_id}/` prefix — reject the plan if any path escapes the run directory
-10. `run_id` matches pattern `^tc-\d{8}-\d{6}$`
+| Field         | Type   | Description                                                 |
+| :------------ | :----- | :---------------------------------------------------------- |
+| `description` | string | Short human-readable label for dashboard entries            |
+| `model`       | string | Model override for this task (see SKILL.md Agent Selection) |
 
 ## Inline Mode vs Pipeline Mode
 
-| task_count | Mode | Behavior |
-| :--- | :--- | :--- |
-| 1 | Inline | Spawn single worker directly; skip Synthesizer; return inline result |
-| 2+ | Pipeline | Spawn workers in parallel; spawn Synthesizer after; return compact receipt |
+| task_count | Mode     | Behavior                                                                   |
+| :--------- | :------- | :------------------------------------------------------------------------- |
+| 1          | Inline   | Spawn single worker directly; skip Synthesizer; return inline result       |
+| 2+         | Pipeline | Spawn workers in parallel; spawn Synthesizer after; return compact receipt |
 
 The mode is determined by `tasks.length` in `plan.json` — decided by the Planner, not the main agent.
 
