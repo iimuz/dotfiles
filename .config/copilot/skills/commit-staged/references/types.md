@@ -19,17 +19,14 @@ Complete list of valid commit types for Conventional Commits.
 | revert   | Revert previous commits                     | revert authentication changes      |
 | i18n     | Internationalization                        | add Japanese translations          |
 
-## Selection Guidelines
+## Operations
 
-- **feat**: User-facing new functionality
-- **fix**: Corrects broken behavior
-- **docs**: Only documentation changes (no code)
-- **refactor**: Code structure improvements without behavior change
-- **test**: Only test changes
-- **chore**: Routine tasks, dependency updates, config tweaks
-- **ci**: Only affects CI/CD pipeline
-- **build**: Build tool or external dependency changes
-- **perf**: Makes code faster or more efficient
-- **style**: Whitespace, formatting, semicolons only
-- **revert**: Undoes previous commit
-- **i18n**: Translation or localization work
+```typespec
+op select_type(diff: StagedDiff) -> CommitType {
+  // Match diff to the most specific type using Type Descriptions table above
+  invariant: (only_whitespace_or_formatting) => force("style");
+  invariant: (only_test_files_changed)       => force("test");
+  invariant: (only_doc_files_changed)        => force("docs");
+  invariant: (type_not_in_table)             => abort("invalid commit type");
+}
+```
