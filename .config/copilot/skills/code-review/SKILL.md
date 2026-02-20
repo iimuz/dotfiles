@@ -10,18 +10,23 @@ description: >
 
 ## Overview
 
-Multi-model code review using 12 parallel agents (4 aspects × 3 models), targeted gap cross-checks, and a single consolidated report.
+Multi-model code review using up to 15 parallel agents (up to 5 aspects × 3 models), targeted gap cross-checks, and a single consolidated report.
 
 ## Interface
 
 ```typescript
 /**
  * @skill code-review
- * @input  { scope: ReviewScope }
+ * @input  { scope: ReviewScope; design_info?: string }
  * @output { report: ConsolidatedReview }
  */
 
-type ReviewAspect = "security" | "quality" | "performance" | "best-practices";
+type ReviewAspect =
+  | "security"
+  | "quality"
+  | "performance"
+  | "best-practices"
+  | "design-compliance";
 
 /** Reviewer model allowlist — all model identifiers must come from this union */
 type ModelName = "claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.3-codex";
@@ -45,7 +50,11 @@ type ReviewScope = {
 };
 type Chunk = { name: string; files: string[] };
 
-type ReviewOutput = { aspect: ReviewAspect; model: string; filepath: string };
+type ReviewOutputRef = {
+  aspect: ReviewAspect;
+  model: string;
+  filepath: string;
+};
 type GapEntry = {
   aspect: ReviewAspect;
   missed_by: ModelName;
@@ -75,6 +84,7 @@ type ConsolidatedReview = {
  * 4. Model_Parity:     cross_check_worker.model == gap_entry.missed_by
  * 5. Aspect_Isolation: each reviewer reviews only its assigned ReviewAspect
  * 6. Main_Read_Gate:   main agent reads only gap-list.md (Stage 2b) and consolidated-review.md (Stage 4)
+ * 7. Design_Conditional: design-compliance aspect activated only when design_info is provided; skip otherwise
  */
 ```
 
@@ -88,14 +98,19 @@ op detect_scope(repo: GitRepo) -> ReviewScope {
   invariant: (diff_lines > 1000 || changed_files > 20) => chunk_by_directory(repo);
 }
 
-op stage1_parallel_review(scope: ReviewScope) -> ReviewOutput[] {
-  // Launch 12 agents (4 aspects × 3 models); each reads @references/review-prompt.md and @references/review-criteria.md
+op stage1_parallel_review(scope: ReviewScope, design_info?: string) -> ReviewOutputRef[] {
+  // Launch up to 15 agents (up to 5 aspects × 3 models); default 12 when design_info is omitted
+  // Each reads @references/review-prompt.md and @references/review-criteria.md; pass design_info in ReviewContext
   task(
     model: ModelRoles.ReviewerA | ModelRoles.ReviewerB | ModelRoles.ReviewerC,
     aspects: ReviewAspect[],
     prompt: @references/review-prompt.md,
-    criteria: @references/review-criteria.md
+    criteria: @references/review-criteria.md,
+    context: { design_info: design_info }
   );
+  invariant: (design_info != null && design_info.length > 8000) => abort("design_info exceeds 8 000-character limit; summarize or trim before invoking.");
+  invariant: (design_info == null && aspect == "design-compliance") => skip_aspect; // @invariants[7] Design_Conditional
+  invariant: (response_empty) => retry(max: 1, then: mark_failed(model));
   invariant: (per_aspect_responses < 2) => abort("Insufficient review coverage.");
   invariant: (per_aspect_responses == 2) => warn("Degraded mode; note missing model in consolidated report.");
   invariant: (model_timeout || api_failure) => continue_if(remaining_models >= 2);
@@ -103,7 +118,7 @@ op stage1_parallel_review(scope: ReviewScope) -> ReviewOutput[] {
 }
 
 op stage2a_gap_analysis(reviews: ReviewOutput[]) -> GapList {
-  // Single haiku-class agent reads all review files and identifies per-aspect gaps
+  // Single agent reads all review files and identifies per-aspect gaps
   task(model: ModelRoles.GapAnalyzer, prompt: @references/gap-analysis-prompt.md);
   invariant: (stage2a_fails) => passthrough_to_stage3("note reduced confidence in consolidated output");
   invariant: (gaps_found == 0) => skip(stage2b_cross_check);
@@ -119,14 +134,14 @@ op stage2b_cross_check(gaps: GapList) -> CrossCheckOutput[] {
   invariant: (worker_partial_fail) => continue("note incomplete cross-checks in consolidated report");
 }
 
-op stage3_consolidate(reviews: ReviewOutput[], cross_checks: CrossCheckOutput[]) -> ConsolidatedReview {
+op stage3_consolidate(reviews: ReviewOutputRef[], cross_checks: CrossCheckOutput[]) -> ConsolidatedReview {
   // Integration agent reads all review/crosscheck files, merges, deduplicates, and validates
   task(model: ModelRoles.Integrator, prompt: @references/integration-prompt.md);
   invariant: (consolidation_fails) => present_highest_priority_findings("note that consolidation failed");
 }
 
 op stage4_deliver(consolidated: ConsolidatedReview) -> void {
-  // Main agent reads only consolidated-review.md and presents using Output Format below
+  // Main agent reads only consolidated-review.md and presents using @references/output-format.md
   invariant: (main_agent_reads_intermediate_files) => abort("I/O invariant violation: @invariants.Main_No_Read");
   invariant: (consolidated_missing) => abort("consolidated-review.md not found; check session folder for errors.");
   invariant: (consolidated_parse_fail) => present_error("consolidated-review.md could not be parsed; presenting highest-priority findings from individual reviews.");
@@ -139,65 +154,6 @@ op stage4_deliver(consolidated: ConsolidatedReview) -> void {
 detect_scope -> stage1_parallel_review -> stage2a_gap_analysis -> [stage2b_cross_check | skip] -> stage3_consolidate -> stage4_deliver
 ```
 
-Present `stage4_deliver` output using the Output Format below. Main agent reads only `gap-list.md` (Stage 2b routing) and `consolidated-review.md` (Stage 4 delivery).
+Present `stage4_deliver` output using [`references/output-format.md`](references/output-format.md). Main agent reads only `gap-list.md` (Stage 2b routing) and `consolidated-review.md` (Stage 4 delivery).
 
-Sub-agent prompt templates: [`references/review-prompt.md`](references/review-prompt.md), [`references/cross-check-prompt.md`](references/cross-check-prompt.md), [`references/integration-prompt.md`](references/integration-prompt.md), [`references/gap-analysis-prompt.md`](references/gap-analysis-prompt.md). Aspect criteria: [`references/review-criteria.md`](references/review-criteria.md).
-
-## Output Format
-
-```markdown
-## Code Review Summary
-
-Brief assessment of overall change quality and scope.
-
-### Critical Issues (Blocking)
-
-- **[file:line]** Description. Why it matters. Suggested fix.
-
-### Improvements (Non-Blocking)
-
-- **[file:line]** Description. Rationale.
-
-### Positive Observations
-
-- Notable good patterns worth highlighting.
-
----
-
-_Reviewed by: claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex_
-_Session files: ~/.copilot/session-state/{session-id}/files/_
-```
-
-**Quality standards for all findings:**
-
-| Check            | Standard                                                               |
-| ---------------- | ---------------------------------------------------------------------- |
-| File reference   | Every critical issue must include file path and line number            |
-| Confidence label | Uncertain findings must be tagged High/Medium/Low confidence           |
-| False positives  | Preserve in report but mark clearly as unverified                      |
-| Scope            | Focus on bugs, security, and logic errors; exclude style-only comments |
-
-## Session Files
-
-All files are saved to `~/.copilot/session-state/{session-id}/files/`:
-
-| File                                      | Content                                                         |
-| ----------------------------------------- | --------------------------------------------------------------- |
-| `{aspect}-claude-opus-4.6-review.md`      | Claude's review for that aspect                                 |
-| `{aspect}-gemini-3-pro-preview-review.md` | Gemini's review for that aspect                                 |
-| `{aspect}-gpt-5.3-codex-review.md`        | GPT's review for that aspect                                    |
-| `gap-list.md`                             | Stage 2a gap analysis results (routing file read by main agent) |
-| `{aspect}-{model}-crosscheck.md`          | Targeted cross-check output (Stage 2b, when applicable)         |
-| `consolidated-review.md`                  | Final integrated review report                                  |
-
-`{aspect}` is one of: `security`, `quality`, `performance`, `best-practices`.
-
-For chunked reviews, prefix with chunk name: `{chunk}-{aspect}-{model}-review.md`.
-
-## Invocation Example
-
-```
-skill: code-review
-# Review begins automatically — no additional input needed
-# Detects PR changes, staged/unstaged changes, or local unpushed commits
-```
+Sub-agent prompt templates: [`references/review-prompt.md`](references/review-prompt.md), [`references/cross-check-prompt.md`](references/cross-check-prompt.md), [`references/integration-prompt.md`](references/integration-prompt.md), [`references/gap-analysis-prompt.md`](references/gap-analysis-prompt.md). Aspect criteria: [`references/review-criteria.md`](references/review-criteria.md). Output format: [`references/output-format.md`](references/output-format.md).

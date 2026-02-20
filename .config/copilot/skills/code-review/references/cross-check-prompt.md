@@ -1,27 +1,5 @@
 # Cross-Check Review Prompt
 
-## Invocation
-
-```typespec
-op invoke_cross_check(context: CrossCheckContext) -> CrossCheckOutput {
-  task(agent_type: "general-purpose", model: context.model_name, prompt: rendered_template(context));
-  invariant: (model_mismatch) => abort("Cross-check worker model must match missed_by value from gap-list.md");
-  invariant: (response_empty) => mark_failed(context.model_name, context.aspect);
-}
-```
-
-## Failure Handling
-
-```typespec
-op handle_cross_check_failure(failed: CrossCheckContext, outputs: CrossCheckOutput[]) -> CrossCheckOutput[] {
-  invariant: (worker_fails) => continue("log failure; note incomplete cross-checks in consolidated report");
-}
-```
-
----
-
-# Subagent Prompt Template
-
 ## Role
 
 Focused verifier for specific concerns flagged by other reviewers but not originally caught by this model.
@@ -81,9 +59,10 @@ verify_concerns -> write_output
 ```typescript
 interface CrossCheckContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices";
+  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance";
   model_name: string; // must match missed_by value from gap-list.md
   concerns: Concern[]; // populated from gap-list.md entries for this (aspect, model_name) pair
+  design_info?: string; // required when aspect == "design-compliance"
 }
 ```
 

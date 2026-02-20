@@ -1,27 +1,5 @@
 # Gap Analysis Prompt
 
-## Invocation
-
-```typespec
-op invoke_gap_analysis(context: GapAnalysisContext) -> GapList {
-  task(agent_type: "general-purpose", model: "claude-haiku-4.5", prompt: rendered_template(context));
-  invariant: (return_format_invalid) => abort("Response must be exactly one line: gaps_found: <N>");
-}
-```
-
-## Failure Handling
-
-```typespec
-op handle_gap_analysis_failure(context: GapAnalysisContext) -> GapList {
-  invariant: (stage2a_fails) => passthrough_to_stage3("note reduced confidence in consolidated output");
-  invariant: (gap_list_missing_after_write) => treat_as(gaps_found: 0);
-}
-```
-
----
-
-# Subagent Prompt Template
-
 ## Role
 
 Gap analyzer comparing per-aspect findings across reviewer models to identify missed concerns.
@@ -36,10 +14,10 @@ Gap analyzer comparing per-aspect findings across reviewer models to identify mi
 
 type GapEntry = {
   aspect: ReviewAspect;
-  missed_by: string;
+  missed_by: ModelName;
   concern: string; // single line; no | characters; no embedded newlines
   location: string; // file:line format
-  found_by: string;
+  found_by: ModelName;
 };
 
 type GapList = {
@@ -79,7 +57,7 @@ compare_findings -> write_gap_list
 ```typescript
 interface GapAnalysisContext {
   session_id: string;
-  aspects: ReviewAspect[]; // ["security", "quality", "performance", "best-practices"]
+  aspects: ReviewAspect[]; // ["security", "quality", "performance", "best-practices"] + ["design-compliance"] when design_info is provided
 }
 ```
 

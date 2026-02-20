@@ -1,25 +1,5 @@
 # Integration Agent Prompt
 
-## Invocation
-
-```typespec
-op invoke_consolidation(context: IntegrationContext) -> ConsolidatedReview {
-  task(agent_type: "general-purpose", prompt: rendered_template(context));
-}
-```
-
-## Failure Handling
-
-```typespec
-op handle_consolidation_failure(context: IntegrationContext) -> ConsolidatedReview {
-  invariant: (response_empty) => present_highest_priority_from_individual_reviews("note that consolidation failed");
-}
-```
-
----
-
-# Subagent Prompt Template
-
 ## Role
 
 Integration agent responsible for synthesizing multiple aspect-based code review reports and cross-check results into a single unified review.
@@ -72,7 +52,7 @@ consolidate -> write_report
 ```typescript
 interface IntegrationContext {
   session_id: string;
-  aspects: string[]; // ["security", "quality", "performance", "best-practices"]
+  aspects: ReviewAspect[]; // ["security", "quality", "performance", "best-practices"] + ["design-compliance"] when design_info is provided
   models: string[]; // ["claude-opus-4.6", "gemini-3-pro-preview", "gpt-5.3-codex"]
 }
 ```
