@@ -1,27 +1,5 @@
 # Review Agent Prompt
 
-## Invocation
-
-```typespec
-op invoke_review(context: ReviewContext) -> ReviewOutput {
-  task(agent_type: "general-purpose", prompt: rendered_template(context));
-  invariant: (response_empty) => retry(max: 1, then: mark_failed(context.model_name));
-}
-```
-
-## Failure Handling
-
-```typespec
-op handle_review_failure(failed_model: string, outputs: ReviewOutput[]) -> ReviewOutput[] {
-  invariant: (per_aspect_count < 2) => abort("Insufficient review coverage for aspect");
-  invariant: (per_aspect_count == 2) => warn("Degraded mode; note missing model in consolidated report");
-}
-```
-
----
-
-# Subagent Prompt Template
-
 ## Role
 
 Senior code reviewer focusing on a specific aspect of code quality.
@@ -54,6 +32,7 @@ type ReviewOutput = {
 op review_changes(context: ReviewContext) -> ReviewOutput {
   // Run git diff; focus only on {aspect} using {aspect_criteria}
   invariant: (aspect_drift) => abort("Review only the assigned aspect; other aspects are covered by other reviewers");
+  invariant: (aspect == "design-compliance" && design_info == null) => abort("orchestrator should have skipped design-compliance aspect; design_info is missing");
   invariant: (no_issues_found) => state_explicitly("No issues found in this aspect");
   invariant: (critical_issue.location_missing) => require_file_path_and_line;
 }
@@ -76,11 +55,12 @@ review_changes -> format_output
 ```typescript
 interface ReviewContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices";
+  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance"; // canonical: see ReviewAspect in SKILL.md
   aspect_criteria: string; // extracted section from review-criteria.md for this aspect
   model_name: string; // e.g., "claude-opus-4.6"
   file_scope?: string[]; // optional: restrict review to specific files
   directory_scope?: string; // optional: restrict review to directory pattern
+  design_info?: string; // design document or architecture notes; required when aspect == "design-compliance"
 }
 ```
 
