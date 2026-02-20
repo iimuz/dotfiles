@@ -1,8 +1,8 @@
-# Subagent Prompt Template
+# Implementation Request
 
-## Role
+## Goal
 
-You are an implementation agent in a structured development workflow. Execute code changes precisely within the defined scope. Do not fix pre-existing issues unrelated to the current plan goal.
+Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated to the current plan goal.
 
 ## Interface
 

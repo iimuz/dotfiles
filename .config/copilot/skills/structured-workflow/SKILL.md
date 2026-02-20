@@ -58,7 +58,7 @@ op plan(task: string) -> PlanResult {
 }
 
 op implement(plan: PlanResult, iteration: number, prior_issues: Issue[], tdd_mode: boolean) -> void {
-  task(agent_type: "general-purpose", prompt: @references/implement-prompt.md, vars: { plan, iteration, prior_issues, tdd_mode });
+  skill(name: "task-coordinator", input: @references/implement-prompt.md, vars: { plan, iteration, prior_issues, tdd_mode });
   invariant: (subagent_fails) => abort("Implementation subagent failed; halt and report");
 }
 
@@ -67,9 +67,10 @@ op commit(iteration: number) -> CommitRef {
   invariant: (nothing_staged) => abort("No staged changes to commit");
 }
 
-op review(iteration: number) -> ReviewResult {
-  skill(name: "code-review", scope: "cumulative");
+op review(plan: PlanResult, iteration: number) -> ReviewResult {
+  skill(name: "code-review", scope: "cumulative", design_info: plan.summary);
   // Summarize findings in Japanese, categorized by severity
+  // plan.summary passed as design_info activates design-compliance aspect; must be ≤ 8000 chars
   invariant: (review_fails)                                      => abort("code-review failed; halt and report");
   invariant: (has_critical_or_high(issues) && iteration < 3)    => continue_loop;
   invariant: (iteration >= 3 || !has_critical_or_high(issues))  => finalize;
