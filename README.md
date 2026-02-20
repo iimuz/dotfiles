@@ -34,3 +34,28 @@ scoop import .config/scoop/scoopfile.json
 ```ps1
 scoop export > .config/scoop/scoopfile.json
 ```
+
+## Development
+
+This section is for contributors who modify this repository.
+
+### Setup
+
+Install development tools and activate git hooks (requires [mise](https://mise.jdx.dev/)):
+
+```bash
+mise install
+lefthook install
+```
+
+### Linting and Formatting
+
+On each commit, the following tools run automatically via lefthook:
+
+- **shfmt** — Shell script formatter (`*.sh`)
+- **shellcheck** — Shell script linter (`*.sh`)
+- **taplo** — TOML formatter (`*.toml`)
+- **prettier** — Markdown formatter (`*.md`)
+- **markdownlint-cli2** — Markdown linter (`*.md`)
+
+Formatters apply changes automatically and re-stage the corrected files. Linters will block the commit if issues are found.

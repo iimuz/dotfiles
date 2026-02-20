@@ -1,6 +1,12 @@
 [tools]
 "aqua:LuaLS/lua-language-server" = "latest"
 "npm:bash-language-server" = "latest"
+shfmt = "latest"
+shellcheck = "latest"
+"cargo:taplo-cli" = "latest"
+"npm:prettier" = "latest"
+"npm:markdownlint-cli2" = "latest"
+lefthook = "latest"
 
 [env]
 mise.file = ".env"
