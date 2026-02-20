@@ -1,6 +1,11 @@
 # Review Criteria
 
-This document defines the four independent aspects for comprehensive code review.
+```typespec
+op validate_criteria(aspect: ReviewAspect) -> CriteriaChecklist {
+  // Return the criteria checklist for the specified aspect
+  invariant: (aspect_not_in_known_set) => abort("Unknown aspect; must be one of: security | quality | performance | best-practices");
+}
+```
 
 ## Security Checks (CRITICAL)
 

@@ -3,91 +3,71 @@ name: commit-staged
 description: Commit staged changes using Conventional Commit parameters (validates inputs).
 ---
 
-# Commit Staged Changes Skill
+# Commit Staged Changes
 
-## Purpose
+## Overview
 
-Standardized git commits following Conventional Commits 1.0.0 with type validation.
+Execute a Conventional Commits 1.0.0-compliant git commit from already-staged changes, automatically deriving type and message without user confirmation.
 
-## Contract
+## Interface
 
-- Use only the scripts shipped with this skill (do not run extra git commands)
-- Commits **only** what is already staged (never stages/unstages files)
-- Description must be natural-language summary (not file paths)
-- Subject/body in English; subject is imperative, no trailing period
+```typescript
+/**
+ * @skill commit-staged
+ * @input  { /* implicit: current git staged state */ }
+ * @output { commit: CommitRef }
+ */
 
-**IMPORTANT**: All scripts must be executed from the **git repository root directory** where you want to commit changes.
+type CommitType =
+  | "build" | "chore" | "ci"   | "docs" | "feat" | "fix"
+  | "i18n"  | "perf"  | "refactor" | "revert" | "style" | "test";
 
-```bash
-# Incorrect usage - executing from skill directory
-# May operate on wrong repo!
-cd /path/to/skills/commit-staged
-bash scripts/commit.sh --type feat --description "add feature"
+type CommitParams = {
+  type:         CommitType;
+  description:  string;   // imperative English, no trailing period, max 100 chars with type prefix
+  body?:        string;   // optional; bullet lines each starting with "-"
+};
 
-# Correct usage - execute from target repository
-cd /path/to/your/repo
-bash /path/to/skills/commit-staged/scripts/commit.sh --type feat --description "add feature"
+type StagedDiff = { files: string[]; diff: string };
+
+type CommitRef = { sha: string; message: string };
+
+/**
+ * @invariants
+ * 1. Zero_Verbosity:      imperative sentences => remove
+ * 2. Signature_Integrity: all ops fully typed
+ * 3. Script_Root:         scripts => execute from git repository root, not skill directory
+ * 4. Staged_Only:         never stage or unstage files; operate on current staged state only
+ */
 ```
 
-## Workflow
+## Operations
 
-1. Review staged changes:
+```typespec
+op inspect_staged() -> StagedDiff {
+  bash(script: @scripts/staged-files.sh);
+  invariant: (staged_empty) => abort("no staged files to commit");
+}
 
-   ```bash
-   bash scripts/staged-files.sh
-   ```
+op analyze(diff: StagedDiff) -> CommitParams {
+  // Derive type from @references/types.md; description: natural language summary of what changed and why
+  invariant: (description_is_filepath) => abort("description must be natural language, not a file path");
+  invariant: (description_empty)       => abort("description is required");
+}
 
-2. **Automatically** analyze the diff and determine appropriate `--type`, `--description`, and optional `--body` **without asking the user**
-
-3. Execute the commit:
-
-   ```bash
-   bash scripts/commit.sh --type <type> --description "<summary>" [--body "<bullets>"]
-   ```
-
-## Scripts
-
-**staged-files.sh** - Show staged files and diff:
-
-```bash
-bash scripts/staged-files.sh
+op commit(params: CommitParams) -> CommitRef {
+  bash(script: @scripts/commit.sh, args: {
+    "--type": params.type, "--description": params.description, "--body": params.body
+  });
+  invariant: (type_invalid)   => abort("invalid type; see references/types.md");
+  invariant: (commit_fails)   => abort("git commit failed");
+}
 ```
 
-**commit.sh** - Execute commit with validation:
+## Execution
 
-```bash
-bash scripts/commit.sh --type <type> --description <description> [--body <body>]
+```
+inspect_staged -> analyze -> commit
 ```
 
-Parameters:
-
-- `--type`: Required. Valid types in `references/types.md`
-- `--description`: Required. Natural language summary (max 100 chars with type)
-- `--body`: Optional. Bullet points starting with "-"
-
-## Message Guidelines
-
-- Summarize _what_ changed (and ideally _why_) in natural language
-- Do **not** use file-path lists (e.g. ".github/.../file.go, ...")
-- English, imperative mood, no trailing period
-- Valid types: see `references/types.md`
-
-## Examples
-
-Simple commit:
-
-```bash
-bash scripts/commit.sh --type feat --description "add user authentication"
-```
-
-With body:
-
-```bash
-bash scripts/commit.sh \
-  --type fix \
-  --description "resolve token expiration" \
-  --body "- update token refresh logic
-- add error handling for expired tokens"
-```
-
-Output format: `<type>: <description>`
+Execute scripts via absolute path from the git repository root. Type reference: [`references/types.md`](references/types.md).
