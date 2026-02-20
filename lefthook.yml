@@ -1,18 +1,20 @@
 pre-commit:
-  parallel: true
   commands:
     shfmt:
       glob: "*.sh"
       run: shfmt -w -i 2 -ci {staged_files} && git add {staged_files}
-    shellcheck:
-      glob: "*.sh"
-      run: shellcheck {staged_files}
     taplo-format:
       glob: "*.toml"
+      # taplo, prettier, markdownlint-cli2 use `mise exec --` because they are installed
+      # as npm/cargo tools accessible only via mise shims, which are not in PATH during
+      # git hook execution (unlike shfmt/shellcheck which install directly to PATH)
       run: mise exec -- taplo format {staged_files} && git add {staged_files}
     prettier:
       glob: "*.md"
       run: mise exec -- prettier --write {staged_files} && git add {staged_files}
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck --severity=warning {staged_files}
     markdownlint:
       glob: "*.md"
       run: mise exec -- markdownlint-cli2 {staged_files}

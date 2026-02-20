@@ -111,48 +111,48 @@ sudo apt-get install -y --no-install-recommends libreadline-dev
 sudo apt-get install -y --no-install-recommends libclang-dev
 
 # 各種設定ファイルの配置もしくは読み込み設定
-set_bashrc $CONFIG_PATH/rc-settings.sh
+set_bashrc "$CONFIG_PATH/rc-settings.sh"
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
-  sudo usermod -aG docker $(whoami)
+  sudo usermod -aG docker "$(whoami)"
 fi
 # === gh
 if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
-  create_symlink $SCRIPT_DIR/.config/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
+  create_symlink "$SCRIPT_DIR/.config/gh-dash/config.yml" "$HOME/.config/gh-dash/config.yml"
 fi
 # === git
 if type git >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.gitconfig $HOME/.gitconfig
-  create_symlink $SCRIPT_DIR/.config/git/ignore $HOME/.config/git/ignore
-  create_symlink $SCRIPT_DIR/.config/git/credential-gh-helper $HOME/.local/bin/credential-gh-helper
+  create_symlink "$SCRIPT_DIR/.gitconfig" "$HOME/.gitconfig"
+  create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
+  create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
 fi
 # === github copoilot cli
 if type copilot >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/copilot/agents $HOME/.config/.copilot/agents
-  create_symlink $SCRIPT_DIR/.config/copilot/skills $HOME/.config/.copilot/skills
-  create_symlink $SCRIPT_DIR/.config/copilot/mcp-config.json $HOME/.config/.copilot/mcp-config.json
-  create_symlink $SCRIPT_DIR/.config/copilot/copilot-instructions.md $HOME/.config/.copilot/copilot-instructions.md
+  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.config/.copilot/agents"
+  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.config/.copilot/skills"
+  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.config/.copilot/mcp-config.json"
+  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.config/.copilot/copilot-instructions.md"
 fi
 # === gpg
 if type gpg >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
+  create_symlink "$SCRIPT_DIR/.config/gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.conf"
 fi
 # === lazygit
 if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
 if type lazygit >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/lazygit/config.yml $HOME/.config/lazygit/config.yml
+  create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
 fi
 # === [mise](https://github.com/jdx/mise)
 if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
 if type mise >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/mise/config.toml $HOME/.config/mise/config.toml
+  create_symlink "$SCRIPT_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
 fi
 # === neovim
 if ! type nvim >/dev/null 2>&1; then _install_neovim; fi
 if type nvim >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/nvim $HOME/.config/nvim
+  create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
 fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
@@ -161,20 +161,20 @@ if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh
 if ! type tailscale >/dev/null 2>&1; then curl -fsSL https://tailscale.com/install.sh | sh; fi
 # === tmux
 if type tmux >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.tmux.conf $HOME/.tmux.conf
+  create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/vifm/vifmrc $HOME/.config/vifm/vifmrc
+  create_symlink "$SCRIPT_DIR/.config/vifm/vifmrc" "$HOME/.config/vifm/vifmrc"
 fi
 # === vim
 if type vim >/dev/null 2>&1; then
-  create_symlink $SCRIPT_DIR/.config/vim/init.vim $HOME/.vimrc
-  create_symlink $SCRIPT_DIR/.config/vim $HOME/.config/vim
+  create_symlink "$SCRIPT_DIR/.config/vim/init.vim" "$HOME/.vimrc"
+  create_symlink "$SCRIPT_DIR/.config/vim" "$HOME/.config/vim"
 fi
 # === yq
 if ! type yq >/dev/null 2>&1; then _install_yq; fi
 # === zsh
 if type zsh >/dev/null 2>&1; then
-  sudo chsh -s $(which zsh) $(whoami)
+  sudo chsh -s "$(which zsh)" "$(whoami)"
 fi
