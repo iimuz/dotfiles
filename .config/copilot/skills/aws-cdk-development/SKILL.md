@@ -185,6 +185,7 @@ Aspects.of(app).add(new AwsSolutionsChecks());
    ```
 
 3. **Validation Script**: Meta-level checks
+
    ```bash
    ./scripts/validate-stack.sh
    ```
