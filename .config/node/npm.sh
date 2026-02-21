@@ -35,7 +35,8 @@ fi
 function _change_default_npm_directory() {
   local script_path="$1"
   if [ -L "$script_path" ]; then script_path=$(readlink -f "$script_path"); fi
-  local readonly script_path=$(
+  local script_path
+  script_path=$(
     cd $(dirname "$script_path")
     pwd
   )

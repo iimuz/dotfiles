@@ -2,9 +2,12 @@
 
 # スクリプトパスの特定
 if [[ "$SHELL" == *zsh* ]]; then
-  readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
+  # shellcheck disable=SC2296
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
+  readonly _DOTFILES_CONFIG_DIR
 else  # bashを想定
-  readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
+  readonly _DOTFILES_CONFIG_DIR
 fi
 
 # shell設定
