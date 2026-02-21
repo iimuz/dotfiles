@@ -13,9 +13,9 @@ applyTo: ".config/**"
 ## Settings File Pattern
 
 - Source: `.config/rc-settings.sh`
-- Export environment variables needed by the tool
-- Set up shell integration (eval, completions)
-- Guard with tool availability check when appropriate
+- Rule: Export environment variables needed by the tool
+- Rule: Set up shell integration (eval, completions)
+- Rule: Guard with tool availability check when appropriate
 
 ## Loading Order
 
@@ -36,6 +36,6 @@ applyTo: ".config/**"
 
 ## Conventions
 
-- Use `export` for variables that child processes need
-- Use shell-compatible syntax (no bash-only features in files sourced by both bash and zsh)
-- Keep settings files minimal and focused on one tool
+- Rule: Use `export` for variables that child processes need
+- Rule: Use shell-compatible syntax (no bash-only features in files sourced by both bash and zsh)
+- Rule: Keep settings files minimal and focused on one tool

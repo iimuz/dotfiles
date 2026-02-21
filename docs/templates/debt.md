@@ -2,11 +2,11 @@
 
 ## Summary
 
-- Short issue summary.
+- Description: Short issue summary.
 
 ## Location
 
-`src/api/user.ts`
+- Path: `src/api/user.ts`
 
 ## Issue
 

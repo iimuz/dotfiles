@@ -6,7 +6,7 @@ status: TODO
 
 ## GOAL
 
-[One sentence goal]
+- Goal: [One sentence goal]
 
 ## REF
 

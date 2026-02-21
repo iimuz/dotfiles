@@ -48,8 +48,8 @@ fi
 
 ## Script Conventions
 
-- Use `set -eu` at the top
-- Use `readonly` for constants
-- Use `local -r` for function-scoped constants
-- Run `mise run lint` (shellcheck) after changes
-- Run `mise run format` (shfmt -i 2 -ci) after changes
+- Rule: Use `set -eu` at the top
+- Rule: Use `readonly` for constants
+- Rule: Use `local -r` for function-scoped constants
+- Rule: Run `mise run lint` (shellcheck) after changes
+- Rule: Run `mise run format` (shfmt -i 2 -ci) after changes
