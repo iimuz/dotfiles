@@ -45,7 +45,7 @@ When delegating a subtask, make two independent decisions:
 Match the subtask's requirements to the lightest agent that satisfies them:
 
 | Subtask Requirement                                   | Select an agent that...                             |
-| ----------------------------------------------------- | --------------------------------------------------- |
+| :---------------------------------------------------- | :-------------------------------------------------- |
 | Answering questions about code, finding files/symbols | ...is optimized for read-only exploration           |
 | Running builds, tests, lints, or installs             | ...executes commands and reports pass/fail          |
 | Multi-step implementation requiring code edits        | ...has full tool access and strong reasoning        |
