@@ -61,7 +61,7 @@ op save_synthesis(content: string, output_filepath: string) -> void {
 
 ## Execution
 
-```
+```text
 load_materials -> synthesize_insights -> address_conflicts -> format_output -> save_synthesis
 ```
 

@@ -49,7 +49,7 @@ op writeAnalysis(output: AnalysisOutput) -> AnalysisFile {
 
 ## Execution
 
-```
+```text
 analyzeRequirements -> assessFeasibility -> mapDependencies -> assessRisks -> writeAnalysis
 ```
 

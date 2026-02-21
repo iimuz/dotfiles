@@ -50,7 +50,7 @@ op write_output(result: CrossCheckOutput) -> void {
 
 ## Execution
 
-```
+```text
 verify_concerns -> write_output
 ```
 
@@ -75,7 +75,7 @@ Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-
 
 Assessment format per concern:
 
-```
+```text
 [CONCERN #N] Brief description
 File: path/to/file.ext:line_number
 Original Reviewer: model-name

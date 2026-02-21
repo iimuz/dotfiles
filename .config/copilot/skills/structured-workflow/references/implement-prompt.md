@@ -59,7 +59,7 @@ op execute(scope: WorkScope, language_ctx: LanguageContext, tdd_mode: boolean) -
 
 ## Execution
 
-```
+```text
 load_scope -> detect_language -> execute
 ```
 

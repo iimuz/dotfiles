@@ -121,7 +121,7 @@ op present(result: InlineResult | SynthesisReceipt) -> void {
 
 ## Execution
 
-```
+```text
 plan -> validate_plan -> [execute_inline | execute_pipeline] -> synthesize? -> present
 ```
 

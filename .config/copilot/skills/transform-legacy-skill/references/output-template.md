@@ -6,7 +6,7 @@ Canonical structure for transformed skills. Every output must conform to this te
 
 ## Template Structure
 
-```
+```text
 ---
 name: <skill-name>
 description: <goal-only description, 1-2 sentences>
@@ -153,7 +153,7 @@ op synthesize(
 
 ## Execution
 
-```
+```text
 generate_responses -> anonymize -> peer_review -> aggregate_rankings -> synthesize
 ```
 

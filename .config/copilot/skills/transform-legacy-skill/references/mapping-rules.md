@@ -6,7 +6,7 @@ Detailed transformation rules with annotated before/after examples for each lega
 
 Strip implementation details. Retain only the goal statement.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```yaml
 description: >
@@ -17,7 +17,7 @@ description: >
   Use for complex questions.
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```yaml
 description: >
@@ -31,7 +31,7 @@ description: >
 
 Remove imperative language ("Read", "Inject", "Call"). Express as typed input-output mappings.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 ### Stage 1
@@ -42,7 +42,7 @@ Remove imperative language ("Read", "Inject", "Call"). Express as typed input-ou
 4. Collect responses. If fewer than 2 succeed, abort.
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typespec
 op generate_stage1(question: string) -> Response[] {
@@ -63,7 +63,7 @@ op generate_stage1(question: string) -> Response[] {
 
 Upgrade legacy model names using `MappingRegistry`. Retain unknown model names unchanged.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 | Role    | Model       | Purpose             |
@@ -73,7 +73,7 @@ Upgrade legacy model names using `MappingRegistry`. Retain unknown model names u
 | Checker | gemini-pro  | Broad knowledge     |
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typescript
 type ModelRoles = {
@@ -83,7 +83,7 @@ type ModelRoles = {
 };
 ```
 
-**MappingRegistry**
+### MappingRegistry
 
 ```typescript
 type MappingRegistry = {
@@ -106,7 +106,7 @@ type CustomRoles = {
 
 Convert table rows to logical `Condition => Action` expressions embedded in the relevant `op`.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 | Condition              | Behavior                  |
@@ -116,7 +116,7 @@ Convert table rows to logical `Condition => Action` expressions embedded in the 
 | Stage 2 prep failure   | Launch fallback synthesis |
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typespec
 op generate_responses(question: string) -> Response[] {
@@ -142,7 +142,7 @@ op prepare_stage2(responses: Response[]) -> PrepResult {
 
 Externalize inline prompt content longer than **10 lines**.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 ### Stage 1
@@ -151,7 +151,7 @@ Externalize inline prompt content longer than **10 lines**.
 2. Inject {user_question}.
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typespec
 op run_stage1(question: string) -> Response {
@@ -159,7 +159,7 @@ op run_stage1(question: string) -> Response {
 }
 ```
 
-**Before (Legacy — inline prompt exceeding 10 lines)**
+### Before (Legacy — inline prompt exceeding 10 lines)
 
 ```markdown
 Use the following instructions:
@@ -167,7 +167,7 @@ You are a synthesizer. Your goal is to...
 [12 more lines of instructions]
 ```
 
-**After (Spec-First)**
+### After (Spec-First — externalized inline prompt)
 
 ```typespec
 op synthesize(inputs: string[]) -> string {
@@ -209,7 +209,7 @@ Reference files (e.g., subagent prompts in `references/*.md`) contain legacy pat
 | `## Return Format` prose                             | `return_receipt` op with invariants |
 | Outer plain-text code fence wrapping entire template | Remove entirely                     |
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 ## Your Task
@@ -233,7 +233,7 @@ Check that every claim has a supporting citation. If a claim lacks a citation, f
 Return a JSON object with keys: summary, citations, flagged_claims.
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typespec
 op parse_and_rank(context: InputContext) -> RankedArguments {
@@ -262,7 +262,7 @@ op return_receipt(result: ValidationResult) -> ReceiptPayload {
 
 `{placeholder}` variables scattered throughout a reference file must be collected into a single `## Input Context` section at the bottom of the file, with type declarations.
 
-**Before (Legacy)**
+### Before (Legacy)
 
 ```markdown
 ## Your Task
@@ -272,7 +272,7 @@ op return_receipt(result: ValidationResult) -> ReceiptPayload {
 3. Output to {output_format}.
 ```
 
-**After (Spec-First)**
+### After (Spec-First)
 
 ```typespec
 op summarize_docs(context: InputContext) -> Summary {
@@ -304,7 +304,7 @@ Every `references/*.md` file must satisfy minimum structural requirements after 
 
 **Validation check**:
 
-```
+```text
 For each file in references/*.md:
   assert: count(op declarations) >= 1
   assert: count(invariant expressions) >= 1

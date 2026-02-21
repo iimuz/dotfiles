@@ -46,7 +46,7 @@ op format_output(review: ReviewOutput) -> string {
 
 ## Execution
 
-```
+```text
 review_changes -> format_output
 ```
 
@@ -73,7 +73,7 @@ Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-
 
 Output format per finding:
 
-```
+```text
 [PRIORITY] Brief description
 File: path/to/file.ext:line_number
 Issue: Detailed explanation

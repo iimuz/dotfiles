@@ -43,7 +43,7 @@ op write_report(review: ConsolidatedReview) -> void {
 
 ## Execution
 
-```
+```text
 consolidate -> write_report
 ```
 

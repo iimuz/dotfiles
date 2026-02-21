@@ -66,7 +66,7 @@ op commit(params: CommitParams) -> CommitRef {
 
 ## Execution
 
-```
+```text
 inspect_staged -> analyze -> commit
 ```
 

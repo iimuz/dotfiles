@@ -85,7 +85,7 @@ op final_summary(iterations: IterationRecord[]) -> FinalSummary {
 
 ## Execution
 
-```
+```text
 plan -> loop(max: 3)[implement -> commit -> review] -> final_summary
 ```
 

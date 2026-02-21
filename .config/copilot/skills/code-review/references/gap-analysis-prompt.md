@@ -48,7 +48,7 @@ op write_gap_list(gaps: GapList) -> void {
 
 ## Execution
 
-```
+```text
 compare_findings -> write_gap_list
 ```
 
@@ -65,7 +65,7 @@ Output path: `~/.copilot/session-state/{session_id}/files/gap-list.md`
 
 Output format:
 
-```
+```text
 gaps_found: N
 
 ## {Aspect}

@@ -56,7 +56,7 @@ op save_evaluation(content: string, output_filepath: string) -> void {
 
 ## Execution
 
-```
+```text
 read_responses -> evaluate_responses -> emit_ranking -> save_evaluation
 ```
 

@@ -1,4 +1,4 @@
-## Core Philosophy
+# Core Philosophy
 
 Pragmatic priorities:
 

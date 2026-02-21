@@ -138,7 +138,7 @@ bash scripts/create-pr.sh \
 
 PR Title:
 
-```
+```text
 <type>: <title>
 ```
 

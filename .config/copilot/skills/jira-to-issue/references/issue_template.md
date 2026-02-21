@@ -4,7 +4,7 @@ Use this template when creating GitHub Issues from JIRA tickets.
 
 ## Title Format
 
-```
+```text
 [{Ticket ID}] {Jira Summary}
 ```
 

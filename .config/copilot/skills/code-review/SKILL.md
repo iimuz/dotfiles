@@ -150,7 +150,7 @@ op stage4_deliver(consolidated: ConsolidatedReview) -> void {
 
 ## Execution
 
-```
+```text
 detect_scope -> stage1_parallel_review -> stage2a_gap_analysis -> [stage2b_cross_check | skip] -> stage3_consolidate -> stage4_deliver
 ```
 

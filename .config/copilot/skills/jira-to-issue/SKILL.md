@@ -44,7 +44,7 @@ Follow the template structure defined in `references/issue_template.md`:
 
 **Title Format:**
 
-```
+```text
 [{Ticket ID}] {Jira Summary}
 ```
 

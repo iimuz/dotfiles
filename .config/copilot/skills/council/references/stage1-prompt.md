@@ -40,7 +40,7 @@ op save_response(content: string, output_filepath: string) -> void {
 
 ## Execution
 
-```
+```text
 analyze_question -> structure_response -> save_response
 ```
 

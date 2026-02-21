@@ -109,7 +109,7 @@ op render(
 
 Execute as:
 
-```
+```text
 deconstruct -> upgrade_models -> [parallel: abstract_operations + synthesize_invariants + externalize_prompts] -> render
 ```
 

@@ -1,6 +1,6 @@
-## Suggested Updates to AGENTS.md
+# Suggested Updates to AGENTS.md
 
-### Section: [Architecture/Commands/etc.]
+## Section: [Architecture/Commands/etc.]
 
 **Current AGENTS.md says:**
 [exact text from current file]

@@ -3,9 +3,3 @@ config:
   MD024:
     siblings_only: true
   MD033: false
-  # MD036: Bold text is used as visual section labels in AI instruction format (intentional)
-  MD036: false
-  # MD040: Abstract/pseudo-code blocks without language specifier (intentional)
-  MD040: false
-  # MD041: Template/continuation files do not always start with h1 (intentional)
-  MD041: false

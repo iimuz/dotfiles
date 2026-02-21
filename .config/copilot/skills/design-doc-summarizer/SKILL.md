@@ -42,32 +42,32 @@ Extract key information while filtering:
 
 Follow this mandatory 6-section structure (omit sections that do not apply):
 
-**Section 1: Overview & Purpose**
+#### Section 1: Overview & Purpose
 
 - Background: Why this change is needed
 - Goal: What to achieve
 - Scope: Range of changes
 
-**Section 2: Architecture**
+#### Section 2: Architecture
 
 - Before/After configuration (simple diagram or bullet points)
 - Role of main resources (table format)
 
-**Section 3: Specification**
+#### Section 3: Specification
 
 - Interface definitions (URL, API, etc.)
 - Prerequisites and constraints
 
-**Section 4: Key Design Decisions**
+#### Section 4: Key Design Decisions
 
 - Key design decisions and their reasons
 - Briefly mention alternatives that were not chosen, if any
 
-**Section 5: Processing Flow**
+#### Section 5: Processing Flow
 
 - Data flow, authorization flow, etc. as needed
 
-**Section 6: Migration Plan**
+#### Section 6: Migration Plan
 
 - Phased approach and impact on existing resources (only if applicable)
 

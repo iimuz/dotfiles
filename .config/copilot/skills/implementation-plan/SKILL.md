@@ -122,7 +122,7 @@ op synthesize(input: { userRequest: string; outputFilepath: string; outputDir: S
 
 ## Execution
 
-```
+```text
 analyze -> draftPlans -> crossReview -> [aggregateConsensus + validateInsights] -> resolveConflicts -> synthesize
 ```
 

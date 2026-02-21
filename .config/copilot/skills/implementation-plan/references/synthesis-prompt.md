@@ -55,7 +55,7 @@ op savePlan(plan: FinalPlanFile, outputFilepath: string) -> FinalPlanFile {
 
 ## Execution
 
-```
+```text
 discoverInputFiles -> synthesizePlan -> savePlan
 ```
 
