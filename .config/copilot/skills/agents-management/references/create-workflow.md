@@ -30,7 +30,7 @@ Use the `explore` agent or grep/glob tools to efficiently gather this informatio
 
 Generate a markdown file with these sections (adapt based on project type):
 
-**Project Header**
+### Project Header
 
 - One-line description of the project and its tech stack
 
@@ -40,7 +40,7 @@ Generate a markdown file with these sections (adapt based on project type):
 - Import/export patterns
 - Styling approach
 
-**Commands**
+### Commands
 
 - Development server
 - Build process
@@ -48,13 +48,13 @@ Generate a markdown file with these sections (adapt based on project type):
 - Linting/formatting
 - Database migrations
 
-**Architecture**
+### Architecture
 
 - Directory structure with brief explanations
 - Key design patterns
 - Important modules/components
 
-**Important Notes**
+### Important Notes
 
 - Security warnings (secrets, authentication)
 - Deployment considerations

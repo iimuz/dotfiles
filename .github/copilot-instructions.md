@@ -1,4 +1,4 @@
-## Environment Setup Commands
+# Environment Setup Commands
 
 **Initial Setup:**
 
