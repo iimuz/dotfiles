@@ -15,7 +15,8 @@
 - Case: kebab-case
 - Extension: .md
 - Separator: hyphen (-)
-- Keys: PascalCase (e.g., PackageManager, LoadingOrder, LastRun)
+- Keys: PascalCase (e.g., PackageManager, LoadingOrder, LastRun).
+  Acronyms lowercase after first letter (macOS → Macos, ARM64 → Arm64, WSL → Wsl).
 
 ## FILE_REGISTRY
 

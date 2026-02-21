@@ -12,6 +12,6 @@
 
 - Detail: Using mock data instead of DB.
 
-## Fix_Condition
+## FIX_CONDITION
 
 - Condition: Implement actual query when DB schema is finalized.
