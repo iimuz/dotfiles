@@ -5,7 +5,8 @@ description: AWS Cloud Development Kit (CDK) expert for building cloud infrastru
 
 # AWS CDK Development
 
-This skill provides comprehensive guidance for developing AWS infrastructure using the Cloud Development Kit (CDK), with integrated MCP servers for accessing latest AWS knowledge and CDK utilities.
+This skill provides comprehensive guidance for developing AWS infrastructure using the Cloud Development Kit (CDK),
+with integrated MCP servers for accessing latest AWS knowledge and CDK utilities.
 
 ## AWS Documentation Requirement
 
@@ -81,7 +82,9 @@ new lambda.Function(this, "MyFunction", {
 });
 ```
 
-**Security Note**: For different environments (dev, staging, prod), follow AWS Security Pillar best practices by using separate AWS accounts rather than relying on resource naming within a single account. Account-level isolation provides stronger security boundaries.
+**Security Note**: For different environments (dev, staging, prod), follow AWS Security Pillar best practices by using
+separate AWS accounts rather than relying on resource naming within a single account. Account-level isolation provides
+stronger security boundaries.
 
 ### Lambda Function Development
 
@@ -143,7 +146,9 @@ const app = new App();
 Aspects.of(app).add(new AwsSolutionsChecks());
 ```
 
-**Optional - VS Code users**: Install [CDK NAG Validator extension](https://marketplace.visualstudio.com/items?itemName=alphacrack.cdk-nag-validator) for faster feedback on file save.
+**Optional - VS Code users**: Install
+[CDK NAG Validator extension](https://marketplace.visualstudio.com/items?itemName=alphacrack.cdk-nag-validator)
+for faster feedback on file save.
 
 **For Python/Java/C#/Go projects**: cdk-nag is available in all CDK languages and provides the same synthesis-time validation.
 
@@ -296,4 +301,5 @@ This reference includes:
 
 ## GitHub Actions Integration
 
-When GitHub Actions workflow files exist in the repository, ensure all checks defined in `.github/workflows/` pass before committing. This prevents CI/CD failures and maintains code quality standards.
+When GitHub Actions workflow files exist in the repository, ensure all checks defined in `.github/workflows/` pass
+before committing. This prevents CI/CD failures and maintains code quality standards.

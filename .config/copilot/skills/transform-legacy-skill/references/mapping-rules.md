@@ -199,7 +199,8 @@ After completing all section mappings, verify:
 
 ## 7. Reference File Two-Layer Conversion
 
-Reference files (e.g., subagent prompts in `references/*.md`) contain legacy patterns that must be converted alongside the main skill spec. Apply the following section-level mapping:
+Reference files (e.g., subagent prompts in `references/*.md`) contain legacy patterns that must be converted alongside
+the main skill spec. Apply the following section-level mapping:
 
 | Legacy Pattern                                       | Hybrid-3 Replacement                |
 | ---------------------------------------------------- | ----------------------------------- |
@@ -260,7 +261,8 @@ op return_receipt(result: ValidationResult) -> ReceiptPayload {
 
 ## 8. Placeholder Normalization
 
-`{placeholder}` variables scattered throughout a reference file must be collected into a single `## Input Context` section at the bottom of the file, with type declarations.
+`{placeholder}` variables scattered throughout a reference file must be collected into a single `## Input Context`
+section at the bottom of the file, with type declarations.
 
 ### Before (Legacy)
 
@@ -292,7 +294,8 @@ interface InputContext {
 }
 ```
 
-**Rule**: Every `{placeholder}` in the file must appear as a typed field in the `## Input Context` interface. No orphan placeholders are allowed.
+**Rule**: Every `{placeholder}` in the file must appear as a typed field in the `## Input Context` interface. No orphan
+placeholders are allowed.
 
 ## 8.5. Compliance Gate — Reference Files
 
@@ -300,7 +303,8 @@ Every `references/*.md` file must satisfy minimum structural requirements after 
 
 - **Must contain** at least one `op` declaration
 - **Must contain** at least one `invariant` expression
-- Files consisting only of procedural anchors (numbered steps, imperative prose) without any `op` or `invariant` **fail validation**
+- Files consisting only of procedural anchors (numbered steps, imperative prose) without any `op` or `invariant`
+  **fail validation**
 
 **Validation check**:
 

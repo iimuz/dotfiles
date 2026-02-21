@@ -1,10 +1,12 @@
 # Refactor Workflow
 
-Perform comprehensive repository analysis and compare against `.github/copilot-instructions.md`, presenting changes for user approval.
+Perform comprehensive repository analysis and compare against `.github/copilot-instructions.md`,
+presenting changes for user approval.
 
 ## Goal
 
-Perform a thorough repository analysis and compare findings against copilot-instructions.md, presenting specific suggested changes for user approval before applying updates.
+Perform a thorough repository analysis and compare findings against copilot-instructions.md, presenting specific
+suggested changes for user approval before applying updates.
 
 ## When to Use
 
@@ -33,7 +35,8 @@ Use the glob tool to discover key file patterns: `**/*.{json,toml,yaml,yml,md,sh
 
 - Check package.json, Makefile, mise.toml, pyproject.toml for scripts
 - Identify build, test, lint, deployment commands
-- Verify command accuracy by dry-running safe commands (e.g., `--help` flags, `--dry-run` where available). Do not execute destructive or deployment commands.
+- Verify command accuracy by dry-running safe commands (e.g., `--help` flags, `--dry-run` where available).
+  Do not execute destructive or deployment commands.
 
 #### Code Conventions
 
@@ -51,7 +54,8 @@ Use the `explore` agent for complex analysis tasks. Make parallel grep/glob call
 
 ### 2. Load and Parse Existing copilot-instructions.md
 
-First verify `.github/copilot-instructions.md` exists. If it does not exist, inform the user and suggest using the create workflow instead.
+First verify `.github/copilot-instructions.md` exists. If it does not exist, inform the user and suggest
+using the create workflow instead.
 
 Read copilot-instructions.md and identify all documented sections:
 
@@ -110,7 +114,8 @@ Otherwise, use the ask_user tool to request which changes to apply:
 
 For each approved update:
 
-- Make precise edits to copilot-instructions.md using edit tool. If an edit fails, retry with expanded context or apply manually.
+- Make precise edits to copilot-instructions.md using edit tool. If an edit fails, retry with expanded context
+  or apply manually.
 - Preserve existing formatting and style
 - Maintain concise, imperative-form language
 - Keep bullet-point structure

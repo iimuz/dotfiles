@@ -11,7 +11,8 @@ allowed-tools: Bash(qmd:*), mcp__qmd__*
 
 # QMD - Quick Markdown Search
 
-QMD is a local, on-device search engine for markdown content. It indexes your notes, meeting transcripts, documentation, and knowledge bases for fast retrieval.
+QMD is a local, on-device search engine for markdown content. It indexes your notes, meeting transcripts,
+documentation, and knowledge bases for fast retrieval.
 
 ## QMD Status
 

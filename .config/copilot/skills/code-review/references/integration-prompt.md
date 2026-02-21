@@ -2,7 +2,8 @@
 
 ## Role
 
-Integration agent responsible for synthesizing multiple aspect-based code review reports and cross-check results into a single unified review.
+Integration agent responsible for synthesizing multiple aspect-based code review reports and cross-check results into
+a single unified review.
 
 ## Interface
 

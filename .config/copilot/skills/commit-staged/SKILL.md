@@ -7,7 +7,8 @@ description: Commit staged changes using Conventional Commit parameters (validat
 
 ## Overview
 
-Execute a Conventional Commits 1.0.0-compliant git commit from already-staged changes, automatically deriving type and message without user confirmation.
+Execute a Conventional Commits 1.0.0-compliant git commit from already-staged changes, automatically deriving type
+and message without user confirmation.
 
 ## Interface
 

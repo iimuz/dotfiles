@@ -104,7 +104,8 @@ The saved file must follow this exact structure:
 </details>
 ```
 
-Replace anonymous response labels with model names using `label_mapping_filepath`. The file must be presentation-ready; the main agent will display it without modification.
+Replace anonymous response labels with model names using `label_mapping_filepath`. The file must be presentation-ready;
+the main agent will display it without modification.
 
 ## Input Context
 

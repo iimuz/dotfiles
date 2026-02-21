@@ -14,7 +14,8 @@ invariant: (delegationOp redefines SKILL.md execution order) => abort("Delegatio
 
 ## Appendix A: Variable Binding Contracts
 
-Canonical mapping from legacy placeholders to camelCase variable names. This table is the single authoritative dictionary — no other file may define an alternate mapping.
+Canonical mapping from legacy placeholders to camelCase variable names. This table is the single authoritative
+dictionary — no other file may define an alternate mapping.
 
 | Legacy Placeholder   | Canonical camelCase | Binding Owner (file / section)                                           |
 | -------------------- | ------------------- | ------------------------------------------------------------------------ |

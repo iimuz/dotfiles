@@ -4,7 +4,8 @@ Generate `.github/copilot-instructions.md` from scratch by analyzing the entire 
 
 ## Goal
 
-Analyze the codebase and create a concise project context file that helps AI agents understand the repository quickly and work effectively.
+Analyze the codebase and create a concise project context file that helps AI agents understand the repository quickly
+and work effectively.
 
 ## When to Use
 

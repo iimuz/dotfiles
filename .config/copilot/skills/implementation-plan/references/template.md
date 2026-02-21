@@ -1,6 +1,7 @@
 # Implementation Plan Template
 
-All implementation plans MUST follow this exact structure. This template ensures consistency, machine-parseability, and automated execution by AI agents.
+All implementation plans MUST follow this exact structure. This template ensures consistency, machine-parseability,
+and automated execution by AI agents.
 
 ## Front Matter Structure
 

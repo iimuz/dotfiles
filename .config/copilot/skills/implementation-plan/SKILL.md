@@ -10,7 +10,8 @@ description: >
 
 ## Overview
 
-Produce fully self-contained implementation plans via multi-model deliberation: parallel requirement analysis, independent plan drafting, cross-review, conflict resolution, and final authoritative synthesis.
+Produce fully self-contained implementation plans via multi-model deliberation: parallel requirement analysis,
+independent plan drafting, cross-review, conflict resolution, and final authoritative synthesis.
 
 ## Interface
 
@@ -126,14 +127,17 @@ op synthesize(input: { userRequest: string; outputFilepath: string; outputDir: S
 analyze -> draftPlans -> crossReview -> [aggregateConsensus + validateInsights] -> resolveConflicts -> synthesize
 ```
 
-`+` denotes parallel execution. Return `synthesize` output `PlanFile.path` to caller. Do NOT read intermediate file content into main agent context.
+`+` denotes parallel execution. Return `synthesize` output `PlanFile.path` to caller. Do NOT read intermediate file
+content into main agent context.
 
-See [`references/implementation-patterns.md`](references/implementation-patterns.md) for session-path invariants and variable binding contracts (Appendix A).
+See [`references/implementation-patterns.md`](references/implementation-patterns.md) for session-path invariants and
+variable binding contracts (Appendix A).
 
 ## Reference Materials
 
 - [`references/template.md`](references/template.md) - Mandatory plan output template structure
 - [`references/analysis-prompt.md`](references/analysis-prompt.md) - Step 1 multi-perspective analysis prompt
 - [`references/synthesis-prompt.md`](references/synthesis-prompt.md) - Step 3D final synthesis prompt
-- [`references/implementation-patterns.md`](references/implementation-patterns.md) - Session-path invariants and variable binding contracts (Appendix A)
+- [`references/implementation-patterns.md`](references/implementation-patterns.md) - Session-path invariants and
+  variable binding contracts (Appendix A)
 - [`references/examples.md`](references/examples.md) - Complete plan examples for various scenarios

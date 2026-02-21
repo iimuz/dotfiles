@@ -7,7 +7,8 @@ description: Convert JIRA bug tickets to GitHub Issues using a standardized Mark
 
 ## Overview
 
-Convert JIRA bug tickets to GitHub Issues by reading JIRA ticket details and creating properly formatted GitHub Issues with standardized structure and appropriate labels.
+Convert JIRA bug tickets to GitHub Issues by reading JIRA ticket details and creating properly formatted GitHub Issues
+with standardized structure and appropriate labels.
 
 ## When to Use
 

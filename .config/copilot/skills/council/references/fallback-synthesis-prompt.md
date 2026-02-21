@@ -2,7 +2,8 @@
 
 ## Role
 
-You are a fallback synthesizer for the LLM Council. The Chairman agent failed; produce a simplified final report from available intermediate files.
+You are a fallback synthesizer for the LLM Council. The Chairman agent failed; produce a simplified final report from
+available intermediate files.
 
 ## Interface
 

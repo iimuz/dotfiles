@@ -139,13 +139,16 @@ Match subtasks to the lightest capable agent:
 | Review without modifying code          | `code-review`         |
 | Domain-specific work                   | `<custom-agent-name>` |
 
-Model guidance: `claude-opus-4.6` — nuanced reasoning; `gpt-5.3-codex` — structured output, tool-heavy workflows; `gemini-3-pro-preview` — broad knowledge synthesis. Prefer the same model within a multi-step subtask.
+Model guidance: `claude-opus-4.6` — nuanced reasoning; `gpt-5.3-codex` — structured output, tool-heavy workflows;
+`gemini-3-pro-preview` — broad knowledge synthesis. Prefer the same model within a multi-step subtask.
 
 <!-- Review this list when the environment's available models change -->
 
 ## Skill Integration
 
-Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke a skill to produce deliverables—delegate to a subagent instead. Embed explicit skill instructions in the worker's prompt file. If a subtask creates, modifies, or reviews a skill, instruct the subagent to invoke `skill-creator`.
+Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke a skill to produce
+deliverables—delegate to a subagent instead. Embed explicit skill instructions in the worker's prompt file. If a
+subtask creates, modifies, or reviews a skill, instruct the subagent to invoke `skill-creator`.
 
 ## References
 

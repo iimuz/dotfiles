@@ -2,7 +2,8 @@
 
 ## Goal
 
-Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated to the current plan goal.
+Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated
+to the current plan goal.
 
 ## Interface
 

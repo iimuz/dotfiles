@@ -9,7 +9,8 @@ description: >
 
 ## Overview
 
-Runs a 5-phase development cycle (Plan → Implement → Commit → Review → Summary) with automatic iteration, looping up to 3 times to resolve Critical and High severity issues.
+Runs a 5-phase development cycle (Plan → Implement → Commit → Review → Summary) with automatic iteration, looping up
+to 3 times to resolve Critical and High severity issues.
 
 ## Interface
 
@@ -89,4 +90,5 @@ op final_summary(iterations: IterationRecord[]) -> FinalSummary {
 plan -> loop(max: 3)[implement -> commit -> review] -> final_summary
 ```
 
-On error (skill failure or build break): halt immediately; report to user with context; use `ask_user` for error recovery only.
+On error (skill failure or build break): halt immediately; report to user with context; use `ask_user` for error
+recovery only.

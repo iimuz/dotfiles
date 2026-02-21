@@ -7,7 +7,9 @@ description: Transform detailed implementation materials into concise, high-leve
 
 ## Overview
 
-This skill converts technical implementation plans, specifications, and detailed documents into maintainable design documentation. Transform verbose implementation materials into structured, concise design documents that enable future readers to understand system architecture without getting lost in implementation details.
+This skill converts technical implementation plans, specifications, and detailed documents into maintainable design
+documentation. Transform verbose implementation materials into structured, concise design documents that enable future
+readers to understand system architecture without getting lost in implementation details.
 
 ## When to Use This Skill
 
@@ -36,7 +38,8 @@ Generate design documents that:
 Extract key information while filtering:
 
 - **Include**: Architecture, interfaces, design decisions, data flows, migration strategies
-- **Exclude**: Source code, file paths, line numbers, function names, task checklists, verification commands, detailed IaC configurations
+- **Exclude**: Source code, file paths, line numbers, function names, task checklists, verification commands,
+  detailed IaC configurations
 
 ### 2. Structure Document
 
