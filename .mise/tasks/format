@@ -18,8 +18,6 @@ else
   mapfile -t md_files < <(git ls-files '*.md')
 fi
 
-for f in "${sh_files[@]}"; do
-  shfmt -w -i 2 -ci "$f" || echo "shfmt: skipping ${f} (unsupported syntax)" >&2
-done
+if [ ${#sh_files[@]} -gt 0 ]; then shfmt -w -i 2 -ci "${sh_files[@]}"; fi
 if [ ${#toml_files[@]} -gt 0 ]; then taplo format "${toml_files[@]}"; fi
 if [ ${#md_files[@]} -gt 0 ]; then prettier --write "${md_files[@]}"; fi

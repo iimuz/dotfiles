@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
 # スクリプトパスの特定
-if [[ "$SHELL" == *zsh* ]]; then
-  # shellcheck disable=SC2296
-  # Use eval to hide zsh syntax from shfmt
-  eval '_DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"'
-  readonly _DOTFILES_CONFIG_DIR
-else # bashを想定
-  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
-  readonly _DOTFILES_CONFIG_DIR
+if [ -n "$ZSH_VERSION" ]; then
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$0")" && pwd)"
+else
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
+readonly _DOTFILES_CONFIG_DIR
 
 # shell設定
 . "$_DOTFILES_CONFIG_DIR/bash/settings.sh"
