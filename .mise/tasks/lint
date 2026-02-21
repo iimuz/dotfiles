@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -gt 0 ]; then
+  sh_files=()
+  md_files=()
+  for file in "$@"; do
+    case "$file" in
+      *.sh) sh_files+=("$file") ;;
+      *.md) md_files+=("$file") ;;
+    esac
+  done
+else
+  mapfile -t sh_files < <(git ls-files '*.sh')
+  mapfile -t md_files < <(git ls-files '*.md')
+fi
+
+[ ${#sh_files[@]} -gt 0 ] && shellcheck --severity=warning "${sh_files[@]}"
+[ ${#md_files[@]} -gt 0 ] && markdownlint-cli2 "${md_files[@]}"

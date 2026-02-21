@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -gt 0 ]; then
+  sh_files=()
+  toml_files=()
+  md_files=()
+  for file in "$@"; do
+    case "$file" in
+      *.sh) sh_files+=("$file") ;;
+      *.toml) toml_files+=("$file") ;;
+      *.md) md_files+=("$file") ;;
+    esac
+  done
+else
+  mapfile -t sh_files < <(git ls-files '*.sh')
+  mapfile -t toml_files < <(git ls-files '*.toml')
+  mapfile -t md_files < <(git ls-files '*.md')
+fi
+
+[ ${#sh_files[@]} -gt 0 ] && shfmt -w -i 2 -ci "${sh_files[@]}"
+[ ${#toml_files[@]} -gt 0 ] && taplo format "${toml_files[@]}"
+[ ${#md_files[@]} -gt 0 ] && prettier --write "${md_files[@]}"
