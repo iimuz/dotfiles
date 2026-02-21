@@ -6,15 +6,15 @@ set -euo pipefail
 BASE_BRANCH_ARG=""
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --base)
-    BASE_BRANCH_ARG="$2"
-    shift 2
-    ;;
-  *)
-    echo "Error: Unknown parameter '$1'" >&2
-    echo "Usage: $0 [--base <branch>]" >&2
-    exit 1
-    ;;
+    --base)
+      BASE_BRANCH_ARG="$2"
+      shift 2
+      ;;
+    *)
+      echo "Error: Unknown parameter '$1'" >&2
+      echo "Usage: $0 [--base <branch>]" >&2
+      exit 1
+      ;;
   esac
 done
 

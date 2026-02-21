@@ -74,10 +74,12 @@ Generate a markdown file with these sections (adapt based on project type):
 Save as `.github/copilot-instructions.md` (create `.github/` directory if needed).
 
 For reference structure, see:
+
 - `references/template.md` - Blank template
 - `references/example.md` - Concrete example
 
 **Note:** For path-specific instructions, use `.github/instructions/NAME.instructions.md` with frontmatter:
+
 ```yaml
 ---
 applyTo: "src/**/*.ts"

@@ -89,30 +89,30 @@ detect_language() {
 CDK_LANGUAGE=$(detect_language)
 
 case "$CDK_LANGUAGE" in
-typescript)
-  info "Detected TypeScript/JavaScript CDK project"
-  success "package.json found"
-  ;;
-python)
-  info "Detected Python CDK project"
-  success "requirements.txt or setup.py found"
-  ;;
-java)
-  info "Detected Java CDK project"
-  success "pom.xml found"
-  ;;
-csharp)
-  info "Detected C# CDK project"
-  success ".csproj file found"
-  ;;
-go)
-  info "Detected Go CDK project"
-  success "go.mod found"
-  ;;
-unknown)
-  warning "Could not detect CDK project language"
-  warning "Proceeding with generic validation only"
-  ;;
+  typescript)
+    info "Detected TypeScript/JavaScript CDK project"
+    success "package.json found"
+    ;;
+  python)
+    info "Detected Python CDK project"
+    success "requirements.txt or setup.py found"
+    ;;
+  java)
+    info "Detected Java CDK project"
+    success "pom.xml found"
+    ;;
+  csharp)
+    info "Detected C# CDK project"
+    success ".csproj file found"
+    ;;
+  go)
+    info "Detected Go CDK project"
+    success "go.mod found"
+    ;;
+  unknown)
+    warning "Could not detect CDK project language"
+    warning "Proceeding with generic validation only"
+    ;;
 esac
 
 echo ""
@@ -133,50 +133,50 @@ info "Checking for cdk-nag integration..."
 
 # Check if cdk-nag is being used for comprehensive validation
 case "$CDK_LANGUAGE" in
-typescript)
-  if grep -r "cdk-nag" "${PROJECT_ROOT}/package.json" 2>/dev/null | grep -q "."; then
-    success "cdk-nag found in package.json"
-  else
-    warning "cdk-nag not found - recommended for comprehensive CDK validation"
-    warning "Install with: npm install --save-dev cdk-nag"
-    warning "See: https://github.com/cdklabs/cdk-nag"
-  fi
-  ;;
-python)
-  if grep -r "cdk-nag" "${PROJECT_ROOT}/requirements.txt" 2>/dev/null | grep -q "."; then
-    success "cdk-nag found in requirements.txt"
-  elif grep -r "cdk-nag" "${PROJECT_ROOT}/setup.py" 2>/dev/null | grep -q "."; then
-    success "cdk-nag found in setup.py"
-  else
-    warning "cdk-nag not found - recommended for comprehensive CDK validation"
-    warning "Install with: pip install cdk-nag"
-    warning "See: https://github.com/cdklabs/cdk-nag"
-  fi
-  ;;
-java)
-  if grep -r "cdk-nag" "${PROJECT_ROOT}/pom.xml" 2>/dev/null | grep -q "."; then
-    success "cdk-nag found in pom.xml"
-  else
-    warning "cdk-nag not found - recommended for comprehensive CDK validation"
-    warning "See: https://github.com/cdklabs/cdk-nag"
-  fi
-  ;;
-csharp)
-  if find "${PROJECT_ROOT}" -name "*.csproj" -exec grep -l "CdkNag" {} \; 2>/dev/null | grep -q "."; then
-    success "cdk-nag found in .csproj"
-  else
-    warning "cdk-nag not found - recommended for comprehensive CDK validation"
-    warning "See: https://github.com/cdklabs/cdk-nag"
-  fi
-  ;;
-go)
-  if grep -r "cdk-nag-go" "${PROJECT_ROOT}/go.mod" 2>/dev/null | grep -q "."; then
-    success "cdk-nag-go found in go.mod"
-  else
-    warning "cdk-nag-go not found - recommended for comprehensive CDK validation"
-    warning "See: https://github.com/cdklabs/cdk-nag-go"
-  fi
-  ;;
+  typescript)
+    if grep -r "cdk-nag" "${PROJECT_ROOT}/package.json" 2>/dev/null | grep -q "."; then
+      success "cdk-nag found in package.json"
+    else
+      warning "cdk-nag not found - recommended for comprehensive CDK validation"
+      warning "Install with: npm install --save-dev cdk-nag"
+      warning "See: https://github.com/cdklabs/cdk-nag"
+    fi
+    ;;
+  python)
+    if grep -r "cdk-nag" "${PROJECT_ROOT}/requirements.txt" 2>/dev/null | grep -q "."; then
+      success "cdk-nag found in requirements.txt"
+    elif grep -r "cdk-nag" "${PROJECT_ROOT}/setup.py" 2>/dev/null | grep -q "."; then
+      success "cdk-nag found in setup.py"
+    else
+      warning "cdk-nag not found - recommended for comprehensive CDK validation"
+      warning "Install with: pip install cdk-nag"
+      warning "See: https://github.com/cdklabs/cdk-nag"
+    fi
+    ;;
+  java)
+    if grep -r "cdk-nag" "${PROJECT_ROOT}/pom.xml" 2>/dev/null | grep -q "."; then
+      success "cdk-nag found in pom.xml"
+    else
+      warning "cdk-nag not found - recommended for comprehensive CDK validation"
+      warning "See: https://github.com/cdklabs/cdk-nag"
+    fi
+    ;;
+  csharp)
+    if find "${PROJECT_ROOT}" -name "*.csproj" -exec grep -l "CdkNag" {} \; 2>/dev/null | grep -q "."; then
+      success "cdk-nag found in .csproj"
+    else
+      warning "cdk-nag not found - recommended for comprehensive CDK validation"
+      warning "See: https://github.com/cdklabs/cdk-nag"
+    fi
+    ;;
+  go)
+    if grep -r "cdk-nag-go" "${PROJECT_ROOT}/go.mod" 2>/dev/null | grep -q "."; then
+      success "cdk-nag-go found in go.mod"
+    else
+      warning "cdk-nag-go not found - recommended for comprehensive CDK validation"
+      warning "See: https://github.com/cdklabs/cdk-nag-go"
+    fi
+    ;;
 esac
 
 success "Integration checks completed"

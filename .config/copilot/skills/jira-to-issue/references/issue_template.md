@@ -26,24 +26,30 @@ Jira Ticket: [{Ticket ID}]({JiraURL})
 {Organize detailed Jira information into Markdown sections:}
 
 ### Prerequisites
+
 {Any required setup or conditions}
 
 ### Reproduction Steps
+
 1. {Step-by-step instructions to reproduce the issue}
 2. {Continue numbering each step}
 
 ### Expected Results
+
 {What should happen}
 
 ### Actual Results
+
 {What actually happens}
 
 ### Error Messages or Logs
+
 {Any relevant error output or log entries}
 
 ## Additional Notes
 
 {Include any extra information if available:}
+
 - Test environment details
 - Specification document links
 - Related tickets or issues

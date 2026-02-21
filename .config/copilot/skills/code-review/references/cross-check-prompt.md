@@ -59,7 +59,12 @@ verify_concerns -> write_output
 ```typescript
 interface CrossCheckContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance";
+  aspect:
+    | "security"
+    | "quality"
+    | "performance"
+    | "best-practices"
+    | "design-compliance";
   model_name: string; // must match missed_by value from gap-list.md
   concerns: Concern[]; // populated from gap-list.md entries for this (aspect, model_name) pair
   design_info?: string; // required when aspect == "design-compliance"

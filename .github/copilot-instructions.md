@@ -104,4 +104,3 @@ Each tool has its own directory in `.config/` with:
 **Configuration loading order matters:**
 
 - Shell basics → Homebrew → Applications → Language environments → Path post-processing
-

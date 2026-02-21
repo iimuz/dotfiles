@@ -14,6 +14,7 @@ This skill provides standardized GitHub pull request creation with Conventional 
 **IMPORTANT**: All scripts must be executed from the **git repository root directory** where you want to create the PR.
 
 Example:
+
 ```bash
 # Correct: Execute from repo root
 cd /path/to/your/repo
@@ -25,6 +26,7 @@ bash scripts/check-branch-status.sh  # This may operate on the wrong repo!
 ```
 
 Requirements:
+
 - Working directory must be a git repository
 - Current branch should have commits that differ from its base branch
 - Repository must have a remote named 'origin'
@@ -92,6 +94,7 @@ bash scripts/check-branch-status.sh [--base <branch>]
 - `--base`: (Optional) Base branch name to compare against. If not specified, uses the remote HEAD branch
 
 **Output**:
+
 - Repository information (current branch, base branch for comparison)
 - Uncommitted changes (git status)
 - Commit history comparing with base branch
@@ -134,25 +137,32 @@ bash scripts/create-pr.sh \
 **Output Format**:
 
 PR Title:
+
 ```
 <type>: <title>
 ```
 
 PR Body:
+
 ```markdown
 ## Related URLs
+
 <related-urls or empty>
 
 ## Changes
+
 <changes>
 
 ## Confirmation Results
+
 <confirmation or empty comment>
 
 ## Review Points
+
 <review-points or empty comment>
 
 ## Limitations
+
 <limitations or empty comment>
 
 <additional if provided>

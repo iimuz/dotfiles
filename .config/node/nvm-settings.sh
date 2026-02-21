@@ -11,16 +11,16 @@ fi
 
 # === Gurad if command does not exist.
 # brewがない場合は、インストール方法が違うが、考慮していない
-if ! type brew > /dev/null 2>&1; then return 0; fi
+if ! type brew >/dev/null 2>&1; then return 0; fi
 if [ ! -s "$(brew --prefix)/opt/nvm/nvm.sh" ]; then return 0; fi
 
 # === nvmの保存先設定
 export NVM_DIR="$HOME/.nvm"
-if [ "$(uname)" = "Darwin" ]; then  # MacOS
+if [ "$(uname)" = "Darwin" ]; then # MacOS
   # MacOSの場合はarm64/rosettaで保存先を分割
-  if [ "$(uname -m)" = "arm64" ]; then  # Apple silicon
+  if [ "$(uname -m)" = "arm64" ]; then # Apple silicon
     export NVM_DIR="$HOME/.nvm-arm64"
-  else  # Intel
+  else # Intel
     export NVM_DIR="$HOME/.nvm-x64"
   fi
 fi
@@ -30,5 +30,3 @@ fi
 
 # === 補完機能の読み込み
 [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && . "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
-
-

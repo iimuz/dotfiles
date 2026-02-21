@@ -55,7 +55,12 @@ review_changes -> format_output
 ```typescript
 interface ReviewContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance"; // canonical: see ReviewAspect in SKILL.md
+  aspect:
+    | "security"
+    | "quality"
+    | "performance"
+    | "best-practices"
+    | "design-compliance"; // canonical: see ReviewAspect in SKILL.md
   aspect_criteria: string; // extracted section from review-criteria.md for this aspect
   model_name: string; // e.g., "claude-opus-4.6"
   file_scope?: string[]; // optional: restrict review to specific files

@@ -3,9 +3,10 @@
 # スクリプトパスの特定
 if [[ "$SHELL" == *zsh* ]]; then
   # shellcheck disable=SC2296
-  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
+  # Use eval to hide zsh syntax from shfmt
+  eval '_DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"'
   readonly _DOTFILES_CONFIG_DIR
-else  # bashを想定
+else # bashを想定
   _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
   readonly _DOTFILES_CONFIG_DIR
 fi

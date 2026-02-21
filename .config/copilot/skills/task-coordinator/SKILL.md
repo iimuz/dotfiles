@@ -25,27 +25,36 @@ or outputs. Protocol templates and the plan schema live in `@references/`.
 
 type Plan = {
   schema_version: string;
-  run_id:         string;          // format: tc-{YYYYMMDD}-{HHMMSS}
-  goal:           string;
-  tasks:          Task[];
+  run_id: string; // format: tc-{YYYYMMDD}-{HHMMSS}
+  goal: string;
+  tasks: Task[];
   synthesis_output_file: string;
   // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/ — see @references/plan-schema.md
 };
 
 type Task = {
-  id:           string;
-  agent_type:   AgentType;
-  prompt_file:  string;
-  output_file:  string;
-  depends_on:   string[];
+  id: string;
+  agent_type: AgentType;
+  prompt_file: string;
+  output_file: string;
+  depends_on: string[];
   description?: string;
-  model?:       string;
+  model?: string;
 };
 
-type AgentType        = "explore" | "task" | "general-purpose" | "code-review";
-type WorkerReceipt    = { status: "WORKER_OK" | "WORKER_FAIL"; id: string; reason?: string };
-type InlineResult     = WorkerReceipt;
-type SynthesisReceipt = { status: "SYNTHESIS_OK" | "SYNTHESIS_FAIL"; output_file: string; summary: string; /* 2-4 sentences */ reason?: string };
+type AgentType = "explore" | "task" | "general-purpose" | "code-review";
+type WorkerReceipt = {
+  status: "WORKER_OK" | "WORKER_FAIL";
+  id: string;
+  reason?: string;
+};
+type InlineResult = WorkerReceipt;
+type SynthesisReceipt = {
+  status: "SYNTHESIS_OK" | "SYNTHESIS_FAIL";
+  output_file: string;
+  summary: string;
+  /* 2-4 sentences */ reason?: string;
+};
 
 /**
  * @invariants
@@ -122,15 +131,16 @@ Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`); `?` = pipeline m
 
 Match subtasks to the lightest capable agent:
 
-| Requirement | Agent type |
-| :--- | :--- |
-| Code investigation, symbol/file search | `explore` |
-| Build, test, lint, install | `task` |
-| Multi-step implementation, code edits | `general-purpose` |
-| Review without modifying code | `code-review` |
-| Domain-specific work | `<custom-agent-name>` |
+| Requirement                            | Agent type            |
+| :------------------------------------- | :-------------------- |
+| Code investigation, symbol/file search | `explore`             |
+| Build, test, lint, install             | `task`                |
+| Multi-step implementation, code edits  | `general-purpose`     |
+| Review without modifying code          | `code-review`         |
+| Domain-specific work                   | `<custom-agent-name>` |
 
 Model guidance: `claude-opus-4.6` — nuanced reasoning; `gpt-5.3-codex` — structured output, tool-heavy workflows; `gemini-3-pro-preview` — broad knowledge synthesis. Prefer the same model within a multi-step subtask.
+
 <!-- Review this list when the environment's available models change -->
 
 ## Skill Integration

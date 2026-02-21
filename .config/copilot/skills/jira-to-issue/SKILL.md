@@ -12,6 +12,7 @@ Convert JIRA bug tickets to GitHub Issues by reading JIRA ticket details and cre
 ## When to Use
 
 Use this skill when:
+
 - User requests creating a GitHub Issue from a JIRA ticket
 - User provides a JIRA ticket URL and wants it tracked in GitHub
 - Need to migrate JIRA bug reports to GitHub Issues
@@ -42,11 +43,13 @@ Follow these steps to convert a JIRA ticket to a GitHub Issue:
 Follow the template structure defined in `references/issue_template.md`:
 
 **Title Format:**
+
 ```
 [{Ticket ID}] {Jira Summary}
 ```
 
 **Body Sections:**
+
 - Related Information: Link back to original JIRA ticket
 - Overview: Main description or event details
 - Details: Organized sections for prerequisites, reproduction steps, expected results, actual results
