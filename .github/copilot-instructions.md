@@ -18,7 +18,7 @@
 - Source of Truth: Resolve conflicts using `core-beliefs.md`, then scoped instruction files.
 - Scope Discipline: Apply the smallest viable change set for the requested task.
 - Path Discipline: Verify existence before reading or referencing files.
-  When creating new files, place them according to established project directory conventions.
+- Note: When creating new files, place them according to established project directory conventions.
   Do not invent unsolicited directory structures.
 - Command Discipline: Use only available `mise run` tasks listed in TOOLS.
 - Verification Discipline: Run relevant existing checks after modifications.

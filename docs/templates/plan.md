@@ -20,8 +20,8 @@ status: TODO
 
 ## VERIFY
 
-- Run `npm test` AND ensure coverage > 80%.
+- Verify: Run `npm test` AND ensure coverage > 80%.
 
 ## SCRATCHPAD
 
-- Agent workspace for Chain of Thought and investigation notes.
+- Description: Agent workspace for Chain of Thought and investigation notes.

@@ -10,8 +10,8 @@
 
 ## Issue
 
-- Using mock data instead of DB.
+- Detail: Using mock data instead of DB.
 
 ## Fix_Condition
 
-- Implement actual query when DB schema is finalized.
+- Condition: Implement actual query when DB schema is finalized.
