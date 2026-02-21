@@ -2,7 +2,7 @@
 
 ## Summary
 
-Short issue summary.
+- Short issue summary.
 
 ## Location
 
@@ -10,8 +10,8 @@ Short issue summary.
 
 ## Issue
 
-Using mock data instead of DB.
+- Using mock data instead of DB.
 
 ## Fix_Condition
 
-Implement actual query when DB schema is finalized.
+- Implement actual query when DB schema is finalized.

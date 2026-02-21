@@ -1,6 +1,6 @@
 # dotfiles
 
-各種設定ファイルを保存しています。
+- 各種設定ファイルを保存しています。
 
 ## 環境構築
 
@@ -19,8 +19,8 @@
 
 ### Windows
 
-[scoop](https://scoop.sh/)を利用してソフトウェアのインストールを行います。
-scoopを利用した環境構築方法を下記に記載します。
+- Package_Manager: [scoop](https://scoop.sh/)
+- Install:
 
 ```ps1
 # scoopのインストール(詳細は公式ドキュメントを参照)
@@ -29,7 +29,7 @@ irm get.scoop.sh | iex
 scoop import .config/scoop/scoopfile.json
 ```
 
-ソフトウェアを追加した場合は下記のコマンドでscoopfileを更新します。
+- Export:
 
 ```ps1
 scoop export > .config/scoop/scoopfile.json
@@ -37,11 +37,12 @@ scoop export > .config/scoop/scoopfile.json
 
 ## Development
 
-This section is for contributors who modify this repository.
+- Description: For contributors who modify this repository.
 
 ### Setup
 
-Install development tools and activate git hooks (requires [mise](https://mise.jdx.dev/)):
+- Requirement: [mise](https://mise.jdx.dev/)
+- Install:
 
 ```bash
 mise install
@@ -50,12 +51,11 @@ lefthook install
 
 ### Linting and Formatting
 
-On each commit, the following tools run automatically via lefthook:
-
-- **shfmt** — Shell script formatter (`*.sh`)
-- **shellcheck** — Shell script linter (`*.sh`)
-- **taplo** — TOML formatter (`*.toml`)
-- **prettier** — Markdown formatter (`*.md`)
-- **markdownlint-cli2** — Markdown linter (`*.md`)
-
-Formatters apply changes automatically and re-stage the corrected files. Linters will block the commit if issues are found.
+- Description: On each commit, the following tools run automatically via lefthook.
+- shfmt — Shell script formatter (`*.sh`)
+- shellcheck — Shell script linter (`*.sh`)
+- taplo — TOML formatter (`*.toml`)
+- prettier — Markdown formatter (`*.md`)
+- markdownlint-cli2 — Markdown linter (`*.md`)
+- Note: Formatters apply changes automatically and re-stage the corrected files.
+  Linters will block the commit if issues are found.
