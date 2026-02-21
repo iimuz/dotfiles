@@ -15,5 +15,5 @@ else
   mapfile -t md_files < <(git ls-files '*.md')
 fi
 
-if [ ${#sh_files[@]} -gt 0 ]; then shellcheck --severity=error "${sh_files[@]}"; fi
+if [ ${#sh_files[@]} -gt 0 ]; then shellcheck --severity=error -- "${sh_files[@]}"; fi
 if [ ${#md_files[@]} -gt 0 ]; then markdownlint-cli2 "${md_files[@]}"; fi

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # スクリプトパスの特定
+# zsh: $0 is the sourced file path (unlike bash where $0 is the shell name)
+# bash: ${BASH_SOURCE[0]} is the sourced file path
 if [ -n "$ZSH_VERSION" ]; then
   _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$0")" && pwd)"
 else
@@ -15,7 +17,7 @@ readonly _DOTFILES_CONFIG_DIR
 . "$_DOTFILES_CONFIG_DIR/bash/path-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/bash/x11.sh"
 . "$_DOTFILES_CONFIG_DIR/bash/xdg-base.sh"
-if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh"; fi
+if [ -n "$ZSH_VERSION" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh"; fi
 
 # homebrew設定
 . "$_DOTFILES_CONFIG_DIR/homebrew/homebrew-bundle.sh"
