@@ -8,13 +8,14 @@
 - Newline: Strict Bullet List or Header separation. No free-text paragraphs.
 - Diagram: Use Mermaid code blocks within Design files.
 - Model: Use TypeScript Interface code blocks within Design files.
-- Update_Policy: Overwrite existing state. Append logs only if specified.
+- UpdatePolicy: Overwrite existing state. Append logs only if specified.
 
 ## NAMING_CONVENTIONS
 
 - Case: kebab-case
 - Extension: .md
 - Separator: hyphen (-)
+- Keys: PascalCase (e.g., PackageManager, LoadingOrder, LastRun)
 
 ## FILE_REGISTRY
 

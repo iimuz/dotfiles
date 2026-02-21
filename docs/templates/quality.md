@@ -12,5 +12,5 @@
 
 ## STATUS
 
-- Last_Run: YYYY-MM-DD
+- LastRun: YYYY-MM-DD
 - Result: [Pass/Fail]

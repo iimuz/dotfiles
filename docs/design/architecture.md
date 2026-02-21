@@ -21,12 +21,12 @@
 
 ## PLATFORM_SUPPORT
 
-- macOS ARM64: `setup_mac.sh`, Homebrew with brew bundle
-- Linux ARM64: `setup_aarch64.sh`, apt with manual tool installs
+- MacosArm64: `setup_mac.sh`, Homebrew with brew bundle
+- LinuxArm64: `setup_aarch64.sh`, apt with manual tool installs
 - Codespaces: `setup_codespaces.sh`, Homebrew-based
-- PRoot ARM64: `setup_proot_arm64.sh`, apt with custom install functions
+- ProotArm64: `setup_proot_arm64.sh`, apt with custom install functions
 - Termux: `setup_termux.sh`, pkg install
-- WSL Ubuntu: `setup_wsl_ubuntu.sh`, apt-based without Homebrew
+- WslUbuntu: `setup_wsl_ubuntu.sh`, apt-based without Homebrew
 
 ## TOOL_CONFIGURATION_PATTERN
 
@@ -45,4 +45,4 @@
 - Neovim: Lua configuration with plugins and keymaps in `.config/nvim/`
 - Shell: Separate bash/zsh configs with shared aliases and commands
 - Languages: Isolated settings for Python, Node, Go, Ruby
-- Dev tools: Git, mise for version management
+- DevTools: Git, mise for version management
