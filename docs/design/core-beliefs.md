@@ -2,20 +2,23 @@
 
 ## PROJECT_IDENTITY
 
-- Name: [Project Name]
-- Type: [e.g., Web App / CLI]
-- Language: [e.g., TypeScript]
+- Name: dotfiles
+- Type: Cross-platform shell configuration and tool setup
+- Language: Bash, Zsh, Lua
 
 ## TECH_STACK (Constraints)
 
-- Runtime: [e.g., Node.js v20+]
-- Framework: [e.g., Next.js 14]
-- Database: [e.g., PostgreSQL]
-- Testing: [e.g., Vitest]
+- Runtime: Bash 5+ / Zsh 5+
+- Package_Manager_macOS: Homebrew
+- Package_Manager_Linux: apt, pkg (Termux)
+- Version_Manager: mise
+- Config_Format: Shell scripts, TOML, YAML, Lua
+- Linting: shellcheck, markdownlint
+- Formatting: shfmt, prettier
 
 ## ROUTING
 
-- Context & Constraints: `docs/core-beliefs.md`
+- Context & Constraints: `docs/design/core-beliefs.md`
 - Design Documents: `docs/design/`
 - Active Tasks: `docs/plans/active/`
 - Tech Debt & State: `docs/debt/`
@@ -23,18 +26,21 @@
 
 ## ARCHITECTURE_PRINCIPLES
 
-- Pattern: [e.g., Clean Architecture]
-- Data_Flow: Unidirectional
-- Error_Handling: Return Result types, no exceptions.
+- Pattern: Symlink-based deployment
+- Config_Bootstrap: Central via `.config/rc-settings.sh`
+- Loading_Order: shell → homebrew → applications → language environments → path finalization
+- Platform_Isolation: Platform-specific scripts with shared helper functions
 
 ## CODING_STYLE (Non-Linter Rules)
 
 - Comments: Explain 'Why', not 'What'.
-- Naming: Verb-Noun for functions.
+- Naming: snake_case for shell functions (create_symlink, set_bashrc).
+- Tool_Detection: Check availability with `type command > /dev/null 2>&1` before configuration.
 - State: Keep local unless shared.
 
 ## ANTI_PATTERNS (Forbidden)
 
-- No 'any' type.
-- No global variables.
-- No hardcoded secrets.
+- No hardcoded absolute paths (use $HOME).
+- No duplicate entries in shell config (check with grep before appending).
+- No tool configuration without availability check.
+- No Homebrew on non-macOS environments.

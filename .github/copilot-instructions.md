@@ -2,14 +2,16 @@
 
 ## FILE_MANIFEST (Lazy Load)
 
+- Setup Scripts: `setup_*.sh`, `update_*.sh`
 - Configurations: `.config/`
 - Mise settings: `.mise/`
 - Documents: `docs/`
   - Core beliefs: `docs/design/core-beliefs.md`
-  - Design: `docs/design`
-  - Debt: `docs/debt`
-  - Plan: `docs/plans`
-  - Templates: `docs/templates`
+  - Architecture: `docs/design/architecture.md`
+  - Design: `docs/design/`
+  - Debt: `docs/debt/`
+  - Plans: `docs/plans/`
+  - Templates: `docs/templates/`
 
 ## DIRECTIVES
 
@@ -20,13 +22,12 @@
    Do not invent unsolicited directory structures.
 4. Command Discipline: Use only available `mise run` tasks listed in TOOLS.
 5. Verification Discipline: Run relevant existing checks after modifications.
+6. Doc Standards: Follow `docs/design/doc-standards.md` for all documentation changes.
 
 ## TOOLS
 
-- Setup: [mise run setup]
 - Lint: [mise run lint]
 - Format: [mise run format]
-- Clean: [mise run clean]
 
 ## WORKFLOW
 
