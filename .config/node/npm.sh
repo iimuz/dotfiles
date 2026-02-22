@@ -35,7 +35,6 @@ fi
 function _change_default_npm_directory() {
   local script_path="$1"
   if [ -L "$script_path" ]; then script_path=$(readlink -f "$script_path"); fi
-  local script_path
   script_path=$(
     cd $(dirname "$script_path")
     pwd
@@ -48,7 +47,7 @@ function _change_default_npm_directory() {
 _change_default_npm_directory "${BASH_SOURCE:-$0}"
 
 #=== npmのglobalインストールの先をbinに追加
-export PATH=$(npm config get prefix)/bin:$PATH
+export PATH=${NPM_USER_PREFIX}/bin:$PATH
 
 # === safe-chain setup
 # safe-chain がインストール済みで、.zshrc に設定がなければ setup を実行
