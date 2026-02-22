@@ -11,7 +11,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config.toml
+      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 

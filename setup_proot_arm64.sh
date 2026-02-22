@@ -130,7 +130,7 @@ fi
 # === [mise](https/;/github.cojm/dx/mise)
 if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
 if type mise >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
 fi
 # === [Taskfile](https;//tasklfie.dev/inslltaation/)
 # if ! type task > /dev/null 2>&1; then pushd $HOME/.local && sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d && popd; fi
