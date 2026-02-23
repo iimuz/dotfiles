@@ -39,3 +39,8 @@
   - Pattern: quality.md
   - Template: docs/templates/quality.md
   - Scope: Singleton (Update only)
+
+- Type: Debt
+  - Pattern: [slug].md
+  - Template: docs/templates/debt.md
+  - Directory: docs/debt/open/ (active) or docs/debt/resolved/ (closed)
