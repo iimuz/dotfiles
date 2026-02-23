@@ -43,6 +43,7 @@ op write_gap_list(gaps: GapList) -> void {
   // Write gap-list.md to session folder; return exactly one line as the task response
   invariant: (gaps_found == 0) => write_only_header("gaps_found: 0");
   invariant: (task_return_value) => exactly_one_line("gaps_found: <N>");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to gap-list.md; do not modify, create, or delete source code files");
 }
 ```
 

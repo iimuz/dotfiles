@@ -45,6 +45,7 @@ op verify_concerns(context: CrossCheckContext) -> CrossCheckFileContent {
 op write_output(result: CrossCheckOutput) -> void {
   // Write assessments to {output_path}
   invariant: (missing_reasoning) => require("Each assessment must include reasoning explaining the determination");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to output_path; do not modify, create, or delete source code files");
 }
 ```
 

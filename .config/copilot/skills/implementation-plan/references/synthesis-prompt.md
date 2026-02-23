@@ -51,6 +51,7 @@ op savePlan(plan: FinalPlanFile, outputFilepath: string) -> FinalPlanFile {
   invariant: (planIncomplete)        => abort("Plan must have all template sections populated before saving");
   invariant: (fileWriteFailed)       => retry_or_abort("File write failed; retry or abort");
   invariant: (outputNotFoundAfterWrite) => abort("Output file not found after write; likely a tool error");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to outputFilepath; do not modify, create, or delete source code files");
 }
 ```
 

@@ -39,6 +39,7 @@ op consolidate(context: IntegrationContext) -> ConsolidatedReview {
 op write_report(review: ConsolidatedReview) -> void {
   // Write consolidated-review.md to session folder
   invariant: (output_shape_invalid) => abort("Report must include: Executive Summary, Critical Issues, Warnings, Suggestions, Cross-Check Results, Validation Notes");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to consolidated-review.md; do not modify, create, or delete source code files");
 }
 ```
 

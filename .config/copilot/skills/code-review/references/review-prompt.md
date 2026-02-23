@@ -41,6 +41,7 @@ op format_output(review: ReviewOutput) -> string {
   // Write markdown to {output_path} organized by priority: Critical → Warning → Suggestion
   invariant: (critical_issue.location_missing) => reject("Critical issues must include file:line");
   invariant: (severity_label_invalid) => use_enum("CRITICAL" | "WARNING" | "SUGGESTION");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to output_path; do not modify, create, or delete source code files");
 }
 ```
 
