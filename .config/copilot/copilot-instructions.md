@@ -44,6 +44,7 @@ Principles:
 - Premature abstraction or interface creation
 - Splitting cohesive logic across multiple files
 - Over-engineering for rare edge cases
+- Adding Co-authored-by trailers to git commit messages
 
 ## Success Metrics
 
