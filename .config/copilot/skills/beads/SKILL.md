@@ -5,11 +5,14 @@ description: This skill should be used when work spans multiple sessions, has de
 
 # Beads - Persistent Task Memory for AI Agents
 
-Graph-based issue tracker that survives conversation compaction. Provides persistent memory for multi-session work with complex dependencies.
+Graph-based issue tracker that survives conversation compaction. Provides persistent memory for multi-session work
+with complex dependencies.
 
 ## Purpose
 
-Beads enables AI agents to maintain task context across conversation boundaries. When conversations are compacted or sessions end, traditional task tracking is lost. Beads solves this by providing a git-backed issue tracker designed for AI workflows, preserving task state, dependencies, and critical context.
+Beads enables AI agents to maintain task context across conversation boundaries. When conversations are compacted or
+sessions end, traditional task tracking is lost. Beads solves this by providing a git-backed issue tracker designed for
+AI workflows, preserving task state, dependencies, and critical context.
 
 Beads uses the `bd` CLI for all operations.
 
@@ -40,7 +43,8 @@ Requirements:
 
 ### Discover Available Work
 
-To get comprehensive AI-optimized workflow context (unblocked tasks, current state, dependencies), run `bd prime`. This provides a complete snapshot for session initialization.
+To get comprehensive AI-optimized workflow context (unblocked tasks, current state, dependencies), run `bd prime`.
+This provides a complete snapshot for session initialization.
 
 To find specific unblocked work items only, run `bd ready`.
 
@@ -86,7 +90,8 @@ bd update <id> --status blocked --priority 1
 
 ## Writing Effective Issue Descriptions
 
-Write self-contained descriptions that remain comprehensible without external files. Structure descriptions to provide complete context:
+Write self-contained descriptions that remain comprehensible without external files. Structure descriptions to provide
+complete context:
 
 - **Background**: Why this work is needed
 - **Current State**: What exists today (include concrete examples/data)

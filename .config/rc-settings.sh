@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
 # スクリプトパスの特定
-if [[ "$SHELL" == *zsh* ]]; then
-  readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${(%):-%N}")" && pwd)"
-else  # bashを想定
-  readonly local _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
+# zsh: $0 is the sourced file path (unlike bash where $0 is the shell name)
+# bash: ${BASH_SOURCE[0]} is the sourced file path
+if [ -n "$ZSH_VERSION" ]; then
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "$0")" && pwd)"
+else
+  _DOTFILES_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
+readonly _DOTFILES_CONFIG_DIR
 
 # shell設定
 . "$_DOTFILES_CONFIG_DIR/bash/settings.sh"
@@ -14,7 +17,7 @@ fi
 . "$_DOTFILES_CONFIG_DIR/bash/path-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/bash/x11.sh"
 . "$_DOTFILES_CONFIG_DIR/bash/xdg-base.sh"
-if [ "$ZSH_VERSION" != "" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh"; fi
+if [ -n "$ZSH_VERSION" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh"; fi
 
 # homebrew設定
 . "$_DOTFILES_CONFIG_DIR/homebrew/homebrew-bundle.sh"

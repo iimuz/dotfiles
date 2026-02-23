@@ -9,18 +9,17 @@ if [ -n "$GOPATH" ]; then
 fi
 
 # === Gurad if command does not exist.
-if ! type go > /dev/null 2>&1; then return 0; fi
+if ! type go >/dev/null 2>&1; then return 0; fi
 
 # === 有効化
 # デフォルトの場合を設定
 export GOPATH="$HOME/go"
 # mac環境において、arm/rosettaでインストール先を切り替える
-if [ "$(uname)" = "Darwin" ]; then  # MacOS
-  if [ "$(uname -m)" = "arm64" ]; then  # Arm
+if [ "$(uname)" = "Darwin" ]; then     # MacOS
+  if [ "$(uname -m)" = "arm64" ]; then # Arm
     export GOPATH="$HOME/go"
-  else  # Intel
+  else # Intel
     export GOPATH="$HOME/go-x64"
   fi
 fi
 export PATH="$GOPATH/bin:$PATH"
-

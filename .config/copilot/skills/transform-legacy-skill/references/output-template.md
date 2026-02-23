@@ -6,7 +6,7 @@ Canonical structure for transformed skills. Every output must conform to this te
 
 ## Template Structure
 
-```
+```text
 ---
 name: <skill-name>
 description: <goal-only description, 1-2 sentences>
@@ -153,7 +153,7 @@ op synthesize(
 
 ## Execution
 
-```
+```text
 generate_responses -> anonymize -> peer_review -> aggregate_rankings -> synthesize
 ```
 
@@ -163,7 +163,8 @@ Present `synthesize` output directly to user. Main agent must not read intermedi
 
 ## Reference File Template
 
-Reference files containing subagent prompts use the same Hybrid-3 op/invariant notation for both the outer scaffolding (invocation and failure handling) and the inner prompt content (role, typed I/O, ops, execution pipeline).
+Reference files containing subagent prompts use the same Hybrid-3 op/invariant notation for both the outer scaffolding
+(invocation and failure handling) and the inner prompt content (role, typed I/O, ops, execution pipeline).
 
 ### Complete Example: `stage1-prompt.md`
 
@@ -243,4 +244,6 @@ Provide your independent analysis. Do not reference other models or prior answer
 4. **Invariants are per-op** — place each `invariant:` line in the op that owns the condition.
 5. **Cross-op invariants** belong in the `@invariants` JSDoc comment in the Interface block.
 6. **Reference stubs** — every `@references/file.md` citation requires a corresponding file.
-7. **Reference file format** — Reference files containing subagent prompts must use Hybrid-3 format. Both outer scaffolding and inner prompt content use op/invariant notation. Plain-text code fence wrappers around entire templates are prohibited.
+7. **Reference file format** — Reference files containing subagent prompts must use Hybrid-3 format. Both outer
+   scaffolding and inner prompt content use op/invariant notation. Plain-text code fence wrappers around entire
+   templates are prohibited.

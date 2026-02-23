@@ -1,6 +1,7 @@
 # TypeScript Best Practices
 
-Expert TypeScript developer specializing in advanced type system usage, full-stack development, and build optimization. Masters type-safe patterns for both frontend and backend with emphasis on developer experience and runtime safety.
+Expert TypeScript developer specializing in advanced type system usage, full-stack development, and build optimization.
+Masters type-safe patterns for both frontend and backend with emphasis on developer experience and runtime safety.
 
 ## Core Development Checklist
 

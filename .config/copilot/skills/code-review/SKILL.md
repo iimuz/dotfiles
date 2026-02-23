@@ -10,7 +10,8 @@ description: >
 
 ## Overview
 
-Multi-model code review using up to 15 parallel agents (up to 5 aspects × 3 models), targeted gap cross-checks, and a single consolidated report.
+Multi-model code review using up to 15 parallel agents (up to 5 aspects × 3 models), targeted gap cross-checks,
+and a single consolidated report.
 
 ## Interface
 
@@ -150,10 +151,16 @@ op stage4_deliver(consolidated: ConsolidatedReview) -> void {
 
 ## Execution
 
-```
+```text
 detect_scope -> stage1_parallel_review -> stage2a_gap_analysis -> [stage2b_cross_check | skip] -> stage3_consolidate -> stage4_deliver
 ```
 
-Present `stage4_deliver` output using [`references/output-format.md`](references/output-format.md). Main agent reads only `gap-list.md` (Stage 2b routing) and `consolidated-review.md` (Stage 4 delivery).
+Present `stage4_deliver` output using [`references/output-format.md`](references/output-format.md). Main agent reads
+only `gap-list.md` (Stage 2b routing) and `consolidated-review.md` (Stage 4 delivery).
 
-Sub-agent prompt templates: [`references/review-prompt.md`](references/review-prompt.md), [`references/cross-check-prompt.md`](references/cross-check-prompt.md), [`references/integration-prompt.md`](references/integration-prompt.md), [`references/gap-analysis-prompt.md`](references/gap-analysis-prompt.md). Aspect criteria: [`references/review-criteria.md`](references/review-criteria.md). Output format: [`references/output-format.md`](references/output-format.md).
+Sub-agent prompt templates: [`references/review-prompt.md`](references/review-prompt.md),
+[`references/cross-check-prompt.md`](references/cross-check-prompt.md),
+[`references/integration-prompt.md`](references/integration-prompt.md),
+[`references/gap-analysis-prompt.md`](references/gap-analysis-prompt.md).
+Aspect criteria: [`references/review-criteria.md`](references/review-criteria.md).
+Output format: [`references/output-format.md`](references/output-format.md).

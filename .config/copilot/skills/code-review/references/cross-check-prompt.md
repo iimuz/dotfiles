@@ -45,12 +45,13 @@ op verify_concerns(context: CrossCheckContext) -> CrossCheckFileContent {
 op write_output(result: CrossCheckOutput) -> void {
   // Write assessments to {output_path}
   invariant: (missing_reasoning) => require("Each assessment must include reasoning explaining the determination");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to output_path; do not modify, create, or delete source code files");
 }
 ```
 
 ## Execution
 
-```
+```text
 verify_concerns -> write_output
 ```
 
@@ -59,7 +60,12 @@ verify_concerns -> write_output
 ```typescript
 interface CrossCheckContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance";
+  aspect:
+    | "security"
+    | "quality"
+    | "performance"
+    | "best-practices"
+    | "design-compliance";
   model_name: string; // must match missed_by value from gap-list.md
   concerns: Concern[]; // populated from gap-list.md entries for this (aspect, model_name) pair
   design_info?: string; // required when aspect == "design-compliance"
@@ -70,7 +76,7 @@ Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-
 
 Assessment format per concern:
 
-```
+```text
 [CONCERN #N] Brief description
 File: path/to/file.ext:line_number
 Original Reviewer: model-name

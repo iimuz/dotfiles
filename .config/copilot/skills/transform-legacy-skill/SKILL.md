@@ -7,7 +7,8 @@ description: Transform agentskills.io Markdown-format Skill definitions (2023-20
 
 ## Overview
 
-Convert a legacy procedural Markdown skill file into the **Hybrid-3** format: a TypeScript Interface layer, a TypeSpec-flavor Operation layer, and a Policy/Invariant layer. The output is immediately executable as a Copilot skill.
+Convert a legacy procedural Markdown skill file into the **Hybrid-3** format: a TypeScript Interface layer, a
+TypeSpec-flavor Operation layer, and a Policy/Invariant layer. The output is immediately executable as a Copilot skill.
 
 ## Interface
 
@@ -109,7 +110,7 @@ op render(
 
 Execute as:
 
-```
+```text
 deconstruct -> upgrade_models -> [parallel: abstract_operations + synthesize_invariants + externalize_prompts] -> render
 ```
 

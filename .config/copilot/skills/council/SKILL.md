@@ -114,7 +114,7 @@ op synthesize(
 
 ## Execution
 
-```
+```text
 generate_responses -> anonymize -> peer_review -> aggregate_rankings -> synthesize
 ```
 

@@ -4,7 +4,8 @@ Generate `.github/copilot-instructions.md` from scratch by analyzing the entire 
 
 ## Goal
 
-Analyze the codebase and create a concise project context file that helps AI agents understand the repository quickly and work effectively.
+Analyze the codebase and create a concise project context file that helps AI agents understand the repository quickly
+and work effectively.
 
 ## When to Use
 
@@ -30,7 +31,7 @@ Use the `explore` agent or grep/glob tools to efficiently gather this informatio
 
 Generate a markdown file with these sections (adapt based on project type):
 
-**Project Header**
+### Project Header
 
 - One-line description of the project and its tech stack
 
@@ -40,7 +41,7 @@ Generate a markdown file with these sections (adapt based on project type):
 - Import/export patterns
 - Styling approach
 
-**Commands**
+### Commands
 
 - Development server
 - Build process
@@ -48,13 +49,13 @@ Generate a markdown file with these sections (adapt based on project type):
 - Linting/formatting
 - Database migrations
 
-**Architecture**
+### Architecture
 
 - Directory structure with brief explanations
 - Key design patterns
 - Important modules/components
 
-**Important Notes**
+### Important Notes
 
 - Security warnings (secrets, authentication)
 - Deployment considerations
@@ -74,10 +75,12 @@ Generate a markdown file with these sections (adapt based on project type):
 Save as `.github/copilot-instructions.md` (create `.github/` directory if needed).
 
 For reference structure, see:
+
 - `references/template.md` - Blank template
 - `references/example.md` - Concrete example
 
 **Note:** For path-specific instructions, use `.github/instructions/NAME.instructions.md` with frontmatter:
+
 ```yaml
 ---
 applyTo: "src/**/*.ts"

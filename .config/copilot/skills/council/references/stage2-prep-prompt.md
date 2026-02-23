@@ -59,7 +59,7 @@ op save_outputs(content: PrepOutput, paths: { anonymized: string; mapping: strin
 
 ## Execution
 
-```
+```text
 read_and_extract -> assign_labels -> [create_label_mapping_file + create_anonymized_input_file] -> save_outputs
 ```
 

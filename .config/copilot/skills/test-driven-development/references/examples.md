@@ -6,7 +6,7 @@ Concrete examples demonstrating the Red-Green-Refactor cycle.
 
 **Bug:** Empty email accepted
 
-**RED**
+### RED
 
 ```typescript
 test("rejects empty email", async () => {
@@ -15,14 +15,14 @@ test("rejects empty email", async () => {
 });
 ```
 
-**Verify RED**
+### Verify RED
 
 ```bash
 $ npm test
 FAIL: expected 'Email required', got undefined
 ```
 
-**GREEN**
+### GREEN
 
 ```typescript
 function submitForm(data: FormData) {
@@ -33,13 +33,13 @@ function submitForm(data: FormData) {
 }
 ```
 
-**Verify GREEN**
+### Verify GREEN
 
 ```bash
 $ npm test
 PASS
 ```
 
-**REFACTOR**
+### REFACTOR
 
 Extract validation for multiple fields if needed.

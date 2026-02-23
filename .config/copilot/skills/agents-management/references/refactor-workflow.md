@@ -1,10 +1,12 @@
 # Refactor Workflow
 
-Perform comprehensive repository analysis and compare against `.github/copilot-instructions.md`, presenting changes for user approval.
+Perform comprehensive repository analysis and compare against `.github/copilot-instructions.md`,
+presenting changes for user approval.
 
 ## Goal
 
-Perform a thorough repository analysis and compare findings against copilot-instructions.md, presenting specific suggested changes for user approval before applying updates.
+Perform a thorough repository analysis and compare findings against copilot-instructions.md, presenting specific
+suggested changes for user approval before applying updates.
 
 ## When to Use
 
@@ -20,7 +22,7 @@ Perform a thorough repository analysis and compare findings against copilot-inst
 
 Analyze the entire codebase to understand current state:
 
-**Architecture & Structure**
+#### Architecture & Structure
 
 ```bash
 # Directory structure
@@ -29,19 +31,20 @@ tree -L 3 -d --gitignore || find . -maxdepth 3 -type d -not -path '*/.git/*'
 
 Use the glob tool to discover key file patterns: `**/*.{json,toml,yaml,yml,md,sh}`
 
-**Commands & Scripts**
+#### Commands & Scripts
 
 - Check package.json, Makefile, mise.toml, pyproject.toml for scripts
 - Identify build, test, lint, deployment commands
-- Verify command accuracy by dry-running safe commands (e.g., `--help` flags, `--dry-run` where available). Do not execute destructive or deployment commands.
+- Verify command accuracy by dry-running safe commands (e.g., `--help` flags, `--dry-run` where available).
+  Do not execute destructive or deployment commands.
 
-**Code Conventions**
+#### Code Conventions
 
 - Identify import/export patterns (grep for common patterns)
 - Document naming conventions (file naming, function naming)
 - Extract language-specific patterns (Python, TypeScript, Go, etc.)
 
-**Technology Stack**
+#### Technology Stack
 
 - Identify frameworks and libraries (check dependency files)
 - Determine language versions (check version manager configs)
@@ -51,7 +54,8 @@ Use the `explore` agent for complex analysis tasks. Make parallel grep/glob call
 
 ### 2. Load and Parse Existing copilot-instructions.md
 
-First verify `.github/copilot-instructions.md` exists. If it does not exist, inform the user and suggest using the create workflow instead.
+First verify `.github/copilot-instructions.md` exists. If it does not exist, inform the user and suggest
+using the create workflow instead.
 
 Read copilot-instructions.md and identify all documented sections:
 
@@ -66,25 +70,25 @@ Read copilot-instructions.md and identify all documented sections:
 
 For each section, identify discrepancies:
 
-**Architecture Differences**
+#### Architecture Differences
 
 - Flag new directories not yet documented
 - Remove references to deleted directories
 - Update outdated directory descriptions
 
-**Command Differences**
+#### Command Differences
 
 - Identify commands that have changed (different flags, renamed scripts)
 - Document new commands not yet listed
 - Remove deprecated commands still listed
 
-**Convention Differences**
+#### Convention Differences
 
 - Track code style patterns that have evolved
 - Document new patterns not yet included
 - Remove outdated guidance that conflicts with current code
 
-**Technology Differences**
+#### Technology Differences
 
 - Track framework version changes
 - List added or removed dependencies
@@ -110,7 +114,8 @@ Otherwise, use the ask_user tool to request which changes to apply:
 
 For each approved update:
 
-- Make precise edits to copilot-instructions.md using edit tool. If an edit fails, retry with expanded context or apply manually.
+- Make precise edits to copilot-instructions.md using edit tool. If an edit fails, retry with expanded context
+  or apply manually.
 - Preserve existing formatting and style
 - Maintain concise, imperative-form language
 - Keep bullet-point structure

@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: false
+  commands:
+    format:
+      priority: 1
+      glob: "**/*.{sh,toml,md}"
+      stage_fixed: true
+      run: mise run format -- {staged_files}
+    lint:
+      priority: 2
+      glob: "**/*.{sh,md}"
+      run: mise run lint -- {staged_files}

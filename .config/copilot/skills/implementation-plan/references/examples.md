@@ -2,7 +2,8 @@
 
 Detailed examples of generated implementation plans for various scenarios.
 
-**Important**: All example plans shown below are saved to `~/.copilot/session-state/{session-id}/files/` during actual workflow execution.
+**Important**: All example plans shown below are saved to `~/.copilot/session-state/{session-id}/files/` during actual
+workflow execution.
 
 ## Example 1: Feature Addition
 

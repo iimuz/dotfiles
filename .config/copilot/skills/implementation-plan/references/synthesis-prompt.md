@@ -2,7 +2,8 @@
 
 ## Role
 
-You are the final synthesizer in a multi-agent implementation planning workflow. Consolidate the collective analysis of multiple AI agents into a single, authoritative implementation plan.
+You are the final synthesizer in a multi-agent implementation planning workflow. Consolidate the collective analysis of
+multiple AI agents into a single, authoritative implementation plan.
 
 ## Interface
 
@@ -50,12 +51,13 @@ op savePlan(plan: FinalPlanFile, outputFilepath: string) -> FinalPlanFile {
   invariant: (planIncomplete)        => abort("Plan must have all template sections populated before saving");
   invariant: (fileWriteFailed)       => retry_or_abort("File write failed; retry or abort");
   invariant: (outputNotFoundAfterWrite) => abort("Output file not found after write; likely a tool error");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to outputFilepath; do not modify, create, or delete source code files");
 }
 ```
 
 ## Execution
 
-```
+```text
 discoverInputFiles -> synthesizePlan -> savePlan
 ```
 
@@ -80,7 +82,8 @@ type InputContext = {
 type ArtifactFile = { path: string };
 ```
 
-**File selection rule**: For each glob pattern below, select only the **most recent** file (highest timestamp suffix) when multiple files share the same prefix. Do not collapse files from different models.
+**File selection rule**: For each glob pattern below, select only the **most recent** file (highest timestamp suffix)
+when multiple files share the same prefix. Do not collapse files from different models.
 
 Patterns to discover in `sessionFilesDir`:
 

@@ -1,6 +1,7 @@
 # Rust Best Practices
 
-Expert Rust developer specializing in systems programming, memory safety, and zero-cost abstractions. Masters ownership patterns, async programming, and performance optimization for mission-critical applications.
+Expert Rust developer specializing in systems programming, memory safety, and zero-cost abstractions. Masters ownership
+patterns, async programming, and performance optimization for mission-critical applications.
 
 ## Core Development Checklist
 

@@ -7,13 +7,15 @@ description: Create GitHub pull request drafts using Conventional Commit paramet
 
 ## Purpose
 
-This skill provides standardized GitHub pull request creation with Conventional Commits style formatting. It ensures consistent PR structure with proper type validation.
+This skill provides standardized GitHub pull request creation with Conventional Commits style formatting. It ensures
+consistent PR structure with proper type validation.
 
 ## Prerequisites
 
 **IMPORTANT**: All scripts must be executed from the **git repository root directory** where you want to create the PR.
 
 Example:
+
 ```bash
 # Correct: Execute from repo root
 cd /path/to/your/repo
@@ -25,6 +27,7 @@ bash scripts/check-branch-status.sh  # This may operate on the wrong repo!
 ```
 
 Requirements:
+
 - Working directory must be a git repository
 - Current branch should have commits that differ from its base branch
 - Repository must have a remote named 'origin'
@@ -52,7 +55,8 @@ Requirements:
    bash /path/to/skill/scripts/check-branch-status.sh [--base <branch>]
    ```
 
-   The script displays repository information and compares with the specified base branch (or remote HEAD branch if not specified)
+   The script displays repository information and compares with the specified base branch (or remote HEAD branch
+   if not specified)
 
 3. Choose `--type`, `--title`, `--changes`, and optional sections based on the changes.
    - Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
@@ -92,6 +96,7 @@ bash scripts/check-branch-status.sh [--base <branch>]
 - `--base`: (Optional) Base branch name to compare against. If not specified, uses the remote HEAD branch
 
 **Output**:
+
 - Repository information (current branch, base branch for comparison)
 - Uncommitted changes (git status)
 - Commit history comparing with base branch
@@ -121,7 +126,8 @@ bash scripts/create-pr.sh \
 
 **Parameters**:
 
-- `--type`: (Required) PR type. Must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test, i18n
+- `--type`: (Required) PR type. Must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style,
+  test, i18n
 - `--title`: (Required) Short description of the change (max 100 chars including type)
 - `--changes`: (Required) Description of changes with bullet points
 - `--related-urls`: (Optional) Related URLs or issue links
@@ -134,25 +140,32 @@ bash scripts/create-pr.sh \
 **Output Format**:
 
 PR Title:
-```
+
+```text
 <type>: <title>
 ```
 
 PR Body:
+
 ```markdown
 ## Related URLs
+
 <related-urls or empty>
 
 ## Changes
+
 <changes>
 
 ## Confirmation Results
+
 <confirmation or empty comment>
 
 ## Review Points
+
 <review-points or empty comment>
 
 ## Limitations
+
 <limitations or empty comment>
 
 <additional if provided>

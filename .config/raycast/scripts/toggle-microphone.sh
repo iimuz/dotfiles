@@ -19,4 +19,3 @@ else
   osascript -e "set volume input volume 0"
   echo "Mute"
 fi
-

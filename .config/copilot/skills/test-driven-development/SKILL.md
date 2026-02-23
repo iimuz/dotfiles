@@ -32,7 +32,7 @@ Thinking "skip TDD just this once"? Stop. That's rationalization.
 
 ## The Iron Law
 
-**NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST**
+### NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 
 Write code before the test? Delete it. Start over.
 
@@ -73,7 +73,7 @@ digraph tdd_cycle {
 
 Write one minimal test showing what should happen.
 
-<Good>
+**Good:** Clear name, tests real behavior, one thing
 
 ```typescript
 test("retries failed operations 3 times", async () => {
@@ -91,11 +91,7 @@ test("retries failed operations 3 times", async () => {
 });
 ```
 
-Clear name, tests real behavior, one thing
-
-</Good>
-
-<Bad>
+**Bad:** Vague name, tests mock not code
 
 ```typescript
 test("retry works", async () => {
@@ -110,8 +106,6 @@ test("retry works", async () => {
 ```
 
 Vague name, tests mock not code
-
-</Bad>
 
 **Requirements:**
 
@@ -141,7 +135,7 @@ Confirm:
 
 Write simplest code to pass the test.
 
-<Good>
+**Good:** Just enough to pass
 
 ```typescript
 async function retryOperation<T>(fn: () => Promise<T>): Promise<T> {
@@ -156,11 +150,7 @@ async function retryOperation<T>(fn: () => Promise<T>): Promise<T> {
 }
 ```
 
-Just enough to pass
-
-</Good>
-
-<Bad>
+**Bad:** Over-engineered
 
 ```typescript
 async function retryOperation<T>(
@@ -174,10 +164,6 @@ async function retryOperation<T>(
   // YAGNI
 }
 ```
-
-Over-engineered
-
-</Bad>
 
 Don't add features, refactor other code, or "improve" beyond the test.
 

@@ -39,25 +39,25 @@ Look for:
 
 Use concise, actionable, imperative-form content when updating. For each section:
 
-**Architecture**
+#### Architecture
 
 - Add new directories with brief purpose
 - Update file structure if significantly changed
 - Remove obsolete paths
 
-**Commands**
+#### Commands
 
 - Add new build/test/deployment commands
 - Update modified script names or flags
 - Remove deprecated commands
 
-**Code Style & Conventions**
+#### Code Style & Conventions
 
 - Document new patterns discovered during implementation
 - Add warnings about common pitfalls AI agents encountered
 - Update import/export patterns if changed
 
-**Important Notes**
+#### Important Notes
 
 - Add security considerations from new features
 - Document breaking changes or migration steps

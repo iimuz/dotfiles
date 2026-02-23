@@ -2,7 +2,8 @@
 
 ## Goal
 
-Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated to the current plan goal.
+Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated
+to the current plan goal.
 
 ## Interface
 
@@ -59,7 +60,7 @@ op execute(scope: WorkScope, language_ctx: LanguageContext, tdd_mode: boolean) -
 
 ## Execution
 
-```
+```text
 load_scope -> detect_language -> execute
 ```
 

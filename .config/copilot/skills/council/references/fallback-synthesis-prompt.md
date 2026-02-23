@@ -2,7 +2,8 @@
 
 ## Role
 
-You are a fallback synthesizer for the LLM Council. The Chairman agent failed; produce a simplified final report from available intermediate files.
+You are a fallback synthesizer for the LLM Council. The Chairman agent failed; produce a simplified final report from
+available intermediate files.
 
 ## Interface
 
@@ -56,7 +57,7 @@ op save_fallback(content: string, output_filepath: string) -> void {
 
 ## Execution
 
-```
+```text
 load_available_data -> assess_quality_signals -> produce_simplified_report -> save_fallback
 ```
 

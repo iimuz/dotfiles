@@ -26,47 +26,47 @@ BASE=""
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --type)
-    TYPE="$2"
-    shift 2
-    ;;
-  --title)
-    TITLE="$2"
-    shift 2
-    ;;
-  --related-urls)
-    RELATED_URLS="$2"
-    shift 2
-    ;;
-  --changes)
-    CHANGES="$2"
-    shift 2
-    ;;
-  --confirmation)
-    CONFIRMATION="$2"
-    shift 2
-    ;;
-  --review-points)
-    REVIEW_POINTS="$2"
-    shift 2
-    ;;
-  --limitations)
-    LIMITATIONS="$2"
-    shift 2
-    ;;
-  --additional)
-    ADDITIONAL="$2"
-    shift 2
-    ;;
-  --base)
-    BASE="$2"
-    shift 2
-    ;;
-  *)
-    echo "Error: Unknown parameter '$1'" >&2
-    echo "Allowed parameters: --type, --title, --related-urls, --changes, --confirmation, --review-points, --limitations, --additional, --base" >&2
-    exit 1
-    ;;
+    --type)
+      TYPE="$2"
+      shift 2
+      ;;
+    --title)
+      TITLE="$2"
+      shift 2
+      ;;
+    --related-urls)
+      RELATED_URLS="$2"
+      shift 2
+      ;;
+    --changes)
+      CHANGES="$2"
+      shift 2
+      ;;
+    --confirmation)
+      CONFIRMATION="$2"
+      shift 2
+      ;;
+    --review-points)
+      REVIEW_POINTS="$2"
+      shift 2
+      ;;
+    --limitations)
+      LIMITATIONS="$2"
+      shift 2
+      ;;
+    --additional)
+      ADDITIONAL="$2"
+      shift 2
+      ;;
+    --base)
+      BASE="$2"
+      shift 2
+      ;;
+    *)
+      echo "Error: Unknown parameter '$1'" >&2
+      echo "Allowed parameters: --type, --title, --related-urls, --changes, --confirmation, --review-points, --limitations, --additional, --base" >&2
+      exit 1
+      ;;
   esac
 done
 
@@ -87,7 +87,7 @@ if [[ -z "$CHANGES" ]]; then
 fi
 
 # Validate type
-if [[ ! " ${ALLOWED_TYPES[*]} " =~  ${TYPE}  ]]; then
+if [[ ! " ${ALLOWED_TYPES[*]} " =~ ${TYPE} ]]; then
   echo "Error: Invalid type '$TYPE'" >&2
   echo "Allowed types: ${ALLOWED_TYPES[*]}" >&2
   exit 1

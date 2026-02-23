@@ -28,4 +28,3 @@ if [ -d $local_lib ]; then
     export LD_LIBRARY_PATH=$local_lib:$LD_LIBRARY_PATH
   fi
 fi
-

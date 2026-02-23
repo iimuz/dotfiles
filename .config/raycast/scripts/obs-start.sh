@@ -16,11 +16,10 @@ echo "=== $(date '+%Y-%m-%d %H:%M:%S') ==="
 
 source ~/.zshrc
 
-local SCRIPT_DIR
 SCRIPT_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 readonly SCRIPT_DIR
 
-local -r SCRIPT_PATH="$SCRIPT_DIR/obs-start.py"
+SCRIPT_PATH="$SCRIPT_DIR/obs-start.py"
 if [ ! -f "$SCRIPT_PATH" ]; then
   echo "ERROR: $SCRIPT_PATH not found."
   exit 1

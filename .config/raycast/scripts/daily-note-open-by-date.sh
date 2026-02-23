@@ -79,19 +79,19 @@ function main() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    -v | --verbose)
-      set -x
-      shift
-      ;;
-    *)
-      log_error "Unknown option: $1"
-      usage
-      exit 1
-      ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      -v | --verbose)
+        set -x
+        shift
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        usage
+        exit 1
+        ;;
     esac
   done
 

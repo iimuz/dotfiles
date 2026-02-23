@@ -57,7 +57,7 @@ op save_ranking_table(metrics: RankingMetrics[], output_filepath: string) -> voi
 
 ## Execution
 
-```
+```text
 parse_rankings -> compute_metrics -> sort_rankings -> resolve_labels -> save_ranking_table
 ```
 

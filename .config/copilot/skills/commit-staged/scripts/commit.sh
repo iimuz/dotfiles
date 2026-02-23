@@ -13,23 +13,23 @@ BODY=""
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --type)
-    TYPE="$2"
-    shift 2
-    ;;
-  --description)
-    DESCRIPTION="$2"
-    shift 2
-    ;;
-  --body)
-    BODY="$2"
-    shift 2
-    ;;
-  *)
-    echo "Error: Unknown parameter '$1'" >&2
-    echo "Allowed parameters: --type, --description, --body" >&2
-    exit 1
-    ;;
+    --type)
+      TYPE="$2"
+      shift 2
+      ;;
+    --description)
+      DESCRIPTION="$2"
+      shift 2
+      ;;
+    --body)
+      BODY="$2"
+      shift 2
+      ;;
+    *)
+      echo "Error: Unknown parameter '$1'" >&2
+      echo "Allowed parameters: --type, --description, --body" >&2
+      exit 1
+      ;;
   esac
 done
 

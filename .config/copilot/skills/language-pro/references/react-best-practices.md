@@ -1,6 +1,7 @@
 # React Best Practices
 
-Expert React 19.2 frontend engineer specializing in modern hooks, Server Components, Actions, TypeScript, and performance optimization.
+Expert React 19.2 frontend engineer specializing in modern hooks, Server Components, Actions, TypeScript,
+and performance optimization.
 
 ## Core Expertise
 

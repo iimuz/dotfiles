@@ -5,7 +5,8 @@ description: This skill manages copilot-instructions.md and .instructions.md fil
 
 # Copilot Instructions Management
 
-Manage copilot-instructions.md and .instructions.md files that help AI agents understand repository architecture, commands, and conventions.
+Manage copilot-instructions.md and .instructions.md files that help AI agents understand repository
+architecture, commands, and conventions.
 
 ## When to Use This Skill
 
@@ -69,7 +70,8 @@ Determine which workflow applies based on:
    - Default (copilot-instructions.md exists, no clear signal) → Use `update-workflow.md`
 
 3. **Context validation:**
-   - If create-workflow selected but copilot-instructions.md exists → Ask user: "copilot-instructions.md already exists. Update it or recreate from scratch?"
+   - If create-workflow selected but copilot-instructions.md exists → Ask user: "copilot-instructions.md
+     already exists. Update it or recreate from scratch?"
    - If update/refactor selected but copilot-instructions.md missing → Switch to create-workflow
 
 ### Step 2: Load and Execute Workflow
@@ -99,7 +101,8 @@ GitHub Copilot supports multiple instruction file locations with specific preced
 3. **Legacy support:** `AGENTS.md` at repository root (still supported, but `.github/copilot-instructions.md` is preferred)
 4. **User-specific instructions:** `$HOME/.copilot/copilot-instructions.md` (local machine only)
 
-**Default behavior:** This skill manages `.github/copilot-instructions.md` unless the user explicitly specifies a different location.
+**Default behavior:** This skill manages `.github/copilot-instructions.md` unless the user explicitly specifies a
+different location.
 
 ## Success Criteria
 

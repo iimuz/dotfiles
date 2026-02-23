@@ -7,7 +7,9 @@ description: Transform detailed implementation materials into concise, high-leve
 
 ## Overview
 
-This skill converts technical implementation plans, specifications, and detailed documents into maintainable design documentation. Transform verbose implementation materials into structured, concise design documents that enable future readers to understand system architecture without getting lost in implementation details.
+This skill converts technical implementation plans, specifications, and detailed documents into maintainable design
+documentation. Transform verbose implementation materials into structured, concise design documents that enable future
+readers to understand system architecture without getting lost in implementation details.
 
 ## When to Use This Skill
 
@@ -36,38 +38,39 @@ Generate design documents that:
 Extract key information while filtering:
 
 - **Include**: Architecture, interfaces, design decisions, data flows, migration strategies
-- **Exclude**: Source code, file paths, line numbers, function names, task checklists, verification commands, detailed IaC configurations
+- **Exclude**: Source code, file paths, line numbers, function names, task checklists, verification commands,
+  detailed IaC configurations
 
 ### 2. Structure Document
 
 Follow this mandatory 6-section structure (omit sections that do not apply):
 
-**Section 1: Overview & Purpose**
+#### Section 1: Overview & Purpose
 
 - Background: Why this change is needed
 - Goal: What to achieve
 - Scope: Range of changes
 
-**Section 2: Architecture**
+#### Section 2: Architecture
 
 - Before/After configuration (simple diagram or bullet points)
 - Role of main resources (table format)
 
-**Section 3: Specification**
+#### Section 3: Specification
 
 - Interface definitions (URL, API, etc.)
 - Prerequisites and constraints
 
-**Section 4: Key Design Decisions**
+#### Section 4: Key Design Decisions
 
 - Key design decisions and their reasons
 - Briefly mention alternatives that were not chosen, if any
 
-**Section 5: Processing Flow**
+#### Section 5: Processing Flow
 
 - Data flow, authorization flow, etc. as needed
 
-**Section 6: Migration Plan**
+#### Section 6: Migration Plan
 
 - Phased approach and impact on existing resources (only if applicable)
 

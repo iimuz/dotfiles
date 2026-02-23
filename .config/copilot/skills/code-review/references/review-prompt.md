@@ -41,12 +41,13 @@ op format_output(review: ReviewOutput) -> string {
   // Write markdown to {output_path} organized by priority: Critical → Warning → Suggestion
   invariant: (critical_issue.location_missing) => reject("Critical issues must include file:line");
   invariant: (severity_label_invalid) => use_enum("CRITICAL" | "WARNING" | "SUGGESTION");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to output_path; do not modify, create, or delete source code files");
 }
 ```
 
 ## Execution
 
-```
+```text
 review_changes -> format_output
 ```
 
@@ -55,7 +56,12 @@ review_changes -> format_output
 ```typescript
 interface ReviewContext {
   session_id: string;
-  aspect: "security" | "quality" | "performance" | "best-practices" | "design-compliance"; // canonical: see ReviewAspect in SKILL.md
+  aspect:
+    | "security"
+    | "quality"
+    | "performance"
+    | "best-practices"
+    | "design-compliance"; // canonical: see ReviewAspect in SKILL.md
   aspect_criteria: string; // extracted section from review-criteria.md for this aspect
   model_name: string; // e.g., "claude-opus-4.6"
   file_scope?: string[]; // optional: restrict review to specific files
@@ -68,7 +74,7 @@ Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-
 
 Output format per finding:
 
-```
+```text
 [PRIORITY] Brief description
 File: path/to/file.ext:line_number
 Issue: Detailed explanation
