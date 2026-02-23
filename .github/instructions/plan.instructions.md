@@ -9,7 +9,8 @@ applyTo: "docs/plans/**"
 - Rule: Before creating any file under `docs/plans/`, read `docs/templates/plan.md` and strictly follow its structure.
 - Rule: Required frontmatter key: `status` (value: `TODO`, `IN_PROGRESS`, or `DONE`). No additional frontmatter keys.
 - Rule: Required sections in order: `## GOAL`, `## REF`, `## STEPS`, `## VERIFY`, `## SCRATCHPAD`.
-- Rule: No sections other than the five above. Do not add sections like Context, Objectives, Scope, Requirements, Architecture, Risks, or Appendix.
+- Rule: No sections other than the five above. Do not add sections like Context, Objectives, Scope,
+  Requirements, Architecture, Risks, or Appendix.
 
 ## Naming Convention
 
