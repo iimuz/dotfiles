@@ -66,6 +66,7 @@ type SynthesisReceipt = {
  * 6. No_Recursion:        (subagent_spawns_subagent) => abort("Subagents must not spawn subagents")
  * 7. Execution_Only:      (subagent_prompt_is_advisory_not_actionable) => convert_to_execution_directive
  * 8. No_Main_Ref_Load:   (main_agent_reads_reference_file) => abort("Pass reference file paths to subagents only; do not load references in coordinator context")
+ * 9. No_Pre_Investigation: (coordinator_investigates_before_plan) => abort("Pass request verbatim to Planner; coordinator must not invoke investigation tools before plan op")
  */
 ```
 

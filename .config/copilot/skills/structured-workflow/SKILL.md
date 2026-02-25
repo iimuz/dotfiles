@@ -46,6 +46,7 @@ type FinalSummary = {
  * 2. Signature_Integrity:   all ops fully typed
  * 3. Language_Constraint:   user_facing_output => Japanese; code && commit_messages => own_conventions
  * 4. No_Phase_Confirmation: no ask_user between phases; only at final_summary and error recovery
+ * 5. No_Pre_Investigation: main agent passes raw task input to skills; must not investigate codebase before invoking plan, implement, or review ops
  */
 ```
 
