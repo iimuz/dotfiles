@@ -72,3 +72,9 @@ interface InputContext {
   label_mapping_filepath: string; // absolute path to write JSON label mapping
 }
 ```
+
+## Context Data
+
+Stage 1 response filepaths: {{stage1_response_filepaths}}
+Anonymized input filepath: {{anonymized_input_filepath}}
+Label mapping filepath: {{label_mapping_filepath}}

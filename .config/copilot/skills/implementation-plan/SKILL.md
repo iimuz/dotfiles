@@ -18,7 +18,7 @@ independent plan drafting, cross-review, conflict resolution, and final authorit
 ```typescript
 /**
  * @skill implementation-plan
- * @input  { userRequest: string; codebaseContext?: string }
+ * @input  { userRequest: string }
  * @output { planFilepath: string }
  */
 
@@ -54,17 +54,19 @@ type SessionFolder = {
  * 3. FinalNaming:          final plan filename matches `{purpose}-{component}-{version}.md`
  * 4. CamelCaseContracts:   all variable bindings use canonical camelCase names defined in @references/implementation-patterns.md Appendix A
  * 5. NoPeek:               caller must not read intermediate file content into main agent context
+ * 6. NoPreInvestigation: caller passes raw userRequest only; sub-agents explore the codebase independently
  */
 ```
 
 ## Operations
 
 ```typespec
-op analyze(input: { userRequest: string; codebaseContext?: string; outputDir: SessionFolder }) -> AnalysisFile[] {
-  // Launch 3 parallel task() calls using @references/analysis-prompt.md; inject userRequest, codebaseContext, outputFilepath per agent
+op analyze(input: { userRequest: string; outputDir: SessionFolder }) -> AnalysisFile[] {
+  // Launch 3 parallel task() calls using @references/analysis-prompt.md; inject userRequest, outputFilepath per agent
+  // Each agent independently explores the codebase using available tools (glob, grep, view)
   task(model: ModelRoles.analyzerClaude | ModelRoles.analyzerGemini | ModelRoles.analyzerGpt,
        prompt: @references/analysis-prompt.md,
-       vars: { model, userRequest, codebaseContext, outputFilepath: outputDir.sessionFilesDir + "step1-{model}-{timestamp}.md" },
+       vars: { model, userRequest, outputFilepath: outputDir.sessionFilesDir + "step1-{model}-{timestamp}.md" },
        timeout: 120, retry: { max: 1 });
   invariant: (analysisCount < 2) => abort("Analysis quorum not met: fewer than 2 analyses received");
   invariant: (analysisCount == 2) => warn("Degraded mode: only 2/3 analyses received; note in final output");

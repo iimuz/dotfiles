@@ -2,78 +2,54 @@
 
 ## Goal
 
-Execute code changes precisely within the defined scope of the plan below. Do not fix pre-existing issues unrelated
-to the current plan goal.
+Implement code changes for the current iteration's scope. Do not fix pre-existing issues unrelated to the plan goal.
 
-## Interface
+## Required Decomposition
 
-```typescript
-/**
- * @input  { context: ImplementContext }
- * @output { void }
- */
+Planner: create the following tasks with these `depends_on` relationships.
 
-type ImplementContext = {
-  plan: { session_state_file: string; summary: string };
-  iteration: number;
-  prior_issues: Array<{
-    severity: "Critical" | "High" | "Medium" | "Low";
-    description: string;
-  }>;
-  tdd_mode: boolean;
-};
+| Task ID     | Agent type        | depends_on  |
+| :---------- | :---------------- | :---------- |
+| load-scope  | `explore`         | —           |
+| detect-lang | `explore`         | load-scope  |
+| execute     | `general-purpose` | detect-lang |
 
-type WorkScope = {
-  source: "plan" | "prior_issues";
-  items: string[];
-};
+### Task: load-scope
 
-type SupportedLanguage = "go" | "python" | "typescript" | "react" | "rust";
+Determine the work scope for this iteration.
 
-type LanguageContext = {
-  language: SupportedLanguage | null;
-  best_practices_loaded: boolean;
-};
-```
+- If `iteration == 1`: read the plan file at `plan.session_state_file` and extract all tasks/changes to implement.
+- If `iteration > 1`: filter `prior_issues` to severity "Critical" and "High" only.
+- Exclude pre-existing issues unrelated to the current plan goal.
 
-## Operations
+Output contract: write `{run_dir}/scope.json` — `{ "source": "plan"|"prior_issues", "items": ["..."] }`
 
-```typespec
-op load_scope(context: ImplementContext) -> WorkScope {
-  invariant: (context.iteration == 1) => read(context.plan.session_state_file);
-  invariant: (context.iteration > 1)  => scope_to(context.prior_issues.filter("Critical" | "High"));
-  invariant: (pre_existing_unrelated_issue_detected) => exclude_from_scope;
-}
+### Task: detect-lang
 
-op detect_language(scope: WorkScope) -> LanguageContext {
-  // Detect from file extensions (.go, .py, .ts, .tsx, .rs) or project files (go.mod, pyproject.toml, Cargo.toml, package.json)
-  invariant: (language in SupportedLanguage) => skill(name: "language-pro", language: language);
-  invariant: (language_not_detected)         => set(language_ctx.language, null);
-}
+Detect the primary programming language of files in scope.
 
-op execute(scope: WorkScope, language_ctx: LanguageContext, tdd_mode: boolean) -> void {
-  invariant: (tdd_mode == true)              => skill(name: "test-driven-development", scope: scope);
-  invariant: (tdd_mode == false)             => direct_implementation(scope);
-  invariant: (language_ctx.language != null) => apply(language_ctx.best_practices);
-}
-```
+- Detect from file extensions: `.go` → "go", `.py` → "python", `.ts`/`.tsx` → "typescript"/"react",
+  `.rs` → "rust".
+- Detect from project manifests: `go.mod` → "go", `pyproject.toml` → "python", `Cargo.toml` → "rust",
+  `package.json` → "typescript"/"react".
+- Output null if no supported language is detected.
 
-## Execution
+Output contract: write `{run_dir}/language.json` —
+`{ "language": "go"|"python"|"typescript"|"react"|"rust"|null }`
 
-```text
-load_scope -> detect_language -> execute
-```
+### Task: execute
+
+Implement all changes from scope.
+
+1. Read `{run_dir}/scope.json` for work items.
+2. Read `{run_dir}/language.json` for the detected language.
+3. If `language != null`: invoke `skill(name: "language-pro", language: {language})` before implementing.
+4. If `tdd_mode == true`: invoke `skill(name: "test-driven-development")` and follow its workflow.
+5. If `tdd_mode == false`: implement all scope items directly.
+6. Implement ALL items in scope completely.
+7. Do NOT call `task()` to spawn sub-agents.
 
 ## Input Context
-
-```typescript
-interface ImplementContext {
-  plan: { session_state_file: string; summary: string };
-  iteration: number;
-  prior_issues: Array<{ severity: string; description: string }>;
-  tdd_mode: boolean;
-}
-```
 
 Plan: {{plan}}
 Iteration: {{iteration}}

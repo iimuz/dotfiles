@@ -86,6 +86,7 @@ type ConsolidatedReview = {
  * 5. Aspect_Isolation: each reviewer reviews only its assigned ReviewAspect
  * 6. Main_Read_Gate:   main agent reads only gap-list.md (Stage 2b) and consolidated-review.md (Stage 4)
  * 7. Design_Conditional: design-compliance aspect activated only when design_info is provided; skip otherwise
+ * 8. No_Pre_Investigation: main agent must not investigate code before invoking; detect_scope and sub-agents handle all investigation independently
  */
 ```
 

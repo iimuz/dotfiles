@@ -70,3 +70,9 @@ interface InputContext {
   output_filepath: string; // absolute path for saving ranking table
 }
 ```
+
+## Context Data
+
+Stage 2 review filepaths: {{stage2_review_filepaths}}
+Label mapping filepath: {{label_mapping_filepath}}
+Output filepath: {{output_filepath}}
