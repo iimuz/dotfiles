@@ -12,7 +12,7 @@ description: >
 
 Delegate all decomposition to the Planner subagent first; never implement directly.
 The coordinator holds only `plan.json` and the final receipt—never worker prompts
-or outputs. Protocol templates and the plan schema live in `@references/`.
+or outputs. Protocol templates and the plan schema live in `references/` (subagent-only; do not load into coordinator context).
 
 ## Interface
 
@@ -29,7 +29,7 @@ type Plan = {
   goal: string;
   tasks: Task[];
   synthesis_output_file: string;
-  // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/ — see @references/plan-schema.md
+  // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/ — see plan_schema_file (subagent-only)
 };
 
 type Task = {
@@ -65,6 +65,7 @@ type SynthesisReceipt = {
  * 5. No_Peeking:          (reads T{n}-prompt.md | T{n}-output.md in pipeline_mode) => CONTRACT_VIOLATION_NO_PEEKING
  * 6. No_Recursion:        (subagent_spawns_subagent) => abort("Subagents must not spawn subagents")
  * 7. Execution_Only:      (subagent_prompt_is_advisory_not_actionable) => convert_to_execution_directive
+ * 8. No_Main_Ref_Load:   (main_agent_reads_reference_file) => abort("Pass reference file paths to subagents only; do not load references in coordinator context")
  */
 ```
 
@@ -72,14 +73,15 @@ type SynthesisReceipt = {
 
 ```typespec
 op plan(request: string) -> Plan {
-  // Generate run_id (tc-{YYYYMMDD}-{HHMMSS}); spawn Planner via @references/planner-protocol.md
+  // Compute run_id (tc-{YYYYMMDD}-{HHMMSS}), run_dir; set planner_protocol_file={skill_base_dir}/references/planner-protocol.md
+  // Spawn Planner: task(prompt="Read {planner_protocol_file} and follow instructions.\n\n## Input Context\n- request: {request}\n- session_id: {session_id}\n- run_id: {run_id}\n- run_dir: {run_dir}\n- plan_schema_file: {plan_schema_file}")
   invariant: (planner_response_lines > 5)  => ignore_body("verify plan.json on disk");
   invariant: (plan_json_missing)           => retry_once("refined prompt");
   invariant: (plan_json_missing_on_retry)  => abort("Planner failed; report error receipt only");
 }
 
 op validate_plan(p: Plan) -> Plan {
-  // Validate per @references/plan-schema.md: JSON, required fields, IDs, acyclicity, paths
+  // Validate JSON, required fields, IDs, acyclicity, and path confinement using the invariants below
   invariant: (json_parse_error)       => abort("plan.json: parse failure");
   invariant: (missing_required_field) => abort("plan.json: missing field");
   invariant: (duplicate_task_id)      => abort("plan.json: duplicate task ID");
@@ -104,7 +106,8 @@ op execute_pipeline(p: Plan) -> WorkerReceipt[] {
 }
 
 op synthesize(p: Plan, receipts: WorkerReceipt[]) -> SynthesisReceipt {
-  // Pipeline mode only; spawn Synthesizer via @references/synthesizer-protocol.md
+  // Pipeline mode only; set synthesizer_protocol_file={skill_base_dir}/references/synthesizer-protocol.md
+  // Spawn Synthesizer: task(prompt="Read {synthesizer_protocol_file} and follow instructions.\n\n## Input Context\n- goal: {p.goal}\n- output_files: {p.tasks[*].output_file}\n- synthesis_output_file: {p.synthesis_output_file}")
   invariant: (synthesizer_fails)       => retry_once("refined prompt");
   invariant: (synthesizer_fails_again) => report_paths("synthesis_output_file + output_files; do not load inline");
   invariant: (reads_synthesis_file and !explicit_user_request) => warn("synthesis.md: load only on explicit request");
@@ -152,6 +155,11 @@ subtask creates, modifies, or reviews a skill, instruct the subagent to invoke `
 
 ## References
 
-- `@references/planner-protocol.md` — Planner prompt template (copy-ready)
-- `@references/plan-schema.md` — `plan.json` schema, validation rules, examples
-- `@references/synthesizer-protocol.md` — Synthesizer prompt template (copy-ready)
+Subagent-only: these files must be read by spawned subagents, not by the coordinator main agent.
+
+- `planner_protocol_file` = `{skill_base_dir}/references/planner-protocol.md`
+  — Planner subagent instructions; pass as prompt path
+- `plan_schema_file` = `{skill_base_dir}/references/plan-schema.md`
+  — plan.json schema for Planner subagent
+- `synthesizer_protocol_file` = `{skill_base_dir}/references/synthesizer-protocol.md`
+  — Synthesizer subagent instructions; pass as prompt path
