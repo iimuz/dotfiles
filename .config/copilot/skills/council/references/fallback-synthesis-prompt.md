@@ -95,3 +95,11 @@ interface InputContext {
   output_filepath: string; // absolute path for saving the fallback report
 }
 ```
+
+## Context Data
+
+Question: {{question}}
+Stage 1 response filepaths: {{stage1_response_filepaths}}
+Rankings filepath: {{rankings_filepath}}
+Label mapping filepath: {{label_mapping_filepath}}
+Output filepath: {{output_filepath}}

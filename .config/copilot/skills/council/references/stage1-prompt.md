@@ -52,3 +52,8 @@ interface InputContext {
   output_filepath: string; // absolute path for saving the response
 }
 ```
+
+## Context Data
+
+Question: {{question}}
+Output filepath: {{output_filepath}}

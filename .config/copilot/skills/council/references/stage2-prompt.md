@@ -69,3 +69,9 @@ interface InputContext {
   output_filepath: string; // absolute path for saving the evaluation
 }
 ```
+
+## Context Data
+
+Question: {{question}}
+Anonymized input filepath: {{anonymized_input_filepath}}
+Output filepath: {{output_filepath}}
