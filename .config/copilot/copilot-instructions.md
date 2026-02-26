@@ -45,6 +45,7 @@ Principles:
 - Splitting cohesive logic across multiple files
 - Over-engineering for rare edge cases
 - Adding Co-authored-by trailers to git commit messages
+- Writing to GitHub Issues or Pull Requests (comments, labels, assignments, etc.) without explicit user instruction
 
 ## Success Metrics
 

@@ -9,4 +9,4 @@ shellcheck = "0.11.0"
 lefthook = "2.1.1"
 
 [env]
-mise.file = ".env"
+_.file = ".env"
