@@ -1,0 +1,99 @@
+---
+name: code-review-cross-check
+description: Cross-validate concerns across reviewers.
+user-invocable: false
+disable-model-invocation: true
+---
+
+# Code Review: Cross-Check
+
+## Role
+
+Focused verifier for specific concerns flagged by other reviewers but not originally caught by
+this model. Examine each concern at the specified location; do not perform a full review.
+
+## Interface
+
+```typescript
+/**
+ * @skill code-review-cross-check
+ * @input  { session_id: string; aspect: ReviewAspect; model_name: string; concerns: Concern[] }
+ * @output { result: CrossCheckFileContent }
+ */
+
+type ReviewAspect = "security" | "quality" | "performance" | "best-practices";
+
+type Concern = {
+  issue: string;
+  location: string;
+  category: ReviewAspect;
+  original_reviewer: string;
+};
+
+type ConcernAssessment = {
+  concern: Concern;
+  assessment: "VALID" | "INVALID" | "UNCERTAIN";
+  reasoning: string;
+};
+
+type CrossCheckFileContent = {
+  aspect: ReviewAspect;
+  model: string;
+  assessments: ConcernAssessment[];
+};
+```
+
+## Operations
+
+```typespec
+op verify_concerns(session_id: string, aspect: ReviewAspect, model_name: string, concerns: Concern[]) -> CrossCheckFileContent {
+  // For each concern in the list:
+  //   Examine the concern at the specified location in actual code
+  //   Assess as VALID, INVALID, or UNCERTAIN with reasoning
+  // Scope is limited to listed concerns only — do NOT perform a full review
+
+  invariant: (full_review_attempted) => abort("Scope is limited to listed concerns only; do not perform a full review");
+  invariant: (assessment_value_invalid) => abort("Assessment must be one of: VALID | INVALID | UNCERTAIN");
+  invariant: (aspect_mixing) => abort("Do not mix aspects within a single cross-check");
+  invariant: (missing_reasoning) => require("Each assessment must include reasoning explaining the determination");
+  invariant: (source_code_modification_attempted) => abort("Read-only: write only to output_path; do not modify, create, or delete source code files");
+}
+
+op write_output(result: CrossCheckFileContent) -> void {
+  // Write assessments to output_path
+}
+```
+
+## Execution
+
+```text
+verify_concerns -> write_output
+```
+
+1. Receive the list of concerns for a specific (aspect, model_name) pair
+2. Examine each concern at its specified location in the actual source code
+3. Assess each as VALID, INVALID, or UNCERTAIN with reasoning
+4. Write the crosscheck file
+
+## Input
+
+The orchestrator provides:
+
+- `session_id`: session identifier for file paths
+- `aspect`: the review aspect (e.g., "security")
+- `model_name`: the model that missed the concern (must match `missed_by` from gap-list.yml)
+- `concerns`: list of concerns to verify, populated from gap-list.yml entries for this (aspect, model_name) pair
+
+## Output
+
+Output path: `~/.copilot/session-state/{session_id}/files/{aspect}-{model_name}-crosscheck.md`
+
+Format per concern:
+
+```text
+[CONCERN #N] Brief description
+File: path/to/file.ext:line_number
+Original Reviewer: model-name
+Assessment: VALID | INVALID | UNCERTAIN
+Reasoning: Analysis explaining the determination
+```
