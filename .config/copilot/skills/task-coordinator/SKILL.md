@@ -4,15 +4,17 @@ description: >
   Coordinate complex tasks by decomposing them into subtasks and delegating each
   to specialized subagents in parallel. Use for multi-step workflows requiring
   parallel execution and result synthesis.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Task Coordinator
 
 ## Overview
 
-Delegate all decomposition to the Planner subagent first; never implement directly.
-The coordinator holds only `plan.json` and the final receipt—never worker prompts
-or outputs. Protocol templates and the plan schema live in `references/` (subagent-only; do not load into coordinator context).
+Thin orchestrator that delegates all phase work to specialized sub-skills. The coordinator
+holds only `plan.json` and the final receipt -- never worker prompts, outputs, or reference
+files. Each phase is executed by spawning an agent that invokes the corresponding sub-skill.
 
 ## Interface
 
@@ -23,13 +25,14 @@ or outputs. Protocol templates and the plan schema live in `references/` (subage
  * @output { result: InlineResult | SynthesisReceipt }
  */
 
+// Canonical type definitions -- sub-skills mirror these verbatim
 type Plan = {
   schema_version: string;
   run_id: string; // format: tc-{YYYYMMDD}-{HHMMSS}
   goal: string;
   tasks: Task[];
   synthesis_output_file: string;
-  // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/ — see plan_schema_file (subagent-only)
+  // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/
 };
 
 type Task = {
@@ -57,73 +60,75 @@ type SynthesisReceipt = {
 };
 
 /**
- * @invariants
+ * @invariants (orchestrator-level)
  * 1. Zero_Verbosity:      imperative step-list instructions => remove entirely
  * 2. Signature_Integrity: every op => typed (input: T) -> U
  * 3. Minimal_Token:       prose descriptions => symbolic/typespec notation
- * 4. Planner_First:       (direct_implementation_attempt) => abort("Delegate to Planner first")
- * 5. No_Peeking:          (reads T{n}-prompt.md | T{n}-output.md in pipeline_mode) => CONTRACT_VIOLATION_NO_PEEKING
- * 6. No_Recursion:        (subagent_spawns_subagent) => abort("Subagents must not spawn subagents")
- * 7. Execution_Only:      (subagent_prompt_is_advisory_not_actionable) => convert_to_execution_directive
- * 8. No_Main_Ref_Load:   (main_agent_reads_reference_file) => abort("Pass reference file paths to subagents only; do not load references in coordinator context")
- * 9. No_Pre_Investigation: (coordinator_investigates_before_plan) => abort("Pass request verbatim to Planner; coordinator must not invoke investigation tools before plan op")
+ * 4. No_Recursion:        (subagent_spawns_subagent) => abort("Subagents must not spawn subagents")
+ * 5. No_Main_Ref_Load:    (main_agent_reads_reference_file) => abort("Pass reference file paths to subagents only; do not load references in coordinator context")
+ *
+ * @invariants (delegated to sub-skills)
+ * - Planner_First, No_Pre_Investigation => task-coordinator-plan
+ * - No_Peeking, Execution_Only          => task-coordinator-execute
  */
 ```
 
 ## Operations
 
 ```typespec
-op plan(request: string) -> Plan {
-  // Compute run_id (tc-{YYYYMMDD}-{HHMMSS}), run_dir; set planner_protocol_file={skill_base_dir}/references/planner-protocol.md
-  // Spawn Planner: task(prompt="Read {planner_protocol_file} and follow instructions.\n\n## Input Context\n- request: {request}\n- session_id: {session_id}\n- run_id: {run_id}\n- run_dir: {run_dir}\n- plan_schema_file: {plan_schema_file}")
-  invariant: (planner_response_lines > 5)  => ignore_body("verify plan.json on disk");
-  invariant: (plan_json_missing)           => retry_once("refined prompt");
-  invariant: (plan_json_missing_on_retry)  => abort("Planner failed; report error receipt only");
-}
+op orchestrate(request: string) -> InlineResult | SynthesisReceipt {
+  // Compute run_id (tc-{YYYYMMDD}-{HHMMSS}), session_id, run_dir
+  // Delegate each phase to its sub-skill via spawned agents
 
-op validate_plan(p: Plan) -> Plan {
-  // Validate JSON, required fields, IDs, acyclicity, and path confinement using the invariants below
-  invariant: (json_parse_error)       => abort("plan.json: parse failure");
-  invariant: (missing_required_field) => abort("plan.json: missing field");
-  invariant: (duplicate_task_id)      => abort("plan.json: duplicate task ID");
-  invariant: (circular_dependency)    => abort("plan.json: dependency cycle");
-  invariant: (path_escapes_run_dir)   => abort("plan.json: path traversal rejected");
-  invariant: (prompt_file_absent)     => abort("plan.json: prompt file not found");
-  invariant: (tasks_length > 15)      => abort("plan.json: exceeds 15-task limit");
-}
-
-op execute_inline(p: Plan) -> InlineResult {
-  // Exactly 1 task: spawn worker passing prompt_file path; receive result inline; skip synthesize
-  invariant: (worker_fails)       => retry_once(p.tasks[0].id);
-  invariant: (worker_fails_again) => abort("Worker failed after retry");
-}
-
-op execute_pipeline(p: Plan) -> WorkerReceipt[] {
-  // 2+ tasks: spawn independent workers in parallel (cap 5-8); batch waves per depends_on
-  invariant: (reads_T_n_prompt or reads_T_n_output) => CONTRACT_VIOLATION_NO_PEEKING("abort; restart strict mode");
-  invariant: (worker_fails(receipt))         => retry_once(receipt.id);
-  invariant: (worker_fails_again(receipt))   => record(WORKER_FAIL, receipt.id, "continue; preserve completed results");
-  invariant: (tasks_length > 8)     => batch_in_waves("respecting depends_on order");
-}
-
-op synthesize(p: Plan, receipts: WorkerReceipt[]) -> SynthesisReceipt {
-  // Pipeline mode only; set synthesizer_protocol_file={skill_base_dir}/references/synthesizer-protocol.md
-  // Spawn Synthesizer: task(prompt="Read {synthesizer_protocol_file} and follow instructions.\n\n## Input Context\n- goal: {p.goal}\n- output_files: {p.tasks[*].output_file}\n- synthesis_output_file: {p.synthesis_output_file}")
-  invariant: (synthesizer_fails)       => retry_once("refined prompt");
-  invariant: (synthesizer_fails_again) => report_paths("synthesis_output_file + output_files; do not load inline");
-  invariant: (reads_synthesis_file and !explicit_user_request) => warn("synthesis.md: load only on explicit request");
-}
-
-op present(result: InlineResult | SynthesisReceipt) -> void {
-  // Show inline result or receipt summary to user; write dashboard.md
-  invariant: (dashboard_missing)  => create(dashboard_path, "Pending/Questions/Completed structure");
-  invariant: (dashboard_exists)   => update(dashboard_path);
-  invariant: (run_dirs_count > 5) => prune_oldest("after successful synthesis; retain last 5 runs");
-  invariant: (enumerates_retained_run_files and !explicit_user_request) => abort("Do not enumerate retained run files without user request");
+  invariant: (main_reads_intermediate_files) => abort("Main agent reads only final receipt");
+  invariant: (main_invokes_skill_tool)       => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
+  invariant: (main_explores_codebase)        => abort("Main agent must not run glob/grep/view on codebase; pass request to sub-agents");
 }
 ```
 
 ## Execution
+
+Compute `run_id` and `run_dir` before starting the pipeline.
+
+### Phase 1: Plan
+
+```text
+task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request, session_id, run_id, run_dir }")
+```
+
+Read `plan.json` from `{run_dir}/plan.json` after the agent completes.
+
+### Phase 2: Execute
+
+Branch by `plan.tasks.length`:
+
+- **Inline** (1 task):
+
+```text
+task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_inline")
+```
+
+- **Pipeline** (2+ tasks):
+
+```text
+task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_pipeline")
+```
+
+### Phase 3: Synthesize (pipeline only)
+
+```text
+task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
+```
+
+Skip this phase for inline mode.
+
+### Phase 4: Present
+
+```text
+task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { result }")
+```
+
+### Pipeline Summary
 
 ```text
 plan -> validate_plan -> [execute_inline | execute_pipeline] -> synthesize? -> present
@@ -131,36 +136,15 @@ plan -> validate_plan -> [execute_inline | execute_pipeline] -> synthesize? -> p
 
 Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`); `?` = pipeline mode only.
 
-## Agent Selection
-
-Match subtasks to the lightest capable agent:
-
-| Requirement                            | Agent type            |
-| :------------------------------------- | :-------------------- |
-| Code investigation, symbol/file search | `explore`             |
-| Build, test, lint, install             | `task`                |
-| Multi-step implementation, code edits  | `general-purpose`     |
-| Review without modifying code          | `code-review`         |
-| Domain-specific work                   | `<custom-agent-name>` |
-
-Model guidance: `claude-opus-4.6` — nuanced reasoning; `gpt-5.3-codex` — structured output, tool-heavy workflows;
-`gemini-3-pro-preview` — broad knowledge synthesis. Prefer the same model within a multi-step subtask.
-
-<!-- Review this list when the environment's available models change -->
-
 ## Skill Integration
 
 Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke a skill to produce
-deliverables—delegate to a subagent instead. Embed explicit skill instructions in the worker's prompt file. If a
+deliverables -- delegate to a subagent instead. Embed explicit skill instructions in the worker's prompt file. If a
 subtask creates, modifies, or reviews a skill, instruct the subagent to invoke `skill-creator`.
 
 ## References
 
-Subagent-only: these files must be read by spawned subagents, not by the coordinator main agent.
+Phase-specific references are co-located with their owning sub-skills:
 
-- `planner_protocol_file` = `{skill_base_dir}/references/planner-protocol.md`
-  — Planner subagent instructions; pass as prompt path
-- `plan_schema_file` = `{skill_base_dir}/references/plan-schema.md`
-  — plan.json schema for Planner subagent
-- `synthesizer_protocol_file` = `{skill_base_dir}/references/synthesizer-protocol.md`
-  — Synthesizer subagent instructions; pass as prompt path
+- Planning: `task-coordinator-plan/references/planner-protocol.md`, `task-coordinator-plan/references/plan-schema.md`
+- Synthesis: `task-coordinator-synthesize/references/synthesizer-protocol.md`
