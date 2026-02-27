@@ -211,7 +211,7 @@ prior_issues = verdict.issues.map((issue, idx) => ({
   severity: issue.severity,
   file: "unknown",
   action: issue.description,
-}))
+}));
 ```
 
 increment `iteration`, continue.

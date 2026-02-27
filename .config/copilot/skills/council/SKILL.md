@@ -5,6 +5,8 @@ description: >
   through structured multi-stage deliberation.
   This skill should be used when seeking high-quality, comprehensive answers that benefit
   from multiple AI perspectives and collective deliberation.
+user-invocable: false
+disable-model-invocation: false
 ---
 
 # LLM Council
@@ -65,63 +67,110 @@ type SessionFiles = {
 ## Operations
 
 ```typespec
-op generate_responses(question: string) -> Response[] {
-  // Launch 3 parallel task() calls with @references/stage1-prompt.md
-  // output_filepath: SessionFiles.stage1 per model with current timestamp
-  task(model: ModelRoles.Member1 | ModelRoles.Member2 | ModelRoles.Member3,
-       prompt: @references/stage1-prompt.md,
-       vars: { question: question, output_filepath: output_filepath });
+op generate_responses(session_id: string, question: string) -> Response[] {
+  // Three parallel task() calls, one per model role
+  task(agent_type: "general-purpose",
+       skill: "council-respond",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member1,
+                  output_filepath: SessionFiles.stage1<Member1> });
+  task(agent_type: "general-purpose",
+       skill: "council-respond",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member2,
+                  output_filepath: SessionFiles.stage1<Member2> });
+  task(agent_type: "general-purpose",
+       skill: "council-respond",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member3,
+                  output_filepath: SessionFiles.stage1<Member3> });
   invariant: (responses.length < 2)  => abort("Council quorum not met: fewer than 2 responses received");
   invariant: (responses.length == 2) => warn("Degraded mode: 2/3 responses available; note in final output");
 }
 
-op anonymize(responses: Response[]) -> { labeled: LabeledContent; mapping: LabelMapping } {
-  // Launch 1 task() with @references/stage2-prep-prompt.md
-  // Derive: stage1_response_filepaths = responses.map(r => r.filepath)
-  // Generate: anonymized_input_filepath = SessionFiles.stage2_input, label_mapping_filepath = SessionFiles.label_map
-  task(model: ModelRoles.Prep, prompt: @references/stage2-prep-prompt.md,
-       vars: { stage1_response_filepaths: stage1_response_filepaths, anonymized_input_filepath: anonymized_input_filepath, label_mapping_filepath: label_mapping_filepath });
+op anonymize(session_id: string, question: string, responses: Response[]) -> { labeled: LabeledContent; mapping: LabelMapping } {
+  // Sequential task() call; reads stage1_response_paths, writes stage2_input and label_map
+  task(agent_type: "general-purpose",
+       skill: "council-anonymize",
+       payload: { session_id: session_id,
+                  model: ModelRoles.Prep,
+                  stage1_response_paths: responses.map(r => r.filepath),
+                  output_anonymized_path: SessionFiles.stage2_input,
+                  label_map_path: SessionFiles.label_map });
   invariant: (anonymizedInputMissing || labelMappingMissing)
-    // rankings_filepath and label_mapping_filepath are not yet available at this stage (produced later)
-    => fallback(task(model: ModelRoles.Prep, prompt: @references/fallback-synthesis-prompt.md,
-                     vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, output_filepath: output_filepath }));
+    => fallback(task(agent_type: "general-purpose",
+                     skill: "council-fallback",
+                     payload: { session_id: session_id, question: question,
+                                model: ModelRoles.Prep,
+                                stage1_response_paths: responses.map(r => r.filepath),
+                                output_fallback_path: SessionFiles.fallback }));
 }
 
-op peer_review(question: string, labeled: LabeledContent) -> Review[] {
-  // Launch 3 parallel task() calls with @references/stage2-prompt.md
-  // all reviewers read the same anonymized_input_filepath
-  task(model: ModelRoles.Member1 | ModelRoles.Member2 | ModelRoles.Member3,
-       prompt: @references/stage2-prompt.md,
-       vars: { question: question, anonymized_input_filepath: anonymized_input_filepath, output_filepath: output_filepath });
+op peer_review(session_id: string, question: string, anonymized_artifact_path: string) -> Review[] {
+  // Three parallel task() calls, one per model role; all read same anonymized_artifact_path
+  task(agent_type: "general-purpose",
+       skill: "council-review",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member1,
+                  anonymized_artifact_path: anonymized_artifact_path,
+                  output_review_path: SessionFiles.stage2<Member1> });
+  task(agent_type: "general-purpose",
+       skill: "council-review",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member2,
+                  anonymized_artifact_path: anonymized_artifact_path,
+                  output_review_path: SessionFiles.stage2<Member2> });
+  task(agent_type: "general-purpose",
+       skill: "council-review",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Member3,
+                  anonymized_artifact_path: anonymized_artifact_path,
+                  output_review_path: SessionFiles.stage2<Member3> });
   invariant: (validReviews < 2)    => warn("Reduced review coverage; continue with available");
   invariant: (oneParseFailure)     => skip_reviewer("omit failed reviewer from aggregation");
   invariant: (allParseFailures)    => passthrough("proceed to synthesize without rankings");
 }
 
-op aggregate_rankings(reviews: Review[], mapping: LabelMapping) -> RankingTable {
-  // Launch 1 task() with @references/ranking-aggregation-prompt.md
-  // Derive: stage2_review_filepaths = reviews.map(r => r.filepath)
-  // Derive: label_mapping_filepath = mapping.filepath (from SessionFiles.label_map)
-  // Generate: output_filepath = SessionFiles.rankings
-  task(model: ModelRoles.Prep, prompt: @references/ranking-aggregation-prompt.md,
-       vars: { stage2_review_filepaths: stage2_review_filepaths, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath });
+op aggregate_rankings(session_id: string, reviews: Review[], label_map_path: string) -> RankingTable {
+  // Sequential task() call; reads stage2_review_paths and label_map_path, writes rankings
+  task(agent_type: "general-purpose",
+       skill: "council-aggregate",
+       payload: { session_id: session_id,
+                  model: ModelRoles.Prep,
+                  review_artifact_paths: reviews.map(r => r.filepath),
+                  label_map_path: label_map_path,
+                  output_rankings_path: SessionFiles.rankings });
   invariant: (aggregateFails || outputFileMissing)
     => passthrough("proceed to synthesize without aggregate rankings");
 }
 
 op synthesize(
-  question:  string,
-  responses: Response[],
-  reviews:   Review[],
-  rankings?: RankingTable
+  session_id: string,
+  question:   string,
+  responses:  Response[],
+  reviews:    Review[],
+  rankings?:  RankingTable
 ) -> string {
-  // Launch 1 task() with @references/stage3-prompt.md
-  // DO NOT read intermediate files; pass only explicit filepaths
-  task(model: ModelRoles.Chairman, prompt: @references/stage3-prompt.md,
-       vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, stage2_review_filepaths: stage2_review_filepaths, rankings_filepath: rankings_filepath, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath });
+  // Sequential task() call; pass only explicit filepaths — do NOT read intermediate files
+  task(agent_type: "general-purpose",
+       skill: "council-synthesize",
+       payload: { session_id: session_id, question: question,
+                  model: ModelRoles.Chairman,
+                  anonymized_artifact_paths: [SessionFiles.stage2_input],
+                  stage1_response_paths: responses.map(r => r.filepath),
+                  stage2_review_paths: reviews.map(r => r.filepath),
+                  aggregate_ranking_path: SessionFiles.rankings,
+                  label_map_path: SessionFiles.label_map,
+                  output_synthesis_path: SessionFiles.synthesis });
   invariant: (chairmanFails)
-    => fallback(task(model: ModelRoles.Prep, prompt: @references/fallback-synthesis-prompt.md,
-                     vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, rankings_filepath: rankings_filepath, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath }));
+    => fallback(task(agent_type: "general-purpose",
+                     skill: "council-fallback",
+                     payload: { session_id: session_id, question: question,
+                                model: ModelRoles.Prep,
+                                stage1_response_paths: responses.map(r => r.filepath),
+                                aggregate_ranking_path: SessionFiles.rankings,
+                                label_map_path: SessionFiles.label_map,
+                                output_fallback_path: SessionFiles.fallback }));
 }
 ```
 

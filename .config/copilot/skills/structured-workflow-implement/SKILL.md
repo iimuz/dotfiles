@@ -177,7 +177,7 @@ Return `ImplementOutput` with `request_file` and `checkpoint_file` paths.
 All files saved to
 `~/.copilot/session-state/{session_id}/files/`:
 
-| File                              | Written by       | Read by                  |
-| --------------------------------- | ---------------- | ------------------------ |
-| `sw-implement-request-{n}.md`     | write_request    | structured-workflow main |
-| `sw-checkpoint-{n}.json`          | write_checkpoint | write_request            |
+| File                          | Written by       | Read by                  |
+| ----------------------------- | ---------------- | ------------------------ |
+| `sw-implement-request-{n}.md` | write_request    | structured-workflow main |
+| `sw-checkpoint-{n}.json`      | write_checkpoint | write_request            |
