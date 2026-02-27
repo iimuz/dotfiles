@@ -1,16 +1,23 @@
 ---
 name: structured-workflow
 description: >
-  Orchestrate Plan, Implement, Review, and Commit phases in an automated iterative loop.
-  This skill should be used when coordinating implementation-plan, code-review, and commit-staged skills without manual confirmation between phases.
+  Orchestrate Plan, Implement, Review, and Commit phases in an automated
+  iterative loop. This skill should be used when coordinating
+  implementation-plan, code-review, and commit-staged skills without
+  manual confirmation between phases.
+user-invocable: true
+disable-model-invocation: true
 ---
 
 # Structured Workflow
 
 ## Overview
 
-Runs a 5-phase development cycle (Plan → Implement → Commit → Review → Summary) with automatic iteration, looping up
-to 3 times to resolve Critical and High severity issues.
+Orchestrator that runs a 5-phase development cycle
+(Plan → Implement → Commit → Review → Summary) with automatic iteration,
+looping up to 3 times to resolve Critical and High severity issues.
+The main agent calls orchestrator skills directly via `skill()` and
+delegates non-orchestrator work to sub-agents via `task()`.
 
 ## Interface
 
@@ -25,76 +32,238 @@ type Issue = {
   severity: "Critical" | "High" | "Medium" | "Low";
   description: string;
 };
-type ReviewResult = { issues: Issue[] };
-type PlanResult = { session_state_file: string; summary: string };
+type IterationVerdict = {
+  has_critical_or_high: boolean;
+  issues: Issue[];
+};
+type PlanResult = { plan_filepath: string };
 type CommitRef = { sha: string; message: string };
 type IterationRecord = {
   iteration: number;
   commit: CommitRef;
-  review: ReviewResult;
+  verdict: IterationVerdict;
 };
 type FinalSummary = {
-  plan: PlanResult; // 元のタスクと計画内容
-  fixed: Issue[]; // 修正完了した指摘
-  unfixed: Issue[]; // 未修正の指摘
-  history: IterationRecord[]; // イテレーション履歴
-  recommendations: string[]; // 推奨事項
+  plan: PlanResult;
+  fixed: Issue[];
+  unfixed: Issue[];
+  history: IterationRecord[];
+  recommendations: string[];
 };
 
 /**
  * @invariants
- * 1. Zero_Verbosity:        imperative step text => remove
- * 2. Signature_Integrity:   all ops fully typed
- * 3. Language_Constraint:   user_facing_output => Japanese; code && commit_messages => own_conventions
- * 4. No_Phase_Confirmation: no ask_user between phases; only at final_summary and error recovery
- * 5. No_Direct_Action:    main_agent must NOT perform directly: read_files | search_code | analyze_content | investigate_intent | summarize_content | decompose_requirements | design_solutions; raw_task_input => pass_through_to_delegated_ops
- * 6. Orchestrator_Only:   main_agent => invoke_ops_and_present_results_only; all investigation | analysis | summarization => must_delegate_to_subagent
+ * 1. Zero_Verbosity:             imperative step text => remove
+ * 2. Signature_Integrity:        all ops fully typed
+ * 3. Language_Constraint:         user_facing_output => Japanese;
+ *                                 code && commit_messages =>
+ *                                 own_conventions
+ * 4. No_Phase_Confirmation:      no ask_user between phases;
+ *                                 only at final_summary and
+ *                                 error recovery
+ * 5. No_Orchestrator_Nesting:    implementation-plan | code-review
+ *                                 | task-coordinator | commit-staged
+ *                                 => must call via skill() directly;
+ *                                 must NOT wrap in task() sub-agent
+ * 6. Subagent_For_NonOrchestrator: sub-agents only for:
+ *                                 scope analysis | language detection
+ *                                 | file staging |
+ *                                 plan summary extraction |
+ *                                 final summary formatting
+ * 7. Minimal_Reads:              main_agent reads only
+ *                                 plan_filepath,
+ *                                 plan-summary.txt,
+ *                                 sw-implement-request-{n}.md,
+ *                                 workflow-summary.md
  */
 ```
 
 ## Operations
 
 ```typespec
-op plan(task: string) -> PlanResult {
-  skill(name: "implementation-plan", input: task);
-  task(agent_type: "explore", prompt: "次の計画要約を日本語で簡潔に要約してください。主要ステップと意図のみを抽出してください。", vars: { planSummary: result.summary }); // output: user-facing display
-  invariant: (plan_empty) => abort("implementation-plan produced no output");
-}
+op orchestrate(
+  task: string,
+  tdd_mode: boolean = false
+) -> FinalSummary {
+  // Phase 1: skill("implementation-plan") + explore sub-agent
+  //          for plan summary
+  // Phase 2–4: loop(max: 3) [
+  //   structured-workflow-implement sub-skill via task()
+  //   -> skill("task-coordinator")
+  //   -> stage files via task()
+  //   -> skill("commit-staged")
+  //   -> skill("code-review")
+  // ]
+  // Phase 5: explore sub-agent for final summary
 
-op implement(plan: PlanResult, iteration: number, prior_issues: Issue[], tdd_mode: boolean) -> void {
-  skill(name: "task-coordinator", input: @references/implement-prompt.md, vars: { plan, iteration, prior_issues, tdd_mode });
-  invariant: (subagent_fails) => abort("Implementation subagent failed; halt and report");
-}
-
-// Design note: commit is intentionally delegated to a subagent via task() to
-// minimize main-agent context consumption. The commit prompt and its output are
-// confined to the subagent's context window, keeping the orchestrator lean.
-op commit(iteration: number) -> CommitRef {
-  task(agent_type: "general-purpose", prompt: @references/commit-prompt.md, vars: { iteration });
-  // nothing_staged invariant lives in commit-prompt.md (single source of truth)
-  invariant: (subagent_fails) => abort("Commit subagent failed; halt and report");
-}
-
-op review(plan: PlanResult, iteration: number) -> ReviewResult {
-  skill(name: "code-review", scope: "cumulative", design_info: plan.summary);
-  task(agent_type: "explore", prompt: "次のレビュー指摘を重大度別（Critical/High/Medium/Low）に日本語で要約してください。", vars: { issues: result.issues }); // output: user-facing display
-  invariant: (review_fails)                                      => abort("code-review failed; halt and report");
-  invariant: (has_critical_or_high(issues) && iteration < 3)    => continue_loop;
-  invariant: (iteration >= 3 || !has_critical_or_high(issues))  => finalize;
-}
-
-op final_summary(plan: PlanResult, iterations: IterationRecord[]) -> FinalSummary {
-  task(agent_type: "explore", prompt: "plan（元タスクと計画内容）と全 iterations（各イテレーションのコミットとレビュー指摘）をまとめて、plan/fixed/unfixed/history/recommendations を含む日本語の最終報告形式に整形してください。", vars: { plan, iterations }); // output: user-facing display
-  ask_user(message: "ワークフロー完了。残存する指摘への対応を続けますか？");
-  invariant: (unfixed.filter("Critical" | "High").length > 0) => include(recommendations);
+  invariant: (orchestrator_in_subagent) =>
+    abort("Orchestrator skills must be called via skill()");
+  invariant: (main_reads_unneeded_files) =>
+    abort("Main agent reads only routing files");
 }
 ```
 
 ## Execution
 
-```text
-plan -> loop(max: 3)[implement -> commit -> review] -> final_summary
+Resolve `session_id` and
+`session_dir = ~/.copilot/session-state/{session_id}/files/`
+before starting the pipeline.
+
+### Phase 1: Plan
+
+```typespec
+skill(name: "implementation-plan",
+      input: { session_id, user_request: task })
 ```
 
-On error (skill failure or build break): halt immediately; report to user with context; use `ask_user` for error
-recovery only.
+Read `plan_filepath` from the skill result (`PlanResult`).
+
+Extract plan summary for later use in Phase 4:
+
+```text
+task(agent_type: "explore",
+     prompt: "Read the plan at {plan_filepath}
+              and write a 1-paragraph summary
+              (max 500 chars) capturing the design
+              intent to
+              {session_dir}/plan-summary.md")
+```
+
+Read `{session_dir}/plan-summary.md` and store as `plan_summary`.
+
+Fault: skill fails → abort with report.
+
+### Phase 2–4: Iterative Loop
+
+Set `iteration = 1`, `prior_issues = []`.
+Repeat until `!has_critical_or_high || iteration > 3`.
+
+#### Phase 2: Implement
+
+Step 1 — Scope preparation via sub-skill:
+
+```text
+task(agent_type: "general-purpose",
+     prompt: "Use the skill tool to invoke
+              'structured-workflow-implement'
+              with input:
+              { session_id: '{session_id}',
+                plan_filepath: '{plan_filepath}',
+                iteration: {iteration},
+                prior_issues: {prior_issues_json},
+                tdd_mode: {tdd_mode} }")
+```
+
+Read `{session_dir}/sw-implement-request-{iteration}.md`.
+
+Step 2 — Execute implementation:
+
+```typespec
+skill(name: "task-coordinator",
+      input: <content of
+              sw-implement-request-{iteration}.md>)
+```
+
+Fault: sub-agent or skill fails → abort with report.
+
+#### Phase 3: Commit
+
+Step 1 — Stage files via sub-agent:
+
+```text
+task(agent_type: "general-purpose",
+     prompt: "Run git status to identify
+              modified/new files related to the
+              implementation. Stage all relevant
+              files with git add. Do NOT stage
+              unrelated files. Report which files
+              were staged.")
+```
+
+Step 2 — Commit staged changes:
+
+```typespec
+skill(name: "commit-staged")
+```
+
+Read `CommitRef` from skill result.
+
+Fault: nothing staged or skill fails →
+abort with report.
+
+#### Phase 4: Review
+
+```typespec
+skill(name: "code-review",
+      input: { session_id: session_id,
+               target: "HEAD",
+               design_info: plan_summary })
+```
+
+Read `IterationVerdict` from skill result.
+
+Loop control:
+
+- `has_critical_or_high == true && iteration < 3` →
+  set `prior_issues = verdict.issues`,
+  increment `iteration`, continue loop
+- `has_critical_or_high == false || iteration >= 3` →
+  exit loop, proceed to Phase 5
+
+Fault: skill fails → abort with report.
+
+### Phase 5: Final Summary
+
+```text
+task(agent_type: "explore",
+     prompt: "plan（元タスクと計画内容）と
+              全 iterations
+              （各イテレーションのコミットと
+              レビュー指摘）をまとめて、
+              plan/fixed/unfixed/history/
+              recommendations を含む日本語の
+              最終報告形式に整形し、
+              {session_dir}/workflow-summary.md
+              に書き込んでください。
+
+              ## Input Context
+              - plan_filepath: {plan_filepath}
+              - iterations: {iterations_json}")
+```
+
+Read `{session_dir}/workflow-summary.md` and present to user.
+
+```text
+ask_user(message: "ワークフロー完了。
+                   残存する Critical/High 指摘への
+                   対応を続けますか？")
+```
+
+### Pipeline Summary
+
+```text
+phase1_plan
+  -> loop(max: 3)[
+       phase2_implement
+       -> phase3_commit
+       -> phase4_review
+     ]
+  -> phase5_final_summary
+```
+
+Loop exits when `!has_critical_or_high || iteration >= 3`.
+
+On error: halt immediately; report to user with context;
+use `ask_user` for error recovery only.
+
+## Session Files
+
+All files saved to
+`~/.copilot/session-state/{session_id}/files/`:
+
+| File                           | Written by                    | Read by            |
+| ------------------------------ | ----------------------------- | ------------------ |
+| `{purpose}-{component}-{n}.md` | implementation-plan           | Phase 1 (filepath) |
+| `plan-summary.txt`             | explore sub-agent             | Phase 1, Phase 4   |
+| `sw-implement-request-{n}.md`  | structured-workflow-implement | Phase 2            |
+| `workflow-summary.md`          | explore sub-agent             | Phase 5            |
