@@ -32,10 +32,19 @@ type Issue = {
   severity: "Critical" | "High" | "Medium" | "Low";
   description: string;
 };
+type PriorIssue = {
+  issue_id: string;
+  severity: "Critical" | "High" | "Medium" | "Low";
+  file: string;
+  action: string;
+};
 type IterationVerdict = {
   has_critical_or_high: boolean;
   issues: Issue[];
 };
+type SubAgentResponse =
+  | { ok: true; output_path: string }
+  | { ok: false; error_summary: string };
 type PlanResult = { plan_filepath: string };
 type CommitRef = { sha: string; message: string };
 type IterationRecord = {
@@ -64,7 +73,13 @@ type FinalSummary = {
  * 5. No_Orchestrator_Nesting:    implementation-plan | code-review
  *                                 | task-coordinator | commit-staged
  *                                 => must call via skill() directly;
- *                                 must NOT wrap in task() sub-agent
+ *                                 must NOT wrap in task() sub-agent.
+ *    Exception (structured-workflow only):
+ *                                 task-coordinator MAY be wrapped in task()
+ *                                 by a sub-agent that performs prepare+execute,
+ *                                 provided that sub-agent does NOT invoke
+ *                                 structured-workflow itself
+ *                                 (anti-recursion condition).
  * 6. Subagent_For_NonOrchestrator: sub-agents only for:
  *                                 scope analysis | language detection
  *                                 | file staging |
@@ -72,8 +87,7 @@ type FinalSummary = {
  *                                 final summary formatting
  * 7. Minimal_Reads:              main_agent reads only
  *                                 plan_filepath,
- *                                 plan-summary.txt,
- *                                 sw-implement-request-{n}.md,
+ *                                 plan-summary.md,
  *                                 workflow-summary.md
  */
 ```
@@ -86,12 +100,9 @@ op orchestrate(
   tdd_mode: boolean = false
 ) -> FinalSummary {
   // Phase 1: skill("implementation-plan") + explore sub-agent
-  //          for plan summary
   // Phase 2–4: loop(max: 3) [
-  //   structured-workflow-implement sub-skill via task()
-  //   -> skill("task-coordinator")
-  //   -> stage files via task()
-  //   -> skill("commit-staged")
+  //   task() sub-agent: structured-workflow-implement -> task-coordinator
+  //   -> stage files via task() -> skill("commit-staged")
   //   -> skill("code-review")
   // ]
   // Phase 5: explore sub-agent for final summary
@@ -116,9 +127,7 @@ skill(name: "implementation-plan",
       input: { session_id, user_request: task })
 ```
 
-Read `plan_filepath` from the skill result (`PlanResult`).
-
-Extract plan summary for later use in Phase 4:
+Extract `plan_filepath` from `PlanResult`. Write plan summary for Phase 4:
 
 ```text
 task(agent_type: "explore",
@@ -129,8 +138,6 @@ task(agent_type: "explore",
               {session_dir}/plan-summary.md")
 ```
 
-Read `{session_dir}/plan-summary.md` and store as `plan_summary`.
-
 Fault: skill fails → abort with report.
 
 ### Phase 2–4: Iterative Loop
@@ -140,35 +147,29 @@ Repeat until `!has_critical_or_high || iteration > 3`.
 
 #### Phase 2: Implement
 
-Step 1 — Scope preparation via sub-skill:
+Delegate scope preparation and execution to a single sub-agent.
+Sub-agent response must conform to `SubAgentResponse`; on `ok: false`, abort with `error_summary`.
 
 ```text
 task(agent_type: "general-purpose",
-     prompt: "Use the skill tool to invoke
-              'structured-workflow-implement'
-              with input:
-              { session_id: '{session_id}',
-                plan_filepath: '{plan_filepath}',
-                iteration: {iteration},
-                prior_issues: {prior_issues_json},
-                tdd_mode: {tdd_mode} }")
+     prompt: "1. Use the skill tool to invoke 'structured-workflow-implement'
+                 with input: { session_id: '{session_id}',
+                               plan_filepath: '{plan_filepath}',
+                               iteration: {iteration},
+                               prior_issues: {prior_issues_json},
+                               tdd_mode: {tdd_mode} }.
+              2. Read the request_file path from the result.
+              3. Read the content of request_file.
+              4. Use the skill tool to invoke 'task-coordinator' with that content.
+              5. Return { ok: true, output_path: '<request_file>' }
+                 or { ok: false, error_summary: '<reason>' }.")
 ```
 
-Read `{session_dir}/sw-implement-request-{iteration}.md`.
-
-Step 2 — Execute implementation:
-
-```typespec
-skill(name: "task-coordinator",
-      input: <content of
-              sw-implement-request-{iteration}.md>)
-```
-
-Fault: sub-agent or skill fails → abort with report.
+Fault: sub-agent fails → abort with report.
 
 #### Phase 3: Commit
 
-Step 1 — Stage files via sub-agent:
+Stage files via sub-agent:
 
 ```text
 task(agent_type: "general-purpose",
@@ -180,16 +181,15 @@ task(agent_type: "general-purpose",
               were staged.")
 ```
 
-Step 2 — Commit staged changes:
+Commit staged changes. Sub-agent response must conform to `SubAgentResponse`; on `ok: false`, abort with `error_summary`.
 
 ```typespec
 skill(name: "commit-staged")
 ```
 
-Read `CommitRef` from skill result.
+Extract `CommitRef` from result.
 
-Fault: nothing staged or skill fails →
-abort with report.
+Fault: nothing staged or skill fails → abort with report.
 
 #### Phase 4: Review
 
@@ -197,18 +197,25 @@ abort with report.
 skill(name: "code-review",
       input: { session_id: session_id,
                target: "HEAD",
-               design_info: plan_summary })
+               design_info_filepath: "{session_dir}/plan-summary.md" })
 ```
 
-Read `IterationVerdict` from skill result.
+Extract `IterationVerdict` from result.
 
-Loop control:
+Loop control: `has_critical_or_high && iteration < 3` →
+map `verdict.issues` → `PriorIssue[]`:
 
-- `has_critical_or_high == true && iteration < 3` →
-  set `prior_issues = verdict.issues`,
-  increment `iteration`, continue loop
-- `has_critical_or_high == false || iteration >= 3` →
-  exit loop, proceed to Phase 5
+```typescript
+prior_issues = verdict.issues.map((issue, idx) => ({
+  issue_id: `issue-${iteration}-${idx + 1}`,
+  severity: issue.severity,
+  file: "unknown",
+  action: issue.description,
+}))
+```
+
+increment `iteration`, continue.
+Otherwise → exit loop, proceed to Phase 5.
 
 Fault: skill fails → abort with report.
 
@@ -264,6 +271,6 @@ All files saved to
 | File                           | Written by                    | Read by            |
 | ------------------------------ | ----------------------------- | ------------------ |
 | `{purpose}-{component}-{n}.md` | implementation-plan           | Phase 1 (filepath) |
-| `plan-summary.txt`             | explore sub-agent             | Phase 1, Phase 4   |
+| `plan-summary.md`              | explore sub-agent             | Phase 4            |
 | `sw-implement-request-{n}.md`  | structured-workflow-implement | Phase 2            |
 | `workflow-summary.md`          | explore sub-agent             | Phase 5            |

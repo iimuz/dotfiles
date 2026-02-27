@@ -18,7 +18,7 @@ run gap analysis, conditionally run cross-checks, and consolidate into a single 
 ```typescript
 /**
  * @skill code-review
- * @input  { session_id: string; target: string; design_info?: string }
+ * @input  { session_id: string; target: string; design_info?: string; design_info_filepath?: string }
  * @output { report: ConsolidatedReview }
  *
  * target: commit SHA, branch name, PR number ("123"), "staged", or "unstaged"
@@ -36,7 +36,9 @@ type ModelName = "claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.3-codex";
 ## Operations
 
 ```typespec
-op orchestrate(session_id: string, target: string, design_info?: string) -> ConsolidatedReview {
+op orchestrate(session_id: string, target: string, design_info?: string, design_info_filepath?: string) -> ConsolidatedReview {
+  // Resolution: if design_info_filepath is provided, read file contents and use as design_info.
+  // design_info_filepath takes precedence; the resolved value is treated as design_info for all downstream stages.
   // Stage 1: Launch 12 parallel sub-skill calls (4 aspects x 3 models) + conditional design-compliance (3 models)
   // Stage 2: Run gap analysis on produced review files
   // Stage 3: Conditionally run cross-checks if gaps_found > 0
@@ -46,6 +48,7 @@ op orchestrate(session_id: string, target: string, design_info?: string) -> Cons
   invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
   invariant: (main_fetches_diff) => abort("Main agent must not run git/gh commands or fetch diffs; pass target to sub-agents");
   invariant: (design_info != null && design_info.length > 8000) => abort("design_info exceeds 8 000-character limit; summarize or trim before invoking.");
+  invariant: (design_info_filepath != null && !fileExists(design_info_filepath)) => abort("design_info_filepath points to a file that does not exist; verify the path before invoking.");
 }
 ```
 
