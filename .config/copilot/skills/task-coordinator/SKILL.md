@@ -10,11 +10,21 @@ disable-model-invocation: false
 
 # Task Coordinator
 
-## Overview
+## Role
 
 Thin orchestrator that delegates all phase work to specialized sub-skills. The coordinator
-holds only `plan.json` and the final receipt -- never worker prompts, outputs, or reference
+holds only `plan.json` and the final receipt — never worker prompts, outputs, or reference
 files. Each phase is executed by spawning an agent that invokes the corresponding sub-skill.
+
+Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke
+a skill to produce deliverables — delegate to a subagent instead. Embed explicit skill
+instructions in the worker's prompt file. If a subtask creates, modifies, or reviews a skill,
+instruct the subagent to invoke `skill-creator`.
+
+Phase-specific references reside in sub-skill directories:
+
+- Planning: `task-coordinator-plan/references/`
+- Synthesis: `task-coordinator-synthesize/references/`
 
 ## Interface
 
@@ -23,55 +33,32 @@ files. Each phase is executed by spawning an agent that invokes the correspondin
  * @skill task-coordinator
  * @input  { request: string }
  * @output { result: InlineResult | SynthesisReceipt }
+ *
+ * @param request  User's task request (required)
+ * @returns result  Final result for inline or pipeline execution
  */
 
-// Canonical type definitions -- sub-skills mirror these verbatim
-type Plan = {
-  schema_version: string;
-  run_id: string; // format: tc-{YYYYMMDD}-{HHMMSS}
-  goal: string;
-  tasks: Task[];
-  synthesis_output_file: string;
-  // run_dir = ~/.copilot/session-state/{sessionId}/files/{run_id}/
-};
+// Types: Plan, Task, AgentType, WorkerReceipt, InlineResult, SynthesisReceipt
 
-type Task = {
-  id: string;
-  agent_type: AgentType;
-  prompt_file: string;
-  output_file: string;
-  depends_on: string[];
-  description?: string;
-  model?: string;
-};
-
-type AgentType = "explore" | "task" | "general-purpose" | "code-review";
-type WorkerReceipt = {
-  status: "WORKER_OK" | "WORKER_FAIL";
-  id: string;
-  reason?: string;
-};
-type InlineResult = WorkerReceipt;
-type SynthesisReceipt = {
-  status: "SYNTHESIS_OK" | "SYNTHESIS_FAIL";
-  output_file: string;
-  summary: string;
-  /* 2-4 sentences */ reason?: string;
+type InlineResult = {
+  task_id: string;
+  output: string;
 };
 
 /**
- * @invariants (orchestrator-level)
- * 1. Zero_Verbosity:      imperative step-list instructions => remove entirely
- * 2. Signature_Integrity: every op => typed (input: T) -> U
- * 3. Minimal_Token:       prose descriptions => symbolic/typespec notation
- * 4. No_Recursion:        (subagent_spawns_subagent) => abort("Subagents must not spawn subagents")
- * 5. No_Main_Ref_Load:    (main_agent_reads_reference_file) => abort("Pass reference file paths to subagents only; do not load references in coordinator context")
- *
- * @invariants (delegated to sub-skills)
- * - Planner_First, No_Pre_Investigation => task-coordinator-plan
- * - No_Peeking, Execution_Only          => task-coordinator-execute
+ * @invariants
+ * - invariant: (imperative_step_list_detected) => abort("replace imperative steps with typed ops");
+ * - invariant: (op_lacks_typed_signature) => abort("All ops must be typed (input: T) -> U");
+ * - invariant: (prose_in_op_body) => abort("convert prose to symbolic notation");
+ * - invariant: (subagent_spawns_subagent) => abort("Subagents must not spawn subagents");
+ * - invariant: (main_agent_reads_reference_file) => abort("Pass reference paths to subagents only; do not load in coordinator context");
  */
 ```
+
+> **Severity model**
+>
+> - `abort(reason)` — halt execution immediately; do not produce partial output.
+> - `warn(reason)` — log the issue and continue in degraded mode.
 
 ## Operations
 
@@ -79,10 +66,9 @@ type SynthesisReceipt = {
 op orchestrate(request: string) -> InlineResult | SynthesisReceipt {
   // Compute run_id (tc-{YYYYMMDD}-{HHMMSS}), session_id, run_dir
   // Delegate each phase to its sub-skill via spawned agents
-
   invariant: (main_reads_intermediate_files) => abort("Main agent reads only final receipt");
-  invariant: (main_invokes_skill_tool)       => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
-  invariant: (main_explores_codebase)        => abort("Main agent must not run glob/grep/view on codebase; pass request to sub-agents");
+  invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
+  invariant: (main_explores_codebase) => abort("Main agent must not run glob/grep/view on codebase; pass request to sub-agents");
 }
 ```
 
@@ -120,8 +106,6 @@ task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-
 task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
 ```
 
-Skip this phase for inline mode.
-
 ### Phase 4: Present
 
 ```text
@@ -136,15 +120,9 @@ plan -> validate_plan -> [execute_inline | execute_pipeline] -> synthesize? -> p
 
 Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`); `?` = pipeline mode only.
 
-## Skill Integration
-
-Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke a skill to produce
-deliverables -- delegate to a subagent instead. Embed explicit skill instructions in the worker's prompt file. If a
-subtask creates, modifies, or reviews a skill, instruct the subagent to invoke `skill-creator`.
-
-## References
-
-Phase-specific references are co-located with their owning sub-skills:
-
-- Planning: `task-coordinator-plan/references/planner-protocol.md`, `task-coordinator-plan/references/plan-schema.md`
-- Synthesis: `task-coordinator-synthesize/references/synthesizer-protocol.md`
+| dependent   | prerequisite | description                                             |
+| ----------- | ------------ | ------------------------------------------------------- |
+| _(col key)_ | _(col key)_  | _(dependent requires prerequisite first)_               |
+| execute     | plan         | execute consumes validated `plan.json` from plan phase  |
+| synthesize  | execute      | synthesize unifies worker receipts (pipeline mode only) |
+| present     | synthesize   | present displays final result or synthesis receipt      |

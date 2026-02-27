@@ -107,10 +107,8 @@ op orchestrate(
   // ]
   // Phase 5: explore sub-agent for final summary
 
-  invariant: (orchestrator_in_subagent) =>
-    abort("Orchestrator skills must be called via skill()");
-  invariant: (main_reads_unneeded_files) =>
-    abort("Main agent reads only routing files");
+  invariant: (orchestrator_in_subagent) => abort("Orchestrator skills must be called via skill()");
+  invariant: (main_reads_unneeded_files) => abort("Main agent reads only routing files");
 }
 ```
 

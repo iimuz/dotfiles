@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Implementation Plan Generator
 
-## Overview
+## Role
 
 Thin orchestrator that delegates all planning work to specialized sub-skills. Launch 3 parallel
 analyses, 3 parallel plan drafts, 3 parallel cross-reviews, parallel aggregation and validation,
@@ -20,8 +20,23 @@ conflict resolution, and final synthesis into a single authoritative plan.
  * @skill implementation-plan
  * @input  { user_request: string }
  * @output { plan_filepath: string }
+ *
+ * @param user_request  The implementation task or feature request to plan (required)
+ * @returns plan_filepath  Path to the final authoritative plan file
+ */
+
+/**
+ * @invariants
+ * - invariant: (main_reads_intermediate_files) => abort("Main agent reads only final plan filepath");
+ * - invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
+ * - invariant: (main_explores_codebase) => abort("Main agent must not run glob/grep/view on codebase; pass user_request to sub-agents");
  */
 ```
+
+### Severity Model
+
+- `abort(reason)` — halt execution immediately; do not produce partial output
+- `warn(reason)` — log the issue and continue in degraded mode
 
 ## Operations
 
@@ -121,9 +136,19 @@ Return the `output_filepath` to the caller.
 stage1_analyze (3x parallel) -> stage2_draft (3x parallel) -> stage3_review (3x parallel) -> [stage4_aggregate + stage4_validate] (parallel) -> stage5_resolve -> stage6_synthesize -> return plan_filepath
 ```
 
-## Session Files
+| dependent         | prerequisite     | description                                 |
+| ----------------- | ---------------- | ------------------------------------------- |
+| _(column key)_    | _(column key)_   | _(dependent requires prerequisite first)_   |
+| stage2_draft      | stage1_analyze   | drafts consume stage 1 analysis files       |
+| stage3_review     | stage2_draft     | reviews consume stage 2 draft files         |
+| stage4_aggregate  | stage3_review    | consensus aggregates stage 3 reviews        |
+| stage4_validate   | stage2_draft     | validation reads stage 2 drafts and reviews |
+| stage5_resolve    | stage4_aggregate | resolution consumes consensus artifact      |
+| stage6_synthesize | stage5_resolve   | synthesis requires resolved conflicts       |
 
-All files are saved to `~/.copilot/session-state/{session_id}/files/`:
+## Session Artifacts
+
+All intermediate files are saved to `~/.copilot/session-state/{session_id}/files/`:
 
 | File                                      | Content                                      |
 | ----------------------------------------- | -------------------------------------------- |

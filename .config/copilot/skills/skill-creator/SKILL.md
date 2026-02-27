@@ -192,6 +192,27 @@ files in `scripts/`, `references/`, and `assets/` to demonstrate structure, but 
 person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or
 "If you need to do X"). This maintains consistency and clarity for AI consumption.
 
+**Canonical Structure:** Every SKILL.md must follow the canonical section order and invariant conventions defined in
+`.config/copilot/skills/references/canonical-skill-template.md`. Generated skills must include:
+
+1. YAML frontmatter with `name` and `description`
+2. `## Role` — one paragraph on purpose, domain, and invocation trigger
+3. `## Interface` — TypeScript `type` declarations with `@skill`, `@input`, `@output` JSDoc and `@invariants` block
+4. `## Operations` — TypeSpec `op` blocks with per-op `invariant: (condition) => action;` lines;
+5. `## Execution` — pipeline diagram and `dependent | prerequisite | description` dependency table with legend row
+6. `## Input` — field/type/required/description table
+7. `## Output` — field/type/description table
+
+**Invariant Policy:** Every skill must include at least one safety invariant per op using anonymous syntax only:
+
+```typespec
+invariant: (condition) => abort("reason");   // halts execution
+invariant: (condition) => warn("reason");    // logs and continues in degraded mode
+```
+
+Named invariants (e.g., `1. Zero_Verbosity: ...`) are forbidden in op bodies.
+Cross-op invariants belong in the `@invariants` JSDoc block inside `## Interface`.
+
 To complete SKILL.md, answer the following questions:
 
 1. What is the purpose of the skill, in a few sentences?

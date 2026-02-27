@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 # Council Respond
 
-## Overview
+## Role
 
 Wrap the Stage 1 council response generation stage: analyze the question independently, structure a
 300–600 word response, and save it to a specified output filepath.
@@ -39,9 +39,9 @@ type InputContext = {
 
 /**
  * @invariants
- * 1. Zero_Verbosity:      no imperative step text in op bodies
- * 2. Signature_Integrity: all ops fully typed
- * 3. Independence:        response must not reference other AI models or council processes
+ * - invariant: (imperativeStepTextInOpBody) => abort("No imperative step text in op bodies");
+ * - invariant: (!allOpsFullyTyped) => abort("All ops must be fully typed");
+ * - invariant: (referencesOtherModels || referencesCouncilProcess) => abort("Response must not reference other AI models or council processes");
  */
 ```
 
@@ -73,13 +73,27 @@ op save_response(content: string, output_filepath: string) -> void {
 analyze_question -> structure_response -> save_response
 ```
 
+| dependent          | prerequisite       | description                                         |
+| ------------------ | ------------------ | --------------------------------------------------- |
+| _(column key)_     | _(column key)_     | _(dependent requires prerequisite first)_           |
+| structure_response | analyze_question   | structure_response formats the analysis output      |
+| save_response      | structure_response | save_response writes the formatted response to file |
+
 Execute as an expert council member providing an independent, authoritative opinion.
 Use `InputContext.output_filepath` as the destination for `save_response`.
 Return the saved filepath upon completion.
 
-## Input Context
+## Input
 
-Role: You are an expert council member providing an independent, authoritative opinion.
+| Field             | Type     | Required | Description                                |
+| ----------------- | -------- | -------- | ------------------------------------------ |
+| `session_id`      | `string` | yes      | Unique identifier for this council session |
+| `question`        | `string` | yes      | The question to answer                     |
+| `model`           | `string` | yes      | Model name assigned to this council member |
+| `output_filepath` | `string` | yes      | Absolute path for saving the response      |
 
-Question: {{question}}
-Output filepath: {{output_filepath}}
+## Output
+
+| Field            | Type     | Description                                      |
+| ---------------- | -------- | ------------------------------------------------ |
+| `saved_filepath` | `string` | Absolute path of the saved Stage 1 response file |

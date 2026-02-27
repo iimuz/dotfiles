@@ -21,15 +21,14 @@ subagents, either as a single inline execution or as batched parallel pipeline w
  * @output { result: InlineResult | WorkerReceipt[] }
  */
 
-// Mirrored from task-coordinator (canonical source)
-type Plan = {
-  schema_version: string;
-  run_id: string;
-  goal: string;
-  tasks: Task[];
-  synthesis_output_file: string;
+// Types: Plan, Task, AgentType, WorkerReceipt, InlineResult
+
+type InlineResult = {
+  task_id: string;
+  output: string;
 };
 
+type AgentType = "explore" | "task" | "general-purpose" | "code-review";
 type Task = {
   id: string;
   agent_type: AgentType;
@@ -39,34 +38,55 @@ type Task = {
   description?: string;
   model?: string;
 };
-
-type AgentType = "explore" | "task" | "general-purpose" | "code-review";
+type Plan = {
+  schema_version: string;
+  run_id: string;
+  goal: string;
+  tasks: Task[];
+  synthesis_output_file: string;
+};
 type WorkerReceipt = {
   status: "WORKER_OK" | "WORKER_FAIL";
   id: string;
   reason?: string;
 };
-type InlineResult = WorkerReceipt;
+type SynthesisReceipt = {
+  status: "SYNTHESIS_OK" | "SYNTHESIS_FAIL";
+  output_file: string;
+  summary: string;
+  reason?: string;
+};
+
+/**
+ * @invariants
+ * - invariant: (subagent_prompt_is_advisory_not_actionable) => warn("rewrite prompt as actionable directive before executing");
+ * - invariant: (reads_T_n_prompt or reads_T_n_output) => abort("No peeking: restart strict mode");
+ */
 ```
+
+> **Severity model**
+>
+> - `abort(reason)` — halt execution immediately; do not produce partial output.
+> - `warn(reason)` — log the issue and continue in degraded mode.
 
 ## Operations
 
 ```typespec
 op execute_inline(p: Plan) -> InlineResult {
   // Exactly 1 task: spawn worker passing prompt_file path; receive result inline; skip synthesize
-  invariant: Execution_Only     => (subagent_prompt_is_advisory_not_actionable) => convert_to_execution_directive;
-  invariant: No_Peeking         => (reads_T_n_prompt or reads_T_n_output) => CONTRACT_VIOLATION_NO_PEEKING("abort; restart strict mode");
-  invariant: (worker_fails)       => retry_once(p.tasks[0].id);
+  invariant: (subagent_prompt_is_advisory_not_actionable) => warn("rewrite prompt as actionable directive before executing");
+  invariant: (reads_T_n_prompt or reads_T_n_output) => abort("No peeking: restart strict mode");
+  invariant: (worker_fails) => warn("retry task once before aborting");
   invariant: (worker_fails_again) => abort("Worker failed after retry");
 }
 
 op execute_pipeline(p: Plan) -> WorkerReceipt[] {
   // 2+ tasks: spawn independent workers in parallel (cap 5-8); batch waves per depends_on
-  invariant: Execution_Only     => (subagent_prompt_is_advisory_not_actionable) => convert_to_execution_directive;
-  invariant: No_Peeking         => (reads_T_n_prompt or reads_T_n_output) => CONTRACT_VIOLATION_NO_PEEKING("abort; restart strict mode");
-  invariant: (worker_fails(receipt))       => retry_once(receipt.id);
-  invariant: (worker_fails_again(receipt)) => record(WORKER_FAIL, receipt.id, "continue; preserve completed results");
-  invariant: (tasks_length > 8)            => batch_in_waves("respecting depends_on order");
+  invariant: (subagent_prompt_is_advisory_not_actionable) => warn("rewrite prompt as actionable directive before executing");
+  invariant: (reads_T_n_prompt or reads_T_n_output) => abort("No peeking: restart strict mode");
+  invariant: (worker_fails(receipt)) => warn("retry receipt once on first failure");
+  invariant: (worker_fails_again(receipt)) => warn("Worker failed after retry; continue preserving completed results");
+  invariant: (tasks_length > 8) => warn("batch tasks in waves respecting depends_on order");
 }
 ```
 
@@ -78,7 +98,13 @@ op execute_pipeline(p: Plan) -> WorkerReceipt[] {
 
 Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`).
 
-## Agent Selection
+| dependent        | prerequisite | description                                               |
+| ---------------- | ------------ | --------------------------------------------------------- |
+| _(col key)_      | _(col key)_  | _(dependent requires prerequisite first)_                 |
+| execute_inline   | plan:Plan    | inline path requires pre-validated Plan from plan skill   |
+| execute_pipeline | plan:Plan    | pipeline path requires pre-validated Plan from plan skill |
+
+### Agent Selection
 
 Match subtasks to the lightest capable agent:
 
@@ -90,5 +116,18 @@ Match subtasks to the lightest capable agent:
 | Review without modifying code          | `code-review`         |
 | Domain-specific work                   | `<custom-agent-name>` |
 
-Model guidance: `claude-opus-4.6` -- nuanced reasoning; `gpt-5.3-codex` -- structured output, tool-heavy workflows;
-`gemini-3-pro-preview` -- broad knowledge synthesis. Prefer the same model within a multi-step subtask.
+Model guidance: `claude-opus-4.6` — nuanced reasoning; `gpt-5.3-codex` — structured output,
+tool-heavy workflows; `gemini-3-pro-preview` — broad knowledge synthesis. Prefer the same
+model within a multi-step subtask.
+
+## Input
+
+| Field  | Type   | Required | Description              |
+| ------ | ------ | -------- | ------------------------ |
+| `plan` | `Plan` | yes      | Validated execution plan |
+
+## Output
+
+| Field    | Type                              | Description                                         |
+| -------- | --------------------------------- | --------------------------------------------------- |
+| `result` | `InlineResult \| WorkerReceipt[]` | Inline receipt (1 task) or receipt array (2+ tasks) |

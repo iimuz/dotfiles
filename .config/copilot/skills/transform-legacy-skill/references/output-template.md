@@ -1,6 +1,7 @@
-# Output Template: Spec-First Hybrid (Hybrid-3) Skill Format
+# Output Template: Canonical Skill Format
 
 Canonical structure for transformed skills. Every output must conform to this template.
+Reference: `.config/copilot/skills/references/canonical-skill-template.md`
 
 ---
 
@@ -9,61 +10,80 @@ Canonical structure for transformed skills. Every output must conform to this te
 ```text
 ---
 name: <skill-name>
-description: <goal-only description, 1-2 sentences>
+description: <One-sentence description. Use third-person: "This skill should be used when...">
 ---
 
 # <Skill Title>
 
-## Overview
+## Role
 
-<1-2 sentences: what this skill enables>
+<One paragraph describing the skill's purpose, domain, and when to invoke it.>
 
 ## Interface
 
 \`\`\`typescript
 /**
  * @skill <skill-name>
- * @input  { <input_param>: <Type> }
- * @output { <output_param>: <Type> }
+ * @input  { <input_param>: <InputType> }
+ * @output { <output_param>: <OutputType> }
  */
 
-type <PrimaryEntity> = {
+type <InputType> = {
   <field>: <Type>;
-  // ...
 };
 
-type MappingRegistry = {
-  // Include only if skill has model configurations
-  "<legacy-model>": "<current-model>";
+type <OutputType> = {
+  <field>: <Type>;
 };
 
 /**
  * @invariants
- * 1. Zero_Verbosity:      imperative sentences => remove
- * 2. Signature_Integrity: every op => typed (input: T) -> U
- * 3. Minimal_Token:       prose => symbolic notation
+ * - invariant: (<condition>) => abort("<reason>");   // halts execution
+ * - invariant: (<condition>) => warn("<reason>");    // logs and continues in degraded mode
  */
 \`\`\`
+
+> **Severity model**
+> - `abort(reason)` — halt execution immediately; do not produce partial output.
+> - `warn(reason)` — log the issue and continue in degraded mode.
 
 ## Operations
 
 \`\`\`typespec
-op <operation_name>(<param>: <Type>) -> <ReturnType> {
-  // Single-line description of computation
-  invariant: (<condition>) => <action>;
+op <step_one>(<param>: <Type>) -> <IntermediateType> {
+  // Brief description of what this op does
+  invariant: (<precondition_missing>) => abort("<Required precondition not met>");
+  invariant: (<recoverable_issue>) => warn("<Proceeding with defaults>");
 }
-// ... (one op per logical transformation stage)
+
+op <step_two>(intermediate: <IntermediateType>) -> <OutputType> {
+  // Brief description of what this op does
+  invariant: (<fatal_condition>) => abort("<Cannot produce output>");
+}
 \`\`\`
 
 ## Execution
 
-<Pipeline expressed in one line>:
-\`\`\`
-op1 -> op2 -> [op3 + op4] -> op5
+\`\`\`text
+<step_one> -> <step_two>
 \`\`\`
 
-<One sentence describing how to present output.>
-Reference: [\`references/<resource>.md\`](references/<resource>.md)
+| dependent       | prerequisite    | description                               |
+|-----------------|-----------------|-------------------------------------------|
+| *(column key)*  | *(column key)*  | *(dependent requires prerequisite first)* |
+| <step_two>      | <step_one>      | <step_two> consumes output of <step_one>  |
+
+## Input
+
+| Field             | Type           | Required | Description                   |
+|-------------------|----------------|----------|-------------------------------|
+| `<input_param>`   | `<InputType>`  | yes      | <What this input represents>  |
+
+## Output
+
+| Field              | Type            | Description                     |
+|--------------------|-----------------|---------------------------------|
+| `<output_param>`   | `<OutputType>`  | <What this output represents>   |
 ```
 
 ---
@@ -239,11 +259,13 @@ Provide your independent analysis. Do not reference other models or prior answer
 ## Notes on Format Compliance
 
 1. **YAML frontmatter is mandatory** — `name` and `description` fields required for skill discovery.
-2. **Interface block uses TypeScript syntax** — typed via `type` declarations, not `interface`.
-3. **Operations block uses TypeSpec-flavor** — `op name(params) -> ReturnType { invariants }`.
-4. **Invariants are per-op** — place each `invariant:` line in the op that owns the condition.
-5. **Cross-op invariants** belong in the `@invariants` JSDoc comment in the Interface block.
-6. **Reference stubs** — every `@references/file.md` citation requires a corresponding file.
-7. **Reference file format** — Reference files containing subagent prompts must use Hybrid-3 format. Both outer
-   scaffolding and inner prompt content use op/invariant notation. Plain-text code fence wrappers around entire
-   templates are prohibited.
+2. **Section order is canonical** — `Role`, `Interface`, `Operations`, `Execution`, `Input`, `Output` in that order.
+3. **Interface block uses TypeScript syntax** — typed via `type` declarations, not `interface`.
+4. **Operations block uses TypeSpec-flavor** — `op name(params) -> ReturnType { invariants }`.
+5. **Invariants are anonymous only** — `invariant: (condition) => action;` syntax; no numbered named invariants in op bodies.
+6. **Severity model** — only `abort(reason)` (halt) and `warn(reason)` (degraded continue) are permitted.
+7. **Invariants are per-op** — place each `invariant:` line in the op that owns the condition.
+8. **Cross-op invariants** belong in the `@invariants` JSDoc comment in the Interface block.
+9. **Dependency table required** — `## Execution` must include a `dependent | prerequisite | description` table with legend row and example row.
+10. **Reference stubs** — every `@references/file.md` citation requires a corresponding file.
+11. **Reference file format** — Reference files containing subagent prompts must use canonical format. Both outer scaffolding and inner prompt content use op/invariant notation.
