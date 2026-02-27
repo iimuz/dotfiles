@@ -1,3 +1,7 @@
+---
+applyTo: ".github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/**/*.md,docs/debt/**/*.md,docs/design/**/*.md,docs/plans/**/*.md"
+---
+
 # DOC_STANDARDS
 
 ## SYNTAX_RULES
@@ -12,11 +16,11 @@
 
 ## NAMING_CONVENTIONS
 
-- Case: kebab-case
-- Extension: .md
-- Separator: hyphen (-)
-- Keys: PascalCase (e.g., PackageManager, LoadingOrder, LastRun).
-  Acronyms lowercase after first letter (macOS → Macos, ARM64 → Arm64, WSL → Wsl).
+- Headers & Keys: Title Case with spaces (e.g., Syntax Rules, Package Manager, Last Run).
+- Values: Sentence case or lowercase. Use exact match only for code variables.
+- Acronyms: Standard capitalization (e.g., macOS, ARM64, WSL).
+- File Names: kebab-case with .md extension.
+- Separator: Spaces for document text, hyphens for file names.
 
 ## FILE_REGISTRY
 
@@ -24,22 +28,14 @@
   - Pattern: [YYYY-MM-DD]-[action].md
   - Template: docs/templates/plan.md
   - Example: 2024-03-20-add-login.md
-
 - Type: ADR
   - Pattern: [000-Index]-[slug].md
   - Template: docs/templates/adr.md
   - Example: 001-init-stack.md
-
 - Type: Design
   - Pattern: [topic].md
   - Template: N/A
   - Example: core-beliefs.md
-
-- Type: Quality
-  - Pattern: quality.md
-  - Template: docs/templates/quality.md
-  - Scope: Singleton (Update only)
-
 - Type: Debt
   - Pattern: [slug].md
   - Template: docs/templates/debt.md

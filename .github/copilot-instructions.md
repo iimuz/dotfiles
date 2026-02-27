@@ -22,7 +22,8 @@
   Do not invent unsolicited directory structures.
 - CommandDiscipline: Use only available `mise run` tasks listed in TOOLS.
 - VerificationDiscipline: Run relevant existing checks after modifications.
-- DocStandards: Follow `docs/design/doc-standards.md` for all documentation changes.
+- EvolutionDiscipline: When correcting a user-reported mistake, fix the issue AND update
+  `.github/instructions/*.md` or `docs/design/*.md` or `docs/adr/*.md` to prevent recurrence.
 
 ## TOOLS
 
@@ -35,4 +36,6 @@
 - Plan: Define minimal edits and map each edit to a verified file path.
 - Execute: Implement focused changes.
 - Verify: Run `mise run lint` and `mise run format` for changed code/docs when applicable.
+- Evolve (Conditional): If triggered by a user-reported mistake, extract the missing
+  constraint and execute EvolutionDiscipline.
 - Finalize: Confirm outputs match requested scope and repository state is clean.

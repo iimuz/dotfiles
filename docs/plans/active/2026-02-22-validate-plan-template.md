@@ -12,7 +12,6 @@ status: TODO
 ## REF
 
 - `docs/templates/plan.md`
-- `docs/design/doc-standards.md`
 - `lefthook.yml`
 - `.mise/tasks/lint`
 
