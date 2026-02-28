@@ -2,9 +2,9 @@
 applyTo: ".github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/**/*.md,docs/debt/**/*.md,docs/design/**/*.md,docs/plans/**/*.md"
 ---
 
-# DOC_STANDARDS
+# Doc Standards
 
-## SYNTAX_RULES
+## Syntax Rules
 
 - Format: Markdown Headers (##) + Key-Value pairs.
 - Style: Plain text only. NO bold (\*_), NO italics (_).
@@ -12,9 +12,9 @@ applyTo: ".github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/
 - Newline: Strict Bullet List or Header separation. No free-text paragraphs.
 - Diagram: Use Mermaid code blocks within Design files.
 - Model: Use TypeScript Interface code blocks within Design files.
-- UpdatePolicy: Overwrite existing state. Append logs only if specified.
+- Update Policy: Overwrite existing state. Append logs only if specified.
 
-## NAMING_CONVENTIONS
+## Naming Conventions
 
 - Headers & Keys: Title Case with spaces (e.g., Syntax Rules, Package Manager, Last Run).
 - Values: Sentence case or lowercase. Use exact match only for code variables.
@@ -22,7 +22,7 @@ applyTo: ".github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/
 - File Names: kebab-case with .md extension.
 - Separator: Spaces for document text, hyphens for file names.
 
-## FILE_REGISTRY
+## File Registry
 
 - Type: Plan
   - Pattern: [YYYY-MM-DD]-[action].md

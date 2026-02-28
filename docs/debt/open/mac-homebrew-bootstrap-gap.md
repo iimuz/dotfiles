@@ -15,7 +15,7 @@
 - Detail: The documented Homebrew-first provisioning model does not match script behavior where
   brew bundle execution is incomplete or absent.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Setup scripts execute the documented Homebrew bootstrap flow or design documentation
   is updated to match intended behavior.

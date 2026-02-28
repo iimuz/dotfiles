@@ -4,26 +4,26 @@ status: DONE
 
 # TASK: Fix npm.sh startup noise and npm unavailability
 
-## GOAL
+## Goal
 
 - Goal: `.config/node/npm.sh` のシェル起動時に出力される冗長な `script_path=...` を抑止し、修正に伴う `npm: command not found` を解消する。
 
-## REF
+## Ref
 
 - `.config/node/npm.sh`
 - `.config/node/npmrc`
 - `.config/node/nvm-settings.sh`
 
-## STEPS
+## Steps
 
 - [x] Step 1: `_change_default_npm_directory` 内の冗長な `local script_path` 再宣言（旧38行目）を削除する。
 - [x] Step 2: `export PATH=$(npm config get prefix)/bin:$PATH` を `export PATH=${NPM_USER_PREFIX}/bin:$PATH` に置き換える。
 
-## VERIFY
+## Verify
 
 - Verify: 新しいシェルを起動したとき `script_path=...` が出力されない、かつ `command -v npm` が正常にパスを返す。
 
-## SCRATCHPAD
+## Scratchpad
 
 - 根本原因 (issue 1): zsh では `local varname`（値なし）を既にローカル宣言済みの変数に再適用すると、現在値を
   `varname=value` の形式で出力したうえで空にリセットする。旧38行目の `local script_path` がこれに該当し、

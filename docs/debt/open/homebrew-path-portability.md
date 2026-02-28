@@ -15,7 +15,7 @@
   non-default Homebrew locations. This prevents brew bundle behavior in supported
   non-Apple-Silicon environments.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Brew detection is path-agnostic and the bundle flow works when `brew` is available
   regardless of installation prefix.

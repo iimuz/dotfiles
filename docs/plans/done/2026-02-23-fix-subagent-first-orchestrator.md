@@ -4,17 +4,17 @@ status: DONE
 
 # TASK: Fix subagent-first Orchestrator Behavior
 
-## GOAL
+## Goal
 
 - Goal: `subagent-first` スキルが `structured-workflow` などのオーケストレータースキルと
   共存した際に、メインエージェントがパイプラインを正しくフェーズ単位で実行するよう修正する。
 
-## REF
+## Ref
 
 - `.config/copilot/skills/subagent-first/SKILL.md`
 - `.config/copilot/skills/structured-workflow/SKILL.md`
 
-## STEPS
+## Steps
 
 - [x] Step 1: 問題を分析する — `DelegationMandated` invariant がワークフロー全体を単一
       サブエージェントに委譲する誤った動作を引き起こしていることを確認
@@ -29,11 +29,11 @@ status: DONE
 - [x] Step 7: レビューで検出した Critical issue を修正する — classify コメントの評価順序
       記述とルーティングテーブルの op/agent_type 混在を解消
 
-## VERIFY
+## Verify
 
 - Verify: `mise run lint` が `Summary: 0 error(s)` で終了すること。
 
-## SCRATCHPAD
+## Scratchpad
 
 - コミット 1: `8865f25` — refactor: add OrchestratorPreservation invariant to
   subagent-first skill

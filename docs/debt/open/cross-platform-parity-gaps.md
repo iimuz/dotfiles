@@ -27,7 +27,7 @@
 - Gap: rc-settings.sh error handling - settings files are sourced with bare . and no error handling;
   a failure in any sourced file aborts the interactive session
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Each listed parity gap is either normalized across platforms or explicitly documented
   as an intentional platform-specific difference.

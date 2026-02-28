@@ -13,7 +13,7 @@
 - Detail: The function changes directory into a computed log path but does not create missing
   directories first, causing command failure when the path has not been created yet.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: `log_tee` creates required destination directories before entering or writing,
   and succeeds on a clean first run.

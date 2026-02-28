@@ -18,7 +18,7 @@
 - Detail: The helper checks only `[ -e "$dst" ]`. For dangling symlinks this returns false,
   so `ln -s` is attempted on an already-linked path and exits with error under `set -eu`.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Destination checks treat both existing files and existing symlinks as occupied,
   and repeated setup runs do not fail on broken symlink paths.

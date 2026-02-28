@@ -6,10 +6,10 @@ applyTo: "setup_*.sh,update_*.sh"
 
 ## Shared Functions
 
-- Description: All setup scripts define identical `create_symlink()` and `set_bashrc()` helper functions.
+- Constraint: All setup scripts define identical `create_symlink()` and `set_bashrc()` helper functions.
   Do not change their signatures.
-- `create_symlink src dst` - Creates symlink only if destination does not exist. Creates parent directories.
-- `set_bashrc filename` - Appends conditional source line to ~/.bashrc or ~/.zshrc. Skips if already present.
+- Function: `create_symlink src dst` - Creates symlink only if destination does not exist. Creates parent directories.
+- Function: `set_bashrc filename` - Appends conditional source line to ~/.bashrc or ~/.zshrc. Skips if already present.
 
 ## Tool Detection
 
@@ -31,20 +31,21 @@ else
 fi
 ```
 
-## Adding a New Tool
+## New Tool Workflow
 
-- Create `.config/{tool}/` directory with a settings file
-- Add tool detection and symlink creation to the appropriate setup script
-- Add settings loading to `.config/rc-settings.sh` in the correct loading order
-- Update relevant Brewfile or package lists
+- Step 1: Create `.config/{tool}/` directory with a settings file.
+- Step 2: Add tool detection and symlink creation to the appropriate setup script.
+- Step 3: Add settings loading to `.config/rc-settings.sh` in the correct loading order.
+- Step 4: Update relevant Brewfile or package lists.
 
-## Platform-Specific Patterns
+## Platform Patterns
 
-- setup_mac.sh: Homebrew with `brew bundle`
-- setup_aarch64.sh, setup_wsl_ubuntu.sh: apt with manual installs via curl/wget
-- setup_codespaces.sh: Homebrew for Codespaces
-- setup_proot_arm64.sh: apt with custom install functions
-- setup_termux.sh: `pkg install`
+- macOS: Homebrew with `brew bundle` (setup_mac.sh).
+- Linux ARM64: apt with manual installs via curl/wget (setup_aarch64.sh).
+- WSL Ubuntu: apt with manual installs via curl/wget (setup_wsl_ubuntu.sh).
+- Codespaces: Homebrew for Codespaces (setup_codespaces.sh).
+- Proot ARM64: apt with custom install functions (setup_proot_arm64.sh).
+- Termux: `pkg install` (setup_termux.sh).
 
 ## Script Conventions
 

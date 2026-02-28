@@ -15,6 +15,6 @@
   This creates an unrelated dependency and prevents expected Neovim setup when `nvim` exists but
   Go is not installed.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: The guard checks `nvim` availability directly and Neovim setup runs whenever `nvim` is installed.

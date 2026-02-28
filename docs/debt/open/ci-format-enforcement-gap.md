@@ -14,6 +14,6 @@
 - Detail: Local hooks include formatting and linting, but CI runs only lint. This allows formatting
   drift when hooks are bypassed.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: CI includes formatting validation equivalent to local policy and rejects unformatted changes.
