@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [],
+    "sessionEnd": [],
+    "userPromptSubmitted": [],
+    "preToolUse": [],
+    "postToolUse": [],
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "mise run format",
+        "powershell": "mise run format",
+        "cwd": ".",
+        "timeoutSec": 30
+      }
+    ],
+    "subagentStop": [],
+    "errorOccurred": []
+  }
+}
