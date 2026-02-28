@@ -2,7 +2,7 @@
 name: task-coordinator-execute
 description: Execute plan tasks via inline single-worker or parallel pipeline dispatch.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Task Coordinator: Execute

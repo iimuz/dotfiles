@@ -2,7 +2,7 @@
 name: code-review-performance
 description: Performance and efficiency review.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Code Review: Performance

@@ -6,7 +6,7 @@ description: >
   implementation-plan, code-review, and commit-staged skills without
   manual confirmation between phases.
 user-invocable: true
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Structured Workflow

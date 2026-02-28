@@ -2,7 +2,7 @@
 name: implementation-plan-analyze
 description: Single-perspective codebase analysis.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan: Analyze

@@ -2,7 +2,7 @@
 name: implementation-plan
 description: Multi-model parallel implementation plan orchestrator.
 user-invocable: true
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan Generator

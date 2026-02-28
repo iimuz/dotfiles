@@ -2,7 +2,7 @@
 name: task-coordinator-plan
 description: Decompose a request into a validated execution plan via Planner subagent.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Task Coordinator: Plan

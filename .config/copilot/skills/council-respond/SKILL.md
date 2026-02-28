@@ -4,7 +4,7 @@ description: >
   Generate a single independent council member response to a question.
   This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Council Respond

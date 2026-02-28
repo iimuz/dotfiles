@@ -2,7 +2,7 @@
 name: code-review-best-practices
 description: Coding standards and conventions review.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Code Review: Best Practices

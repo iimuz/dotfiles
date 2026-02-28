@@ -2,7 +2,7 @@
 name: council-fallback
 description: Fallback synthesis sub-skill for the LLM Council. Produces a valid Council Verdict and Fallback Synthesis output when upstream artifacts (rankings, label mapping, or chairman synthesis) are missing or failed. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Council Fallback

@@ -2,7 +2,7 @@
 name: council-synthesize
 description: Chairman synthesis sub-skill for the LLM Council. Reads Stage 1 responses and Stage 3 peer evaluations, resolves conflicts, and writes a single definitive Council Verdict + Chairman's Synthesis document. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # council-synthesize

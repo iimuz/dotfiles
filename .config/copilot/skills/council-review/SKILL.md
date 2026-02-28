@@ -2,7 +2,7 @@
 name: council-review
 description: Peer-review and ranking sub-skill for the council workflow. Evaluates anonymized model responses against a question and emits a ranked evaluation. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Council Review

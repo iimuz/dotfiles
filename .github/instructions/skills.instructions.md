@@ -53,6 +53,14 @@ allowed-tools: Bash(git:*) Read # Optional (space-separated)
   - Note: The Markdown body is only loaded after the Skill is triggered, so writing "When to use this skill"
     in the body is meaningless.
 
+### Directory Scope Constraint
+
+- Rule: A skill may only reference files inside its own `{skill-name}/` directory tree.
+- Rule: NEVER create shared subdirectories directly under `.config/copilot/skills/`;
+  only `{skill-name}/` directories are valid children—files outside a skill directory
+  are silently inaccessible.
+- Rule: Shared reference material must be duplicated into each skill's own `references/` subdirectory.
+
 ## Best Practices and Design Guidelines
 
 - Commit to Progressive Disclosure

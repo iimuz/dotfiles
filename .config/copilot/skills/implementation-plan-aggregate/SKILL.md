@@ -2,7 +2,7 @@
 name: implementation-plan-aggregate
 description: Aggregate consensus and enumerate conflicts.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan: Aggregate Consensus

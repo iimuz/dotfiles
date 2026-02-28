@@ -2,7 +2,7 @@
 name: task-coordinator-synthesize
 description: Synthesize pipeline worker outputs into a unified result via Synthesizer subagent.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Task Coordinator: Synthesize

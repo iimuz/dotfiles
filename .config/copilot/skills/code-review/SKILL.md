@@ -2,7 +2,7 @@
 name: code-review
 description: Multi-model parallel code review orchestrator.
 user-invocable: true
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Code Review

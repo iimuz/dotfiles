@@ -2,7 +2,7 @@
 name: implementation-plan-draft
 description: Draft one implementation plan from analyses.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan: Draft

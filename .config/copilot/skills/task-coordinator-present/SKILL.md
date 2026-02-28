@@ -2,7 +2,7 @@
 name: task-coordinator-present
 description: Present execution results and manage run dashboard.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Task Coordinator: Present

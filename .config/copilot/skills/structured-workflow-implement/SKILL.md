@@ -5,7 +5,7 @@ description: >
   analyzing scope, detecting language, and writing a
   request file. Sub-skill of structured-workflow.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Structured Workflow Implement

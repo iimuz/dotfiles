@@ -2,7 +2,7 @@
 name: implementation-plan-validate
 description: Validate unique insights for feasibility.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan: Validate Insights

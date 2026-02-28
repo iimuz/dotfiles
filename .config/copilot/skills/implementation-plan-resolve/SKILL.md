@@ -2,7 +2,7 @@
 name: implementation-plan-resolve
 description: Resolve conflicts from consensus.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan: Resolve Conflicts
