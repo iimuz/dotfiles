@@ -98,3 +98,16 @@ Structure:
 
 [Insight, source model, reason for rejection]
 ```
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }
+- readArtifacts → identifyUniqueInsights → assessFeasibility → writeInsights all succeed
+- Output: { insights_file: "~/.copilot/session-state/s1/files/step3c-insights-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }; only 1 artifact found
+- fault(artifactFilesCount < 2) => fallback: none; abort

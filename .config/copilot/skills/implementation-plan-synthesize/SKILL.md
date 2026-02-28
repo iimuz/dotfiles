@@ -138,3 +138,16 @@ The final plan must include all 9 sections from the template:
 7. **Rollout & Monitoring**: Deployment phases, monitoring metrics, rollback procedure
 8. **Documentation & Communication**: Documentation updates, communication plan, training
 9. **Appendices**: Glossary, References, Change Log
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", user_request: "Add auth", timestamp: "20260228", output_filepath: "~/.../auth-api-1.md" }
+- discoverInputFiles → synthesizePlan → savePlan all succeed; all 9 template sections populated
+- Output: { plan_file: "~/.copilot/session-state/s1/files/auth-api-1.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", ..., output_filepath: "~/.../auth-api-1.md" }; only 1 draft found
+- fault(step2DraftsCount < 2) => fallback: none; abort

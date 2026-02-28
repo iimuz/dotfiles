@@ -109,3 +109,16 @@ Output path: `~/.copilot/session-state/{session_id}/files/step3b-resolutions-{ti
 ```
 
 Numbered list matches conflicts in step3a. Each entry contains: conflict, resolution, rationale, trade-offs.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }
+- readConsensus → resolveConflicts (3 conflicts) → writeResolutions all succeed
+- Output: { resolutions_file: "~/.copilot/session-state/s1/files/step3b-resolutions-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }; step3a-consensus file not found
+- fault(consensusFileMissing) => fallback: none; abort

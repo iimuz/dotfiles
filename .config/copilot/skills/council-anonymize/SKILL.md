@@ -1,9 +1,6 @@
 ---
 name: council-anonymize
-description: >
-  Anonymization sub-skill for the LLM Council workflow. Strips model identity from Stage 1
-  responses and emits a deterministic alphabetical label map (Response A/B/C to model name).
-  This skill should be used only by the council orchestrator — never invoked directly by users.
+description: Strip model identity from Stage 1 responses and emit a deterministic alphabetical label map.
 user-invocable: false
 disable-model-invocation: false
 ---

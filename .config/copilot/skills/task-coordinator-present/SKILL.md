@@ -85,3 +85,16 @@ present
 | Field | Type   | Description                                      |
 | ----- | ------ | ------------------------------------------------ |
 | —     | `void` | No output; presents to user and writes dashboard |
+
+## Examples
+
+### Happy Path
+
+- Input: { result: SynthesisReceipt { status: "SYNTHESIS_OK", output_file: ".../synthesis.md", summary: "..." } }
+- present shows summary to user; dashboard.md created/updated; output_files NOT enumerated unless requested
+- Output: void; dashboard.md updated
+
+### Failure Path
+
+- Input: { result: SynthesisReceipt { status: "SYNTHESIS_FAIL", ... } }
+- present shows failure summary to user; fault(present_fails) => fallback: none; abort

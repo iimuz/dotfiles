@@ -133,3 +133,17 @@ External dependencies. Impact radius of proposed changes.]
 [Technical risks. Resource constraints. Security considerations.
 Probability and impact for each identified risk.]
 ```
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", user_request: "Add auth", timestamp: "20260228" }
+- exploreCodebase → analyzeRequirements → assessFeasibility → mapDependencies → assessRisks → writeAnalysis all succeed
+- Output: { analysis_file: "~/.copilot/session-state/s1/files/step1-claude-opus-4.6-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", user_request: "", timestamp: "20260228" }
+- analyzeRequirements: userRequestEmpty triggered
+- fault(userRequestEmpty) => fallback: none; abort

@@ -131,3 +131,16 @@ model within a multi-step subtask.
 | Field    | Type                              | Description                                         |
 | -------- | --------------------------------- | --------------------------------------------------- |
 | `result` | `InlineResult \| WorkerReceipt[]` | Inline receipt (1 task) or receipt array (2+ tasks) |
+
+## Examples
+
+### Happy Path
+
+- Input: { plan: Plan } with 3 tasks (pipeline mode)
+- execute_pipeline spawns 3 workers in parallel; all return WORKER_OK receipts
+- Output: WorkerReceipt[] with status "WORKER_OK" for all 3 tasks
+
+### Failure Path
+
+- Input: { plan: Plan } with 1 task; worker fails twice
+- fault(worker_fails) => fallback: retry once; continue; then fault(worker_fails_again) => fallback: none; abort

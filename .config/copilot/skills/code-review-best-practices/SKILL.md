@@ -16,7 +16,7 @@ Senior code reviewer focusing exclusively on the best practices aspect of code c
 ```typescript
 /**
  * @skill code-review-best-practices
- * @input  { session_id: string; model_name: string; file_scope?: string[]; directory_scope?: string }
+ * @input  { session_id: string; model_name: string; target: string; file_scope?: string[]; directory_scope?: string }
  * @output { review: ReviewOutput }
  *
  */
@@ -45,8 +45,8 @@ type ReviewOutput = {
 ## Operations
 
 ```typespec
-op review_changes(session_id: string, model_name: string) -> ReviewOutput {
-  // 1. Run git diff to obtain the changeset
+op review_changes(session_id: string, model_name: string, target: string) -> ReviewOutput {
+  // 1. Run git diff {target} to obtain the changeset
   // 2. Review ONLY the best-practices aspect using the criteria below
   /*
    * Best Practices Criteria (SUGGESTION severity)
@@ -87,12 +87,13 @@ review_changes -> write_output
 
 ## Input
 
-| Field             | Type       | Required | Description                              |
-| ----------------- | ---------- | -------- | ---------------------------------------- |
-| `session_id`      | `string`   | yes      | Session identifier for file paths        |
-| `model_name`      | `string`   | yes      | Reviewer model name for output file name |
-| `file_scope`      | `string[]` | no       | Limit review to specific files           |
-| `directory_scope` | `string`   | no       | Limit review to a directory              |
+| Field             | Type       | Required | Description                                            |
+| ----------------- | ---------- | -------- | ------------------------------------------------------ |
+| `session_id`      | `string`   | yes      | Session identifier for file paths                      |
+| `model_name`      | `string`   | yes      | Reviewer model name for output file name               |
+| `target`          | `string`   | yes      | Commit SHA, branch, PR number, "staged", or "unstaged" |
+| `file_scope`      | `string[]` | no       | Limit review to specific files                         |
+| `directory_scope` | `string`   | no       | Limit review to a directory                            |
 
 ## Output
 
@@ -113,3 +114,17 @@ Fix: How to resolve it
 ```
 
 Organize findings by priority: Critical first, then Warning, then Suggestion.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", target: "HEAD" }
+- review_changes → write_output succeed; 4 SUGGESTION findings detected
+- Output: { aspect: "best-practices", findings: [...] }; best-practices-claude-opus-4.6-review.md written
+
+### Failure Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", target: "HEAD" }
+- review_changes detects security issue; aspect_drift triggered
+- fault(aspect_drift) => fallback: none; abort

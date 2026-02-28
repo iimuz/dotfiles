@@ -1,9 +1,6 @@
 ---
 name: structured-workflow-implement
-description: >
-  Prepare implementation request for task-coordinator by
-  analyzing scope, detecting language, and writing a
-  request file. Sub-skill of structured-workflow.
+description: Prepare a task-coordinator implementation request by analyzing scope and detecting language.
 user-invocable: false
 disable-model-invocation: false
 ---
@@ -65,6 +62,7 @@ op determine_scope(
   // iteration > 1: filter prior_issues to
   //                Critical/High only
   // Exclude pre-existing issues unrelated to plan goal
+  fault(plan_unreadable) => fallback: none; abort
 }
 
 op detect_language() -> LanguageResult {
@@ -181,3 +179,16 @@ All files saved to
 | ----------------------------- | ---------------- | ------------------------ |
 | `sw-implement-request-{n}.md` | write_request    | structured-workflow main |
 | `sw-checkpoint-{n}.json`      | write_checkpoint | write_request            |
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", plan_filepath: "~/.../plan.md", iteration: 1, prior_issues: [], tdd_mode: false }
+- extract_scope → build_prior_context → write_checkpoint → write_request all succeed
+- Output: { request_file: "~/.copilot/session-state/s1/files/sw-implement-request-1.md" }
+
+### Failure Path
+
+- Input: { ..., plan_filepath: "~/.../plan.md" }; plan file not found or unreadable
+- fault(plan_unreadable) => fallback: none; abort

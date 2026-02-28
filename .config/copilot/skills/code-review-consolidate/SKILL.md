@@ -192,3 +192,16 @@ _Session files: ~/.copilot/session-state/{session_id}/files/_
 | Confidence label | Uncertain findings must be tagged High/Medium/Low confidence           |
 | False positives  | Preserve in report but mark clearly as unverified                      |
 | Scope            | Focus on bugs, security, and logic errors; exclude style-only comments |
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", aspects: ["security", "quality"], models: ["claude-opus-4.6", "gpt-5.3-codex"] }
+- consolidate → write_report → deliver all succeed; 5 total issues across aspects
+- Output: consolidated-review.md written; delivery template returned to user
+
+### Failure Path
+
+- Input: { session_id: "s1", aspects: [...], models: [...] }; output file already exists
+- fault(output_file_exists) => fallback: none; abort

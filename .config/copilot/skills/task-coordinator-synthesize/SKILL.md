@@ -102,3 +102,16 @@ Reference file is subagent-only; pass path to the Synthesizer subagent — do no
 | Field     | Type               | Description                            |
 | --------- | ------------------ | -------------------------------------- |
 | `receipt` | `SynthesisReceipt` | Synthesis result with output_file path |
+
+## Examples
+
+### Happy Path
+
+- Input: { plan: Plan, receipts: [WorkerReceipt x3 all WORKER_OK] }
+- Synthesizer subagent reads worker outputs and writes synthesis.md; receipt returned with SYNTHESIS_OK
+- Output: { receipt: SynthesisReceipt { status: "SYNTHESIS_OK", output_file: ".../synthesis.md", ... } }
+
+### Failure Path
+
+- Input: { plan: Plan, receipts: [...] }; Synthesizer subagent fails twice
+- fault(synthesizer_fails_again) => fallback: report output_files without synthesis; continue

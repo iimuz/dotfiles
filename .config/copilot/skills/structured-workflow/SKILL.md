@@ -136,9 +136,9 @@ task(agent_type: "explore",
               {session_dir}/plan-summary.md")
 ```
 
-Fault: skill fails → abort with report.
-
-### Phase 2–4: Iterative Loop
+```text
+fault(skill_fails) => fallback: none; abort
+```
 
 Set `iteration = 1`, `prior_issues = []`.
 Repeat until `!has_critical_or_high || iteration > 3`.
@@ -163,7 +163,9 @@ task(agent_type: "general-purpose",
                  or { ok: false, error_summary: '<reason>' }.")
 ```
 
-Fault: sub-agent fails → abort with report.
+```text
+fault(sub_agent_fails) => fallback: none; abort
+```
 
 #### Phase 3: Commit
 
@@ -187,7 +189,9 @@ skill(name: "commit-staged")
 
 Extract `CommitRef` from result.
 
-Fault: nothing staged or skill fails → abort with report.
+```text
+fault(nothing_staged || skill_fails) => fallback: none; abort
+```
 
 #### Phase 4: Review
 
@@ -215,7 +219,9 @@ prior_issues = verdict.issues.map((issue, idx) => ({
 increment `iteration`, continue.
 Otherwise → exit loop, proceed to Phase 5.
 
-Fault: skill fails → abort with report.
+```text
+fault(skill_fails) => fallback: none; abort
+```
 
 ### Phase 5: Final Summary
 
@@ -272,3 +278,16 @@ All files saved to
 | `plan-summary.md`              | explore sub-agent             | Phase 4            |
 | `sw-implement-request-{n}.md`  | structured-workflow-implement | Phase 2            |
 | `workflow-summary.md`          | explore sub-agent             | Phase 5            |
+
+## Examples
+
+### Happy Path
+
+- Input: { task: "Add OAuth login", tdd_mode: false }
+- All 5 phases succeed; 1 iteration; no Critical/High issues in Phase 4 review
+- Output: FinalSummary written to workflow-summary.md; user shown final report
+
+### Failure Path
+
+- Input: { task: "..." }; Phase 1 implementation-plan skill fails
+- fault(skill_fails) => fallback: none; abort; user shown error report

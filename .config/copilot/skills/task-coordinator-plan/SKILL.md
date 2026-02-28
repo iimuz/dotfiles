@@ -119,3 +119,17 @@ Reference files are subagent-only; pass paths to the Planner subagent — do not
 | Field  | Type   | Description                             |
 | ------ | ------ | --------------------------------------- |
 | `plan` | `Plan` | Validated execution plan as `plan.json` |
+
+## Examples
+
+### Happy Path
+
+- Input: { request: "Build a feature", session_id: "s1", run_id: "tc-20260228-120000", run_dir: "/tmp/tc/..." }
+- plan (Planner subagent) → validate_plan succeed; plan.json with 3 tasks written
+- Output: { plan: Plan }; plan.json saved to run_dir
+
+### Failure Path
+
+- Input: { request: "...", ... }; plan.json missing after Planner subagent completes
+- fault(plan_json_missing) => fallback: retry once; continue
+- fault(plan_json_missing_on_retry) => fallback: none; abort

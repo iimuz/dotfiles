@@ -1,8 +1,6 @@
 ---
 name: council-respond
-description: >
-  Generate a single independent council member response to a question.
-  This skill should be used only by the council orchestrator — never invoked directly by users.
+description: Generate a single independent council member response to a question.
 user-invocable: false
 disable-model-invocation: false
 ---

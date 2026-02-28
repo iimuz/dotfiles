@@ -102,3 +102,16 @@ Structure:
 
 [Unique to one reviewer, potentially valuable]
 ```
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }
+- readReviews (2+ files) → extractConsensus + enumerateConflicts → writeConsensus all succeed
+- Output: { consensus_file: "~/.copilot/session-state/s1/files/step3a-consensus-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", timestamp: "20260228" }; no review files found
+- fault(reviewFilesCount == 0) => fallback: none; abort

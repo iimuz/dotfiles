@@ -1,6 +1,6 @@
 ---
 name: council-aggregate
-description: Ranking aggregation sub-skill for the council workflow. Validates ranking grammar from Stage 3 review files and produces an aggregated ranking artifact. This skill should be used only by the council orchestrator — never invoked directly by users.
+description: Aggregate Stage 3 review rankings into a consensus ranking table.
 user-invocable: false
 disable-model-invocation: false
 ---

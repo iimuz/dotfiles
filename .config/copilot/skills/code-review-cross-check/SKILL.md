@@ -127,3 +127,16 @@ Original Reviewer: model-name
 Assessment: VALID | INVALID | UNCERTAIN
 Reasoning: Analysis explaining the determination
 ```
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", aspect: "security", model_name: "gpt-5.3-codex", concerns: [{...}] }
+- verify_concerns → write_output succeed; 1 VALID and 1 UNCERTAIN assessment
+- Output: { aspect: "security", model: "gpt-5.3-codex", assessments: [...] }; security-gpt-5.3-codex-crosscheck.md written
+
+### Failure Path
+
+- Input: { session_id: "s1", ..., concerns: [{issue: "...", ...}] }; full_review_attempted
+- fault(full_review_attempted) => fallback: none; abort

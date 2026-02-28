@@ -84,6 +84,10 @@ task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-
 
 Read `plan.json` from `{run_dir}/plan.json` after the agent completes.
 
+```text
+fault(plan_fails || plan_json_missing) => fallback: none; abort
+```
+
 ### Phase 2: Execute
 
 Branch by `plan.tasks.length`:
@@ -100,16 +104,28 @@ task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-
 task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_pipeline")
 ```
 
+```text
+fault(execute_fails) => fallback: none; abort
+```
+
 ### Phase 3: Synthesize (pipeline only)
 
 ```text
 task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
 ```
 
+```text
+fault(synthesize_fails) => fallback: report output_files without synthesis; continue
+```
+
 ### Phase 4: Present
 
 ```text
 task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { result }")
+```
+
+```text
+fault(present_fails) => fallback: none; abort
 ```
 
 ### Pipeline Summary
@@ -126,3 +142,16 @@ Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`); `?` = pipeline m
 | execute     | plan         | execute consumes validated `plan.json` from plan phase  |
 | synthesize  | execute      | synthesize unifies worker receipts (pipeline mode only) |
 | present     | synthesize   | present displays final result or synthesis receipt      |
+
+## Examples
+
+### Happy Path
+
+- Input: { request: "Analyze codebase and generate a report" }
+- plan → execute_pipeline (3 tasks) → synthesize → present all succeed
+- Output: { result: SynthesisReceipt }; synthesis document written and presented to user
+
+### Failure Path
+
+- Input: { request: "..." }; plan phase fails to produce plan.json
+- fault(plan_fails || plan_json_missing) => fallback: none; abort

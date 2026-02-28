@@ -116,3 +116,17 @@ Fix: How to align the code with the design
 ```
 
 Organize findings by priority: Critical first, then Warning, then Suggestion.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", target: "HEAD", design_info: "API must return..." }
+- review_changes → write_output succeed; 2 CRITICAL findings (interface contract violations)
+- Output: { aspect: "design-compliance", findings: [...] }; design-compliance-claude-opus-4.6-review.md written
+
+### Failure Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", target: "HEAD", design_info: null }
+- review_changes: design_info_missing triggered
+- fault(design_info_missing) => fallback: none; abort

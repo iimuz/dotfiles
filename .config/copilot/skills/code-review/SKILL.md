@@ -110,11 +110,11 @@ task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use 
 ... (12 total, all launched in parallel)
 ```
 
-Fault tolerance:
-
-- If a sub-skill fails, retry once then mark that (aspect, model) as failed.
-- Require at least 2 models per aspect to proceed; abort if fewer.
-- If exactly 2 models succeed for an aspect, note degraded mode in the final report.
+```text
+fault(model_fails)       => fallback: retry once; continue
+fault(aspect_models < 2) => fallback: none; abort
+fault(aspect_models == 2) => fallback: note degraded mode in final report; continue
+```
 
 ### Stage 2: Gap Analysis
 
@@ -128,6 +128,10 @@ task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the s
 
 Read the first line of `gap-list.yml` to extract the routing signal: `gaps_found: <N>`.
 
+```text
+fault(gap_analysis_fails) => fallback: none; abort
+```
+
 ### Stage 3: Cross-Check (conditional)
 
 If `gaps_found > 0`, read `gap-list.yml` (YAML format) from the session folder.
@@ -140,6 +144,10 @@ task(agent_type: "general-purpose", model: gap_entry.missed_by, prompt: "Use the
 
 If `gaps_found == 0`, skip this stage entirely.
 
+```text
+fault(cross_check_fails) => fallback: note in final report; continue
+```
+
 ### Stage 4: Consolidation and Delivery
 
 Invoke `code-review-consolidate` via a sub-agent.
@@ -150,6 +158,10 @@ task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the s
 ```
 
 Read `consolidated-review.md` from the session folder and present the delivery output to the user.
+
+```text
+fault(consolidation_fails) => fallback: none; abort
+```
 
 ### Pipeline Summary
 
@@ -176,3 +188,24 @@ All files are saved to `~/.copilot/session-state/{session_id}/files/`:
 | `consolidated-review.md`         | Final integrated review report (Stage 4) |
 
 The main agent reads only `gap-list.yml` (Stage 3 routing) and `consolidated-review.md` (delivery).
+
+## Coordinator-Only Policy
+
+- code-review is the sole coordinator for all code-review-\* sub-skills.
+- Sub-skill workers (code-review-security, code-review-quality, code-review-performance,
+  code-review-best-practices, code-review-design-compliance, code-review-gap-analysis,
+  code-review-cross-check, code-review-consolidate) must not be invoked by any agent
+  other than this orchestrator.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", target: "HEAD", design_info: "API must return JSON" }
+- Stages 1–4 all succeed; 15 sub-skills run; consolidated-review.md written
+- Output: consolidated review presented to user with critical issues and suggestions
+
+### Failure Path
+
+- Input: { session_id: "s1", target: "HEAD" }; Stage 1 returns only 1 model for "security"
+- fault(aspect_models < 2) => fallback: none; abort

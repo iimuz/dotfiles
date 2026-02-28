@@ -69,7 +69,10 @@ task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use 
 task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-analyze' with input: { session_id, model_name: 'gpt-5.3-codex', user_request, timestamp }")
 ```
 
-Fault tolerance: require at least 2 of 3 to succeed; abort if fewer.
+```text
+fault(analyze_models < 2) => fallback: none; abort
+fault(model_fails) => fallback: note degraded mode; continue
+```
 
 ### Stage 2: Parallel Plan Drafting (3x)
 
@@ -81,7 +84,10 @@ task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use 
 task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-draft' with input: { session_id, model_name: 'gpt-5.3-codex', timestamp }")
 ```
 
-Fault tolerance: require at least 2 of 3 to succeed; abort if fewer.
+```text
+fault(draft_models < 2) => fallback: none; abort
+fault(model_fails) => fallback: note degraded mode; continue
+```
 
 ### Stage 3: Parallel Cross-Review (3x)
 
@@ -93,7 +99,10 @@ task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use 
 task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-review' with input: { session_id, model_name: 'gpt-5.3-codex', timestamp }")
 ```
 
-Fault tolerance: if all fail, abort; if 1 fails, continue with note.
+```text
+fault(all_review_fail) => fallback: none; abort
+fault(one_review_fails) => fallback: note missing reviewer; continue
+```
 
 ### Stage 4: Parallel Consolidation
 
@@ -107,6 +116,11 @@ task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use 
 If aggregate fails: passthrough (forward reviews directly to synthesize with fallback notice).
 If validate fails: passthrough (skip unique insights in synthesis).
 
+```text
+fault(aggregate_fails) => fallback: forward reviews to synthesize with fallback notice; continue
+fault(validate_fails)  => fallback: skip unique insights in synthesis; continue
+```
+
 ### Stage 5: Conflict Resolution
 
 After Stage 4 completes:
@@ -116,6 +130,10 @@ task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the ski
 ```
 
 If no conflicts found (empty step3b), proceed to Stage 6.
+
+```text
+fault(resolve_fails) => fallback: proceed to Stage 6 without resolutions; continue
+```
 
 ### Stage 6: Synthesis
 
@@ -129,6 +147,10 @@ task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the ski
 ```
 
 Return the `output_filepath` to the caller.
+
+```text
+fault(synthesize_fails) => fallback: none; abort
+```
 
 ### Pipeline Summary
 
@@ -161,3 +183,16 @@ All intermediate files are saved to `~/.copilot/session-state/{session_id}/files
 | `{purpose}-{component}-{version}.md`      | Final authoritative plan (Stage 6)           |
 
 The main agent reads only the final `plan_filepath` returned by Stage 6.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", user_request: "Add user auth to the API" }
+- Stages 1–6 all succeed; final plan written to step artifacts and output_filepath
+- Output: { plan_filepath: "~/.copilot/session-state/s1/files/add-auth-api-1.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", user_request: "..." }; Stage 1 returns only 1 analysis
+- fault(analyze_models < 2) => fallback: none; abort

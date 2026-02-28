@@ -104,3 +104,16 @@ Structure:
 
 [Actionable suggestions for the final synthesis]
 ```
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", timestamp: "20260228" }
+- readDrafts (2+ files) → reviewDrafts → writeReview all succeed
+- Output: { review_file: "~/.copilot/session-state/s1/files/step2-claude-opus-4.6-review-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", timestamp: "20260228" }; only 1 draft found
+- fault(draftFilesCount < 2) => fallback: none; abort

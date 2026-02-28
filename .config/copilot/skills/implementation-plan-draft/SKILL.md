@@ -91,3 +91,16 @@ Expected input files:
 Output path: `~/.copilot/session-state/{session_id}/files/step2-{model_name}-plan-draft-{timestamp}.md`
 
 The draft must follow the template structure defined in `@references/plan-template.md`.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", timestamp: "20260228" }
+- readAnalyses (2+ files) → draftPlan → writeDraft all succeed
+- Output: { draft_file: "~/.copilot/session-state/s1/files/step2-claude-opus-4.6-plan-draft-20260228.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", model_name: "claude-opus-4.6", timestamp: "20260228" }; only 1 analysis file found
+- fault(analysisFilesCount < 2) => fallback: none; abort

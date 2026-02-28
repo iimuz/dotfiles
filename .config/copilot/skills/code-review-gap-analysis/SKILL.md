@@ -130,3 +130,16 @@ entries:
 When `gaps_found: 0`, write `gaps_found: 0` with an empty `entries` list — no entry items.
 
 Return value (task response): exactly one line `gaps_found: <N>`.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", aspects: ["security", "quality", "performance", "best-practices"] }
+- compare_findings identifies 2 gaps; write_gap_list writes gap-list.yml
+- Output: { gap_list: { gaps_found: 2, entries: [...] } }; returns "gaps_found: 2"
+
+### Failure Path
+
+- Input: { session_id: "s1", aspects: [...] }; concern entry has embedded newline
+- fault(concern_has_newline) => fallback: none; abort
