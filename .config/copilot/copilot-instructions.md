@@ -60,7 +60,7 @@
 
 ### Confirmation Step
 
-- Execute the ask tool (if available) to request user confirmation before finishing.
+- Execute the ask tool to request user confirmation before finishing.
 - The ask prompt must be concise and privacy-safe: list files changed and actions taken.
 - Do NOT include secrets, tokens, or full file contents in the summary.
 - Example prompt: "I have completed the task. Files changed: [list]. Actions taken: [list]. Is it okay to finish?"
