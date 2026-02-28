@@ -37,6 +37,8 @@ metadata: # Optional
   author: your-name
   version: "1.0"
 allowed-tools: Bash(git:*) Read # Optional (space-separated)
+user-invocable: true # Required (true for orchestrators, false for sub-skills)
+disable-model-invocation: false # Required (always false)
 ---
 ```
 
@@ -52,6 +54,13 @@ allowed-tools: Bash(git:*) Read # Optional (space-separated)
   - Include clear trigger conditions: "what keywords the user might say" or "what type of task this applies to."
   - Note: The Markdown body is only loaded after the Skill is triggered, so writing "When to use this skill"
     in the body is meaningless.
+  - Rule: Sub-skill `description` MUST be one sentence describing only what the skill does.
+    MUST NOT include caller metadata (e.g., "This skill should be used only by...").
+- `user-invocable` (Required):
+  - MUST be `true` for orchestrator skills (user-facing entry points).
+  - MUST be `false` for sub-skills (invoked only by other skills).
+- `disable-model-invocation` (Required):
+  - MUST be `false` for all skills.
 
 ### Directory Scope Constraint
 
