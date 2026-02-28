@@ -64,3 +64,50 @@ allowed-tools: Bash(git:*) Read # Optional (space-separated)
 - Writing Instructions (Markdown Body)
   - Rule: In SKILL.md bodies (not instruction files), prefer reasoning-based guidance over bare imperatives.
   - Rule: Include step-by-step procedures, input/output examples, and common edge-case handling.
+
+## Skill Type Taxonomy
+
+- Workflow Skill: Coordinates multi-step execution across sub-skills or agents;
+  owns stage sequencing, delegation, and fault routing.
+- Knowledge/Transform Skill: Executes a single bounded transformation or analysis;
+  does not delegate to other skills or agents.
+- Trigger for Workflow Authoring: Skill body contains stage sequencing, task() calls, or sub-skill delegation.
+- Trigger for Knowledge/Transform Authoring: Skill body contains a single op chain with no delegation to other skills.
+
+## Workflow Skill Authoring
+
+- Coordinator-Only Discipline: A workflow skill acts as the sole coordinator; it must not
+  be invoked as a sub-skill by another workflow skill unless an explicit
+  orchestrator-delegation contract is declared in both the parent and child SKILL.md.
+- Fault Declaration Requirement: Every delegation stage must declare fault tolerance with
+  three fields: failure condition, fallback action, and continue or abort decision.
+- Fault Declaration Format: `fault(<condition>) => fallback: <action>; <continue|abort>`
+- Assert Declaration Format: `assert(<left> != <right>) => on_conflict: <resolution>; <continue|abort>`
+  - Use assert() only when two independently produced values are expected to agree or be compatible.
+  - Do not use assert() to restate a fault condition; fault() guards failure states, assert() guards consistency.
+  - When resolution is "warn", the assertion is non-blocking; execution continues.
+- Placement Convention: Place fault() and assert() at the end of each numbered stage block,
+  after the stage output description.
+- Fallback Sub-Skill Delegation: When the fallback action delegates to a sub-skill, set the
+  action field to the sub-skill name with a parenthesized argument summary.
+  Do not chain more than one level of fallback delegation; if the fallback sub-skill fails, the decision must be abort.
+- Examples Policy: Each workflow skill and each sub-skill it delegates to must include
+  one happy-path example and one failure-path example.
+- Examples Format: Use `## Examples` section with `### Happy Path` and `### Failure Path`
+  subsections; limit each to 5 lines or fewer.
+
+## Knowledge/Transform Skill Authoring
+
+- Definition: A knowledge/transform skill executes a single bounded transformation or analysis.
+  It does not call task() or delegate to other skills or agents.
+- Trigger for Use: Apply this track when the skill body contains a single op chain with no delegation.
+- Structure: Define one or more ops in sequence; each op has a clear input, action, and output.
+  Do not add stage sequencing, delegation tables, or task() calls.
+- Fault Declaration Placement: Place fault() at the end of each op execution description.
+  Omit fault() when the op has no meaningful failure mode; do not add empty or trivially true clauses.
+- Assert Usage: Do not use assert() in knowledge/transform skills; use op-body invariants for
+  input validation and consistency checks instead.
+- Coordinator Restriction: No coordinator-only restrictions apply; a knowledge/transform skill
+  may be invoked by any workflow skill or directly by the user.
+- Examples Policy: Include one happy-path example and one failure-path example using the same
+  `## Examples` section format with `### Happy Path` and `### Failure Path` subsections.

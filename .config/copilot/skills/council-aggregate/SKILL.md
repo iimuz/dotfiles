@@ -1,6 +1,6 @@
 ---
 name: council-aggregate
-description: Ranking aggregation sub-skill for the council workflow. Validates ranking grammar from Stage 2 review files and produces an aggregated ranking artifact. This skill should be used internally by the council skill to aggregate reviewer rankings into a final sorted table.
+description: Ranking aggregation sub-skill for the council workflow. Validates ranking grammar from Stage 3 review files and produces an aggregated ranking artifact. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
 disable-model-invocation: true
 ---
@@ -9,9 +9,7 @@ disable-model-invocation: true
 
 ## Role
 
-Ranking aggregation sub-skill for the council workflow. Reads Stage 2 peer-review files,
-validates ranking grammar, and produces an aggregated ranking table artifact for use by
-the chairman synthesizer.
+Execute Stage 4 ranking aggregation for the council workflow.
 
 ## Interface
 
@@ -32,7 +30,7 @@ type RankingMetrics = {
 
 interface InputContext {
   session_id: string; // session identifier for traceability
-  review_artifact_paths: string[]; // absolute paths to Stage 2 review files
+  review_artifact_paths: string[]; // absolute paths to Stage 3 peer-review files
   label_map_path: string; // absolute path to JSON label mapping file
   output_rankings_path: string; // absolute path for saving ranking table output
 }
@@ -91,7 +89,7 @@ parse_rankings -> compute_metrics -> sort_rankings -> resolve_labels -> save_ran
 | Field                   | Type       | Required | Description                                   |
 | ----------------------- | ---------- | -------- | --------------------------------------------- |
 | `session_id`            | `string`   | yes      | Session identifier for traceability           |
-| `review_artifact_paths` | `string[]` | yes      | Absolute paths to Stage 2 review files        |
+| `review_artifact_paths` | `string[]` | yes      | Absolute paths to Stage 3 peer-review files   |
 | `label_map_path`        | `string`   | yes      | Absolute path to JSON label mapping file      |
 | `output_rankings_path`  | `string`   | yes      | Absolute path for saving ranking table output |
 
@@ -110,3 +108,17 @@ Ranking table written to `output_rankings_path`:
 ```
 
 One summary sentence follows the table describing the top-ranked model and vote distribution.
+
+## Examples
+
+### Happy Path
+
+- Input: { review_artifact_paths: ["/tmp/r1.md", "/tmp/r2.md", "/tmp/r3.md"],
+  label_map_path: "/tmp/map.json", output_rankings_path: "/tmp/rankings.md" }
+- parse_rankings → compute_metrics → sort_rankings → resolve_labels → save_ranking_table all succeed
+- Output: { ranking_table_path: "/tmp/rankings.md" }; markdown ranking table written to file
+
+### Failure Path
+
+- Input: { review_artifact_paths: ["/tmp/r1.md"] } where no FINAL RANKING section is parseable
+- fault(noValidRankings) => fallback: none; abort

@@ -1,6 +1,6 @@
 ---
 name: council-review
-description: Peer-review and ranking sub-skill for the council workflow. Evaluates anonymized model responses against a question and emits a ranked evaluation. This skill should be used only by the council orchestrator—never directly by users.
+description: Peer-review and ranking sub-skill for the council workflow. Evaluates anonymized model responses against a question and emits a ranked evaluation. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
 disable-model-invocation: true
 ---
@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 ## Role
 
-Evaluate anonymized model responses to a question and emit a ranked evaluation in strict format.
+Execute Stage 3 peer review for the council workflow.
 
 ## Interface
 
@@ -103,3 +103,17 @@ read_responses -> evaluate_responses -> emit_ranking -> save_evaluation
 | Field                | Type     | Description                                              |
 | -------------------- | -------- | -------------------------------------------------------- |
 | `output_review_path` | `string` | Absolute path to the written evaluation and ranking file |
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", anonymized_artifact_path: "/tmp/anon.md",
+  question: "...", model: "claude-opus-4.6", output_review_path: "/tmp/review.md" }
+- read_responses → evaluate_responses → emit_ranking → save_evaluation all succeed
+- Output: { output_review_path: "/tmp/review.md" }; FINAL RANKING section written to file
+
+### Failure Path
+
+- Input: { anonymized_artifact_path: "/tmp/missing.md" } where file does not exist
+- fault(fileNotFound) => fallback: none; abort

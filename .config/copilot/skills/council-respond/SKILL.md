@@ -2,8 +2,7 @@
 name: council-respond
 description: >
   Generate a single independent council member response to a question.
-  This skill should be used as the Stage 1 sub-skill in the LLM Council pipeline to produce
-  one model's authoritative analysis without awareness of other council members.
+  This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
 disable-model-invocation: true
 ---
@@ -12,8 +11,8 @@ disable-model-invocation: true
 
 ## Role
 
-Wrap the Stage 1 council response generation stage: analyze the question independently, structure a
-300–600 word response, and save it to a specified output filepath.
+Execute Stage 1 response generation for the council workflow: analyze the question independently,
+structure a 300–600 word response, and save it to the specified output_filepath.
 
 ## Interface
 
@@ -97,3 +96,16 @@ Return the saved filepath upon completion.
 | Field            | Type     | Description                                      |
 | ---------------- | -------- | ------------------------------------------------ |
 | `saved_filepath` | `string` | Absolute path of the saved Stage 1 response file |
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", question: "...", model: "claude-opus-4.6", output_filepath: "/tmp/stage1.md" }
+- analyze_question → structure_response → save_response all succeed
+- Output: { saved_filepath: "/tmp/stage1.md" }; 300-600 word response written to file
+
+### Failure Path
+
+- Input: { output_filepath: "/tmp/existing.md" } where file already exists at that path
+- fault(fileAlreadyExists) => fallback: none; abort

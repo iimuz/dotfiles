@@ -1,6 +1,6 @@
 ---
 name: council-fallback
-description: Fallback synthesis sub-skill for the LLM Council. Produces a valid Council Verdict and Fallback Synthesis output when upstream artifacts (rankings, label mapping, or chairman synthesis) are missing or failed. This skill should not be invoked directly by users.
+description: Fallback synthesis sub-skill for the LLM Council. Produces a valid Council Verdict and Fallback Synthesis output when upstream artifacts (rankings, label mapping, or chairman synthesis) are missing or failed. This skill should be used only by the council orchestrator — never invoked directly by users.
 user-invocable: false
 disable-model-invocation: true
 ---
@@ -9,9 +9,7 @@ disable-model-invocation: true
 
 ## Role
 
-Fallback synthesizer for the LLM Council. When the Chairman agent fails or upstream artifacts are
-unavailable, produce a simplified, presentation-ready final report from whatever intermediate files
-are accessible.
+Execute Stage 5 terminal fallback for the council workflow.
 
 ## Interface
 
@@ -110,12 +108,12 @@ load_available_data -> assess_quality_signals -> produce_simplified_report -> sa
 
 | Field                   | Type       | Required | Description                                                  |
 | ----------------------- | ---------- | -------- | ------------------------------------------------------------ |
-| `session_id`            | `string`   | Yes      | Active session identifier                                    |
-| `question`              | `string`   | Yes      | The original user question                                   |
-| `stage1_response_paths` | `string[]` | Optional | Absolute paths to available Stage 1 response files           |
-| `rankings_path`         | `string`   | Optional | Absolute path to aggregate rankings markdown (may not exist) |
-| `label_map_path`        | `string`   | Optional | Absolute path to JSON label mapping file (may not exist)     |
-| `output_fallback_path`  | `string`   | Yes      | Absolute path where the fallback report will be saved        |
+| `session_id`            | `string`   | yes      | Active session identifier                                    |
+| `question`              | `string`   | yes      | The original user question                                   |
+| `stage1_response_paths` | `string[]` | optional | Absolute paths to available Stage 1 response files           |
+| `rankings_path`         | `string`   | optional | Absolute path to aggregate rankings markdown (may not exist) |
+| `label_map_path`        | `string`   | optional | Absolute path to JSON label mapping file (may not exist)     |
+| `output_fallback_path`  | `string`   | yes      | Absolute path where the fallback report will be saved        |
 
 All optional inputs have graceful degradation: missing or unreadable files are skipped and the
 skill continues with reduced fidelity rather than aborting (except when no Stage 1 data exists).
@@ -146,3 +144,18 @@ _Note: This is a fallback synthesis. The full Chairman synthesis was unavailable
 ```
 
 The file must be presentation-ready; the calling agent will display it without modification.
+
+## Examples
+
+### Happy Path
+
+- Input: { stage1_response_paths: ["/tmp/s1.md"], rankings_path: "/tmp/rankings.md",
+  label_map_path: "/tmp/map.json", output_fallback_path: "/tmp/fallback.md" }
+- load_available_data → assess_quality_signals → produce_simplified_report → save_fallback all succeed
+- Output: { fallback_report: "/tmp/fallback.md" }; 300-600 word fallback synthesis written to file
+
+### Failure Path
+
+- Input: { stage1_response_paths: undefined, output_fallback_path: "/tmp/fallback.md" }
+  (terminal fallback: council-synthesize already failed; no stage1 paths recoverable)
+- fault(stage1_response_paths == undefined || stage1_response_paths.length == 0) => fallback: none; abort
