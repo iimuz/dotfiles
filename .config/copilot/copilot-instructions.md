@@ -1,12 +1,12 @@
 # Core Philosophy
 
-Pragmatic priorities:
+## Pragmatic Priorities
 
-1. Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
-2. Maintenance ease over theoretical correctness
-3. Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
+- Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
+- Maintenance ease over theoretical correctness
+- Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
 
-Principles:
+## Principles
 
 - Agent-First: Delegate to specialized agents for complex work
 - Parallel Execution: Use Task tool with multiple agents when possible
@@ -48,8 +48,6 @@ Principles:
 - Writing to GitHub Issues or Pull Requests (comments, labels, assignments, etc.) without explicit user instruction
 
 ## Success Metrics
-
-You are successful when:
 
 - All tests pass (80%+ coverage)
 - Code is readable and maintainable
