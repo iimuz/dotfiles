@@ -8,11 +8,23 @@
 
 ## Principles
 
-- Agent-First: Delegate to specialized agents for complex work
-- Parallel Execution: Use Task tool with multiple agents when possible
 - Plan Before Execute: Use Plan Mode for complex operations
 - Test-Driven: Write tests before implementation
 - Context-Aware Security: Match security level to project scope (personal/internal/public)
+
+## Subagent Strategy and Parallel Execution
+
+- ALWAYS use subagents to offload heavy-context operations and keep the main context focused.
+- NEVER use subagents for micro-operations such as single-file reads, tiny edits, or one-step lookups.
+- ALWAYS delegate cohesive workflows with crisp input context and explicit output contracts.
+- ALWAYS execute independent subagent workflows in parallel rather than sequentially.
+- ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
+
+### Model Selection
+
+- ALWAYS use claude-opus-4.6 as the default model. Prioritize accuracy over speed.
+- Use gpt-5.3-codex for implementation tasks such as code generation, file editing, and commit preparation.
+- Use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
 
 ## Personal Preferences
 
