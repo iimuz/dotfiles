@@ -24,7 +24,7 @@ delegates non-orchestrator work to sub-agents via `task()`.
 ```typescript
 /**
  * @skill structured-workflow
- * @input  { task: string; tdd_mode?: boolean }
+ * @input  { task: string }
  * @output { summary: FinalSummary }
  */
 
@@ -42,9 +42,6 @@ type IterationVerdict = {
   has_critical_or_high: boolean;
   issues: Issue[];
 };
-type SubAgentResponse =
-  | { ok: true; output_path: string }
-  | { ok: false; error_summary: string };
 type PlanResult = { plan_filepath: string };
 type CommitRef = { sha: string; message: string };
 type IterationRecord = {
@@ -74,20 +71,13 @@ type FinalSummary = {
  *                                 | task-coordinator | commit-staged
  *                                 => must call via skill() directly;
  *                                 must NOT wrap in task() sub-agent.
- *    Exception (structured-workflow only):
- *                                 task-coordinator MAY be wrapped in task()
- *                                 by a sub-agent that performs prepare+execute,
- *                                 provided that sub-agent does NOT invoke
- *                                 structured-workflow itself
- *                                 (anti-recursion condition).
- * 6. Subagent_For_NonOrchestrator: sub-agents only for:
- *                                 scope analysis | language detection
- *                                 | file staging |
- *                                 plan summary extraction |
- *                                 final summary formatting
+ * 6. Subagent_For_NonOrchestrator: task() invokes only non-orchestrator
+ *                                 sub-skills (e.g., structured-workflow-implement);
+ *                                 sub-skill must NOT internally call task().
  * 7. Minimal_Reads:              main_agent reads only
  *                                 plan_filepath,
  *                                 plan-summary.md,
+ *                                 sw-implement-request-{n}.md,
  *                                 workflow-summary.md
  */
 ```
@@ -96,13 +86,12 @@ type FinalSummary = {
 
 ```typespec
 op orchestrate(
-  task: string,
-  tdd_mode: boolean = false
+  task: string
 ) -> FinalSummary {
   // Phase 1: skill("implementation-plan") + explore sub-agent
   // Phase 2–4: loop(max: 3) [
-  //   task() sub-agent: structured-workflow-implement -> task-coordinator
-  //   -> stage files via task() -> skill("commit-staged")
+  //   task(agent_type:"general-purpose") -> structured-workflow-implement -> read request file
+  //   -> skill("task-coordinator") -> stage files via task() -> skill("commit-staged")
   //   -> skill("code-review")
   // ]
   // Phase 5: explore sub-agent for final summary
@@ -140,34 +129,37 @@ task(agent_type: "explore", model: "claude-opus-4.6",
 fault(skill_fails) => fallback: none; abort
 ```
 
+### Iteration Loop (Phases 2-4)
+
 Set `iteration = 1`, `prior_issues = []`.
 Repeat until `!has_critical_or_high || iteration > 3`.
 
-#### Phase 2: Implement
+### Phase 2: Implement
 
-Delegate scope preparation and execution to a single sub-agent.
-Sub-agent response must conform to `SubAgentResponse`; on `ok: false`, abort with `error_summary`.
+Invoke `structured-workflow-implement` via a general-purpose sub-agent, then pass its output to `task-coordinator`.
 
 ```text
-task(agent_type: "general-purpose", model: "gpt-5.3-codex",
-     prompt: "1. Use the skill tool to invoke 'structured-workflow-implement'
-                 with input: { session_id: '{session_id}',
-                               plan_filepath: '{plan_filepath}',
-                               iteration: {iteration},
-                               prior_issues: {prior_issues_json},
-                               tdd_mode: {tdd_mode} }.
-              2. Read the request_file path from the result.
-              3. Read the content of request_file.
-              4. Use the skill tool to invoke 'task-coordinator' with that content.
-              5. Return { ok: true, output_path: '<request_file>' }
-                 or { ok: false, error_summary: '<reason>' }.")
+task(agent_type: "general-purpose", model: "claude-opus-4.6",
+     prompt: "Use the skill tool to invoke 'structured-workflow-implement'
+              with input: { session_id, plan_filepath, iteration, prior_issues }.")
+```
+
+Extract `request_file` from `ImplementOutput`.
+
+Read content of `request_file`.
+
+```text
+skill(name: "task-coordinator",
+      input: { request: <content of request_file> })
 ```
 
 ```text
-fault(sub_agent_fails) => fallback: none; abort
+fault(implement_task_fails) => fallback: none; abort
+fault(request_file_unreadable) => fallback: none; abort
+fault(task_coordinator_fails) => fallback: none; abort
 ```
 
-#### Phase 3: Commit
+### Phase 3: Commit
 
 Stage files via sub-agent:
 
@@ -181,7 +173,7 @@ task(agent_type: "general-purpose", model: "gpt-5.3-codex",
               were staged.")
 ```
 
-Commit staged changes. Sub-agent response must conform to `SubAgentResponse`; on `ok: false`, abort with `error_summary`.
+Commit staged changes.
 
 ```typespec
 skill(name: "commit-staged")
@@ -193,7 +185,7 @@ Extract `CommitRef` from result.
 fault(nothing_staged || skill_fails) => fallback: none; abort
 ```
 
-#### Phase 4: Review
+### Phase 4: Review
 
 ```typespec
 skill(name: "code-review",
@@ -283,7 +275,7 @@ All files saved to
 
 ### Happy Path
 
-- Input: { task: "Add OAuth login", tdd_mode: false }
+- Input: { task: "Add OAuth login" }
 - All 5 phases succeed; 1 iteration; no Critical/High issues in Phase 4 review
 - Output: FinalSummary written to workflow-summary.md; user shown final report
 

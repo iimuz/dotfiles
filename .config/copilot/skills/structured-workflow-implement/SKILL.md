@@ -1,6 +1,6 @@
 ---
 name: structured-workflow-implement
-description: Prepare task-coordinator implementation request with scope and language.
+description: Prepare a task-coordinator implementation request from plan scope.
 user-invocable: false
 disable-model-invocation: false
 ---
@@ -11,9 +11,8 @@ disable-model-invocation: false
 
 Sub-skill that prepares a task-coordinator request file.
 Determines the implementation scope from the plan or
-prior review issues, detects the primary language, and
-writes a natural-language request file that the main
-agent passes to `task-coordinator`.
+prior review issues and writes a natural-language request
+file that the main agent passes to `task-coordinator`.
 
 ## Interface
 
@@ -41,7 +40,11 @@ type ImplementInput = {
   plan_filepath: string;
   iteration: number;
   prior_issues: PriorIssue[];
-  tdd_mode: boolean;
+};
+
+type ScopeResult = {
+  tasks: string[];
+  context: string;
 };
 
 type ImplementOutput = {
@@ -65,23 +68,13 @@ op determine_scope(
   fault(plan_unreadable) => fallback: none; abort
 }
 
-op detect_language() -> LanguageResult {
-  // File extensions:
-  //   .go / go.mod          => "go"
-  //   .py / pyproject.toml  => "python"
-  //   .ts / .tsx / package.json => "typescript"
-  //   .rs / Cargo.toml      => "rust"
-  // No match => null
-}
-
 op write_checkpoint(
   session_id: string,
   iteration: integer,
   scope_summary: string,
-  language: LanguageResult,
   status: "scope_done" | "complete"
 ) -> string {
-  // Write { iteration, scope_summary, language, status }
+  // Write { iteration, scope_summary, status }
   // to {session_dir}/sw-checkpoint-{iteration}.json
   // Returns checkpoint file path
 }
@@ -89,9 +82,7 @@ op write_checkpoint(
 op write_request(
   session_id: string,
   iteration: integer,
-  scope: ScopeResult,
-  language: LanguageResult,
-  tdd_mode: boolean
+  scope: ScopeResult
 ) -> ImplementOutput {
   // Recovery: if sw-implement-request-{iteration}.md exists
   // and sw-checkpoint-{iteration}.json shows status "complete",
@@ -106,7 +97,7 @@ op write_request(
 ## Execution
 
 ```text
-determine_scope -> write_checkpoint(status: "scope_done") -> detect_language -> write_request -> write_checkpoint(status: "complete")
+determine_scope -> write_checkpoint(status: "scope_done") -> write_request -> write_checkpoint(status: "complete")
 ```
 
 ### determine_scope
@@ -117,21 +108,11 @@ determine_scope -> write_checkpoint(status: "scope_done") -> detect_language -> 
   "Critical" and "High" only.
 - Exclude pre-existing issues unrelated to the plan goal.
 
-### detect_language
-
-- Detect from file extensions: `.go` → "go",
-  `.py` → "python", `.ts`/`.tsx` → "typescript",
-  `.rs` → "rust".
-- Detect from project manifests: `go.mod` → "go",
-  `pyproject.toml` → "python", `Cargo.toml` → "rust",
-  `package.json` → "typescript".
-- Return null if no supported language detected.
-
 ### write_checkpoint
 
 - Called after `determine_scope` completes with
   `status: "scope_done"`, writing
-  `{ iteration, scope_summary, language, status: "scope_done" }`
+  `{ iteration, scope_summary, status: "scope_done" }`
   to `{session_dir}/sw-checkpoint-{iteration}.json`.
 - Called again after `write_request` succeeds with
   `status: "complete"`, updating the checkpoint file.
@@ -160,12 +141,6 @@ return the existing file path.
 
 - Implement ALL scope items completely.
 - Do not fix pre-existing issues unrelated to the scope.
-  {if language detected:}
-- Invoke skill(name: "language-pro") for {language}
-  best practices.
-  {if tdd_mode:}
-- Invoke skill(name: "test-driven-development") and
-  follow its Red-Green-Refactor workflow.
 ```
 
 Return `ImplementOutput` with `request_file` and `checkpoint_file` paths.
@@ -184,8 +159,8 @@ All files saved to
 
 ### Happy Path
 
-- Input: { session_id: "s1", plan_filepath: "~/.../plan.md", iteration: 1, prior_issues: [], tdd_mode: false }
-- extract_scope → build_prior_context → write_checkpoint → write_request all succeed
+- Input: { session_id: "s1", plan_filepath: "~/.../plan.md", iteration: 1, prior_issues: [] }
+- determine_scope → write_checkpoint → write_request all succeed
 - Output: { request_file: "~/.copilot/session-state/s1/files/sw-implement-request-1.md" }
 
 ### Failure Path
