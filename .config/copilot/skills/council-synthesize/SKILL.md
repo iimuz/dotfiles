@@ -1,6 +1,6 @@
 ---
 name: council-synthesize
-description: Synthesize council responses and reviews into a definitive Council Verdict and Chairman's Synthesis.
+description: Synthesize council responses and reviews into a Council Verdict.
 user-invocable: false
 disable-model-invocation: false
 ---

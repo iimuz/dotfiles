@@ -1,6 +1,6 @@
 ---
 name: task-coordinator-synthesize
-description: Synthesize pipeline worker outputs into a unified result via Synthesizer subagent.
+description: Synthesize pipeline worker outputs into a unified result.
 user-invocable: false
 disable-model-invocation: false
 ---
@@ -9,8 +9,8 @@ disable-model-invocation: false
 
 ## Role
 
-Synthesis phase of the task-coordinator pipeline. Spawns a Synthesizer subagent to
-unify worker outputs into a single synthesis document (pipeline mode only).
+Synthesis phase of the task-coordinator pipeline. Unifies pipeline worker outputs into
+a single synthesis document by following synthesizer protocol directly (pipeline mode only).
 
 ## Interface
 
@@ -68,7 +68,7 @@ type SynthesisReceipt = {
 ```typespec
 op synthesize(p: Plan, receipts: WorkerReceipt[]) -> SynthesisReceipt {
   // Pipeline mode only; set synthesizer_protocol_file = {skill_base_dir}/references/synthesizer-protocol.md
-  // Spawn Synthesizer: task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt="Read {synthesizer_protocol_file} and follow instructions.\n\n## Input Context\n- goal: {p.goal}\n- output_files: {p.tasks[*].output_file}\n- synthesis_output_file: {p.synthesis_output_file}")
+  // Read {synthesizer_protocol_file} and follow its instructions to produce {p.synthesis_output_file}
   invariant: (synthesizer_fails) => retry_once("refined prompt");
   invariant: (synthesizer_fails_again) => warn("report synthesis_output_file + output_files; do not load inline");
   invariant: (reads_synthesis_file and !explicit_user_request) => warn("synthesis.md: load only on explicit request");
@@ -81,7 +81,7 @@ op synthesize(p: Plan, receipts: WorkerReceipt[]) -> SynthesisReceipt {
 synthesize
 ```
 
-Reference file is subagent-only; pass path to the Synthesizer subagent — do not load into caller context:
+Reference file — read directly; do not load into orchestrator caller context:
 
 - `synthesizer_protocol_file` = `{skill_base_dir}/references/synthesizer-protocol.md`
 
@@ -108,7 +108,7 @@ Reference file is subagent-only; pass path to the Synthesizer subagent — do no
 ### Happy Path
 
 - Input: { plan: Plan, receipts: [WorkerReceipt x3 all WORKER_OK] }
-- Synthesizer subagent reads worker outputs and writes synthesis.md; receipt returned with SYNTHESIS_OK
+- Follow synthesizer protocol; read worker outputs and write synthesis.md; receipt returned with SYNTHESIS_OK
 - Output: { receipt: SynthesisReceipt { status: "SYNTHESIS_OK", output_file: ".../synthesis.md", ... } }
 
 ### Failure Path

@@ -1,6 +1,6 @@
 ---
 name: structured-workflow-implement
-description: Prepare a task-coordinator implementation request by analyzing scope and detecting language.
+description: Prepare task-coordinator implementation request with scope and language.
 user-invocable: false
 disable-model-invocation: false
 ---

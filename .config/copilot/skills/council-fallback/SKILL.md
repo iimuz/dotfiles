@@ -1,6 +1,6 @@
 ---
 name: council-fallback
-description: Produce a fallback Council Verdict when upstream synthesis artifacts are missing or failed.
+description: Produce fallback Council Verdict when synthesis is missing or failed.
 user-invocable: false
 disable-model-invocation: false
 ---

@@ -1,6 +1,6 @@
 ---
 name: task-coordinator-plan
-description: Decompose a request into a validated execution plan via Planner subagent.
+description: Decompose a request into a validated execution plan.
 user-invocable: false
 disable-model-invocation: false
 ---
@@ -9,8 +9,8 @@ disable-model-invocation: false
 
 ## Role
 
-Planning phase of the task-coordinator pipeline. Spawns a Planner subagent to decompose
-a user request into an executable plan, then validates the resulting `plan.json`.
+Planning phase of the task-coordinator pipeline. Decomposes a user request into an
+executable plan by following the planner protocol directly, then validates the resulting `plan.json`.
 
 ## Interface
 
@@ -70,9 +70,9 @@ type SynthesisReceipt = {
 op plan(request: string, session_id: string, run_id: string, run_dir: string) -> Plan {
   // Set planner_protocol_file = {skill_base_dir}/references/planner-protocol.md
   // Set plan_schema_file = {skill_base_dir}/references/plan-schema.md
-  // Spawn Planner: task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt="Read {planner_protocol_file} and follow instructions.\n\n## Input Context\n- request: {request}\n- session_id: {session_id}\n- run_id: {run_id}\n- run_dir: {run_dir}\n- plan_schema_file: {plan_schema_file}")
-  invariant: (direct_implementation_attempt) => abort("Delegate to Planner first");
-  invariant: (coordinator_investigates_before_plan) => abort("Pass request verbatim to Planner; coordinator must not invoke investigation tools before plan op");
+  // Read {planner_protocol_file} and follow its instructions to produce plan.json
+  invariant: (direct_implementation_attempt) => abort("Follow planner protocol first");
+  invariant: (coordinator_investigates_before_plan) => abort("Pass request verbatim to planner protocol; do not invoke investigation tools before plan op");
   invariant: (planner_response_lines > 5) => warn("Response has extra lines; verify plan.json on disk");
   invariant: (plan_json_missing) => retry_once("refined prompt");
   invariant: (plan_json_missing_on_retry) => abort("Planner failed; report error receipt only");
@@ -95,7 +95,7 @@ op validate_plan(p: Plan, run_dir: string) -> Plan {
 plan -> validate_plan
 ```
 
-Reference files are subagent-only; pass paths to the Planner subagent — do not load into caller context:
+Reference files — read directly; do not load into orchestrator caller context:
 
 - `planner_protocol_file` = `{skill_base_dir}/references/planner-protocol.md`
 - `plan_schema_file` = `{skill_base_dir}/references/plan-schema.md`
@@ -125,7 +125,7 @@ Reference files are subagent-only; pass paths to the Planner subagent — do not
 ### Happy Path
 
 - Input: { request: "Build a feature", session_id: "s1", run_id: "tc-20260228-120000", run_dir: "/tmp/tc/..." }
-- plan (Planner subagent) → validate_plan succeed; plan.json with 3 tasks written
+- plan (follow planner protocol) → validate_plan succeed; plan.json with 3 tasks written
 - Output: { plan: Plan }; plan.json saved to run_dir
 
 ### Failure Path

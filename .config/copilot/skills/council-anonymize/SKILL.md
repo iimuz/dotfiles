@@ -1,6 +1,6 @@
 ---
 name: council-anonymize
-description: Strip model identity from Stage 1 responses and emit a deterministic alphabetical label map.
+description: Strip model identity and emit a deterministic alphabetical label map.
 user-invocable: false
 disable-model-invocation: false
 ---
