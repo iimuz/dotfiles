@@ -4,8 +4,6 @@ applyTo: ".config/copilot/skills/**"
 
 # Agent Skills Creation and Management Rules
 
-- Directive: Proactively support the user in creating new Skills or testing and improving existing ones.
-
 ## Skill Specification (Agent Skills Specification)
 
 - Design: A Skill is not just a collection of prompts, but a module designed based on the principle of "Progressive Disclosure."
@@ -56,6 +54,7 @@ disable-model-invocation: false # Required (always false)
     in the body is meaningless.
   - Rule: Sub-skill `description` MUST be one sentence describing only what the skill does.
     MUST NOT include caller metadata (e.g., "This skill should be used only by...").
+  - Rule: Sub-skill `description` MUST be 10 words or fewer.
 - `user-invocable` (Required):
   - MUST be `true` for orchestrator skills (user-facing entry points).
   - MUST be `false` for sub-skills (invoked only by other skills).
@@ -96,6 +95,9 @@ disable-model-invocation: false # Required (always false)
 - Coordinator-Only Discipline: A workflow skill acts as the sole coordinator; it must not
   be invoked as a sub-skill by another workflow skill unless an explicit
   orchestrator-delegation contract is declared in both the parent and child SKILL.md.
+- Sub-Agent Nesting Prohibition: Sub-agents invoked by sub-skills MUST NOT make further
+  `task()` calls. Sub-agents cannot call sub-agents. If sub-agent routing is needed,
+  declare it in the main orchestrator skill.
 - Fault Declaration Requirement: Every delegation stage must declare fault tolerance with
   three fields: failure condition, fallback action, and continue or abort decision.
 - Fault Declaration Format: `fault(<condition>) => fallback: <action>; <continue|abort>`
