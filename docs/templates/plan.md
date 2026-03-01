@@ -4,24 +4,24 @@ status: TODO
 
 # TASK: [Short Name]
 
-## GOAL
+## Goal
 
 - Goal: [One sentence goal]
 
-## REF
+## Ref
 
 - `docs/context.md`
 - `src/target_file.ts`
 
-## STEPS
+## Steps
 
 - [ ] Step 1: ...
 - [ ] Step 2: ...
 
-## VERIFY
+## Verify
 
 - Verify: Run `npm test` AND ensure coverage > 80%.
 
-## SCRATCHPAD
+## Scratchpad
 
 - Description: Agent workspace for Chain of Thought and investigation notes.

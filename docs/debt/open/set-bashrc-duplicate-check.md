@@ -14,7 +14,7 @@
 - Detail: The duplicate check uses a malformed grep invocation pattern that is not a reliable
   fixed-string presence test for the source marker line in the rc file.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Duplicate detection uses a reliable fixed-string grep check and repeated script runs
   do not append duplicate source lines.

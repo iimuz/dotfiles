@@ -1,145 +1,198 @@
 ---
 name: implementation-plan
-description: >
-  Generate deterministic, machine-executable implementation plans for features, refactoring,
-  and system changes via multi-agent parallel analysis and synthesis.
-  Use when breaking down complex development tasks into AI-actionable phases.
+description: Multi-model parallel implementation plan orchestrator.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Implementation Plan Generator
 
-## Overview
+## Role
 
-Produce fully self-contained implementation plans via multi-model deliberation: parallel requirement analysis,
-independent plan drafting, cross-review, conflict resolution, and final authoritative synthesis.
+Thin orchestrator that delegates all planning work to specialized sub-skills. Launch 3 parallel
+analyses, 3 parallel plan drafts, 3 parallel cross-reviews, parallel aggregation and validation,
+conflict resolution, and final synthesis into a single authoritative plan.
 
 ## Interface
 
 ```typescript
 /**
  * @skill implementation-plan
- * @input  { userRequest: string }
- * @output { planFilepath: string }
+ * @input  { user_request: string }
+ * @output { plan_filepath: string }
+ *
+ * @param user_request  The implementation task or feature request to plan (required)
+ * @returns plan_filepath  Path to the final authoritative plan file
  */
-
-type PlanFile = { path: string; step: "step3d" | "final"; timestamp: string };
-type AnalysisFile = {
-  path: string;
-  model: keyof ModelRoles;
-  timestamp: string;
-};
-type DraftFile = { path: string; model: keyof ModelRoles; timestamp: string };
-type ReviewFile = { path: string; model: keyof ModelRoles; timestamp: string };
-
-type ModelRoles = {
-  analyzerClaude: "claude-opus-4.6";
-  analyzerGemini: "gemini-3-pro-preview";
-  analyzerGpt: "gpt-5.3-codex";
-  consolidator: "claude-opus-4.6";
-  conflictResolver: "gpt-5.3-codex";
-  insightValidator: "gemini-3-pro-preview";
-  synthesizer: "gpt-5.3-codex";
-};
-
-type SessionFolder = {
-  sessionId: string;
-  sessionFilesDir: string;
-  timestamp: string;
-};
 
 /**
  * @invariants
- * 1. SessionPathIntegrity: all outputs use `~/.copilot/session-state/{sessionId}/files/`; omitting sessionId is forbidden
- * 2. TimestampFormat:      all file timestamps match `YYYYMMDDHHMMSS`
- * 3. FinalNaming:          final plan filename matches `{purpose}-{component}-{version}.md`
- * 4. CamelCaseContracts:   all variable bindings use canonical camelCase names defined in @references/implementation-patterns.md Appendix A
- * 5. NoPeek:               caller must not read intermediate file content into main agent context
- * 6. NoPreInvestigation: caller passes raw userRequest only; sub-agents explore the codebase independently
+ * - invariant: (main_reads_intermediate_files) => abort("Main agent reads only final plan filepath");
+ * - invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
+ * - invariant: (main_explores_codebase) => abort("Main agent must not run glob/grep/view on codebase; pass user_request to sub-agents");
  */
 ```
+
+### Severity Model
+
+- `abort(reason)` — halt execution immediately; do not produce partial output
+- `warn(reason)` — log the issue and continue in degraded mode
 
 ## Operations
 
 ```typespec
-op analyze(input: { userRequest: string; outputDir: SessionFolder }) -> AnalysisFile[] {
-  // Launch 3 parallel task() calls using @references/analysis-prompt.md; inject userRequest, outputFilepath per agent
-  // Each agent independently explores the codebase using available tools (glob, grep, view)
-  task(model: ModelRoles.analyzerClaude | ModelRoles.analyzerGemini | ModelRoles.analyzerGpt,
-       prompt: @references/analysis-prompt.md,
-       vars: { model, userRequest, outputFilepath: outputDir.sessionFilesDir + "step1-{model}-{timestamp}.md" },
-       timeout: 120, retry: { max: 1 });
-  invariant: (analysisCount < 2) => abort("Analysis quorum not met: fewer than 2 analyses received");
-  invariant: (analysisCount == 2) => warn("Degraded mode: only 2/3 analyses received; note in final output");
-}
+op orchestrate(session_id: string, user_request: string) -> string {
+  // Stage 1: Launch 3 parallel analysis sub-skill calls
+  // Stage 2: Launch 3 parallel plan draft sub-skill calls
+  // Stage 3: Launch 3 parallel cross-review sub-skill calls
+  // Stage 4: Launch aggregate + validate in parallel
+  // Stage 5: Resolve conflicts
+  // Stage 6: Synthesize final plan
 
-op draftPlans(input: { analyses: AnalysisFile[]; outputDir: SessionFolder }) -> DraftFile[] {
-  // Launch 3 parallel task() calls; each agent reads all step1-*-{timestamp}.md and generates plan per @references/template.md
-  task(model: ModelRoles.analyzerClaude | ModelRoles.analyzerGemini | ModelRoles.analyzerGpt,
-       prompt: "Read all step1-*-{timestamp}.md in sessionFilesDir; synthesize a complete implementation plan following @references/template.md structure",
-       vars: { sessionFilesDir: outputDir.sessionFilesDir, timestamp: outputDir.timestamp });
-  invariant: (draftCount < 2) => abort("Draft quorum not met; restart step 2A with adjusted prompt");
-}
-
-op crossReview(input: { drafts: DraftFile[]; outputDir: SessionFolder }) -> ReviewFile[] {
-  // Launch 3 parallel task() calls; each agent reads all step2-*-plan-draft-{timestamp}.md
-  task(model: ModelRoles.analyzerClaude | ModelRoles.analyzerGemini | ModelRoles.analyzerGpt,
-       prompt: "Read all step2-*-plan-draft-{timestamp}.md in sessionFilesDir; identify gaps, conflicts, and best practices across all drafts",
-       vars: { sessionFilesDir: outputDir.sessionFilesDir, timestamp: outputDir.timestamp });
-  invariant: (reviewSuccessCount == 0) => abort("All reviewers failed; restart step 2B with adjusted prompts");
-  invariant: (parseFailures == 1)       => passthrough("Skip failed reviewer; annotate in step 3A consolidation");
-}
-
-op aggregateConsensus(input: { reviews: ReviewFile[]; outputDir: SessionFolder }) -> PlanFile {
-  // Single agent reads all step2-*-review-{timestamp}.md; extracts shared insights and lists conflicts
-  task(model: ModelRoles.consolidator,
-       prompt: "Read all step2-*-review-{timestamp}.md in sessionFilesDir; extract consensus insights and enumerate distinct conflicts for step 3B resolution",
-       vars: { sessionFilesDir: outputDir.sessionFilesDir, timestamp: outputDir.timestamp });
-  invariant: (stageFailed) => passthrough("Forward available review outputs directly to synthesize with fallback notice");
-}
-
-op resolveConflicts(input: { consensus: PlanFile; outputDir: SessionFolder }) -> PlanFile {
-  // Single agent reads step3a-consensus-{timestamp}.md; resolves all conflicts with evidence-based analysis
-  task(model: ModelRoles.conflictResolver,
-       prompt: "Read step3a-consensus-{timestamp}.md in sessionFilesDir; resolve each conflict using evidence-based analysis in a single pass",
-       vars: { sessionFilesDir: outputDir.sessionFilesDir, timestamp: outputDir.timestamp });
-  invariant: (conflictCount == 0) => skip("No conflicts identified; proceed directly to synthesize");
-}
-
-op validateInsights(input: { drafts: DraftFile[]; reviews: ReviewFile[]; outputDir: SessionFolder }) -> PlanFile {
-  // Single agent reads step2-*-plan-draft and step2-*-review files; assesses unique model insights for feasibility
-  task(model: ModelRoles.insightValidator,
-       prompt: "Read all step2-*-plan-draft-{timestamp}.md and step2-*-review-{timestamp}.md in sessionFilesDir; assess model-specific unique insights for feasibility and value",
-       vars: { sessionFilesDir: outputDir.sessionFilesDir, timestamp: outputDir.timestamp });
-  invariant: (stageFailed) => passthrough("Forward available insight outputs to synthesize with fallback notice");
-}
-
-op synthesize(input: { userRequest: string; outputFilepath: string; outputDir: SessionFolder }) -> PlanFile {
-  // Single agent self-discovers all step2/step3 files; generates final authoritative plan per @references/template.md
-  task(model: ModelRoles.synthesizer,
-       prompt: @references/synthesis-prompt.md,
-       vars: { userRequest, sessionId: outputDir.sessionId, sessionFilesDir: outputDir.sessionFilesDir, outputFilepath },
-       timeout: 300, retry: { max: 1 });
-  invariant: (synthesisFailed) => fallback("Present highest-quality step 2A draft as fallback with notice");
+  invariant: (main_reads_intermediate_files) => abort("Main agent reads only final plan filepath");
+  invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
+  invariant: (main_explores_codebase) => abort("Main agent must not run glob/grep/view on codebase; pass user_request to sub-agents");
 }
 ```
 
 ## Execution
 
+Generate a `timestamp` in YYYYMMDDHHMMSS format before starting the pipeline.
+
+### Stage 1: Parallel Analysis (3x)
+
+Launch 3 sub-skill calls in parallel -- one per model:
+
 ```text
-analyze -> draftPlans -> crossReview -> [aggregateConsensus + validateInsights] -> resolveConflicts -> synthesize
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'implementation-plan-analyze' with input: { session_id, model_name: 'claude-opus-4.6', user_request, timestamp }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'implementation-plan-analyze' with input: { session_id, model_name: 'gemini-3-pro-preview', user_request, timestamp }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-analyze' with input: { session_id, model_name: 'gpt-5.3-codex', user_request, timestamp }")
 ```
 
-`+` denotes parallel execution. Return `synthesize` output `PlanFile.path` to caller. Do NOT read intermediate file
-content into main agent context.
+```text
+fault(analyze_models < 2) => fallback: none; abort
+fault(model_fails) => fallback: note degraded mode; continue
+```
 
-See [`references/implementation-patterns.md`](references/implementation-patterns.md) for session-path invariants and
-variable binding contracts (Appendix A).
+### Stage 2: Parallel Plan Drafting (3x)
 
-## Reference Materials
+After Stage 1 completes, launch 3 sub-skill calls in parallel:
 
-- [`references/template.md`](references/template.md) - Mandatory plan output template structure
-- [`references/analysis-prompt.md`](references/analysis-prompt.md) - Step 1 multi-perspective analysis prompt
-- [`references/synthesis-prompt.md`](references/synthesis-prompt.md) - Step 3D final synthesis prompt
-- [`references/implementation-patterns.md`](references/implementation-patterns.md) - Session-path invariants and
-  variable binding contracts (Appendix A)
-- [`references/examples.md`](references/examples.md) - Complete plan examples for various scenarios
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'implementation-plan-draft' with input: { session_id, model_name: 'claude-opus-4.6', timestamp }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'implementation-plan-draft' with input: { session_id, model_name: 'gemini-3-pro-preview', timestamp }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-draft' with input: { session_id, model_name: 'gpt-5.3-codex', timestamp }")
+```
+
+```text
+fault(draft_models < 2) => fallback: none; abort
+fault(model_fails) => fallback: note degraded mode; continue
+```
+
+### Stage 3: Parallel Cross-Review (3x)
+
+After Stage 2 completes, launch 3 sub-skill calls in parallel:
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'implementation-plan-review' with input: { session_id, model_name: 'claude-opus-4.6', timestamp }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'implementation-plan-review' with input: { session_id, model_name: 'gemini-3-pro-preview', timestamp }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'implementation-plan-review' with input: { session_id, model_name: 'gpt-5.3-codex', timestamp }")
+```
+
+```text
+fault(all_review_fail) => fallback: none; abort
+fault(one_review_fails) => fallback: note missing reviewer; continue
+```
+
+### Stage 4: Parallel Consolidation
+
+After Stage 3 completes, launch 2 sub-skill calls in parallel:
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'implementation-plan-aggregate' with input: { session_id, timestamp }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'implementation-plan-validate' with input: { session_id, timestamp }")
+```
+
+If aggregate fails: passthrough (forward reviews directly to synthesize with fallback notice).
+If validate fails: passthrough (skip unique insights in synthesis).
+
+```text
+fault(aggregate_fails) => fallback: forward reviews to synthesize with fallback notice; continue
+fault(validate_fails)  => fallback: skip unique insights in synthesis; continue
+```
+
+### Stage 5: Conflict Resolution
+
+After Stage 4 completes:
+
+```text
+task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'implementation-plan-resolve' with input: { session_id, timestamp }")
+```
+
+If no conflicts found (empty step3b), proceed to Stage 6.
+
+```text
+fault(resolve_fails) => fallback: proceed to Stage 6 without resolutions; continue
+```
+
+### Stage 6: Synthesis
+
+After Stage 5 completes, determine the output filepath:
+
+- Ask user to provide a preferred plan name, OR derive from user_request: `{purpose}-{component}-1.md`
+- `output_filepath = ~/.copilot/session-state/{session_id}/files/{purpose}-{component}-1.md`
+
+```text
+task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'implementation-plan-synthesize' with input: { session_id, user_request, timestamp, output_filepath }")
+```
+
+Return the `output_filepath` to the caller.
+
+```text
+fault(synthesize_fails) => fallback: none; abort
+```
+
+### Pipeline Summary
+
+```text
+stage1_analyze (3x parallel) -> stage2_draft (3x parallel) -> stage3_review (3x parallel) -> [stage4_aggregate + stage4_validate] (parallel) -> stage5_resolve -> stage6_synthesize -> return plan_filepath
+```
+
+| dependent         | prerequisite     | description                                 |
+| ----------------- | ---------------- | ------------------------------------------- |
+| _(column key)_    | _(column key)_   | _(dependent requires prerequisite first)_   |
+| stage2_draft      | stage1_analyze   | drafts consume stage 1 analysis files       |
+| stage3_review     | stage2_draft     | reviews consume stage 2 draft files         |
+| stage4_aggregate  | stage3_review    | consensus aggregates stage 3 reviews        |
+| stage4_validate   | stage2_draft     | validation reads stage 2 drafts and reviews |
+| stage5_resolve    | stage4_aggregate | resolution consumes consensus artifact      |
+| stage6_synthesize | stage5_resolve   | synthesis requires resolved conflicts       |
+
+## Session Artifacts
+
+All intermediate files are saved to `~/.copilot/session-state/{session_id}/files/`:
+
+| File                                      | Content                                      |
+| ----------------------------------------- | -------------------------------------------- |
+| `step1-{model}-{timestamp}.md`            | Model-specific analysis output (Stage 1)     |
+| `step2-{model}-plan-draft-{timestamp}.md` | Model-specific plan draft (Stage 2)          |
+| `step2-{model}-review-{timestamp}.md`     | Model-specific cross-review (Stage 3)        |
+| `step3a-consensus-{timestamp}.md`         | Aggregated consensus and conflicts (Stage 4) |
+| `step3c-insights-{timestamp}.md`          | Validated unique insights (Stage 4)          |
+| `step3b-resolutions-{timestamp}.md`       | Conflict resolutions (Stage 5)               |
+| `{purpose}-{component}-{version}.md`      | Final authoritative plan (Stage 6)           |
+
+The main agent reads only the final `plan_filepath` returned by Stage 6.
+
+## Examples
+
+### Happy Path
+
+- Input: { session_id: "s1", user_request: "Add user auth to the API" }
+- Stages 1–6 all succeed; final plan written to step artifacts and output_filepath
+- Output: { plan_filepath: "~/.copilot/session-state/s1/files/add-auth-api-1.md" }
+
+### Failure Path
+
+- Input: { session_id: "s1", user_request: "..." }; Stage 1 returns only 1 analysis
+- fault(analyze_models < 2) => fallback: none; abort

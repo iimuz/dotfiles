@@ -4,16 +4,16 @@ status: DONE
 
 # TASK: Add subagent-first Skill
 
-## GOAL
+## Goal
 
 - Goal: `.config/copilot/skills/subagent-first/` に subagent 優先委譲を強制するメタスキルを Hybrid-3 形式で作成する。
 
-## REF
+## Ref
 
 - `.config/copilot/skills/subagent-first/SKILL.md`
 - `.github/instructions/tool-configuration.instructions.md`
 
-## STEPS
+## Steps
 
 - [x] Step 1: skill-creator / transform-legacy-skill / structured-workflow の best practices を読み込む
 - [x] Step 2: 3 並列分析エージェント (Claude / Gemini / GPT) でスキル要件・設計を分析する
@@ -26,18 +26,18 @@ status: DONE
 - [x] Step 9: W3〜W8 を修正してコミットする (`395713a`)
 - [x] Step 10: 最終レビューで PASS を確認する
 
-## VERIFY
+## Verify
 
 - Verify: `mise run lint .config/copilot/skills/subagent-first/SKILL.md` がエラー 0 件で完了すること。
 
-## SCRATCHPAD
+## Scratchpad
 
 ### 設計上の主要決定
 
-- **スキル名**: `subagent-first`
-- **形式**: Hybrid-3 (TypeScript Interface + TypeSpec Operations)
-- **パイプライン**: `classify -> [delegate -> relay] | direct`
-- **インバリアント 7 件**: OrchestratorOnly, DelegationMandated, IntentPassthrough,
+- スキル名: `subagent-first`
+- 形式: Hybrid-3 (TypeScript Interface + TypeSpec Operations)
+- パイプライン: `classify -> [delegate -> relay] | direct`
+- インバリアント 7 件: OrchestratorOnly, DelegationMandated, IntentPassthrough,
   EscapeHatch, ExplicitOverride, RecursionPrevention, FailOpenOnUnknownCompatibility
 
 ### コンフリクト解決のポイント

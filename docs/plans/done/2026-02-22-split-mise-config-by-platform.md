@@ -4,12 +4,12 @@ status: DONE
 
 # TASK: Split mise config.toml into platform-specific files
 
-## GOAL
+## Goal
 
 - Goal: Rename `.config/mise/config.toml` to `.config/mise/config-mac.toml` and add
   `.config/mise/config-linux.toml` so the generic config is no longer applied in non-Mac environments.
 
-## REF
+## Ref
 
 - `.config/mise/config.toml`
 - `.config/mise/config-mac.toml`
@@ -21,7 +21,7 @@ status: DONE
 - `setup_proot_arm64.sh`
 - `.github/workflows/ci.yml`
 
-## STEPS
+## Steps
 
 - [x] Step 1: Git-remove `.config/mise/config.toml` and stage the existing untracked
       `config-mac.toml` and `config-linux.toml` (identical content).
@@ -31,11 +31,11 @@ status: DONE
 - [x] Step 4: Update `.github/workflows/ci.yml` `MISE_IGNORED_CONFIG_PATHS`
       to exclude both `config-mac.toml` and `config-linux.toml`.
 
-## VERIFY
+## Verify
 
 - Verify: `mise run lint` passes and no references to `.config/mise/config.toml` remain in setup scripts or CI.
 
-## SCRATCHPAD
+## Scratchpad
 
 - Motivation: `config.toml` was loaded by mise in all environments (Linux, Codespaces, etc.)
   even though it contained Mac-specific tools, causing unnecessary install attempts.

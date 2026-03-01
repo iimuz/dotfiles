@@ -4,36 +4,35 @@ status: TODO
 
 # TASK: Validate plan template compliance
 
-## GOAL
+## Goal
 
 - Goal: Implement a shell validator that checks `docs/plans/active/*.md` files conform to
   `docs/templates/plan.md` structure, integrated into lefthook pre-commit and `mise run lint`.
 
-## REF
+## Ref
 
 - `docs/templates/plan.md`
-- `docs/design/doc-standards.md`
 - `lefthook.yml`
 - `.mise/tasks/lint`
 
-## STEPS
+## Steps
 
 - [ ] Step 1: Create `.mise/tasks/validate-plan` shell script that checks (a) frontmatter with
-      `status:` key, (b) required sections `## GOAL`, `## REF`, `## STEPS`, `## VERIFY`, `## SCRATCHPAD`
+      `status:` key, (b) required sections `## Goal`, `## Ref`, `## Steps`, `## Verify`, `## Scratchpad`
       in order, (c) filename matches `[YYYY-MM-DD]-[action].md`.
 - [ ] Step 2: Add `validate-plan` to `lefthook.yml` as a pre-commit hook with
       `glob: "docs/plans/active/*.md"`.
 - [ ] Step 3: Add `mise run validate-plan` step to `.github/workflows/ci.yml` after
       `mise run lint`.
 - [ ] Step 4: Test with a fixture file missing a required section to confirm error message is
-      specific (e.g., `missing section: VERIFY`).
+      specific (e.g., `missing section: Verify`).
 
-## VERIFY
+## Verify
 
 - Verify: Run `mise run validate-plan` on existing plan files with no errors, and on a broken
   fixture file with a clear failure message.
 
-## SCRATCHPAD
+## Scratchpad
 
 - Council synthesis: 4-layer strategy recommended: (1) shell validator, (2) lefthook pre-commit,
   (3) CI, (4) agent instructions. Layer 4 is already done.

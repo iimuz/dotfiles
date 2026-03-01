@@ -5,11 +5,13 @@ description: >
   through structured multi-stage deliberation.
   This skill should be used when seeking high-quality, comprehensive answers that benefit
   from multiple AI perspectives and collective deliberation.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # LLM Council
 
-## Overview
+## Role
 
 Orchestrate a 3-stage multi-LLM deliberation: parallel response generation, anonymized peer
 review with ranking, and chairman synthesis. Use for complex questions where a single model's
@@ -22,106 +24,71 @@ blind spots could lead to an incomplete answer.
  * @skill council
  * @input  { question: string }
  * @output { synthesis: string }
+ *
+ * @param question  The question for council deliberation (required)
+ * @returns synthesis  Presentation-ready council verdict and synthesis content
  */
 
-type Response = { model: string; content: string; filepath: string };
-type Review = { reviewer: string; ranking: string[]; filepath: string };
-type LabelMapping = Record<string, string>; // "Response A/B/C" -> model name
-type LabeledContent = string; // anonymized concatenated responses
-type RankingTable = string; // rendered markdown ranking table filepath
-type Draft = string; // in-progress synthesis text
+// Types: Response, Review, LabelMapping, RankingTable, Draft
 
 type ModelRoles = {
   Member1: "claude-opus-4.6"; // deep reasoning and nuanced analysis
   Member2: "gemini-3-pro-preview"; // broad knowledge and alternative perspectives
   Member3: "gpt-5.3-codex"; // structured thinking and code-focused insights
   Chairman: "claude-opus-4.6"; // extended thinking synthesis
-  Prep: "claude-sonnet-4.6"; // anonymization and ranking aggregation
+  Prep: "gemini-3-pro-preview"; // anonymization (large context)
+  Aggregator: "claude-opus-4.6"; // ranking aggregation (Stage 4)
 };
 
 type SessionFiles = {
   stage1: "council-stage1-<model>-<timestamp>.md"; // Stage 1 responses (3 files)
-  stage2: "council-stage2-<model>-<timestamp>.md"; // Stage 2 reviews (3 files)
   stage2_input: "council-stage2-input-<timestamp>.md"; // anonymized Stage 1 content
   label_map: "council-label-mapping-<timestamp>.json"; // label → model mapping
+  stage3: "council-stage3-<model>-<timestamp>.md"; // Stage 3 peer reviews (3 files)
   rankings: "council-aggregate-rankings-<timestamp>.md"; // aggregate ranking table
-  synthesis: "council-stage3-synthesis-<timestamp>.md"; // chairman synthesis
-  fallback: "council-stage3-fallback-<timestamp>.md"; // fallback final output
+  synthesis: "council-stage5-synthesis-<timestamp>.md"; // chairman synthesis
   // All files saved under: ~/.copilot/session-state/{session-id}/files/
   // Timestamps format: YYYYMMDDHHMMSS
 };
 
 /**
  * @invariants
- * 1. No_Peeking:           main agent must not read Stage 1, Stage 2, anonymized input
- *                          (stage2_input), ranking, or label mapping files directly;
- *                          read only synthesis/fallback output
- * 2. Filepath_Explicit:    all inter-stage file paths are absolute and fully qualified
- * 3. Semantic_Contract:    observable behavior (quorum, degraded mode, anonymization,
- *                          ranking grammar, fallback routing) is preserved across all stages
+ * - invariant: (mainAgentReadsIntermediateFile) => abort("Main agent must not read Stage 1, Stage 2, anonymized input, ranking, or label mapping files directly; read only synthesis/fallback output");
+ * - invariant: (!pathIsAbsoluteAndFullyQualified) => abort("All inter-stage file paths must be absolute and fully qualified");
+ * - invariant: (observableBehaviorViolated) => abort("Observable behavior must be preserved: quorum, degraded mode, anonymization, ranking grammar, fallback routing");
  */
 ```
 
 ## Operations
 
 ```typespec
-op generate_responses(question: string) -> Response[] {
-  // Launch 3 parallel task() calls with @references/stage1-prompt.md
-  // output_filepath: SessionFiles.stage1 per model with current timestamp
-  task(model: ModelRoles.Member1 | ModelRoles.Member2 | ModelRoles.Member3,
-       prompt: @references/stage1-prompt.md,
-       vars: { question: question, output_filepath: output_filepath });
+op generate_responses(session_id: string, question: string) -> Response[] {
   invariant: (responses.length < 2)  => abort("Council quorum not met: fewer than 2 responses received");
-  invariant: (responses.length == 2) => warn("Degraded mode: 2/3 responses available; note in final output");
+  invariant: (responses.length == 2) => warn("Degraded mode: only 2/3 responses available");
 }
 
-op anonymize(responses: Response[]) -> { labeled: LabeledContent; mapping: LabelMapping } {
-  // Launch 1 task() with @references/stage2-prep-prompt.md
-  // Derive: stage1_response_filepaths = responses.map(r => r.filepath)
-  // Generate: anonymized_input_filepath = SessionFiles.stage2_input, label_mapping_filepath = SessionFiles.label_map
-  task(model: ModelRoles.Prep, prompt: @references/stage2-prep-prompt.md,
-       vars: { stage1_response_filepaths: stage1_response_filepaths, anonymized_input_filepath: anonymized_input_filepath, label_mapping_filepath: label_mapping_filepath });
-  invariant: (anonymizedInputMissing || labelMappingMissing)
-    // rankings_filepath and label_mapping_filepath are not yet available at this stage (produced later)
-    => fallback(task(model: ModelRoles.Prep, prompt: @references/fallback-synthesis-prompt.md,
-                     vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, output_filepath: output_filepath }));
+op anonymize(session_id: string, question: string, responses: Response[]) -> { labeled: LabeledContent; mapping: LabelMapping } {
+  invariant: (anonymizedInputMissing || labelMappingMissing) => abort("Anonymization artifacts missing");
 }
 
-op peer_review(question: string, labeled: LabeledContent) -> Review[] {
-  // Launch 3 parallel task() calls with @references/stage2-prompt.md
-  // all reviewers read the same anonymized_input_filepath
-  task(model: ModelRoles.Member1 | ModelRoles.Member2 | ModelRoles.Member3,
-       prompt: @references/stage2-prompt.md,
-       vars: { question: question, anonymized_input_filepath: anonymized_input_filepath, output_filepath: output_filepath });
-  invariant: (validReviews < 2)    => warn("Reduced review coverage; continue with available");
-  invariant: (oneParseFailure)     => skip_reviewer("omit failed reviewer from aggregation");
-  invariant: (allParseFailures)    => passthrough("proceed to synthesize without rankings");
+op peer_review(session_id: string, question: string, anonymized_artifact_path: string) -> Review[] {
+  invariant: (validReviews < 2)    => warn("Reduced review coverage");
+  invariant: (oneParseFailure)     => warn("One reviewer parse failed");
+  invariant: (allParseFailures)    => warn("All reviewer parses failed");
 }
 
-op aggregate_rankings(reviews: Review[], mapping: LabelMapping) -> RankingTable {
-  // Launch 1 task() with @references/ranking-aggregation-prompt.md
-  // Derive: stage2_review_filepaths = reviews.map(r => r.filepath)
-  // Derive: label_mapping_filepath = mapping.filepath (from SessionFiles.label_map)
-  // Generate: output_filepath = SessionFiles.rankings
-  task(model: ModelRoles.Prep, prompt: @references/ranking-aggregation-prompt.md,
-       vars: { stage2_review_filepaths: stage2_review_filepaths, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath });
-  invariant: (aggregateFails || outputFileMissing)
-    => passthrough("proceed to synthesize without aggregate rankings");
+op aggregate_rankings(session_id: string, reviews: Review[], label_map_path: string) -> RankingTable {
+  invariant: (aggregateFails || outputFileMissing) => warn("Aggregate rankings unavailable");
 }
 
 op synthesize(
-  question:  string,
-  responses: Response[],
-  reviews:   Review[],
-  rankings?: RankingTable
+  session_id: string,
+  question:   string,
+  responses:  Response[],
+  reviews:    Review[],
+  rankings?:  RankingTable
 ) -> string {
-  // Launch 1 task() with @references/stage3-prompt.md
-  // DO NOT read intermediate files; pass only explicit filepaths
-  task(model: ModelRoles.Chairman, prompt: @references/stage3-prompt.md,
-       vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, stage2_review_filepaths: stage2_review_filepaths, rankings_filepath: rankings_filepath, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath });
-  invariant: (chairmanFails)
-    => fallback(task(model: ModelRoles.Prep, prompt: @references/fallback-synthesis-prompt.md,
-                     vars: { question: question, stage1_response_filepaths: stage1_response_filepaths, rankings_filepath: rankings_filepath, label_mapping_filepath: label_mapping_filepath, output_filepath: output_filepath }));
+  invariant: (chairmanFails) => abort("Chairman synthesis failed");
 }
 ```
 
@@ -131,5 +98,122 @@ op synthesize(
 generate_responses -> anonymize -> peer_review -> aggregate_rankings -> synthesize
 ```
 
-Read only `SessionFiles.synthesis` (or `SessionFiles.fallback` if chairman failed) and present
-its content to the user without modification. The main agent must not read any other session file.
+| dependent          | prerequisite       | description                                               |
+| ------------------ | ------------------ | --------------------------------------------------------- |
+| _(column key)_     | _(column key)_     | _(dependent requires prerequisite first)_                 |
+| anonymize          | generate_responses | anonymize consumes Stage 1 response files                 |
+| peer_review        | anonymize          | peer_review reads anonymized artifact                     |
+| aggregate_rankings | peer_review        | aggregate_rankings consumes Stage 3 review files          |
+| aggregate_rankings | anonymize          | aggregate_rankings requires label_map_path from anonymize |
+| synthesize         | aggregate_rankings | synthesize consumes rankings and all prior artifacts      |
+
+Resolve `session_dir = ~/.copilot/session-state/{session_id}/files/` and generate a `timestamp`
+(YYYYMMDDHHMMSS) before starting.
+
+### Stage 1: Parallel Response Generation
+
+- Sub-skill: council-respond (x3, parallel)
+- Input: session_id, question
+- Output: stage1_response_paths (3 files)
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'council-respond' with input: { session_id, question, model: 'claude-opus-4.6', output_filepath: '{session_dir}/council-stage1-claude-opus-4.6-{timestamp}.md' }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'council-respond' with input: { session_id, question, model: 'gemini-3-pro-preview', output_filepath: '{session_dir}/council-stage1-gemini-3-pro-preview-{timestamp}.md' }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'council-respond' with input: { session_id, question, model: 'gpt-5.3-codex', output_filepath: '{session_dir}/council-stage1-gpt-5.3-codex-{timestamp}.md' }")
+```
+
+```text
+fault(responses.length < 2)  => fallback: none; abort
+fault(responses.length == 2) => fallback: continue with 2/3 responses noted in output; continue
+```
+
+### Stage 2: Anonymize
+
+- Sub-skill: council-anonymize
+- Input: stage1_response_paths
+- Output: anonymized_input_path, label_map_path
+
+```text
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'council-anonymize' with input: { session_id, question, stage1_response_paths: [<stage 1 output paths>], output_anonymized_path: '{session_dir}/council-stage2-input-{timestamp}.md', label_map_path: '{session_dir}/council-label-mapping-{timestamp}.json' }")
+```
+
+```text
+fault(anonymizedInputMissing || labelMappingMissing) => fallback: none; abort
+assert(label_map_path != null) => on_conflict: warn; continue
+```
+
+### Stage 3: Parallel Peer Review
+
+- Sub-skill: council-review (x3, parallel)
+- Input: session_id, question, anonymized_input_path
+- Output: stage3_review_paths (up to 3 files)
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6",      prompt: "Use the skill tool to invoke 'council-review' with input: { session_id, question, model: 'claude-opus-4.6', anonymized_artifact_path: '<stage2_input_path>', output_review_path: '{session_dir}/council-stage3-claude-opus-4.6-{timestamp}.md' }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'council-review' with input: { session_id, question, model: 'gemini-3-pro-preview', anonymized_artifact_path: '<stage2_input_path>', output_review_path: '{session_dir}/council-stage3-gemini-3-pro-preview-{timestamp}.md' }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",        prompt: "Use the skill tool to invoke 'council-review' with input: { session_id, question, model: 'gpt-5.3-codex', anonymized_artifact_path: '<stage2_input_path>', output_review_path: '{session_dir}/council-stage3-gpt-5.3-codex-{timestamp}.md' }")
+```
+
+```text
+fault(validReviews < 2)  => fallback: continue with available reviews; continue
+fault(allParseFailures)  => fallback: skip Stage 4, proceed to Stage 5 without rankings; continue
+```
+
+### Stage 4: Aggregate Rankings
+
+- Sub-skill: council-aggregate
+- Input: review_artifact_paths, label_map_path
+- Output: rankings_path (null on fault)
+- Skipped when fault(allParseFailures) fires in Stage 3
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'council-aggregate' with input: { session_id, review_artifact_paths: [<stage 3 output paths>], label_map_path: '<label_map_path>', output_rankings_path: '{session_dir}/council-aggregate-rankings-{timestamp}.md' }")
+```
+
+```text
+fault(aggregateFails || outputFileMissing) => fallback: proceed to Stage 5 without aggregate rankings; continue
+assert(rankings_path != null) => on_conflict: warn; continue
+```
+
+### Stage 5: Synthesis
+
+- Sub-skill: council-synthesize; fallback sub-skill: council-fallback
+- Input: session_id, question, anonymized_input_path, stage1_response_paths,
+  stage3_review_paths, rankings_path (optional), label_map_path
+- Output: synthesis_path
+
+```text
+task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'council-synthesize' with input: { session_id, question, model: 'claude-opus-4.6', anonymized_artifact_paths: ['<stage2_input_path>'], stage1_response_paths: [<stage 1 paths>], stage3_review_paths: [<stage 3 paths>], aggregate_ranking_path: '<rankings_path>', label_map_path: '<label_map_path>', output_synthesis_path: '{session_dir}/council-stage5-synthesis-{timestamp}.md' }")
+```
+
+```text
+fault(chairmanFails) => fallback: council-fallback(available_stage1_paths); continue
+```
+
+Read only `SessionFiles.synthesis` and present its content to the user without modification.
+The main agent must not read any other session file.
+
+## Coordinator-Only Policy
+
+- council is the sole coordinator for all council-\* sub-skills.
+- Sub-skill workers (council-respond, council-anonymize, council-review,
+  council-aggregate, council-synthesize, council-fallback) must not be
+  invoked by any agent other than this orchestrator.
+- Exception (developer): A sub-skill may be invoked in isolation by a developer only
+  with an explicit test harness and without a live council session.
+- Exception (runtime): If all sub-skills are unavailable and council-fallback is also
+  exhausted, council may produce a direct response noting that deliberation could not
+  be completed and stating which stages succeeded before the failure.
+
+## Examples
+
+### Happy Path
+
+- Input: { question: "What is the best approach to database indexing?" }
+- Stages 1-5 all succeed; 3/3 responses, 3/3 reviews, rankings aggregated
+- Output: synthesis document written; main agent reads and presents content
+
+### Failure Path
+
+- Input: { question: "..." }; Stage 1 returns 1/3 successful responses
+- fault(responses.length < 2) => fallback: none; abort

@@ -4,12 +4,12 @@ status: DONE
 
 # TASK: Add .sh extension to mise task scripts
 
-## GOAL
+## Goal
 
-Rename `.mise/tasks/format` → `.mise/tasks/format.sh` and `.mise/tasks/lint` →
-`.mise/tasks/lint.sh` using `git mv` so they are included in `git ls-files '*.sh'` globs.
+- Goal: Rename `.mise/tasks/format` → `.mise/tasks/format.sh` and `.mise/tasks/lint` →
+  `.mise/tasks/lint.sh` using `git mv` so they are included in `git ls-files '*.sh'` globs.
 
-## REF
+## Ref
 
 - `.github/instructions/plan.instructions.md`
 - `.mise/tasks/format.sh`
@@ -18,7 +18,7 @@ Rename `.mise/tasks/format` → `.mise/tasks/format.sh` and `.mise/tasks/lint` �
 - `.github/workflows/ci.yml`
 - `mise.toml`
 
-## STEPS
+## Steps
 
 - [x] Step 1: Search for hardcoded references to `.mise/tasks/format` and `.mise/tasks/lint`
       outside plan artifacts to confirm no caller path updates are required.
@@ -35,11 +35,11 @@ Rename `.mise/tasks/format` → `.mise/tasks/format.sh` and `.mise/tasks/lint` �
 - [x] Step 11: If newly surfaced findings block checks, apply only minimal fixes required for
       `mise run format` and `mise run lint` to pass.
 
-## VERIFY
+## Verify
 
-`mise run format && mise run lint && [ "$(git ls-files '*.sh' | grep -c '^.mise/tasks/')" -eq 2 ]`
+- Verify: `mise run format && mise run lint && [ "$(git ls-files '*.sh' | grep -c '^.mise/tasks/')" -eq 2 ]`
 
-## SCRATCHPAD
+## Scratchpad
 
 - No caller changes needed in `lefthook.yml` or `.github/workflows/ci.yml` because
   invocation is by task name, not file path.

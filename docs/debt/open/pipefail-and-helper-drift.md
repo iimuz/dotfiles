@@ -18,7 +18,7 @@
 - Detail: Some setup scripts omit `set -o pipefail`, and helper implementations differ in
   structure and naming despite project guidance that shared helper behavior should remain aligned.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: All setup scripts use consistent safety flags and aligned helper logic so shared
   behavior is maintained across platforms.

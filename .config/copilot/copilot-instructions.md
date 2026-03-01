@@ -1,12 +1,12 @@
 # Core Philosophy
 
-Pragmatic priorities:
+## Pragmatic Priorities
 
-1. Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
-2. Maintenance ease over theoretical correctness
-3. Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
+- Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
+- Maintenance ease over theoretical correctness
+- Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
 
-Principles:
+## Principles
 
 - Agent-First: Delegate to specialized agents for complex work
 - Parallel Execution: Use Task tool with multiple agents when possible
@@ -49,8 +49,27 @@ Principles:
 
 ## Success Metrics
 
-You are successful when:
-
 - All tests pass (80%+ coverage)
 - Code is readable and maintainable
 - User requirements are met (no more, no less)
+
+## Task Completion Protocol
+
+- Scope: Apply this protocol in the main agent only. Do NOT apply it in subagents.
+- Ordering: Execute this protocol as the last step before agentStop.
+
+### Confirmation Step
+
+- Execute the ask tool to request user confirmation before finishing.
+- The ask prompt must be concise and privacy-safe: list files changed and actions taken.
+- Do NOT include secrets, tokens, or full file contents in the summary.
+- Example prompt: "I have completed the task. Files changed: [list]. Actions taken: [list]. Is it okay to finish?"
+
+### Response Branches
+
+- approved: Agent finishes and invokes agentStop.
+- rejected: Agent resumes work based on the feedback, then re-confirms before finishing.
+- enhanced: Agent incorporates the requested enhancement, then re-confirms before finishing.
+- unclear or timeout: Agent asks once more; if still unresolved, agent reports current status and waits without finishing.
+- non-interactive (ask tool unavailable): Agent emits a privacy-safe summary of files changed and actions
+  taken, then finishes deterministically without blocking.

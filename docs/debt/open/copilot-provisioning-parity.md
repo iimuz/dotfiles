@@ -18,7 +18,7 @@
 - Detail: Platform scripts use different guard commands and deploy different subsets of Copilot
   config files, producing inconsistent Copilot setup outcomes across environments.
 
-## FIX_CONDITION
+## Fix Condition
 
 - Condition: Copilot setup behavior is standardized across supported platforms or explicitly
   documented where intentional differences exist.
