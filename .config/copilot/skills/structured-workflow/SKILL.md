@@ -128,7 +128,7 @@ skill(name: "implementation-plan",
 Extract `plan_filepath` from `PlanResult`. Write plan summary for Phase 4:
 
 ```text
-task(agent_type: "explore",
+task(agent_type: "explore", model: "claude-opus-4.6",
      prompt: "Read the plan at {plan_filepath}
               and write a 1-paragraph summary
               (max 500 chars) capturing the design
@@ -149,7 +149,7 @@ Delegate scope preparation and execution to a single sub-agent.
 Sub-agent response must conform to `SubAgentResponse`; on `ok: false`, abort with `error_summary`.
 
 ```text
-task(agent_type: "general-purpose",
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",
      prompt: "1. Use the skill tool to invoke 'structured-workflow-implement'
                  with input: { session_id: '{session_id}',
                                plan_filepath: '{plan_filepath}',
@@ -172,7 +172,7 @@ fault(sub_agent_fails) => fallback: none; abort
 Stage files via sub-agent:
 
 ```text
-task(agent_type: "general-purpose",
+task(agent_type: "general-purpose", model: "gpt-5.3-codex",
      prompt: "Run git status to identify
               modified/new files related to the
               implementation. Stage all relevant
@@ -226,7 +226,7 @@ fault(skill_fails) => fallback: none; abort
 ### Phase 5: Final Summary
 
 ```text
-task(agent_type: "explore",
+task(agent_type: "explore", model: "gemini-3-pro-preview",
      prompt: "plan（元タスクと計画内容）と
               全 iterations
               （各イテレーションのコミットと

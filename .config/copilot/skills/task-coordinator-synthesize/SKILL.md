@@ -68,7 +68,7 @@ type SynthesisReceipt = {
 ```typespec
 op synthesize(p: Plan, receipts: WorkerReceipt[]) -> SynthesisReceipt {
   // Pipeline mode only; set synthesizer_protocol_file = {skill_base_dir}/references/synthesizer-protocol.md
-  // Spawn Synthesizer: task(prompt="Read {synthesizer_protocol_file} and follow instructions.\n\n## Input Context\n- goal: {p.goal}\n- output_files: {p.tasks[*].output_file}\n- synthesis_output_file: {p.synthesis_output_file}")
+  // Spawn Synthesizer: task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt="Read {synthesizer_protocol_file} and follow instructions.\n\n## Input Context\n- goal: {p.goal}\n- output_files: {p.tasks[*].output_file}\n- synthesis_output_file: {p.synthesis_output_file}")
   invariant: (synthesizer_fails) => retry_once("refined prompt");
   invariant: (synthesizer_fails_again) => warn("report synthesis_output_file + output_files; do not load inline");
   invariant: (reads_synthesis_file and !explicit_user_request) => warn("synthesis.md: load only on explicit request");

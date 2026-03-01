@@ -70,7 +70,7 @@ type SynthesisReceipt = {
 op plan(request: string, session_id: string, run_id: string, run_dir: string) -> Plan {
   // Set planner_protocol_file = {skill_base_dir}/references/planner-protocol.md
   // Set plan_schema_file = {skill_base_dir}/references/plan-schema.md
-  // Spawn Planner: task(prompt="Read {planner_protocol_file} and follow instructions.\n\n## Input Context\n- request: {request}\n- session_id: {session_id}\n- run_id: {run_id}\n- run_dir: {run_dir}\n- plan_schema_file: {plan_schema_file}")
+  // Spawn Planner: task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt="Read {planner_protocol_file} and follow instructions.\n\n## Input Context\n- request: {request}\n- session_id: {session_id}\n- run_id: {run_id}\n- run_dir: {run_dir}\n- plan_schema_file: {plan_schema_file}")
   invariant: (direct_implementation_attempt) => abort("Delegate to Planner first");
   invariant: (coordinator_investigates_before_plan) => abort("Pass request verbatim to Planner; coordinator must not invoke investigation tools before plan op");
   invariant: (planner_response_lines > 5) => warn("Response has extra lines; verify plan.json on disk");

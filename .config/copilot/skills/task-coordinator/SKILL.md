@@ -79,7 +79,7 @@ Compute `run_id` and `run_dir` before starting the pipeline.
 ### Phase 1: Plan
 
 ```text
-task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request, session_id, run_id, run_dir }")
+task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request, session_id, run_id, run_dir }")
 ```
 
 Read `plan.json` from `{run_dir}/plan.json` after the agent completes.
@@ -95,13 +95,13 @@ Branch by `plan.tasks.length`:
 - **Inline** (1 task):
 
 ```text
-task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_inline")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_inline")
 ```
 
 - **Pipeline** (2+ tasks):
 
 ```text
-task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_pipeline")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_pipeline")
 ```
 
 ```text
@@ -111,7 +111,7 @@ fault(execute_fails) => fallback: none; abort
 ### Phase 3: Synthesize (pipeline only)
 
 ```text
-task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
 ```
 
 ```text
@@ -121,7 +121,7 @@ fault(synthesize_fails) => fallback: report output_files without synthesis; cont
 ### Phase 4: Present
 
 ```text
-task(agent_type: "general-purpose", prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { result }")
+task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { result }")
 ```
 
 ```text

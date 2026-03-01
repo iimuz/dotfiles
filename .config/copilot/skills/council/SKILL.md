@@ -36,7 +36,8 @@ type ModelRoles = {
   Member2: "gemini-3-pro-preview"; // broad knowledge and alternative perspectives
   Member3: "gpt-5.3-codex"; // structured thinking and code-focused insights
   Chairman: "claude-opus-4.6"; // extended thinking synthesis
-  Prep: "claude-sonnet-4.6"; // anonymization and ranking aggregation
+  Prep: "gemini-3-pro-preview"; // anonymization (large context)
+  Aggregator: "claude-opus-4.6"; // ranking aggregation (Stage 4)
 };
 
 type SessionFiles = {
@@ -133,7 +134,7 @@ fault(responses.length == 2) => fallback: continue with 2/3 responses noted in o
 - Output: anonymized_input_path, label_map_path
 
 ```text
-task(agent_type: "general-purpose", model: "claude-sonnet-4.6", prompt: "Use the skill tool to invoke 'council-anonymize' with input: { session_id, question, model: 'claude-sonnet-4.6', stage1_response_paths: [<stage 1 output paths>], output_anonymized_path: '{session_dir}/council-stage2-input-{timestamp}.md', label_map_path: '{session_dir}/council-label-mapping-{timestamp}.json' }")
+task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'council-anonymize' with input: { session_id, question, stage1_response_paths: [<stage 1 output paths>], output_anonymized_path: '{session_dir}/council-stage2-input-{timestamp}.md', label_map_path: '{session_dir}/council-label-mapping-{timestamp}.json' }")
 ```
 
 ```text
@@ -166,7 +167,7 @@ fault(allParseFailures)  => fallback: skip Stage 4, proceed to Stage 5 without r
 - Skipped when fault(allParseFailures) fires in Stage 3
 
 ```text
-task(agent_type: "general-purpose", model: "claude-sonnet-4.6", prompt: "Use the skill tool to invoke 'council-aggregate' with input: { session_id, model: 'claude-sonnet-4.6', review_artifact_paths: [<stage 3 output paths>], label_map_path: '<label_map_path>', output_rankings_path: '{session_dir}/council-aggregate-rankings-{timestamp}.md' }")
+task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'council-aggregate' with input: { session_id, review_artifact_paths: [<stage 3 output paths>], label_map_path: '<label_map_path>', output_rankings_path: '{session_dir}/council-aggregate-rankings-{timestamp}.md' }")
 ```
 
 ```text
