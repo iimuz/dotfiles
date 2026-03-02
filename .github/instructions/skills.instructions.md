@@ -40,6 +40,9 @@ disable-model-invocation: false # Required (always false)
 ---
 ```
 
+- Rule: ALWAYS use `## Overview` as the first section heading in the SKILL.md Markdown body.
+- Rule: NEVER use `## Role` as a section heading in SKILL.md; use `## Overview` instead.
+
 ### Strict Constraints for Frontmatter
 
 - `name` (Required):
