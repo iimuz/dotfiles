@@ -67,21 +67,4 @@
 
 ## Task Completion Protocol
 
-- Scope: Apply this protocol in the main agent only. Do NOT apply it in subagents.
-- Ordering: Execute this protocol as the last step before agentStop.
-
-### Confirmation Step
-
-- Execute the ask tool to request user confirmation before finishing.
-- The ask prompt must be concise and privacy-safe: list files changed and actions taken.
-- Do NOT include secrets, tokens, or full file contents in the summary.
-- Example prompt: "I have completed the task. Files changed: [list]. Actions taken: [list]. Is it okay to finish?"
-
-### Response Branches
-
-- approved: Agent finishes and invokes agentStop.
-- rejected: Agent resumes work based on the feedback, then re-confirms before finishing.
-- enhanced: Agent incorporates the requested enhancement, then re-confirms before finishing.
-- unclear or timeout: Agent asks once more; if still unresolved, agent reports current status and waits without finishing.
-- non-interactive (ask tool unavailable): Agent emits a privacy-safe summary of files changed and actions
-  taken, then finishes deterministically without blocking.
+- ALWAYS use the ask tool to confirm with the user before finishing, and ALWAYS accept free-form user input in that confirmation.
