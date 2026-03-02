@@ -1,18 +1,16 @@
-# Core Philosophy
+# Copilot Instructions
 
-## Pragmatic Priorities
+## Operational Constraints
 
-- Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
-- Maintenance ease over theoretical correctness
-- Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
+### Core Philosophy
 
-## Principles
+- ALWAYS prioritize current requirements over future extensibility (YAGNI).
+- ALWAYS prioritize maintenance ease over theoretical correctness.
+- ALWAYS favor simple, readable code over clever solutions (KISS: Keep It Simple, Stupid).
+- ALWAYS plan before executing complex operations.
+- ALWAYS match security level to project scope (personal/internal/public).
 
-- Plan Before Execute: Use Plan Mode for complex operations
-- Test-Driven: Write tests before implementation
-- Context-Aware Security: Match security level to project scope (personal/internal/public)
-
-## Subagent Strategy and Parallel Execution
+### Subagent Strategy and Parallel Execution
 
 - ALWAYS use subagents to offload heavy-context operations and keep the main context focused.
 - NEVER use subagents for micro-operations such as single-file reads, tiny edits, or one-step lookups.
@@ -22,49 +20,39 @@
 
 ### Model Selection
 
-- ALWAYS use claude-opus-4.6 as the default model. Prioritize accuracy over speed.
-- Use gpt-5.3-codex for implementation tasks such as code generation, file editing, and commit preparation.
-- Use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
-
-## Personal Preferences
+- ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
+- ALWAYS use gpt-5.3-codex for implementation tasks (code generation, file editing, commit preparation).
+- ALWAYS use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
 
 ### Privacy
 
-- Always redact logs; never paste secrets (API keys/tokens/passwords/JWTs)
-- Review output before sharing - remove any sensitive data
+- ALWAYS redact logs; NEVER paste secrets (API keys, tokens, passwords, JWTs).
+- ALWAYS review output before sharing; remove any sensitive data.
 
-### Code Style
+### Success Metrics
 
-- No emojis in code, comments, or documentation
-- Prefer immutability - never mutate objects or arrays
-- Many small files over few large files
-- 200-400 lines typical, 800 max per file
-- Standard idioms over clever techniques (POLA: Principle of Least Astonishment)
-- Boring/stable technology over experimental libraries
-- Keep related code close (LoB: Locality of Behavior) - avoid excessive file splitting
-- Duplicate code until 3rd occurrence before abstracting (WET: Write Everything Twice / Rule of Three)
+- ALWAYS ensure code is readable and maintainable.
+- ALWAYS ensure user requirements are met exactly (no more, no less).
 
-### Testing
-
-- TDD: Write tests first
-- 80% minimum coverage
-- Unit + integration + E2E for critical flows
-
-## Prohibited
-
-- Unnecessary design patterns (Factory, Strategy, etc.)
-- Premature abstraction or interface creation
-- Splitting cohesive logic across multiple files
-- Over-engineering for rare edge cases
-- Adding Co-authored-by trailers to git commit messages
-- Writing to GitHub Issues or Pull Requests (comments, labels, assignments, etc.) without explicit user instruction
-
-## Success Metrics
-
-- All tests pass (80%+ coverage)
-- Code is readable and maintainable
-- User requirements are met (no more, no less)
-
-## Task Completion Protocol
+### Task Completion Protocol
 
 - ALWAYS use the ask tool to confirm with the user before finishing, and ALWAYS accept free-form user input in that confirmation.
+
+## Style and Preferences
+
+- NEVER use emojis in code, comments, or documentation.
+- ALWAYS prefer immutability; NEVER mutate objects or arrays.
+- ALWAYS prefer many small files (200-400 lines typical, 800 max) while keeping related code
+  co-located within the same module (LoB: Locality of Behavior);
+  NEVER split cohesive logic across multiple files.
+- ALWAYS use standard idioms over clever techniques (POLA: Principle of Least Astonishment).
+- ALWAYS choose boring, stable technology over experimental libraries.
+- ALWAYS duplicate code until the 3rd occurrence before abstracting (Rule of Three / WET).
+
+## Prohibitions
+
+- NEVER use unnecessary design patterns (Factory, Strategy, etc.).
+- NEVER create premature abstractions or interfaces.
+- NEVER over-engineer for rare edge cases.
+- NEVER add Co-authored-by trailers to git commit messages.
+- NEVER write to GitHub Issues or Pull Requests (comments, labels, assignments) without explicit user instruction.
