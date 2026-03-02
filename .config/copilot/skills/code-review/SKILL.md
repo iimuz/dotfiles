@@ -169,15 +169,6 @@ fault(consolidation_fails) => fallback: none; abort
 stage1_parallel_reviews (12x + conditional design-compliance 3x = 15x) -> stage2_gap_analysis -> [stage3_cross_check | skip] -> stage4_consolidate_and_deliver
 ```
 
-```text
-Future Evaluation:
-- Revisit model mix when default model capabilities change.
-- Evaluate whether conditional design-compliance needs independent quorum logic.
-- Confirm gap routing still captures all missed_by model pairings.
-- Re-check artifact naming contracts before adding new pipeline stages.
-- Keep these checks documentation-only unless behavior changes are explicitly requested.
-```
-
 | dependent                      | prerequisite            | description                                               |
 | ------------------------------ | ----------------------- | --------------------------------------------------------- |
 | _(column key)_                 | _(column key)_          | _(dependent requires prerequisite first)_                 |
