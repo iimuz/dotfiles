@@ -72,6 +72,14 @@ disable-model-invocation: false # Required (always false)
   are silently inaccessible.
 - Rule: Shared reference material must be duplicated into each skill's own `references/` subdirectory.
 
+### Content Scope Constraint
+
+- Rule: SKILL.md bodies MUST contain only runtime instructions (procedures, invariants, examples, fault declarations).
+- Rule: NEVER include planning notes, debt tracking, future evaluation, roadmap items,
+  or placeholder markers in SKILL.md bodies.
+- Exception: Placeholder-marker literals inside code-block invariant examples are permitted.
+- Rule: ALWAYS relocate planning content to `docs/plans/` and debt content to `docs/debt/`.
+
 ## Best Practices and Design Guidelines
 
 - Commit to Progressive Disclosure
