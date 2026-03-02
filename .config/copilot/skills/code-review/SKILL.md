@@ -7,7 +7,7 @@ disable-model-invocation: false
 
 # Code Review
 
-## Role
+## Overview
 
 Thin orchestrator that delegates all review work to specialized sub-skills. Launch 12 parallel
 aspect reviews (4 aspects x 3 models), plus a conditional design-compliance review (3 models, same as other aspects),
@@ -169,6 +169,15 @@ fault(consolidation_fails) => fallback: none; abort
 stage1_parallel_reviews (12x + conditional design-compliance 3x = 15x) -> stage2_gap_analysis -> [stage3_cross_check | skip] -> stage4_consolidate_and_deliver
 ```
 
+```text
+Future Evaluation:
+- Revisit model mix when default model capabilities change.
+- Evaluate whether conditional design-compliance needs independent quorum logic.
+- Confirm gap routing still captures all missed_by model pairings.
+- Re-check artifact naming contracts before adding new pipeline stages.
+- Keep these checks documentation-only unless behavior changes are explicitly requested.
+```
+
 | dependent                      | prerequisite            | description                                               |
 | ------------------------------ | ----------------------- | --------------------------------------------------------- |
 | _(column key)_                 | _(column key)_          | _(dependent requires prerequisite first)_                 |
@@ -194,8 +203,8 @@ The main agent reads only `gap-list.yml` (Stage 3 routing) and `consolidated-rev
 - code-review is the sole coordinator for all code-review-\* sub-skills.
 - Sub-skill workers (code-review-security, code-review-quality, code-review-performance,
   code-review-best-practices, code-review-design-compliance, code-review-gap-analysis,
-  code-review-cross-check, code-review-consolidate) must not be invoked by any agent
-  other than this orchestrator.
+  code-review-cross-check, code-review-consolidate) must be invoked only by this
+  orchestrator.
 
 ## Examples
 
