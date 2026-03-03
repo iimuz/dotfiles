@@ -80,6 +80,19 @@ disable-model-invocation: false # Required (always false)
 - Exception: Placeholder-marker literals inside code-block invariant examples are permitted.
 - Rule: ALWAYS relocate planning content to `docs/plans/` and debt content to `docs/debt/`.
 
+### Interface Section Style
+
+- Rule: ALWAYS use exactly one typescript code block for interface contracts.
+- Rule: NEVER use typespec blocks.
+- Rule: ALWAYS define operations with declare function signatures.
+- Rule: NEVER use JSDoc (/\*\* \*/) for contract definitions.
+- Rule: NEVER use markdown bullets for type/operation definitions.
+- Rule: ALWAYS place @fault and @invariant tags as comments directly below each declare function.
+- Rule: ALWAYS use inline object types when an input/output shape has 3 or fewer top-level fields.
+- Rule: ALWAYS use named types when an input/output shape has more than 3 top-level fields.
+- Rule: NEVER treat Interface @fault/@invariant annotations as replacements for stage-level
+  fault()/assert() declarations; ALWAYS keep both.
+
 ## Best Practices and Design Guidelines
 
 - Commit to Progressive Disclosure
@@ -125,6 +138,7 @@ disable-model-invocation: false # Required (always false)
   one happy-path example and one failure-path example.
 - Examples Format: Use `## Examples` section with `### Happy Path` and `### Failure Path`
   subsections; limit each to 5 lines or fewer.
+- ALWAYS include an Execution section with a call-order text block (e.g., gather -> evaluate -> synthesize).
 
 ## Knowledge/Transform Skill Authoring
 
@@ -141,3 +155,4 @@ disable-model-invocation: false # Required (always false)
   may be invoked by any workflow skill or directly by the user.
 - Examples Policy: Include one happy-path example and one failure-path example using the same
   `## Examples` section format with `### Happy Path` and `### Failure Path` subsections.
+- Execution section is optional; omit unless delegation is introduced.
