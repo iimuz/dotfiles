@@ -40,3 +40,8 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
   - Pattern: [slug].md
   - Template: docs/templates/debt.md
   - Directory: docs/debt/open/ (active) or docs/debt/resolved/ (closed)
+- Type: Report
+  - Pattern: [YYYY-MM-DD]-[topic].md
+  - Template: docs/templates/report.md
+  - Directory: docs/reports/
+  - Example: 2024-03-20-skill-interface-style.md
