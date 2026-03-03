@@ -14,38 +14,101 @@ that prioritizes safe decisions and explicit verification before reporting compl
 
 ## Interface
 
-- Input Type: `{ comments: string, context?: string }`
-- Output Type: `{ summary: string }`
-- Model Roles:
-  - Coordinator: Runs stage sequencing, gates, and artifact handoff.
-  - Gatherer: `task(agent_type: 'general-purpose', model: 'gemini-3-pro-preview')`
-    extracts facts only from comments and context.
-  - Evaluator: `skill('council')` classifies comments and recommends actions.
-  - Implementer: `skill('task-coordinator')` applies approved fix plan items.
-  - Verifier: `skill('code-review', model: 'claude-opus-4.6')` reviews unstaged changes for correctness.
-  - Committer: `task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')`
-    delegates commit execution (git add, pre-check, `skill('commit-staged')`,
-    artifact write) when verify severity gate passes.
-- Session File Types:
-  - Gather MD
-  - Eval Input MD
-  - Council Result JSON
-  - Fix Plan JSON
-  - Implementation Result JSON
-  - Verification Result JSON
-  - Commit Result JSON
-  - Final Summary MD
-- Invariants:
-  - Use `skill()` orchestration calls directly; do not wrap orchestrator skills in `task()`.
-    Utility skills (e.g., `commit-staged`) may be invoked from within `task()` sub-agents.
-  - Gather output must be facts-only with no judgments, recommendations, or opinions.
-  - Use fail-closed interpretation for ambiguous evaluation output.
-  - Save all artifacts under `~/.copilot/session-state/{session_id}/files/`.
-  - `invariant: (gather_contains_judgment_or_opinion) => abort("Gather stage must remain facts-only")`
-  - `invariant: (coordinator_builds_eval_input_inline_without_gather_artifact) =>
-abort("Delegate gather/eval-input construction to sub-agent")`
+```typescript
+type ModelRoles = {
+  coordinator: "Runs stage sequencing, gates, and artifact handoff.";
+  gatherer: "task(agent_type: 'general-purpose', model: 'gemini-3-pro-preview')";
+  evaluator: "skill('council')";
+  implementer: "skill('task-coordinator')";
+  verifier: "skill('code-review', model: 'claude-opus-4.6')";
+  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')";
+};
+
+type SessionFileTypes = {
+  gatherMd: "review-comment-workflow-{timestamp}-gather.md";
+  evalInputMd: "review-comment-workflow-{timestamp}-eval-input.md";
+  councilJson: "review-comment-workflow-{timestamp}-council.json";
+  fixPlanJson: "review-comment-workflow-{timestamp}-fix-plan.json";
+  implementJson: "review-comment-workflow-{timestamp}-implement.json";
+  verifyJson: "review-comment-workflow-{timestamp}-verify.json";
+  commitJson: "review-comment-workflow-{timestamp}-commit.json";
+  summaryMd: "review-comment-workflow-{timestamp}-summary.md";
+};
+
+type SeveritySummary = {
+  critical_count: number;
+  high_count: number;
+  medium_count: number;
+  low_count: number;
+};
+
+declare function reviewCommentWorkflow(input: {
+  comments: string;
+  context?: string;
+}): { summary: string };
+// @fault input_missing_comments => abort_with_error_summary
+// @invariant orchestrator_skill_calls_use_skill_not_task
+// @invariant gather_output_is_facts_only_no_judgments_recommendations_or_opinions
+// @invariant fail_closed_for_ambiguous_evaluation_output
+// @invariant artifacts_saved_under_session_state_files
+// @invariant (gather_contains_judgment_or_opinion) => abort("Gather stage must remain facts-only")
+// @invariant (coordinator_builds_eval_input_inline_without_gather_artifact) => abort("Delegate gather/eval-input construction to sub-agent")
+// @invariant model_roles: ModelRoles
+// @invariant session_file_types: SessionFileTypes
+
+declare function gatherStage(input: { comments: string; context?: string }): {
+  gather_artifact_path: string;
+};
+// @fault gather_generation_failed => abort_with_error_summary
+// @fault gather_file_missing => abort_with_error_summary
+// @fault gather_contains_non_facts => abort_with_error_summary
+// @invariant uses task(agent_type: "general-purpose", model: "gemini-3-pro-preview")
+
+declare function evaluateStage(input: { gather_artifact_path: string }): {
+  actionable_count: number;
+  skip_decision: boolean;
+  fix_plan: string;
+};
+// @fault eval_input_generation_failed => abort_with_error_summary
+// @fault eval_input_file_missing => abort_with_error_summary
+// @fault council_invocation_failed => abort_with_error_summary
+// @invariant uses skill("council") with eval-input artifact path
+
+declare function implementStage(input: {
+  skip_decision: boolean;
+  fix_plan: string;
+}): { implementation_status: string; implementation_artifact_path: string };
+// @fault task_coordinator_failed => emit_failed_implementation_status_and_continue
+// @invariant uses skill("task-coordinator") when skip_decision is false
+
+declare function verifyStage(input: {
+  implementation_artifact_path: string;
+  skip_decision: boolean;
+}): SeveritySummary;
+// @fault code_review_failed => emit_verification_unavailable_and_continue
+// @invariant uses skill("code-review", model: "claude-opus-4.6")
+
+declare function commitStage(input: {
+  critical_count: number;
+  high_count: number;
+  implementation_artifact_path: string;
+}): { commit_status: string; commit_skip_reason?: string };
+// @fault git_add_failed => abort_with_git_add_failed_status
+// @fault commit_skill_failed => emit_commit_failed_status_and_continue
+// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.3-codex") and commit-staged
+
+declare function summarizeStage(input: {
+  actionable_count: number;
+  commit_status: string;
+  commit_skip_reason?: string;
+}): { summary: string };
+// @fault summary_artifact_write_failed => abort_with_error_summary
+// @invariant summarizes gather, evaluate, implement, verify, and commit outcomes
+```
 
 ## Workflow
+
+- fault(input_missing_comments) => fallback: abort_with_error_summary; abort
 
 1. Gather
 
@@ -117,6 +180,13 @@ abort("Delegate gather/eval-input construction to sub-agent")`
 - Keep wording explicit about skips, degraded paths, unresolved risks, and any `commit_skip_reason`.
 - Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-summary.md`.
 - Output: `{ summary: string }`.
+- fault(summary_artifact_write_failed) => fallback: abort_with_error_summary; abort
+
+## Execution
+
+```text
+gather -> evaluate -> implement -> verify -> commit -> summarize
+```
 
 ## Session Files
 
