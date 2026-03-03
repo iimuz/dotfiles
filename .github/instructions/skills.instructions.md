@@ -40,6 +40,9 @@ disable-model-invocation: false # Required (always false)
 ---
 ```
 
+- Rule: ALWAYS use `## Overview` as the first section heading in the SKILL.md Markdown body.
+- Rule: NEVER use `## Role` as a section heading in SKILL.md; use `## Overview` instead.
+
 ### Strict Constraints for Frontmatter
 
 - `name` (Required):
@@ -68,6 +71,14 @@ disable-model-invocation: false # Required (always false)
   only `{skill-name}/` directories are valid children—files outside a skill directory
   are silently inaccessible.
 - Rule: Shared reference material must be duplicated into each skill's own `references/` subdirectory.
+
+### Content Scope Constraint
+
+- Rule: SKILL.md bodies MUST contain only runtime instructions (procedures, invariants, examples, fault declarations).
+- Rule: NEVER include planning notes, debt tracking, future evaluation, roadmap items,
+  or placeholder markers in SKILL.md bodies.
+- Exception: Placeholder-marker literals inside code-block invariant examples are permitted.
+- Rule: ALWAYS relocate planning content to `docs/plans/` and debt content to `docs/debt/`.
 
 ## Best Practices and Design Guidelines
 

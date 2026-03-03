@@ -25,6 +25,13 @@
 - Evolution Discipline: When correcting a user-reported mistake, fix the issue AND update
   `.github/instructions/*.md` or `docs/design/*.md` or `docs/adr/*.md` to prevent recurrence.
 
+### Content Routing
+
+- ALWAYS place plan files in `docs/plans/active/` (in-progress) or `docs/plans/done/` (completed).
+- ALWAYS place debt files in `docs/debt/open/` (active) or `docs/debt/resolved/` (resolved).
+- NEVER embed plan content in non-plan files.
+- NEVER embed debt content in non-debt files.
+
 ## Tools
 
 - Lint: [mise run lint]
@@ -32,10 +39,21 @@
 
 ## Workflow
 
-- Read: Open File Manifest entries and extract constraints relevant to the task.
-- Plan: Define minimal edits and map each edit to a verified file path.
+- Read: Open FILE_MANIFEST entries and extract constraints relevant to the task.
+- Plan: Define minimal edits and map each edit to a verified file path. Use `docs/templates/plan.md` for complex tasks.
+- Path Verification Checkpoint: Before creating any plan or debt file, verify the output
+  path is one of: `docs/plans/active/`, `docs/plans/done/`, `docs/debt/open/`,
+  `docs/debt/resolved/`.
 - Execute: Implement focused changes.
-- Verify: Run `mise run lint` and `mise run format` for changed code/docs when applicable.
-- Evolve (Conditional): If triggered by a user-reported mistake, extract the missing
-  constraint and execute Evolution Discipline.
-- Finalize: Confirm outputs match requested scope and repository state is clean.
+- Verify: Run `mise run lint` and `mise run format` after modifications.
+- Evolve (Automatic): After completing Execute and Verify, evaluate whether ANY of the
+  following conditions apply:
+  (a) The task corrected behavior that resulted from a missing or ambiguous instruction.
+  (b) The task introduced a design decision not yet captured in instructions or design docs.
+  (c) The user explicitly requested an instruction update.
+  If ANY condition is true, extract the missing constraint and execute Evolution Discipline
+  BEFORE proceeding to Finalize.
+- Finalize: Confirm outputs match requested scope. Before completing, verify:
+  (1) All code edits during Execute were delegated to subagents.
+  (2) If the task corrected behavior from a missing instruction, Evolve was executed.
+  (3) Evolve output includes: Trigger, Missing Rule, New Rule, and Scope.

@@ -1,75 +1,58 @@
-# Core Philosophy
+# Copilot Instructions
 
-## Pragmatic Priorities
+## Operational Constraints
 
-- Current requirements over future extensibility (YAGNI: You Aren't Gonna Need It)
-- Maintenance ease over theoretical correctness
-- Simple, readable code over clever solutions (KISS: Keep It Simple, Stupid)
+### Core Philosophy
 
-## Principles
+- ALWAYS prioritize current requirements over future extensibility (YAGNI).
+- ALWAYS prioritize maintenance ease over theoretical correctness.
+- ALWAYS favor simple, readable code over clever solutions (KISS: Keep It Simple, Stupid).
+- ALWAYS plan before executing complex operations.
+- ALWAYS match security level to project scope (personal/internal/public).
 
-- Agent-First: Delegate to specialized agents for complex work
-- Parallel Execution: Use Task tool with multiple agents when possible
-- Plan Before Execute: Use Plan Mode for complex operations
-- Test-Driven: Write tests before implementation
-- Context-Aware Security: Match security level to project scope (personal/internal/public)
+### Subagent Strategy and Parallel Execution
 
-## Personal Preferences
+- ALWAYS use subagents to offload heavy-context operations and keep the main context focused.
+- NEVER use subagents for micro-operations such as single-file reads, tiny edits, or one-step lookups.
+- ALWAYS delegate cohesive workflows with crisp input context and explicit output contracts.
+- ALWAYS execute independent subagent workflows in parallel rather than sequentially.
+- ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
+
+### Model Selection
+
+- ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
+- ALWAYS use gpt-5.3-codex for implementation tasks (code generation, file editing, commit preparation).
+- ALWAYS use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
 
 ### Privacy
 
-- Always redact logs; never paste secrets (API keys/tokens/passwords/JWTs)
-- Review output before sharing - remove any sensitive data
+- ALWAYS redact logs; NEVER paste secrets (API keys, tokens, passwords, JWTs).
+- ALWAYS review output before sharing; remove any sensitive data.
 
-### Code Style
+### Success Metrics
 
-- No emojis in code, comments, or documentation
-- Prefer immutability - never mutate objects or arrays
-- Many small files over few large files
-- 200-400 lines typical, 800 max per file
-- Standard idioms over clever techniques (POLA: Principle of Least Astonishment)
-- Boring/stable technology over experimental libraries
-- Keep related code close (LoB: Locality of Behavior) - avoid excessive file splitting
-- Duplicate code until 3rd occurrence before abstracting (WET: Write Everything Twice / Rule of Three)
+- ALWAYS ensure code is readable and maintainable.
+- ALWAYS ensure user requirements are met exactly (no more, no less).
 
-### Testing
+### Task Completion Protocol
 
-- TDD: Write tests first
-- 80% minimum coverage
-- Unit + integration + E2E for critical flows
+- ALWAYS use the ask tool to confirm with the user before finishing, and ALWAYS accept free-form user input in that confirmation.
 
-## Prohibited
+## Style and Preferences
 
-- Unnecessary design patterns (Factory, Strategy, etc.)
-- Premature abstraction or interface creation
-- Splitting cohesive logic across multiple files
-- Over-engineering for rare edge cases
-- Adding Co-authored-by trailers to git commit messages
-- Writing to GitHub Issues or Pull Requests (comments, labels, assignments, etc.) without explicit user instruction
+- NEVER use emojis in code, comments, or documentation.
+- ALWAYS prefer immutability; NEVER mutate objects or arrays.
+- ALWAYS prefer many small files (200-400 lines typical, 800 max) while keeping related code
+  co-located within the same module (LoB: Locality of Behavior);
+  NEVER split cohesive logic across multiple files.
+- ALWAYS use standard idioms over clever techniques (POLA: Principle of Least Astonishment).
+- ALWAYS choose boring, stable technology over experimental libraries.
+- ALWAYS duplicate code until the 3rd occurrence before abstracting (Rule of Three / WET).
 
-## Success Metrics
+## Prohibitions
 
-- All tests pass (80%+ coverage)
-- Code is readable and maintainable
-- User requirements are met (no more, no less)
-
-## Task Completion Protocol
-
-- Scope: Apply this protocol in the main agent only. Do NOT apply it in subagents.
-- Ordering: Execute this protocol as the last step before agentStop.
-
-### Confirmation Step
-
-- Execute the ask tool to request user confirmation before finishing.
-- The ask prompt must be concise and privacy-safe: list files changed and actions taken.
-- Do NOT include secrets, tokens, or full file contents in the summary.
-- Example prompt: "I have completed the task. Files changed: [list]. Actions taken: [list]. Is it okay to finish?"
-
-### Response Branches
-
-- approved: Agent finishes and invokes agentStop.
-- rejected: Agent resumes work based on the feedback, then re-confirms before finishing.
-- enhanced: Agent incorporates the requested enhancement, then re-confirms before finishing.
-- unclear or timeout: Agent asks once more; if still unresolved, agent reports current status and waits without finishing.
-- non-interactive (ask tool unavailable): Agent emits a privacy-safe summary of files changed and actions
-  taken, then finishes deterministically without blocking.
+- NEVER use unnecessary design patterns (Factory, Strategy, etc.).
+- NEVER create premature abstractions or interfaces.
+- NEVER over-engineer for rare edge cases.
+- NEVER add Co-authored-by trailers to git commit messages.
+- NEVER write to GitHub Issues or Pull Requests (comments, labels, assignments) without explicit user instruction.
