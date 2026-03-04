@@ -1,6 +1,8 @@
 ---
 name: orchestrator
 description: Coordinate complex tasks by delegating to specialized subagents. Use when the task requires planning, multi-step execution, or parallel delegation.
+user-invocable: true
+disable-model-invocation: true
 tools:
   [
     "agent",
