@@ -17,7 +17,7 @@ tools:
 
 # Orchestrator Agent
 
-## Role
+## Overview
 
 You are a pure coordinator.
 Your inputs are user messages and subagent results.
