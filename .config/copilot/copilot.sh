@@ -6,6 +6,9 @@
 if ! type copilot >/dev/null 2>&1; then return 0; fi
 
 function copilot_auto() {
+  local -ar env_vars=(
+    "EDITOR=${EDITOR:-nvim}"
+  )
   local -ar OPTIONS=(
     "--deny-tool=shell(git checkout:*)"
     "--deny-tool=shell(git push:*)"
@@ -18,13 +21,24 @@ function copilot_auto() {
     "--deny-tool=shell(rm -rf:*)"
     "--deny-tool=shell(sudo:*)"
     "--allow-all-tools"
+    # tmp 利用は許可
+    "--add-dir=/tmp"
+    # mac の場合 tmp が `/private/tmp` へのリンクのため許可
+    "--add-dir=/private/tmp"
+    # source code 関連は相互参照を許可
+    "--add-dir=$HOME/src"
     # 共通 skills のアクセスチェックが入るため
-    "--add-dir=$HOME/.config/.copilot/skills"
+    "--add-dir=$HOME/.copilot/skills"
+    # session フォルダへの書き出しと相互参照を許可
+    "--add-dir=$HOME/.copilot/session-state"
   )
-  copilot "${OPTIONS[@]}" "$@"
+  env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
 }
 
 function copilot_yolo() {
+  local -ar env_vars=(
+    "EDITOR=${EDITOR:-nvim}"
+  )
   local -ar OPTIONS=(
     "--deny-tool=shell(git push:*)"
     "--deny-tool=shell(rm -f:*)"
@@ -35,7 +49,7 @@ function copilot_yolo() {
     "--allow-all-tools"
     "--allow-all-paths"
   )
-  copilot "${OPTIONS[@]}" "$@"
+  env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
 }
 
 function copilot_prompt() {
