@@ -80,6 +80,11 @@ disable-model-invocation: false # Required (always false)
   are silently inaccessible.
 - Rule: Shared reference material must be duplicated into each skill's own `references/` subdirectory.
 
+### Output Safety
+
+- Rule: `output_filepath` MUST NOT match any reference or input file path.
+- Rule: `output_policy` default value is `create_only` when omitted.
+
 ### Content Scope Constraint
 
 - Rule: SKILL.md bodies MUST contain only runtime instructions (procedures, invariants, examples, fault declarations).

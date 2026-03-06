@@ -18,6 +18,9 @@ applyTo: "docs/plans/**"
 - Location Active: `docs/plans/active/` for in-progress plans.
 - Location Done: `docs/plans/done/` for completed plans.
 - Transition: When a plan's status changes to `DONE`, move the file from `docs/plans/active/` to `docs/plans/done/`.
+- Ownership: NEVER set status to `DONE` or move a plan file from `docs/plans/active/`
+  to `docs/plans/done/` without explicit user instruction or confirmation; ONLY the user
+  decides when a plan is complete.
 
 ## Content Rules
 

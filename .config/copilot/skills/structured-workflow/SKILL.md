@@ -29,6 +29,9 @@ Operational constraints:
 - Subagent_For_NonOrchestrator: task() must only invoke non-orchestrator sub-skills.
 - Minimal_Reads: main agent reads only plan_filepath, plan-summary.md,
   sw-implement-request-{n}.md, workflow-summary.md; abort if any other file is read directly.
+- Draft_Review_Safety: Stage 1 intermediate outputs MUST be written to session-scoped
+  scratch space first and MUST NOT write to user-managed persistent files such as
+  `docs/plans/` or `docs/design/` during draft stages.
 
 ## Interface
 
@@ -91,7 +94,9 @@ stage5_final_summary()
   ```
 
 - Outputs: plan_filepath: string; {session_dir}/plan-summary.md
-- Guards: plan_filepath extracted from skill result
+- Guards: plan_filepath extracted from skill result.
+- Guards: Inspect any output_filepath against user-provided context paths; if matched, write to a fresh
+  timestamped path in {session_dir} and pass the existing file via reference_filepaths (read-only).
 - Faults:
   fault(skill_fails) => fallback: none; abort
 

@@ -7,7 +7,7 @@ disable-model-invocation: false
 
 # Implementation Plan Generator
 
-## Role
+## Overview
 
 Thin orchestrator that delegates all planning work to specialized sub-skills. Launch 3 parallel
 analyses, 3 parallel plan drafts, 3 parallel cross-reviews, parallel aggregation and validation,
@@ -137,13 +137,14 @@ fault(resolve_fails) => fallback: proceed to Stage 6 without resolutions; contin
 
 ### Stage 6: Synthesis
 
-After Stage 5 completes, determine the output filepath:
+After Stage 5 completes, determine reference and output paths:
 
-- Ask user to provide a preferred plan name, OR derive from user_request: `{purpose}-{component}-1.md`
-- `output_filepath = ~/.copilot/session-state/{session_id}/files/{purpose}-{component}-1.md`
+- `reference_filepaths` must include all Stage 2-5 artifact paths used for synthesis.
+- `output_filepath` must be a fresh session-scoped path that does not overlap with reference paths, for example:
+  `~/.copilot/session-state/{session_id}/files/implementation-plan-final-{timestamp}.md`.
 
 ```text
-task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'implementation-plan-synthesize' with input: { session_id, user_request, timestamp, output_filepath }")
+task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'implementation-plan-synthesize' with input: { session_id, user_request, timestamp, reference_filepaths, output_filepath, output_policy: 'create_only' }")
 ```
 
 Return the `output_filepath` to the caller.
