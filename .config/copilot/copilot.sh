@@ -39,62 +39,174 @@ function copilot_yolo() {
 }
 
 function copilot_prompt() {
-  if [ "$#" -ne 1 ]; then
-    echo "usage: copilot_prompt <markdown-file>" >&2
-    return 1
-  fi
-
   if ! type rg >/dev/null 2>&1; then
     echo "rg command is required" >&2
     return 1
   fi
 
-  local -r SOURCE_FILE="$1"
-  if [ ! -f "$SOURCE_FILE" ]; then
-    echo "file not found: $SOURCE_FILE" >&2
+  local -r usage="usage: copilot_prompt [--yolo|--auto] [-i|-p] [--model <model>] [--agent <agent>] <markdown-file> [-- <extra-args...>]"
+  local strategy="auto"
+  local strategy_specified=""
+  local launch_mode="interactive"
+  local model="claude-sonnet-4.6"
+  local agent="orchestrator"
+  local source_file=""
+  local mode_specified=""
+  local -a extra_args=()
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --yolo)
+        if [ "$strategy_specified" = "true" ] && [ "$strategy" != "yolo" ]; then
+          echo "--yolo and --auto cannot be combined" >&2
+          return 1
+        fi
+        strategy="yolo"
+        strategy_specified="true"
+        shift
+        ;;
+      --auto)
+        if [ "$strategy_specified" = "true" ] && [ "$strategy" != "auto" ]; then
+          echo "--yolo and --auto cannot be combined" >&2
+          return 1
+        fi
+        strategy="auto"
+        strategy_specified="true"
+        shift
+        ;;
+      -i)
+        if [ "$mode_specified" = "true" ] && [ "$launch_mode" != "interactive" ]; then
+          echo "-i and -p cannot be combined" >&2
+          return 1
+        fi
+        launch_mode="interactive"
+        mode_specified="true"
+        shift
+        ;;
+      -p)
+        if [ "$mode_specified" = "true" ] && [ "$launch_mode" != "prompt" ]; then
+          echo "-i and -p cannot be combined" >&2
+          return 1
+        fi
+        launch_mode="prompt"
+        mode_specified="true"
+        shift
+        ;;
+      --model)
+        if [ "$#" -lt 2 ] || [ -z "$2" ] || [[ "$2" == -* ]]; then
+          echo "--model requires a value" >&2
+          return 1
+        fi
+        model="$2"
+        shift 2
+        ;;
+      --agent)
+        if [ "$#" -lt 2 ] || [ -z "$2" ] || [[ "$2" == -* ]]; then
+          echo "--agent requires a value" >&2
+          return 1
+        fi
+        agent="$2"
+        shift 2
+        ;;
+      --)
+        shift
+        while [ "$#" -gt 0 ]; do
+          if [ -z "$source_file" ]; then
+            source_file="$1"
+          else
+            extra_args+=("$1")
+          fi
+          shift
+        done
+        break
+        ;;
+      -*)
+        if [ -z "$source_file" ]; then
+          echo "unexpected option or leading-dash filename without --: $1" >&2
+          echo "$usage" >&2
+          return 1
+        fi
+        extra_args+=("$1")
+        shift
+        ;;
+      *)
+        if [ -z "$source_file" ]; then
+          source_file="$1"
+        else
+          extra_args+=("$1")
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  if [ -z "$source_file" ]; then
+    echo "$usage" >&2
+    return 1
+  fi
+  if [ ! -f "$source_file" ]; then
+    echo "file not found: $source_file" >&2
     return 1
   fi
 
-  local PROMPT_SECTION
-  PROMPT_SECTION="$(rg -U --pcre2 '(?s)^## Prompt\n(.*?)(?=^## |\z)' -- "$SOURCE_FILE")" || true
-  if [ -z "$PROMPT_SECTION" ]; then
-    echo "## Prompt section is empty or missing: $SOURCE_FILE" >&2
+  local prompt_section
+  prompt_section="$(rg -U --pcre2 '(?s)^## Prompt\n(.*?)(?=^## |\z)' -- "$source_file")" || true
+  if [ -z "$prompt_section" ]; then
+    echo "## Prompt section is empty or missing: $source_file" >&2
     return 1
   fi
 
-  local -r PROMPT_TEXT="$(
+  local -r prompt_text="$(
     cat <<EOF
 <user_task>
-${PROMPT_SECTION}
+${prompt_section}
 </user_task>
 
 <system_instruction>
-Update the ## Steps section in ${SOURCE_FILE} to reflect the requested work.
+Update ${source_file} by editing only the sections: ## Ref, ## Steps, ## Verify, and ## Scratchpad.
+Keep Scratchpad notes concise and focused on progress updates.
 </system_instruction>
 EOF
   )"
-  local -ar OPTIONS=(
-    "--deny-tool=shell(git checkout:*)"
-    "--deny-tool=shell(git push:*)"
-    "--deny-tool=shell(git rebase:*)"
-    "--deny-tool=shell(git reset:*)"
-    "--deny-tool=shell(git switch:*)"
-    "--deny-tool=shell(npm remove:*)"
-    "--deny-tool=shell(npm uninstall:*)"
-    "--deny-tool=shell(rm:*)"
-    "--deny-tool=shell(mv:*)"
-    "--deny-tool=shell(cp:*)"
-    "--deny-tool=shell(dd:*)"
-    "--deny-tool=shell(mkfs:*)"
-    "--deny-tool=shell(shutdown:*)"
-    "--deny-tool=shell(reboot:*)"
-    "--deny-tool=shell(kill:*)"
-    "--deny-tool=shell(curl -X DELETE:*)"
-    "--deny-tool=shell(wget --post-file:*)"
-    "--deny-tool=shell(git push --force:*)"
-    "--deny-tool=shell(sudo:*)"
-    # 共通 skills のアクセスチェックが入るため
-    "--add-dir=$HOME/.config/.copilot/skills"
-  )
-  copilot -p "$PROMPT_TEXT" --autopilot "${OPTIONS[@]}"
+
+  local -a mode_opts=()
+  if [ "$launch_mode" = "interactive" ]; then
+    mode_opts+=("--interactive" "$prompt_text")
+  else
+    mode_opts+=("--prompt" "$prompt_text")
+    mode_opts+=("--autopilot")
+    mode_opts+=("--no-ask-user")
+  fi
+
+  local -ar model_opts=("--model" "$model")
+  local -a agent_opts=()
+  if [ "$agent" != "default" ]; then
+    agent_opts+=("--agent")
+    agent_opts+=("$agent")
+  fi
+
+  case "$strategy" in
+    yolo)
+      if ! type copilot_yolo >/dev/null 2>&1; then
+        echo "copilot_yolo function is required" >&2
+        return 1
+      fi
+      copilot_yolo \
+        ${mode_opts[@]+"${mode_opts[@]}"} \
+        ${model_opts[@]+"${model_opts[@]}"} \
+        ${agent_opts[@]+"${agent_opts[@]}"} \
+        ${extra_args[@]+"${extra_args[@]}"}
+      ;;
+    *)
+      if ! type copilot_auto >/dev/null 2>&1; then
+        echo "copilot_auto function is required" >&2
+        return 1
+      fi
+      copilot_auto \
+        ${mode_opts[@]+"${mode_opts[@]}"} \
+        ${model_opts[@]+"${model_opts[@]}"} \
+        ${agent_opts[@]+"${agent_opts[@]}"} \
+        ${extra_args[@]+"${extra_args[@]}"}
+      ;;
+  esac
 }
