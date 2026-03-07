@@ -1,10 +1,11 @@
 {
   "banner": "never",
-  "model": "claude-sonnet-4.5",
+  "model": "claude-sonnet-4.6",
   "render_markdown": true,
   "screen_reader": false,
+  "alt_screen": false,
+  "show_reasoning": false,
   "theme": "auto",
-  "trusted_folders": [
-    "/workspace"
-  ]
+  "trusted_folders": ["/workspace"]
 }
+
