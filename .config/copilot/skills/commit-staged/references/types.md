@@ -19,14 +19,23 @@ Complete list of valid commit types for Conventional Commits.
 | revert   | Revert previous commits                     | revert authentication changes |
 | i18n     | Internationalization                        | add Japanese translations     |
 
-## Operations
+## Commit Type Selection Rules
 
-```typespec
-op select_type(diff: StagedDiff) -> CommitType {
-  // Match diff to the most specific type using Type Descriptions table above
-  invariant: (only_whitespace_or_formatting) => force("style");
-  invariant: (only_test_files_changed)       => force("test");
-  invariant: (only_doc_files_changed)        => force("docs");
-  invariant: (type_not_in_table)             => abort("invalid commit type");
-}
-```
+Use the staged diff to choose the most specific type from the Type Descriptions table.
+
+| Priority | Condition                                                | Required Type                                                               |
+| -------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| 1        | The change set is only whitespace or formatting updates. | `style`                                                                     |
+| 2        | The change set touches only test files.                  | `test`                                                                      |
+| 3        | The change set touches only documentation files.         | `docs`                                                                      |
+| 4        | None of the above conditions apply.                      | Analyze the diff and select the most specific matching type from the table. |
+
+## Constraints
+
+- Match the diff against the table and choose exactly one type.
+- Apply the priority rules in order so that higher-priority conditions always win.
+- Reject any type that is not listed in the Type Descriptions table.
+
+## Fault Handling
+
+- If the selected type is not in the table, abort with `invalid commit type`.

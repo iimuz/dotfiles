@@ -10,148 +10,177 @@ disable-model-invocation: false
 
 # Task Coordinator
 
-## Role
+## Overview
 
-Thin orchestrator that delegates all phase work to specialized sub-skills. The coordinator
-holds only `plan.json` and the final receipt — never worker prompts, outputs, or reference
-files. Each phase is executed by spawning an agent that invokes the corresponding sub-skill.
+Coordinate planning, execution, synthesis, and presentation by delegating each phase
+to a dedicated sub-skill. Keep orchestration state minimal and route all actionable
+work through stage actions.
 
-Use the `skill` tool to read a skill's description before decomposition decisions. Never invoke
-a skill to produce deliverables — delegate to a subagent instead. Embed explicit skill
-instructions in the worker's prompt file. If a subtask creates, modifies, or reviews a skill,
-instruct the subagent to invoke `skill-creator`.
+All stage artifacts use `{session_dir}` which resolves to
+`~/.copilot/session-state/{session_id}/files/` for the current session.
+The orchestrator auto-generates internal context values for each run: `run_id` uses
+format `tc-{timestamp}` (for example `tc-20260308143022`), `run_dir` resolves to
+`{session_dir}/{run_id}/`.
 
-Phase-specific references reside in sub-skill directories:
-
-- Planning: `task-coordinator-plan/references/`
-- Synthesis: `task-coordinator-synthesize/references/`
-
-## Interface
+## Schema
 
 ```typescript
-/**
- * @skill task-coordinator
- * @input  { request: string }
- * @output { result: InlineResult | SynthesisReceipt }
- *
- * @param request  User's task request (required)
- * @returns result  Final result for inline or pipeline execution
- */
-
-// Types: Plan, Task, AgentType, WorkerReceipt, InlineResult, SynthesisReceipt
-
-type InlineResult = {
-  task_id: string;
-  output: string;
+type CoordinatorResult = {
+  status: "ok" | "failed";
+  mode: "inline" | "pipeline";
+  result_file: string;
+  summary: string;
 };
-
-/**
- * @invariants
- * - invariant: (imperative_step_list_detected) => abort("replace imperative steps with typed ops");
- * - invariant: (op_lacks_typed_signature) => abort("All ops must be typed (input: T) -> U");
- * - invariant: (prose_in_op_body) => abort("convert prose to symbolic notation");
- * - invariant: (subagent_spawns_subagent) => abort("Subagents must not spawn subagents");
- * - invariant: (main_agent_reads_reference_file) => abort("Pass reference paths to subagents only; do not load in coordinator context");
- */
 ```
 
-> **Severity model**
->
-> - `abort(reason)` — halt execution immediately; do not produce partial output.
-> - `warn(reason)` — log the issue and continue in degraded mode.
+## Constraints
 
-## Operations
+- Delegate all actionable work through sub-skills and do not execute those tasks directly in the orchestrator.
+- Abort immediately without fallback when the request is invalid.
+- Abort execution when Stage 1 plan output is missing or invalid.
+- Abort execution when Stage 2 task execution fails.
+- Fall back to `task-coordinator-present` with `mode` and `result_file` and continue when Stage 3 synthesis fails.
+- Abort execution when Stage 4 presentation fails.
 
-```typespec
-op orchestrate(request: string) -> InlineResult | SynthesisReceipt {
-  // Compute run_id (tc-{YYYYMMDD}-{HHMMSS}), session_id, run_dir
-  // Delegate each phase to its sub-skill via spawned agents
-  invariant: (main_reads_intermediate_files) => abort("Main agent reads only final receipt");
-  invariant: (main_invokes_skill_tool) => abort("Main agent must not call skill() tool; sub-agents invoke skills themselves");
-  invariant: (main_explores_codebase) => abort("Main agent must not run glob/grep/view on codebase; pass request to sub-agents");
-}
-```
+## Input
+
+- request: user request text
+
+## Output
+
+- status: orchestration completion status
+- mode: inline for single task, pipeline for multi-task plan
+- result_file: final artifact to present
+- summary: short operator-facing summary
 
 ## Execution
 
-Compute `run_id` and `run_dir` before starting the pipeline.
+```python
+run_id = "tc-{timestamp}"  # e.g. tc-20260308143022
+run_dir = f"{session_dir}/{run_id}/"
 
-### Phase 1: Plan
-
-```text
-task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request, session_id, run_id, run_dir }")
+plan = stage1_plan(request, run_dir)
+if len(plan["tasks"]) == 1:
+    exec_result = stage2_execute_inline(plan)
+    final_result = stage4_present(
+        mode="inline",
+        result_file=exec_result["inline_result_file"],
+    )
+else:
+    receipts = stage2_execute_pipeline(plan)
+    synthesis = stage3_synthesize(
+        plan,
+        receipts,
+        protocol_file="references/synthesizer-protocol.md",
+    )
+    final_result = stage4_present(
+        mode="pipeline",
+        result_file=synthesis["synthesis_file"],
+    )
+return final_result
 ```
 
-Read `plan.json` from `{run_dir}/plan.json` after the agent completes.
+### Stage 1: Plan
 
-```text
-fault(plan_fails || plan_json_missing) => fallback: none; abort
-```
+- Purpose: Produce a validated execution plan from the request.
+- Inputs: `request: string`, `run_id: string`, `run_dir: string`
+- Actions:
 
-### Phase 2: Execute
+  ```yaml
+  - tool: task
+    agent_type: "general-purpose"
+    model: "claude-opus-4.6"
+    prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request: '{request}', run_id: '{run_id}', run_dir: '{run_dir}' }. The values `run_id` and `run_dir` are internal orchestrator-generated context values, not user input. Persist all outputs as specified by the skill's Session Files."
+  ```
 
-Branch by `plan.tasks.length`:
+- Outputs: `plan_file: string`
+- Guards: `plan.json` exists and has at least one task.
+- Faults:
+  - If `plan.json` is missing or invalid, use no fallback and abort execution.
 
-- **Inline** (1 task):
+### Stage 2: Execute
 
-```text
-task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_inline")
-```
+- Purpose: Run planned tasks using inline or pipeline dispatch.
+- Inputs: `plan: object`
+- Actions:
 
-- **Pipeline** (2+ tasks):
+  ```yaml
+  # Inline mode (plan.tasks length == 1):
+  - tool: task
+    agent_type: "{plan.tasks[0].agent_type}"
+    model: "{plan.tasks[0].model}"
+    prompt: "Read {plan.tasks[0].prompt_file}. Write your complete output to {plan.tasks[0].output_file}."
+  # Pipeline mode (plan.tasks length > 1) - spawn one task per dependency wave:
+  # Waves are determined by depends_on ordering; tasks with no pending dependencies run in parallel within the same wave.
+  - tool: task
+    agent_type: "{task.agent_type}"
+    model: "{task.model}"
+    prompt: "Read {task.prompt_file}. Write your complete output to {task.output_file}."
+  ```
 
-```text
-task(agent_type: "general-purpose", model: "gpt-5.3-codex", prompt: "Use the skill tool to invoke 'task-coordinator-execute' with input: { plan } -- call execute_pipeline")
-```
+- Outputs: `inline_result_file: string`, `worker_receipts_file: string`
+- Guards: every produced receipt has `status`; inline result exists for single-task runs.
+- Faults:
+  - If task execution fails, use no fallback and abort execution.
 
-```text
-fault(execute_fails) => fallback: none; abort
-```
+### Stage 3: Synthesize
 
-### Phase 3: Synthesize (pipeline only)
+- Purpose: Merge pipeline worker outputs into one synthesis artifact.
+- Inputs: `plan: object`, `worker_receipts: array`, `protocol_file: string`
+- Actions:
 
-```text
-task(agent_type: "general-purpose", model: "gemini-3-pro-preview", prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan, receipts }")
-```
+  ```yaml
+  - tool: task
+    agent_type: "general-purpose"
+    model: "claude-opus-4.6"
+    prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan: '{plan}', receipts: '{worker_receipts}', protocol_file: '{protocol_file}' }. Persist all outputs as specified by the skill's Session Files."
+  ```
 
-```text
-fault(synthesize_fails) => fallback: report output_files without synthesis; continue
-```
+- Outputs: `synthesis_file: string`, `synthesis_receipt_file: string`
+- Guards: run only when pipeline mode is active.
+- Faults:
+  - If synthesis fails, invoke `task-coordinator-present` with `mode` and `result_file` set to an
+    empty string, then continue execution; the present sub-skill emits a degraded receipt when
+    `result_file` is unreadable.
 
-### Phase 4: Present
+### Stage 4: Present
 
-```text
-task(agent_type: "general-purpose", model: "claude-opus-4.6", prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { result }")
-```
+- Purpose: Present the synthesized or inline result to the user.
+- Inputs: `mode: string`, `result_file: string`
+- Actions:
 
-```text
-fault(present_fails) => fallback: none; abort
-```
+  ```yaml
+  - tool: task
+    agent_type: "general-purpose"
+    model: "claude-opus-4.6"
+    prompt: "Use the skill tool to invoke 'task-coordinator-present' with input: { mode: '{mode}', result_file: '{result_file}' }. Persist all outputs as specified by the skill's Session Files."
+  ```
 
-### Pipeline Summary
+- Outputs: `result_file: string`, `presentation_receipt_file: string`
+- Guards: `result_file` is provided by Stage 2 inline output or Stage 3 synthesis output.
+- Faults:
+  - If presentation fails, use no fallback and abort execution.
 
-```text
-plan -> validate_plan -> [execute_inline | execute_pipeline] -> synthesize? -> present
-```
+## Session Files
 
-Symbol legend: `|` = XOR branch (gated by `plan.tasks.length`); `?` = pipeline mode only.
-
-| dependent   | prerequisite | description                                             |
-| ----------- | ------------ | ------------------------------------------------------- |
-| _(col key)_ | _(col key)_  | _(dependent requires prerequisite first)_               |
-| execute     | plan         | execute consumes validated `plan.json` from plan phase  |
-| synthesize  | execute      | synthesize unifies worker receipts (pipeline mode only) |
-| present     | synthesize   | present displays final result or synthesis receipt      |
+| File                                                                             | Written by | Read by          |
+| -------------------------------------------------------------------------------- | ---------- | ---------------- |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/plan.json`                 | Stage 1    | Stage 2, Stage 3 |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/worker-receipts.json`      | Stage 2    | Stage 3          |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/synthesis.md`              | Stage 3    | Stage 4          |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/synthesis-receipt.json`    | Stage 3    | task-coordinator |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/presentation-receipt.json` | Stage 4    | task-coordinator |
+| `~/.copilot/session-state/{session_id}/files/{run_id}/plan-errors.json`          | Stage 1    | task-coordinator |
 
 ## Examples
 
 ### Happy Path
 
-- Input: { request: "Analyze codebase and generate a report" }
-- plan → execute_pipeline (3 tasks) → synthesize → present all succeed
-- Output: { result: SynthesisReceipt }; synthesis document written and presented to user
+- Request yields three independent tasks.
+- Stage 2 runs pipeline dispatch, Stage 3 creates `synthesis.md`.
+- Stage 4 presents `synthesis.md` and returns success.
 
 ### Failure Path
 
-- Input: { request: "..." }; plan phase fails to produce plan.json
-- fault(plan_fails || plan_json_missing) => fallback: none; abort
+- Stage 1 returns malformed plan.
+- fault(invalid_request) => fallback: none; abort

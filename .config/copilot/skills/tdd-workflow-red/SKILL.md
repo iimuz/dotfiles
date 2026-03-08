@@ -9,63 +9,38 @@ disable-model-invocation: false
 
 ## Overview
 
-Create one failing test for one TDD unit and prove it fails for the expected reason.
+Create one failing test for one atomic unit and prove it fails for the expected reason
+before any production change.
 
-Read the red-phase guardrails before execution: [tdd-rules.md](references/tdd-rules.md)
+## Constraints
 
-## Interface
+- If the test cannot be written, abort immediately.
+- If the test does not fail, abort immediately.
+- If the observed failure does not match the expected failure, abort immediately.
 
-```typescript
-/**
- * @skill tdd-workflow-red
- * @input  { unitSpec: { behavior: string; testPath: string; command: string; expectedFailure: string } }
- * @output { testFile: string; failureProof: { command: string; observedFailure: string } }
- *
- * @invariants
- * - invariant: (task_call_attempted) => abort("Sub-skill must not call task() or spawn nested sub-agents");
- */
+## Input
 
-type RedInput = {
-  unitSpec: {
-    behavior: string;
-    testPath: string;
-    testCommand: string;
-    expectedFailure: string;
-  };
-};
+| Field             | Type     | Required | Description                            |
+| ----------------- | -------- | -------- | -------------------------------------- |
+| `behavior`        | `string` | yes      | Observable behavior the test targets   |
+| `testPath`        | `string` | yes      | Path where the failing test is written |
+| `testCommand`     | `string` | yes      | Command used to execute the new test   |
+| `expectedFailure` | `string` | yes      | Expected failure signal for red phase  |
 
-type RedOutput = {
-  testFile: string;
-  failureProof: {
-    command: string;
-    observedFailure: string;
-  };
-};
-```
+## Output
 
-## Operation
-
-```typespec
-op writeFailingTest(input: RedInput) -> RedOutput {
-  // Write exactly one new test that covers only unitSpec.behavior
-  // Run unitSpec.testCommand scoped to the new test at unitSpec.testPath
-  // Capture failing output and return proof with test path and observed failure reason
-
-  fault(testDidNotFail) => fallback: none; abort
-  fault(failureReasonMismatch) => fallback: none; abort
-}
-```
+- testFile: Path to the newly written failing test.
+- failureProof: Command and observed failure evidence.
 
 ## Examples
 
 ### Happy Path
 
-- Input: unitSpec for missing retry backoff behavior with expectedFailure "Expected 3 retries, received 1"
-- Action: write one test at tests/retry.test.ts and run `npm test tests/retry.test.ts`
-- Output: testFile path plus failureProof containing matching expected failure reason
+- One test is written at testPath for one behavior.
+- testCommand fails with expectedFailure evidence.
+- Output returns testFile and failureProof.
 
 ### Failure Path
 
-- Input: unitSpec where expectedFailure is "missing validation error"
-- Action: test run fails with "cannot find module" instead
-- Result: fault(failureReasonMismatch) => fallback: none; abort
+- Test command fails for a different reason than expected.
+- Abort: observed failure does not match expected failure.

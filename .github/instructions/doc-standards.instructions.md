@@ -6,10 +6,10 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
 
 ## Syntax Rules
 
-- Format: Markdown Headers (##) + Key-Value pairs.
+- Format: Markdown Headers (##) + Key-Value pairs or free-text paragraphs.
 - Style: Plain text only. NO bold (\*_), NO italics (_).
 - Lists: Use hyphen (-) for all arrays and properties.
-- Newline: Strict Bullet List or Header separation. No free-text paragraphs.
+- Newline: Bullet List, Header separation, or free-text paragraphs permitted.
 - Diagram: Use Mermaid code blocks within Design files.
 - Model: Use TypeScript Interface code blocks within Design files.
 - Update Policy: Overwrite existing state. Append logs only if specified.
