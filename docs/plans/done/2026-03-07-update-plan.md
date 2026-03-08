@@ -1,5 +1,5 @@
 ---
-status: TODO
+status: DONE
 ---
 
 # TASK: plans の積極利用
