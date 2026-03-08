@@ -5,81 +5,42 @@ user-invocable: false
 disable-model-invocation: false
 ---
 
-# tdd-workflow-refactor
+# TDD Workflow: Refactor
 
 ## Overview
 
-Use this sub-skill to improve structure after a confirmed green phase while preserving observable behavior.
-For refactor constraints, read [tdd-rules.md](references/tdd-rules.md).
+Improve internal structure after a confirmed green phase while preserving observable behavior,
+and prove tests remain green.
+Execution order: validate_green_proof -> apply_refactor -> verify_pass_preservation.
 
-## Interface
+## Constraints
 
-```typescript
-/**
- * @skill tdd-workflow-refactor
- * @input  { unitSpec: string; greenPassProof: { command: string; summary: string; evidence: string } }
- * @output { refactoredFiles: ReadonlyArray<string>; passPreservationProof: { command: string; summary: string; evidence: string } }
- *
- * @invariants
- * - invariant: (task_call_attempted) => abort("Sub-skill must not call task() or spawn nested sub-agents");
- */
+- If green proof is absent or evidence is empty, abort immediately.
+- If behavior changes during refactor, revert the refactor, restore baseline, and abort.
+- If tests fail after refactor, revert the refactor, keep baseline, and abort.
 
-interface RefactorInput {
-  unitSpec: string;
-  greenPassProof: {
-    command: string;
-    summary: string;
-    evidence: string;
-  };
-}
+## Input
 
-interface RefactorOutput {
-  refactoredFiles: ReadonlyArray<string>;
-  passPreservationProof: {
-    command: string;
-    summary: string;
-    evidence: string;
-  };
-}
-```
+| Field            | Type     | Required | Description                                    |
+| ---------------- | -------- | -------- | ---------------------------------------------- |
+| `unitSpec`       | `string` | yes      | Atomic behavior scope for safe refactor bounds |
+| `greenPassProof` | `object` | yes      | Verified green evidence from preceding stage   |
+| `testCommand`    | `string` | yes      | Command used to verify post-refactor pass      |
 
-## Ops
+## Output
 
-### Op 1: Validate refactor preconditions
-
-- Input: RefactorInput.
-- Action: Confirm unitSpec exists and greenPassProof contains command, summary, and evidence
-  proving tests are currently green.
-- Output: Refactor is authorized only when green evidence is present.
-- fault(green pass proof absent) => fallback: request fresh green test run proof; abort
-
-### Op 2: Apply behavior-preserving refactor
-
-- Input: Authorized refactor scope from Op 1.
-- Action: Refactor only internal structure, readability, and duplication; keep all public
-  outputs, side effects, and interfaces unchanged.
-- Output: Updated files with no intentional behavior change.
-- fault(behavior changed) => fallback: revert refactor and restore previous implementation; abort
-
-### Op 3: Prove pass preservation
-
-- Input: Refactored files and original test command.
-- Action: Re-run tests and capture command output as pass-preservation proof.
-- Output: RefactorOutput with refactoredFiles and passPreservationProof.
-- fault(tests fail after refactor) => fallback: revert refactor and keep pre-refactor state; abort
+- refactoredFiles: Paths changed during behavior-preserving refactor.
+- passPreservationProof: Command, summary, and evidence showing tests still pass.
 
 ## Examples
 
 ### Happy Path
 
-- Input includes unitSpec and greenPassProof from a successful test run.
-- Skill performs internal cleanup without changing observable behavior.
-- Same test command passes after refactor.
-- Output returns changed file paths plus new passing test evidence.
+- Valid green proof is provided.
+- Internal cleanup changes are applied without behavioral change.
+- testCommand remains green and RefactorOutput is returned.
 
 ### Failure Path
 
-- Input omits greenPassProof evidence.
-- Hard gate triggers immediately.
-- No refactor is performed.
-- Skill aborts and requests valid green proof.
+- testCommand fails after refactor.
+- Revert refactor, keep baseline, and abort.

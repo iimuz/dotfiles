@@ -9,14 +9,13 @@ disable-model-invocation: false
 
 ## Overview
 
-Sub-skill that prepares a task-coordinator request file.
-Determines the implementation scope from the plan or
-prior review issues and writes a natural-language request
-file that the main agent passes to `task-coordinator`.
+Determine the implementation scope from a plan or prior review issues and write a
+natural-language request file for downstream execution. For iteration 1, read the plan file
+and extract all tasks/changes to implement. For iteration > 1, filter prior issues to severity
+Critical and High only, excluding pre-existing issues unrelated to the plan goal.
+Execution order: determine_scope -> write_checkpoint -> write_request -> write_checkpoint.
 
-Execution order: determine_scope -> write_checkpoint -> write_request -> write_checkpoint
-
-## Interface
+## Schema
 
 ```typescript
 type PriorIssue = {
@@ -26,64 +25,43 @@ type PriorIssue = {
   action: string;
 };
 
-type ScopeResult = {
-  tasks: string[];
-  context: string;
-};
-
 type CheckpointInput = {
-  session_id: string;
   iteration: number;
   scope_summary: string;
   status: "scope_done" | "complete";
 };
-
-declare function determine_scope(input: {
-  plan_filepath: string;
-  iteration: number;
-  prior_issues: PriorIssue[];
-}): ScopeResult;
-// @fault plan_unreadable => fallback: none; abort
-// @invariant iteration == 1 reads plan_filepath; iteration > 1 scopes to Critical/High prior_issues and excludes unrelated issues
-// Detail: iteration==1 → read plan_filepath and extract all tasks/changes to implement.
-//         iteration>1  → filter prior_issues to severity "Critical" and "High" only.
-//                        Exclude pre-existing issues unrelated to the plan goal.
-
-declare function write_checkpoint(input: CheckpointInput): string;
-// @fault checkpoint_write_failed => fallback: none; abort
-// @invariant writes { iteration, scope_summary, status } to {session_dir}/sw-checkpoint-{iteration}.json
-// Detail: Called after determine_scope with status="scope_done".
-//         Called again after write_request with status="complete".
-
-declare function write_request(input: {
-  session_id: string;
-  iteration: number;
-  scope: ScopeResult;
-}): { request_file: string; checkpoint_file: string };
-// @fault request_write_failed => fallback: none; abort
-// @invariant if request and complete checkpoint already exist, returns existing path without regeneration
-// Detail: See references/request-template.md for the content structure of the output file.
 ```
 
-## Session Files
+## Constraints
 
-All files saved to
-`~/.copilot/session-state/{session_id}/files/`:
+- If the plan file is unreadable, abort immediately.
+- If the checkpoint write fails, abort immediately.
+- If the request write fails, abort immediately.
+- If request and complete checkpoint already exist for this iteration, return existing paths without regeneration.
 
-| File                          | Written by       | Read by                  |
-| ----------------------------- | ---------------- | ------------------------ |
-| `sw-implement-request-{n}.md` | write_request    | structured-workflow main |
-| `sw-checkpoint-{n}.json`      | write_checkpoint | write_request            |
+## Input
+
+| Field           | Type           | Required | Description                           |
+| --------------- | -------------- | -------- | ------------------------------------- |
+| `plan_filepath` | `string`       | yes      | Absolute path to the plan file        |
+| `iteration`     | `number`       | yes      | Current iteration number              |
+| `prior_issues`  | `PriorIssue[]` | no       | Review issues from previous iteration |
+| `output_dir`    | `string`       | yes      | Absolute path to output directory     |
+
+## Output
+
+- request_file: path to the written request file
+- checkpoint_file: path to the written checkpoint file
 
 ## Examples
 
 ### Happy Path
 
-- Input: { session_id: "s1", plan_filepath: "~/.../plan.md", iteration: 1, prior_issues: [] }
-- determine_scope → write_checkpoint(status="scope_done") → write_request → write_checkpoint(status="complete") all succeed
-- Output: { request_file: "~/.copilot/session-state/s1/files/sw-implement-request-1.md" }
+- Input: { plan_filepath: "/tmp/plan.md", iteration: 1, prior_issues: [], output_dir: "/tmp/run/" }
+- determine_scope -> write_checkpoint -> write_request -> write_checkpoint all succeed
+- Output: { request_file: "/tmp/run/sw-implement-request-1.md" }
 
 ### Failure Path
 
-- Input: { ..., plan_filepath: "~/.../plan.md" }; plan file not found or unreadable
-- fault(plan_unreadable) => fallback: none; abort
+- Input: { plan_filepath: "/tmp/missing.md", ... }; plan file not found
+- Abort: plan file is unreadable.
