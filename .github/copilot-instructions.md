@@ -40,10 +40,11 @@
 ## Workflow
 
 - Read: Open FILE_MANIFEST entries and extract constraints relevant to the task.
-- Plan: Define minimal edits and map each edit to a verified file path. Use `docs/templates/plan.md` for complex tasks.
-- Path Verification Checkpoint: Before creating any plan or debt file, verify the output
-  path is one of: `docs/plans/active/`, `docs/plans/done/`, `docs/debt/open/`,
-  `docs/debt/resolved/`.
+- Plan: Determine the minimal set of changes needed for the task.
+  ALWAYS create or open a plans file before Execute; exception: single-file single-line edits (e.g., typo fix).
+  If the user provided a tagged plans file, use that file.
+  Otherwise, create `docs/plans/active/[YYYY-MM-DD]-[action].md` from `docs/templates/plan.md`.
+  Output path MUST be one of: `docs/plans/active/`, `docs/plans/done/`, `docs/debt/open/`, `docs/debt/resolved/`.
 - Execute: Implement focused changes.
 - Verify: Run `mise run lint` and `mise run format` after modifications.
 - Evolve (Automatic): After completing Execute and Verify, evaluate whether ANY of the

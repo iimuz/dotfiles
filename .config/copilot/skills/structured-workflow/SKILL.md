@@ -19,267 +19,214 @@ looping up to 3 times to resolve Critical and High severity issues.
 The main agent calls orchestrator skills directly via `skill()` and
 delegates non-orchestrator work to sub-agents via `task()`.
 
-## Interface
+## Schema
 
 ```typescript
-/**
- * @skill structured-workflow
- * @input  { task: string }
- * @output { summary: FinalSummary }
- */
-
+// Path reference only — do not read contents in main agent context.
+type OpaqueFilePath = string;
 type Issue = {
   severity: "Critical" | "High" | "Medium" | "Low";
   description: string;
+  iteration?: number; // set when carried forward from a prior iteration
 };
-type PriorIssue = {
-  issue_id: string;
-  severity: "Critical" | "High" | "Medium" | "Low";
-  file: string;
-  action: string;
+type CommitRef = {
+  sha: string;
+  message: string;
 };
-type IterationVerdict = {
+type Verdict = {
   has_critical_or_high: boolean;
   issues: Issue[];
 };
-type PlanResult = { plan_filepath: string };
-type CommitRef = { sha: string; message: string };
-type IterationRecord = {
-  iteration: number;
-  commit: CommitRef;
-  verdict: IterationVerdict;
-};
 type FinalSummary = {
-  plan: PlanResult;
+  plan: { plan_filepath: OpaqueFilePath };
   fixed: Issue[];
   unfixed: Issue[];
-  history: IterationRecord[];
+  history: {
+    iteration: number;
+    commit: CommitRef;
+    verdict: Verdict;
+  }[];
   recommendations: string[];
 };
-
-/**
- * @invariants
- * 1. Zero_Verbosity:             imperative step text => remove
- * 2. Signature_Integrity:        all ops fully typed
- * 3. Language_Constraint:         user_facing_output => Japanese;
- *                                 code && commit_messages =>
- *                                 own_conventions
- * 4. No_Phase_Confirmation:      no ask_user between phases;
- *                                 only at final_summary and
- *                                 error recovery
- * 5. No_Orchestrator_Nesting:    implementation-plan | code-review
- *                                 | task-coordinator | commit-staged
- *                                 => must call via skill() directly;
- *                                 must NOT wrap in task() sub-agent.
- * 6. Subagent_For_NonOrchestrator: task() invokes only non-orchestrator
- *                                 sub-skills (e.g., structured-workflow-implement);
- *                                 sub-skill must NOT internally call task().
- * 7. Minimal_Reads:              main_agent reads only
- *                                 plan_filepath,
- *                                 plan-summary.md,
- *                                 sw-implement-request-{n}.md,
- *                                 workflow-summary.md
- */
 ```
 
-## Operations
+Input: `{ task: string }` → Output: `FinalSummary`
 
-```typespec
-op orchestrate(
-  task: string
-) -> FinalSummary {
-  // Phase 1: skill("implementation-plan") + explore sub-agent
-  // Phase 2–4: loop(max: 3) [
-  //   task(agent_type:"general-purpose") -> structured-workflow-implement -> read request file
-  //   -> skill("task-coordinator") -> stage files via task() -> skill("commit-staged")
-  //   -> skill("code-review")
-  // ]
-  // Phase 5: explore sub-agent for final summary
+## Constraints
 
-  invariant: (orchestrator_in_subagent) => abort("Orchestrator skills must be called via skill()");
-  invariant: (main_reads_unneeded_files) => abort("Main agent reads only routing files");
-}
-```
+- Do not call `ask_user()` between phases; call it only at the final summary step or for error recovery.
+- Call orchestrator skills (`implementation-plan`, `code-review`, `task-coordinator`,
+  `commit-staged`) via `skill()` directly and never wrap them in `task()`.
+- Use `task()` only for non-orchestrator work.
+- Read only `plan_filepath`, `plan-summary.md`, `sw-implement-request-{n}.md`, and
+  `workflow-summary.md` in the main agent context, and abort if any other file is read there.
+- Suppress intermediate step output and show only phase transitions and the final summary to the user.
+- Abort immediately if the `task` input is missing or empty.
+- Obtain `session_id` from the CLI environment at skill start (current session identifier;
+  do not prompt the user for it).
+- Abort and report error context to the user if any stage skill fails.
 
 ## Execution
 
-Resolve `session_id` and
-`session_dir = ~/.copilot/session-state/{session_id}/files/`
-before starting the pipeline.
-
-### Phase 1: Plan
-
-```typespec
-skill(name: "implementation-plan",
-      input: { session_id, user_request: task })
+```python
+session_id = resolve_session_id()  # obtain from CLI environment (see Constraints)
+session_dir = f"~/.copilot/session-state/{session_id}/files/"
+prior_issues = []
+stage1_plan()
+for iteration in range(1, 4):
+    stage2_implement()
+    stage3_commit()
+    verdict = stage4_review()
+    if not verdict.has_critical_or_high:
+        break
+    # Filter to Critical/High issues, tag each with iteration number for traceability,
+    # and carry forward as prior_issues to feed Stage 2 in the next iteration.
+    prior_issues = [i for i in verdict.issues if i.severity in ("Critical", "High")]
+    for i in prior_issues:
+        i.iteration = iteration
+stage5_final_summary()
+# On error: halt, report context, and use ask_user() only for recovery.
 ```
 
-Extract `plan_filepath` from `PlanResult`. Write plan summary for Phase 4:
+### Stage 1: Plan
 
-```text
-task(agent_type: "explore", model: "claude-opus-4.6",
-     prompt: "Read the plan at {plan_filepath}
-              and write a 1-paragraph summary
-              (max 500 chars) capturing the design
-              intent to
-              {session_dir}/plan-summary.md")
-```
+- Purpose: generate an implementation plan and write a design summary
 
-```text
-fault(skill_fails) => fallback: none; abort
-```
+- Inputs: `session_id: string`, `task: string`
+- Actions:
 
-### Iteration Loop (Phases 2-4)
+  ```yaml
+  - tool: skill
+    name: implementation-plan
+    input: { session_id: "{session_id}", user_request: "{task}" }
+  - tool: task
+    agent_type: explore
+    model: claude-opus-4.6
+    prompt: |
+      Read {plan_filepath}; write 1-paragraph summary to {session_dir}/plan-summary.md
+  ```
 
-Set `iteration = 1`, `prior_issues = []`.
-Repeat until `!has_critical_or_high || iteration > 3`.
+- Outputs: `plan_filepath: OpaqueFilePath`, `{session_dir}/plan-summary.md: OpaqueFilePath`
+- Guards: plan_filepath extracted from skill result
+- Faults:
+  - If the implementation-plan skill fails, abort and report the error.
 
-### Phase 2: Implement
+### Stage 2: Implement
 
-Invoke `structured-workflow-implement` via a general-purpose sub-agent, then pass its output to `task-coordinator`.
+- Purpose: prepare implementation scope and execute tasks via task-coordinator
 
-```text
-task(agent_type: "general-purpose", model: "claude-opus-4.6",
-     prompt: "Use the skill tool to invoke 'structured-workflow-implement'
-              with input: { session_id, plan_filepath, iteration, prior_issues }.")
-```
+- Inputs: `session_id: string`, `plan_filepath: OpaqueFilePath`, `iteration: number`, `prior_issues: Issue[]`
+- Actions:
 
-Extract `request_file` from `ImplementOutput`.
+  ```yaml
+  - tool: task
+    agent_type: general-purpose
+    model: claude-opus-4.6
+    prompt: |
+      Invoke skill 'structured-workflow-implement' with
+      { session_id, plan_filepath, iteration, prior_issues };
+      return request_file path
+  - { tool: view, path: "{request_file_path}", output: request_file_content }
+  - tool: skill
+    name: task-coordinator
+    input: { request: "{request_file_content}" }
+  ```
 
-Read content of `request_file`.
+- Outputs: `~/.copilot/session-state/{session_id}/files/sw-implement-request-{iteration}.md: OpaqueFilePath`
+- Guards: request_file readable; task-coordinator succeeds
+- Faults:
+  - If the implement task or task-coordinator skill fails, abort and report the error.
+  - If the request file is unreadable, abort and report the error.
 
-```text
-skill(name: "task-coordinator",
-      input: { request: <content of request_file> })
-```
+### Stage 3: Commit
 
-```text
-fault(implement_task_fails) => fallback: none; abort
-fault(request_file_unreadable) => fallback: none; abort
-fault(task_coordinator_fails) => fallback: none; abort
-```
+- Purpose: stage implementation-related changes and create a commit
 
-### Phase 3: Commit
+- Inputs: `implementation_artifacts: OpaqueFilePath[]`
+- Actions:
 
-Stage files via sub-agent:
+  ```yaml
+  - tool: task
+    agent_type: general-purpose
+    model: claude-opus-4.6
+    prompt: |
+      Run git status; stage all implementation-related files
+      with git add; report staged files
+  - tool: skill
+    name: commit-staged
+  ```
 
-```text
-task(agent_type: "general-purpose", model: "gpt-5.3-codex",
-     prompt: "Run git status to identify
-              modified/new files related to the
-              implementation. Stage all relevant
-              files with git add. Do NOT stage
-              unrelated files. Report which files
-              were staged.")
-```
+- Outputs: `commit: CommitRef`
+- Guards: at least one file staged before commit
+- Faults:
+  - If nothing is staged, abort and report the error.
+  - If the commit-staged skill fails, abort and report the error.
 
-Commit staged changes.
+### Stage 4: Review
 
-```typespec
-skill(name: "commit-staged")
-```
+- Purpose: review committed changes and determine whether further iteration is needed
 
-Extract `CommitRef` from result.
+- Inputs: `session_id: string`, `{session_dir}/plan-summary.md: OpaqueFilePath`
+- Actions:
 
-```text
-fault(nothing_staged || skill_fails) => fallback: none; abort
-```
+  ```yaml
+  - tool: skill
+    name: code-review
+    input:
+      session_id: "{session_id}"
+      target: HEAD
+      design_info_filepath: "{session_dir}/plan-summary.md"
+  ```
 
-### Phase 4: Review
+- Outputs: `verdict: Verdict`
+- Guards: verdict extracted from skill result
+- Faults:
+  - If the code-review skill fails, abort and report the error.
 
-```typespec
-skill(name: "code-review",
-      input: { session_id: session_id,
-               target: "HEAD",
-               design_info_filepath: "{session_dir}/plan-summary.md" })
-```
+### Stage 5: Final Summary
 
-Extract `IterationVerdict` from result.
+- Purpose: compile Japanese final report from iteration results, present to user, then call ask_user
 
-Loop control: `has_critical_or_high && iteration < 3` →
-map `verdict.issues` → `PriorIssue[]`:
+- Inputs: `plan_filepath: OpaqueFilePath`, `iterations_json: string`, `session_dir: string`
+- Actions:
 
-```typescript
-prior_issues = verdict.issues.map((issue, idx) => ({
-  issue_id: `issue-${iteration}-${idx + 1}`,
-  severity: issue.severity,
-  file: "unknown",
-  action: issue.description,
-}));
-```
+  ```yaml
+  - tool: task
+    agent_type: explore
+    model: claude-opus-4.6
+    prompt: |
+      Read {plan_filepath} and iteration data from {iterations_json};
+      write Japanese final report with
+      plan/fixed/unfixed/history/recommendations
+      to {session_dir}/workflow-summary.md
+  ```
 
-increment `iteration`, continue.
-Otherwise → exit loop, proceed to Phase 5.
-
-```text
-fault(skill_fails) => fallback: none; abort
-```
-
-### Phase 5: Final Summary
-
-```text
-task(agent_type: "explore", model: "gemini-3-pro-preview",
-     prompt: "plan（元タスクと計画内容）と
-              全 iterations
-              （各イテレーションのコミットと
-              レビュー指摘）をまとめて、
-              plan/fixed/unfixed/history/
-              recommendations を含む日本語の
-              最終報告形式に整形し、
-              {session_dir}/workflow-summary.md
-              に書き込んでください。
-
-              ## Input Context
-              - plan_filepath: {plan_filepath}
-              - iterations: {iterations_json}")
-```
-
-Read `{session_dir}/workflow-summary.md` and present to user.
-
-```text
-ask_user(message: "ワークフロー完了。
-                   残存する Critical/High 指摘への
-                   対応を続けますか？")
-```
-
-### Pipeline Summary
-
-```text
-phase1_plan
-  -> loop(max: 3)[
-       phase2_implement
-       -> phase3_commit
-       -> phase4_review
-     ]
-  -> phase5_final_summary
-```
-
-Loop exits when `!has_critical_or_high || iteration >= 3`.
-
-On error: halt immediately; report to user with context;
-use `ask_user` for error recovery only.
+- Outputs: `{session_dir}/workflow-summary.md: FinalSummary`
+- Guards: workflow-summary.md written successfully
+- Faults:
+  - If the task fails, abort and report the error.
 
 ## Session Files
 
 All files saved to
 `~/.copilot/session-state/{session_id}/files/`:
 
-| File                           | Written by                    | Read by            |
-| ------------------------------ | ----------------------------- | ------------------ |
-| `{purpose}-{component}-{n}.md` | implementation-plan           | Phase 1 (filepath) |
-| `plan-summary.md`              | explore sub-agent             | Phase 4            |
-| `sw-implement-request-{n}.md`  | structured-workflow-implement | Phase 2            |
-| `workflow-summary.md`          | explore sub-agent             | Phase 5            |
+| File                           | Written by                                                 | Read by                 |
+| ------------------------------ | ---------------------------------------------------------- | ----------------------- |
+| `{purpose}-{component}-{n}.md` | Stage 1 (implementation-plan skill, owns filename pattern) | Stage 1 (plan_filepath) |
+| `plan-summary.md`              | Stage 1 (explore sub-agent)                                | Stage 4                 |
+| `sw-implement-request-{n}.md`  | Stage 2 (structured-workflow-implement)                    | Stage 2                 |
+| `workflow-summary.md`          | Stage 5 (explore sub-agent)                                | Stage 5                 |
 
 ## Examples
 
 ### Happy Path
 
 - Input: { task: "Add OAuth login" }
-- All 5 phases succeed; 1 iteration; no Critical/High issues in Phase 4 review
+- All 5 stages succeed; 1 iteration; no Critical/High issues in Stage 4 review
 - Output: FinalSummary written to workflow-summary.md; user shown final report
 
 ### Failure Path
 
-- Input: { task: "..." }; Phase 1 implementation-plan skill fails
-- fault(skill_fails) => fallback: none; abort; user shown error report
+- Input: { task: "..." }; Stage 1 implementation-plan skill fails
+- Stage 1 aborts; error context reported to user

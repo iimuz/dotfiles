@@ -9,86 +9,39 @@ disable-model-invocation: false
 
 ## Overview
 
-Implement only the smallest production change required to satisfy a verified Red test and prove all tests are green afterward.
+Implement only the smallest production change required to satisfy a verified Red test,
+then prove the target test command is green.
+Execution order: validate_red_proof -> implement_minimal_change -> verify_green.
 
-## Interface
+## Constraints
 
-```typescript
-/**
- * @skill tdd-workflow-green
- * @input  { unitSpec: string; redFailureProof: { command: string; observedFailure: string }; testCommand: string; implementationPath: string }
- * @output { implementationFile: string; passProof: { command: string; summary: string; evidence: string } }
- *
- * @invariants
- * - invariant: (task_call_attempted) => abort("Sub-skill must not call task() or spawn nested sub-agents");
- */
-type GreenInput = {
-  unitSpec: string;
-  redFailureProof: {
-    command: string;
-    observedFailure: string;
-  };
-  testCommand: string;
-  implementationPath: string;
-};
+- If red proof is absent or empty, abort immediately.
+- If unrelated behavior is added during implementation, abort immediately.
+- If tests still fail after implementation, abort immediately.
 
-type GreenOutput = {
-  implementationFile: string;
-  passProof: {
-    command: string;
-    summary: string;
-    evidence: string;
-  };
-};
-```
+## Input
 
-For Green constraints and guardrails, read [references/tdd-rules.md](references/tdd-rules.md) before editing code.
-
-## Operations
-
-```typespec
-op validateRedProof(input: GreenInput) -> GreenInput {
-  // Confirm redFailureProof is present and shows expected failing-test evidence for unitSpec.
-  // Reject execution when proof is missing, empty, or unrelated to the target behavior.
-  fault(red_proof_absent) => fallback: none; abort
-}
-
-op implementMinimalProductionCode(input: GreenInput) -> { implementationFile: string } {
-  // Edit only implementationPath and keep behavior strictly limited to unitSpec.
-  // Do not add unrelated features, refactors, or speculative extensions.
-  fault(unrelated_behavior_added) => fallback: none; abort
-}
-
-op verifyGreen(input: GreenInput) -> { passProof: { command: string; summary: string; evidence: string } } {
-  // Run testCommand and collect structured proof that all tests pass after implementation.
-  // passProof must include command used, a one-line summary, and raw test output evidence.
-  // Ensure output indicates complete green status, not partial success.
-  fault(tests_still_fail) => fallback: none; abort
-}
-```
-
-## Execution
-
-```text
-validateRedProof -> implementMinimalProductionCode -> verifyGreen
-```
+| Field                | Type     | Required | Description                                |
+| -------------------- | -------- | -------- | ------------------------------------------ |
+| `unitSpec`           | `string` | yes      | One atomic behavior that must become green |
+| `redFailureProof`    | `object` | yes      | Red-phase command and observed failure     |
+| `testCommand`        | `string` | yes      | Command used to verify green state         |
+| `implementationPath` | `string` | yes      | Target production file to edit             |
 
 ## Output
 
-- implementationFile: path to the updated production file.
-- passProof: structured proof with command, one-line summary, and raw evidence that all tests pass.
+- implementationFile: Updated production file path.
+- passProof: Command, summary, and raw passing evidence.
 
 ## Examples
 
 ### Happy Path
 
-- Input: unitSpec, redFailureProof, testCommand, implementationPath provided.
-- validateRedProof succeeds with clear failing-test evidence.
-- implementMinimalProductionCode updates only implementationPath.
-- verifyGreen confirms all tests pass; returns implementationFile and structured passProof.
+- Input includes unitSpec, valid redFailureProof, testCommand, and implementationPath.
+- Minimal implementation change is applied to one production path.
+- testCommand passes and passProof is returned.
 
 ### Failure Path
 
-- Input omits redFailureProof.
-- validateRedProof triggers hard gate.
-- fault(red_proof_absent) => fallback: none; abort.
+- Input omits redFailureProof or proof does not match the unit.
+- Abort: red proof is absent or empty.

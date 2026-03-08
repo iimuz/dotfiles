@@ -40,6 +40,11 @@ disable-model-invocation: false # Required (always false)
 ---
 ```
 
+- Rule: ALWAYS include a single H1 title (`# Title`) as the first line of the Markdown body,
+  immediately after the frontmatter closing `---`.
+  Exception: when the repo uses Prettier for markdown formatting, Prettier enforces a blank
+  line after YAML frontmatter. In that case, one blank line between `---` and `# Title` is
+  acceptable and required to pass the pre-commit hook.
 - Rule: ALWAYS use `## Overview` as the first section heading in the SKILL.md Markdown body.
 - Rule: NEVER use `## Role` as a section heading in SKILL.md; use `## Overview` instead.
 
@@ -58,6 +63,9 @@ disable-model-invocation: false # Required (always false)
   - Rule: Sub-skill `description` MUST be one sentence describing only what the skill does.
     MUST NOT include caller metadata (e.g., "This skill should be used only by...").
   - Rule: Sub-skill `description` MUST be 10 words or fewer.
+- `allowed-tools` (Optional): Space-separated list of tool identifiers the skill is permitted
+  to use. MCP tools use `server-name/tool-name` or `server-name/*` syntax. The set of valid
+  identifiers is resolved by the execution environment.
 - `user-invocable` (Required):
   - MUST be `true` for orchestrator skills (user-facing entry points).
   - MUST be `false` for sub-skills (invoked only by other skills).
@@ -72,32 +80,75 @@ disable-model-invocation: false # Required (always false)
   are silently inaccessible.
 - Rule: Shared reference material must be duplicated into each skill's own `references/` subdirectory.
 
+### Output Safety
+
+- Rule: `output_filepath` MUST NOT match any reference or input file path.
+- Rule: `output_policy` default value is `create_only` when omitted.
+
 ### Content Scope Constraint
 
-- Rule: SKILL.md bodies MUST contain only runtime instructions (procedures, invariants, examples, fault declarations).
+- Rule: SKILL.md bodies MUST contain only runtime instructions (procedures, constraints, examples).
 - Rule: NEVER include planning notes, debt tracking, future evaluation, roadmap items,
   or placeholder markers in SKILL.md bodies.
-- Exception: Placeholder-marker literals inside code-block invariant examples are permitted.
+- Exception: Placeholder-marker literals inside code-block constraint examples are permitted.
 - Rule: ALWAYS relocate planning content to `docs/plans/` and debt content to `docs/debt/`.
 
-### Interface Section Style
+### Contract Layers and Schema Style
 
-- Rule: ALWAYS use exactly one typescript code block for interface contracts.
-- Rule: NEVER use typespec blocks.
-- Rule: ALWAYS define operations with declare function signatures.
+- Rule: Use a two-layer contract model.
+  - Layer 1 (required for all skills): `## Overview`, `## Schema` (when the skill has structured
+    input/output), `## Constraints`, and `## Examples`.
+  - Layer 2 (optional for complex Workflow skills only): optional
+    `## Execution` with call-order block and 6-field stage template, and
+    `## Session Files` when runtime artifacts are written.
 - Rule: NEVER use JSDoc (/\*\* \*/) for contract definitions.
-- Rule: NEVER use markdown bullets for type/operation definitions.
-- Rule: ALWAYS place @fault and @invariant tags as comments directly below each declare function.
-- Rule: ALWAYS use inline object types when an input/output shape has 3 or fewer top-level fields.
-- Rule: ALWAYS use named types when an input/output shape has more than 3 top-level fields.
-- Rule: NEVER treat Interface @fault/@invariant annotations as replacements for stage-level
-  fault()/assert() declarations; ALWAYS keep both.
+- Rule: Use TypeScript for data schema definitions only (input/output shapes), not for operation logic.
+- Rule: NEVER use TypeSpec blocks.
+- Rule: Keep schema definitions in exactly one TypeScript code block per `## Schema` section.
+- Rule: NEVER use markdown bullets for type/interface definitions.
+- Rule: Prefer `type` or `interface` for data shapes only, and keep operation
+  procedures in prose sections such as `## Overview`, `## Constraints`, and `## Execution`.
+- Rule: Do not define unused schema types; every schema type MUST be referenced
+  by at least one documented input/output shape.
+
+### Constraints Section Style
+
+- Rule: Every SKILL.md MUST include a `## Constraints` section written in plain language.
+- Rule: ALL invariants, error handling policies, and failure behaviors MUST be documented in
+  `## Constraints` using plain natural-language bullet points.
+- Rule: Write constraints as single-sentence imperative bullets.
+- Rule: Keep constraints specific, testable, and directly tied to execution behavior.
+- Rule: Prefer concise procedural limits over symbolic DSL notation.
+- Rule: Do NOT use @fault/@invariant DSL.
+- Example:
+  - If fewer than 2 responses are received, abort immediately.
+  - If a sub-skill fails once, retry once with a refined prompt before aborting.
+  - Never read intermediate artifact file contents in the main agent context.
+
+### Allowed Section Headings
+
+- Required (all skills): `## Overview` (first), `## Constraints`, `## Examples`
+- Required when applicable: `## Schema` (when the skill has structured input/output),
+  `## Session Files` (when the skill writes runtime artifacts)
+- Optional (all skills): `## Input`, `## Output`
+- Optional (workflow skills only): `## Execution`
+- Prohibited: `## Role`
+- Rule: Standard headings beyond the listed sections are allowed when needed;
+  include a short inline reason for each extra heading.
+- Rule: Skills that write runtime artifacts MUST include a `## Session Files` section with a
+  table listing each file name, the op that writes it, and the op that reads it.
+- Rule: All session-scoped runtime artifacts MUST be saved to
+  `~/.copilot/session-state/{session_id}/files/`.
+- Rule: In Session Files tables, the Written by column MUST name the op for Knowledge/Transform
+  skills and MUST name the Stage, Sub-Skill, or Agent type for Workflow skills
+  (e.g., `Stage 2`, `structured-workflow-implement`, `explore sub-agent`).
 
 ## Best Practices and Design Guidelines
 
 - Commit to Progressive Disclosure
-  - To protect the LLM's context window, keep the `SKILL.md` body under 500 lines.
-  - If content exceeds 500 lines or includes large prompts/data, extract them into additional layers (`references/` or `assets/`).
+  - To protect the LLM's context window, keep Knowledge/Transform `SKILL.md` bodies under 200 lines.
+  - To protect the LLM's context window, keep Workflow `SKILL.md` bodies under 300 lines.
+  - If any single section exceeds 30 lines or includes large prompts/data, extract content to `references/` or `assets/`.
   - Link from `SKILL.md` using relative paths and provide guidance on "when the AI should read that file"
     (e.g., `For detailed schema, see [schema.md](references/schema.md)`).
   - Include a Table of Contents at the beginning of reference files exceeding 300 lines.
@@ -119,26 +170,62 @@ disable-model-invocation: false # Required (always false)
 - Coordinator-Only Discipline: A workflow skill acts as the sole coordinator; it must not
   be invoked as a sub-skill by another workflow skill unless an explicit
   orchestrator-delegation contract is declared in both the parent and child SKILL.md.
+- Invocation Separation: choose by delegation capability, not invocability labels.
+- Task-capable target (`task()` reachable directly or transitively in its skill-delegation graph) MUST be invoked via `skill()`.
+- Task-free target (no reachable `task()` in its delegation graph) MAY be invoked via `skill()` or from within `task()`.
+- If capability is unknown, treat as task-capable; non-skill processing MUST use `task()`.
 - Sub-Agent Nesting Prohibition: Sub-agents invoked by sub-skills MUST NOT make further
-  `task()` calls. Sub-agents cannot call sub-agents. If sub-agent routing is needed,
+  `task()` calls. This prohibition applies to the entire skill package, including prompt
+  templates in references/ and executable logic in scripts/. Sub-agents cannot call
+  sub-agents. If sub-agent routing is needed,
   declare it in the main orchestrator skill.
-- Fault Declaration Requirement: Every delegation stage must declare fault tolerance with
-  three fields: failure condition, fallback action, and continue or abort decision.
-- Fault Declaration Format: `fault(<condition>) => fallback: <action>; <continue|abort>`
-- Assert Declaration Format: `assert(<left> != <right>) => on_conflict: <resolution>; <continue|abort>`
-  - Use assert() only when two independently produced values are expected to agree or be compatible.
-  - Do not use assert() to restate a fault condition; fault() guards failure states, assert() guards consistency.
-  - When resolution is "warn", the assertion is non-blocking; execution continues.
-- Placement Convention: Place fault() and assert() at the end of each numbered stage block,
-  after the stage output description.
+- Constraints Requirement: Every delegation stage MUST include a `Faults`
+  subsection written as plain-language bullets that state failure condition,
+  fallback action, and whether execution continues or aborts.
+- Multiple Failure Cases: A single stage's `Faults` subsection MAY contain
+  multiple plain-language bullets, one per distinct failure condition.
+- Placement Convention: Place `Faults` at the end of each numbered stage block, after the stage output description.
 - Fallback Sub-Skill Delegation: When the fallback action delegates to a sub-skill, set the
   action field to the sub-skill name with a parenthesized argument summary.
   Do not chain more than one level of fallback delegation; if the fallback sub-skill fails, the decision must be abort.
 - Examples Policy: Each workflow skill and each sub-skill it delegates to must include
   one happy-path example and one failure-path example.
 - Examples Format: Use `## Examples` section with `### Happy Path` and `### Failure Path`
-  subsections; limit each to 5 lines or fewer.
-- ALWAYS include an Execution section with a call-order text block (e.g., gather -> evaluate -> synthesize).
+  subsections; limit each to 3-5 lines.
+- Workflow skills using Layer 2 MUST include an Execution section with a call-order block
+  using a `python` code fence and the 6-field stage template.
+- Control Flow: Workflow skills requiring conditional stage transitions MUST place loop/branch
+  logic in the `python` call-order block at the top of Execution. Do not place conditional
+  logic as prose between stage definitions.
+- Stage Template Requirement: ALWAYS use the 6-field stage template for each stage in the
+  Execution section. ALWAYS use `yaml` code fences for Actions blocks in workflow stage templates:
+  - Keep the heading short: `### Stage N: Name` (no purpose suffix).
+  - Use a `Purpose` bullet as the first field for a one-sentence stage objective.
+  - Use inline type annotations for Inputs and Outputs (e.g., `` `field: Type` ``).
+  - Guards MUST remain as an independent field.
+  - Faults MUST be present per stage with failure condition, fallback, and continue-or-abort.
+
+  ````text
+  ### Stage N: Name
+
+  - Purpose: one-sentence stage objective
+  - Inputs: `field: Type`, `field2: Type`
+  - Actions:
+
+    ```yaml
+    - tool: skill
+      name: "..."
+      input: { ... }
+    - tool: task
+      agent_type: "..."
+      prompt: "..."
+    ```
+
+  - Outputs: `field: Type`, `path/to/artifact`
+  - Guards: condition required to proceed
+  - Faults:
+    - Describe each failure condition, fallback action, and continue-or-abort decision.
+  ````
 
 ## Knowledge/Transform Skill Authoring
 
@@ -147,12 +234,16 @@ disable-model-invocation: false # Required (always false)
 - Trigger for Use: Apply this track when the skill body contains a single op chain with no delegation.
 - Structure: Define one or more ops in sequence; each op has a clear input, action, and output.
   Do not add stage sequencing, delegation tables, or task() calls.
-- Fault Declaration Placement: Place fault() at the end of each op execution description.
-  Omit fault() when the op has no meaningful failure mode; do not add empty or trivially true clauses.
-- Assert Usage: Do not use assert() in knowledge/transform skills; use op-body invariants for
-  input validation and consistency checks instead.
+- Constraints Placement: Use the required `## Constraints` section for execution
+  limits, retry policy, and abort conditions in plain language.
 - Coordinator Restriction: No coordinator-only restrictions apply; a knowledge/transform skill
   may be invoked by any workflow skill or directly by the user.
 - Examples Policy: Include one happy-path example and one failure-path example using the same
   `## Examples` section format with `### Happy Path` and `### Failure Path` subsections.
-- Execution section is optional; omit unless delegation is introduced.
+- Examples Format: Keep each happy-path and failure-path subsection to 3-5 lines.
+- Execution section is optional; omit unless delegation is introduced. When operation
+  sequencing is critical for correctness, state the execution order in a single line within
+  the Overview section (e.g., `Execution order: op_a -> op_b -> op_c`).
+- Contract Detail Placement: Document operation procedures in prose sections
+  (`## Overview`, `## Constraints`, and optional `## Execution`), and keep
+  TypeScript blocks for schema definitions only.

@@ -56,3 +56,8 @@
 - NEVER over-engineer for rare edge cases.
 - NEVER add Co-authored-by trailers to git commit messages.
 - NEVER write to GitHub Issues or Pull Requests (comments, labels, assignments) without explicit user instruction.
+
+## Instruction File Precedence
+
+- ALWAYS treat narrower `applyTo` instruction files as canonical for their own scope.
+- NEVER apply a general bash rule when it conflicts with a narrower scoped instruction file.
