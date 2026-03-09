@@ -15,6 +15,12 @@ It runs parallel aspect reviews across three models, then gap analysis, optional
 All stage artifacts use `{session_dir}` which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
 
+At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
+and derives two paths:
+
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-code-review/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`
+
 ## Schema
 
 ```typescript
@@ -52,7 +58,7 @@ type ConsolidatedReview = {
 
 ## Output
 
-Delivery file: `{session_dir}/consolidated-review.md`
+Delivery file: `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`
 
 | Field            | Type                                                    | Description                  |
 | ---------------- | ------------------------------------------------------- | ---------------------------- |
@@ -67,18 +73,21 @@ Delivery file: `{session_dir}/consolidated-review.md`
 
 ```python
 def run_code_review(session_dir, target, design_info=None, design_info_filepath=None):
-    stage1_parallel_aspect_reviews(session_dir, target, design_info, design_info_filepath)
-    stage2_gap_analysis(session_dir)
-    if read_gaps_found(session_dir) > 0:
-        stage3_cross_check(session_dir)
-    stage4_consolidate_and_deliver(session_dir)
+    ts = now("YYYYMMDDHHMMSS")
+    run_dir = f"{session_dir}/{ts}-code-review"
+    final_output = f"{session_dir}/{ts}-code-review-consolidated-review.md"
+    stage1_parallel_aspect_reviews(run_dir, target, design_info, design_info_filepath)
+    stage2_gap_analysis(run_dir)
+    if read_gaps_found(run_dir) > 0:
+        stage3_cross_check(run_dir)
+    stage4_consolidate_and_deliver(run_dir, final_output)
 ```
 
 ### Stage 1: Parallel Aspect Reviews
 
 - Purpose: Launch 12-15 parallel subagents (3 models x 4 mandatory aspects,
   plus design-compliance when design_info is provided) to generate per-aspect review files.
-- Inputs: `session_dir: string`, `target: string`, `design_info?: string`, `design_info_filepath?: string`
+- Inputs: `run_dir: string`, `target: string`, `design_info?: string`, `design_info_filepath?: string`
 - Actions:
 
   ```yaml
@@ -93,7 +102,7 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
     prompt: >
       Invoke skill code-review-{aspect} with
       target={target},
-      output_filepath={session_dir}/review-{aspect}-{model}-{timestamp}.md
+      output_filepath={run_dir}/review-{aspect}-{model}.md
   - tool: task
     agent_type: "general-purpose"
     model: "{model}"
@@ -101,10 +110,10 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
       Invoke skill code-review-design-compliance with
       target={target},
       design_info={resolved_design_info},
-      output_filepath={session_dir}/review-design-compliance-{model}-{timestamp}.md
+      output_filepath={run_dir}/review-design-compliance-{model}.md
   ```
 
-- Outputs: `{session_dir}/review-{aspect}-{model}-{timestamp}.md`
+- Outputs: `{run_dir}/review-{aspect}-{model}.md`
 - Guards: Each non-design aspect must have at least two model outputs;
   include design-compliance only when design info is resolved.
 - Faults:
@@ -115,7 +124,7 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
 ### Stage 2: Gap Analysis
 
 - Purpose: Compare per-aspect findings across models and produce gap routing data.
-- Inputs: `session_dir: string`,
+- Inputs: `run_dir: string`,
   `review_file_paths: string[]`,
   `aspects: ("security" | "quality" | "performance" | "best-practices" | "design-compliance")[]`
 - Actions:
@@ -127,11 +136,11 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
     prompt: >
       Invoke skill code-review-gap-analysis with
       review_file_paths={review_file_paths},
-      output_filepath={session_dir}/gap-list.yml.
+      output_filepath={run_dir}/gap-list.yml.
       Return exactly: gaps_found: <N>.
   ```
 
-- Outputs: `{session_dir}/gap-list.yml`
+- Outputs: `{run_dir}/gap-list.yml`
 - Guards: Stage 1 review files exist for every included aspect.
 - Faults:
   - If gap analysis fails, abort immediately.
@@ -139,7 +148,7 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
 ### Stage 3: Cross-Check
 
 - Purpose: Validate concerns that one or more reviewers missed according to `gap-list.yml`.
-- Inputs: `session_dir: string`, `gap_list_path: string`
+- Inputs: `run_dir: string`, `gap_list_path: string`
 - Actions:
 
   ```yaml
@@ -147,32 +156,32 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
     agent_type: "general-purpose"
     model: "claude-opus-4.6"
     prompt: >
-      From {gap_list_path}, for entries where missed_by=claude-opus-4.6,
+      From {run_dir}/gap-list.yml, for entries where missed_by=claude-opus-4.6,
       group by aspect and invoke code-review-cross-check with
       aspect={aspect},
       concerns={concerns},
-      output_filepath={session_dir}/crosscheck-{aspect}-claude-opus-4.6.md.
+      output_filepath={run_dir}/crosscheck-{aspect}-claude-opus-4.6.md.
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
     prompt: >
-      From {gap_list_path}, for entries where missed_by=gemini-3-pro-preview,
+      From {run_dir}/gap-list.yml, for entries where missed_by=gemini-3-pro-preview,
       group by aspect and invoke code-review-cross-check with
       aspect={aspect},
       concerns={concerns},
-      output_filepath={session_dir}/crosscheck-{aspect}-gemini-3-pro-preview.md.
+      output_filepath={run_dir}/crosscheck-{aspect}-gemini-3-pro-preview.md.
   - tool: task
     agent_type: "general-purpose"
     model: "gpt-5.3-codex"
     prompt: >
-      From {gap_list_path}, for entries where missed_by=gpt-5.3-codex,
+      From {run_dir}/gap-list.yml, for entries where missed_by=gpt-5.3-codex,
       group by aspect and invoke code-review-cross-check with
       aspect={aspect},
       concerns={concerns},
-      output_filepath={session_dir}/crosscheck-{aspect}-gpt-5.3-codex.md.
+      output_filepath={run_dir}/crosscheck-{aspect}-gpt-5.3-codex.md.
   ```
 
-- Outputs: `{session_dir}/crosscheck-{aspect}-{model}.md`
+- Outputs: `{run_dir}/crosscheck-{aspect}-{model}.md`
 - Guards: Run only when `gaps_found > 0`; skip when `gaps_found == 0`.
 - Faults:
   - If cross-check fails, note the failure in the final report and continue.
@@ -180,12 +189,13 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
 ### Stage 4: Consolidation and Delivery
 
 - Purpose: Merge all review artifacts and produce the final user-facing summary.
-- Inputs: `session_dir: string`,
+- Inputs: `run_dir: string`,
   `review_file_paths: string[]`,
   `gap_list_path: string`,
   `crosscheck_paths: string[]`,
   `aspects: ("security" | "quality" | "performance" | "best-practices" | "design-compliance")[]`,
-  `models: ("claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.3-codex")[]`
+  `models: ("claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.3-codex")[]`,
+  `final_output: string`
 - Actions:
 
   ```yaml
@@ -197,33 +207,36 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
       review_file_paths={review_file_paths},
       gap_list_path={gap_list_path},
       crosscheck_paths={crosscheck_paths},
-      output_filepath={session_dir}/consolidated-review.md.
+      output_filepath={final_output}.
       Return the consolidated review file path.
   ```
 
-- Outputs: `{session_dir}/consolidated-review.md`
+- Outputs: `{final_output}` (resolved to `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`)
 - Guards: Consolidation must include available review files and available cross-check files.
 - Faults:
   - If consolidation fails, abort immediately.
 
 ## Session Files
 
-All files are saved under `{session_dir}/`.
+Intermediate files are saved under `{run_dir}/`. The final output is saved directly under `{session_dir}/`.
 
-| File                                     | Written by | Read by          |
-| ---------------------------------------- | ---------- | ---------------- |
-| `review-{aspect}-{model}-{timestamp}.md` | Stage 1    | Stage 2, Stage 4 |
-| `gap-list.yml`                           | Stage 2    | Stage 3, Stage 4 |
-| `crosscheck-{aspect}-{model}.md`         | Stage 3    | Stage 4          |
-| `consolidated-review.md`                 | Stage 4    | Stage 4          |
+| File                                                              | Written by | Read by          |
+| ----------------------------------------------------------------- | ---------- | ---------------- |
+| `{run_dir}/review-{aspect}-{model}.md`                            | Stage 1    | Stage 2, Stage 4 |
+| `{run_dir}/gap-list.yml`                                          | Stage 2    | Stage 3, Stage 4 |
+| `{run_dir}/crosscheck-{aspect}-{model}.md`                        | Stage 3    | Stage 4          |
+| `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md` | Stage 4    | User             |
 
 ## Examples
 
 ### Happy Path
 
 - Input: `{ session_dir: "{session_dir}", target: "HEAD", design_info: "API must return JSON" }`
-- Stage 1 runs aspect reviews, Stage 2 writes `gap-list.yml`, Stage 3 cross-checks gaps, Stage 4 consolidates.
-- Output: `consolidated-review.md` is delivered with blocking and non-blocking findings.
+- Stage 1 runs aspect reviews into
+  `{run_dir}/review-{aspect}-{model}.md`, Stage 2 writes `{run_dir}/gap-list.yml`,
+  Stage 3 writes `{run_dir}/crosscheck-{aspect}-{model}.md`, Stage 4 consolidates.
+- Output: `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md` is delivered
+  with blocking and non-blocking findings.
 
 ### Failure Path
 

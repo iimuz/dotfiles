@@ -18,9 +18,11 @@ work through stage actions.
 
 All stage artifacts use `{session_dir}` which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
-The orchestrator auto-generates internal context values for each run: `run_id` uses
-format `tc-{timestamp}` (for example `tc-20260308143022`), `run_dir` resolves to
-`{session_dir}/{run_id}/`.
+
+At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`) and derives two paths:
+
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-task-coordinator/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-task-coordinator-synthesis.md`
 
 ## Schema
 
@@ -50,14 +52,15 @@ type CoordinatorResult = {
 
 - status: orchestration completion status
 - mode: inline for single task, pipeline for multi-task plan
-- result_file: final artifact to present
+- result_file: `{session_dir}/YYYYMMDDHHMMSS-task-coordinator-synthesis.md`
 - summary: short operator-facing summary
 
 ## Execution
 
 ```python
-run_id = "tc-{timestamp}"  # e.g. tc-20260308143022
-run_dir = f"{session_dir}/{run_id}/"
+ts = now("YYYYMMDDHHMMSS")
+run_dir = f"{session_dir}/{ts}-task-coordinator"
+final_output = f"{session_dir}/{ts}-task-coordinator-synthesis.md"
 
 plan = stage1_plan(request, run_dir)
 if len(plan["tasks"]) == 1:
@@ -71,11 +74,13 @@ else:
     synthesis = stage3_synthesize(
         plan,
         receipts,
+        run_dir,
+        final_output,
         protocol_file="references/synthesizer-protocol.md",
     )
     final_result = stage4_present(
         mode="pipeline",
-        result_file=synthesis["synthesis_file"],
+        result_file=synthesis["final_output"],
     )
 return final_result
 ```
@@ -83,14 +88,14 @@ return final_result
 ### Stage 1: Plan
 
 - Purpose: Produce a validated execution plan from the request.
-- Inputs: `request: string`, `run_id: string`, `run_dir: string`
+- Inputs: `request: string`, `run_dir: string`
 - Actions:
 
   ```yaml
   - tool: task
     agent_type: "general-purpose"
     model: "claude-opus-4.6"
-    prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request: '{request}', run_id: '{run_id}', run_dir: '{run_dir}' }. The values `run_id` and `run_dir` are internal orchestrator-generated context values, not user input. Persist all outputs as specified by the skill's Session Files."
+    prompt: "Use the skill tool to invoke 'task-coordinator-plan' with input: { request: '{request}', run_dir: '{run_dir}' }. The value `run_dir` is an internal orchestrator-generated context value, not user input. Persist all outputs as specified by the skill's Session Files."
   ```
 
 - Outputs: `plan_file: string`
@@ -126,17 +131,17 @@ return final_result
 ### Stage 3: Synthesize
 
 - Purpose: Merge pipeline worker outputs into one synthesis artifact.
-- Inputs: `plan: object`, `worker_receipts: array`, `protocol_file: string`
+- Inputs: `plan: object`, `worker_receipts: array`, `run_dir: string`, `final_output: string`, `protocol_file: string`
 - Actions:
 
   ```yaml
   - tool: task
     agent_type: "general-purpose"
     model: "claude-opus-4.6"
-    prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan: '{plan}', receipts: '{worker_receipts}', protocol_file: '{protocol_file}' }. Persist all outputs as specified by the skill's Session Files."
+    prompt: "Use the skill tool to invoke 'task-coordinator-synthesize' with input: { plan: '{plan}', receipts: '{worker_receipts}', run_dir: '{run_dir}', output_file: '{final_output}', protocol_file: '{protocol_file}' }. Persist all outputs as specified by the skill's Session Files."
   ```
 
-- Outputs: `synthesis_file: string`, `synthesis_receipt_file: string`
+- Outputs: `final_output: string`, `synthesis_receipt_file: string`
 - Guards: run only when pipeline mode is active.
 - Faults:
   - If synthesis fails, invoke `task-coordinator-present` with `mode` and `result_file` set to an
@@ -163,22 +168,25 @@ return final_result
 
 ## Session Files
 
-| File                                                                             | Written by | Read by          |
-| -------------------------------------------------------------------------------- | ---------- | ---------------- |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/plan.json`                 | Stage 1    | Stage 2, Stage 3 |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/worker-receipts.json`      | Stage 2    | Stage 3          |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/synthesis.md`              | Stage 3    | Stage 4          |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/synthesis-receipt.json`    | Stage 3    | task-coordinator |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/presentation-receipt.json` | Stage 4    | task-coordinator |
-| `~/.copilot/session-state/{session_id}/files/{run_id}/plan-errors.json`          | Stage 1    | task-coordinator |
+Intermediate files are saved under `{run_dir}/`. The final output is saved directly under `{session_dir}/`.
+
+| File                                                         | Written by | Read by          |
+| ------------------------------------------------------------ | ---------- | ---------------- |
+| `{run_dir}/plan.json`                                        | Stage 1    | Stage 2, Stage 3 |
+| `{run_dir}/worker-receipts.json`                             | Stage 2    | Stage 3          |
+| `{run_dir}/synthesis-receipt.json`                           | Stage 3    | task-coordinator |
+| `{run_dir}/presentation-receipt.json`                        | Stage 4    | task-coordinator |
+| `{run_dir}/plan-errors.json`                                 | Stage 1    | task-coordinator |
+| `{session_dir}/YYYYMMDDHHMMSS-task-coordinator-synthesis.md` | Stage 3    | Stage 4          |
 
 ## Examples
 
 ### Happy Path
 
 - Request yields three independent tasks.
-- Stage 2 runs pipeline dispatch, Stage 3 creates `synthesis.md`.
-- Stage 4 presents `synthesis.md` and returns success.
+- Stage 2 runs pipeline dispatch and writes receipts to `{run_dir}/worker-receipts.json`.
+- Stage 3 writes synthesis receipt to `{run_dir}/synthesis-receipt.json` and final output to `{session_dir}/YYYYMMDDHHMMSS-task-coordinator-synthesis.md`.
+- Stage 4 presents `{session_dir}/YYYYMMDDHHMMSS-task-coordinator-synthesis.md` and returns success.
 
 ### Failure Path
 

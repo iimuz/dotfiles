@@ -17,7 +17,13 @@ Orchestrate a 3-stage multi-LLM deliberation: parallel response generation, anon
 review with ranking, and chairman synthesis. Use for complex questions where a single model's
 blind spots could lead to an incomplete answer.
 
-All stage artifacts use `{session_dir}` which resolves to
+At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
+and derives two paths:
+
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-council/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-council-synthesis.md`
+
+All paths are rooted under `{session_dir}` which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
 
 ## Schema
@@ -60,6 +66,9 @@ type SynthesizeInput = {
 ## Execution
 
 ```python
+ts = now("YYYYMMDDHHMMSS")
+run_dir = f"{session_dir}/{ts}-council"
+final_output = f"{session_dir}/{ts}-council-synthesis.md"
 generate_responses()
 anonymize()
 reviews = peer_review()
@@ -81,21 +90,21 @@ synthesize()
     prompt: >
       Invoke skill council-respond with
       question={question},
-      output_filepath={session_dir}/council-stage1-claude-opus-4.6-{timestamp}.md
+      output_filepath={run_dir}/council-stage1-claude-opus-4.6.md
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
     prompt: >
       Invoke skill council-respond with
       question={question},
-      output_filepath={session_dir}/council-stage1-gemini-3-pro-preview-{timestamp}.md
+      output_filepath={run_dir}/council-stage1-gemini-3-pro-preview.md
   - tool: task
     agent_type: "general-purpose"
     model: "gpt-5.3-codex"
     prompt: >
       Invoke skill council-respond with
       question={question},
-      output_filepath={session_dir}/council-stage1-gpt-5.3-codex-{timestamp}.md
+      output_filepath={run_dir}/council-stage1-gpt-5.3-codex.md
   ```
 
 - Outputs: stage1_response_paths: string[] (3 files)
@@ -118,8 +127,8 @@ synthesize()
       Invoke skill council-anonymize with
       question={question},
       response_paths={stage1_response_paths},
-      output_anonymized_path={session_dir}/council-stage2-input-{timestamp}.md,
-      label_map_path={session_dir}/council-label-mapping-{timestamp}.json
+      output_anonymized_path={run_dir}/council-stage2-input.md,
+      label_map_path={run_dir}/council-label-mapping.json
       Return the anonymized artifact path and label map path.
   ```
 
@@ -138,15 +147,15 @@ synthesize()
   - tool: task
     agent_type: "general-purpose"
     model: "claude-opus-4.6"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={session_dir}/council-stage3-claude-opus-4.6-{timestamp}.md"
+    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-claude-opus-4.6.md"
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={session_dir}/council-stage3-gemini-3-pro-preview-{timestamp}.md"
+    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gemini-3-pro-preview.md"
   - tool: task
     agent_type: "general-purpose"
     model: "gpt-5.3-codex"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={session_dir}/council-stage3-gpt-5.3-codex-{timestamp}.md"
+    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gpt-5.3-codex.md"
   ```
 
 - Outputs: stage3_review_paths: string[] (up to 3 files)
@@ -169,7 +178,7 @@ synthesize()
       Invoke skill council-aggregate with
       review_artifact_paths={stage3_review_paths},
       label_map_path={label_map_path},
-      output_rankings_path={session_dir}/council-aggregate-rankings-{timestamp}.md
+      output_rankings_path={run_dir}/council-aggregate-rankings.md
       Return the rankings file path.
   ```
 
@@ -198,7 +207,7 @@ synthesize()
       label_map_path={label_map_path},
       response_paths={stage1_response_paths},
       review_paths={stage3_review_paths},
-      output_synthesis_path={session_dir}/council-stage5-synthesis-{timestamp}.md
+      output_synthesis_path={final_output}
       Include aggregate_ranking_path={aggregate_ranking_path} only when aggregate_ranking_path is available.
       Return the synthesis file path.
   ```
@@ -209,21 +218,23 @@ synthesize()
   - If chairman synthesis fails, invoke council-fallback with question={question},
     response_paths={stage1_response_paths}, aggregate_ranking_path={aggregate_ranking_path},
     label_map_path={label_map_path},
-    output_fallback_path={session_dir}/council-stage5-fallback-{timestamp}.md and continue.
+    output_fallback_path={session_dir}/{ts}-council-fallback.md and continue.
 
-Read only `council-stage5-synthesis-{timestamp}.md` and present its content to the user without modification.
+Read only `{session_dir}/{ts}-council-synthesis.md` and present its content to the user without modification.
 The main agent must not read any other session file.
 
 ## Session Files
 
-| File                                        | Written by | Read by          |
-| ------------------------------------------- | ---------- | ---------------- |
-| `council-stage1-{model}-{timestamp}.md`     | Stage 1    | Stage 2          |
-| `council-stage2-input-{timestamp}.md`       | Stage 2    | Stage 3          |
-| `council-label-mapping-{timestamp}.json`    | Stage 2    | Stage 4, Stage 5 |
-| `council-stage3-{model}-{timestamp}.md`     | Stage 3    | Stage 4          |
-| `council-aggregate-rankings-{timestamp}.md` | Stage 4    | Stage 5          |
-| `council-stage5-synthesis-{timestamp}.md`   | Stage 5    | Main agent       |
+Intermediate files are saved under `{run_dir}/`. The final output is saved directly under `{session_dir}/`.
+
+| File                                                | Written by | Read by          |
+| --------------------------------------------------- | ---------- | ---------------- |
+| `{run_dir}/council-stage1-{model}.md`               | Stage 1    | Stage 2          |
+| `{run_dir}/council-stage2-input.md`                 | Stage 2    | Stage 3          |
+| `{run_dir}/council-label-mapping.json`              | Stage 2    | Stage 4, Stage 5 |
+| `{run_dir}/council-stage3-{model}.md`               | Stage 3    | Stage 4          |
+| `{run_dir}/council-aggregate-rankings.md`           | Stage 4    | Stage 5          |
+| `{session_dir}/YYYYMMDDHHMMSS-council-synthesis.md` | Stage 5    | Main agent       |
 
 ## Examples
 
@@ -231,9 +242,12 @@ The main agent must not read any other session file.
 
 - Input: { question: "What is the best approach to database indexing?" }
 - Stages 1-5 all succeed; 3/3 responses, 3/3 reviews, rankings aggregated
-- Output: synthesis document written; main agent reads and presents content
+- Intermediate artifacts: `{run_dir}/council-stage1-{model}.md`, `{run_dir}/council-stage2-input.md`
+- Intermediate artifacts: `{run_dir}/council-stage3-{model}.md`, `{run_dir}/council-aggregate-rankings.md`
+- Output: `{session_dir}/YYYYMMDDHHMMSS-council-synthesis.md`; main agent reads and presents content
 
 ### Failure Path
 
 - Input: { question: "..." }; Stage 1 returns 1/3 successful responses
+- Partial artifacts remain under `{run_dir}/`; no final synthesis file is read
 - fault(responses.length < 2) => fallback: none; abort
