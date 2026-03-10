@@ -129,13 +129,16 @@ code-review
 
 Created the `draft-review` skill (formerly `pr-review-draft`) for creating
 pending PR review comments, and renamed `review-comment-workflow` to
-`resolve-comments`. The work was completed in two code iterations, and all
-Critical/High review findings were resolved.
+`resolve-comments`. As part of the same execution, updated renamed SKILL
+frontmatter names, repository references, and `draft-review` documentation so
+that no old skill-name references remained. The work was completed in two code
+iterations, and all Critical/High review findings were resolved.
 
 - Issues with resolutions: Syntax error in Python script (fixed), missing
   triple-backtick validation (added), type hint gaps (resolved), naming
   inconsistency (renamed both skills).
-- Final verification result: lint/format pass, SKILL.md under 200 lines, all checks green.
+- Final verification result: lint/format pass, SKILL.md under 200 lines, all
+  checks green, and no old skill-name references remain.
 
 ## Scratchpad
 
