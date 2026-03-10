@@ -92,7 +92,7 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
 
   ```yaml
   # Launch 12-15 parallel subagents (3 models x 4-5 aspects)
-  # Models: claude-opus-4.6, gemini-3-pro-preview, gpt-5.3-codex
+  # Models: claude-opus-4.6, gemini-3-pro-preview, gpt-5.4
   # Aspects: security, quality, performance, best-practices
   # Conditional aspect: design-compliance (only when design_info resolved)
   # For each (model, aspect) pair, launch one subagent:
@@ -172,13 +172,13 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
       output_filepath={run_dir}/crosscheck-{aspect}-gemini-3-pro-preview.md.
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
-      From {run_dir}/gap-list.yml, for entries where missed_by=gpt-5.3-codex,
+      From {run_dir}/gap-list.yml, for entries where missed_by=gpt-5.4,
       group by aspect and invoke code-review-cross-check with
       aspect={aspect},
       concerns={concerns},
-      output_filepath={run_dir}/crosscheck-{aspect}-gpt-5.3-codex.md.
+      output_filepath={run_dir}/crosscheck-{aspect}-gpt-5.4.md.
   ```
 
 - Outputs: `{run_dir}/crosscheck-{aspect}-{model}.md`
@@ -194,7 +194,7 @@ def run_code_review(session_dir, target, design_info=None, design_info_filepath=
   `gap_list_path: string`,
   `crosscheck_paths: string[]`,
   `aspects: ("security" | "quality" | "performance" | "best-practices" | "design-compliance")[]`,
-  `models: ("claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.3-codex")[]`,
+  `models: ("claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.4")[]`,
   `final_output: string`
 - Actions:
 

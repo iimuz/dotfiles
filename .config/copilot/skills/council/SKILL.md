@@ -100,11 +100,11 @@ synthesize()
       output_filepath={run_dir}/council-stage1-gemini-3-pro-preview.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill council-respond with
       question={question},
-      output_filepath={run_dir}/council-stage1-gpt-5.3-codex.md
+      output_filepath={run_dir}/council-stage1-gpt-5.4.md
   ```
 
 - Outputs: stage1_response_paths: string[] (3 files)
@@ -154,8 +154,8 @@ synthesize()
     prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gemini-3-pro-preview.md"
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gpt-5.3-codex.md"
+    model: "gpt-5.4"
+    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gpt-5.4.md"
   ```
 
 - Outputs: stage3_review_paths: string[] (up to 3 files)

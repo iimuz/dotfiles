@@ -9,10 +9,7 @@ type Plan = {
   synthesis_output_file: string; // absolute path under run_dir
 };
 
-type AllowedModel =
-  | "claude-opus-4.6"
-  | "gpt-5.3-codex"
-  | "gemini-3-pro-preview";
+type AllowedModel = "claude-opus-4.6" | "gpt-5.4" | "gemini-3-pro-preview";
 
 type Task = {
   id: string; // unique within plan, e.g. "T1"
@@ -171,7 +168,7 @@ The mode is determined by `tasks.length` in `plan.json` — decided by the Plann
       "output_file": "/home/{user}/.copilot/session-state/{session_id}/files/tc-20240101-150000/T3-output.md",
       "depends_on": ["T1"],
       "description": "Analyze endpoints for rate-limiting gaps",
-      "model": "gpt-5.3-codex"
+      "model": "gpt-5.4"
     }
   ],
   "synthesis_output_file": "/home/{user}/.copilot/session-state/{session_id}/files/tc-20240101-150000/synthesis.md"

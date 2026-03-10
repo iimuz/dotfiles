@@ -85,11 +85,11 @@ return plan_filepath
       output_filepath={run_dir}/step1-gemini-3-pro-preview-analysis.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-analyze with
       user_request={user_request},
-      output_filepath={run_dir}/step1-gpt-5.3-codex-analysis.md
+      output_filepath={run_dir}/step1-gpt-5.4-analysis.md
   ```
 
 - Outputs: `stage1_analysis_paths: string[]`
@@ -121,11 +121,11 @@ return plan_filepath
       output_filepath={run_dir}/step2-gemini-3-pro-preview-plan-draft.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-draft with
       analysis_paths={stage1_analysis_paths},
-      output_filepath={run_dir}/step2-gpt-5.3-codex-plan-draft.md
+      output_filepath={run_dir}/step2-gpt-5.4-plan-draft.md
   ```
 
 - Outputs: `stage2_draft_paths: string[]`
@@ -157,11 +157,11 @@ return plan_filepath
       output_filepath={run_dir}/step3-gemini-3-pro-preview-review.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-review with
       draft_paths={stage2_draft_paths},
-      output_filepath={run_dir}/step3-gpt-5.3-codex-review.md
+      output_filepath={run_dir}/step3-gpt-5.4-review.md
   ```
 
 - Outputs: `stage3_review_paths: string[]`

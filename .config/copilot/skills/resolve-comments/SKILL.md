@@ -27,7 +27,7 @@ type ModelRoles = {
   evaluator: "skill('council')";
   implementer: "skill('task-coordinator')";
   verifier: "skill('code-review', model: 'claude-opus-4.6')";
-  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')";
+  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.4')";
 };
 
 type SessionFileTypes = {
@@ -101,7 +101,7 @@ declare function commitStage(input: {
 }): { commit_status: string; commit_skip_reason?: string };
 // @fault git_add_failed => abort_with_git_add_failed_status
 // @fault commit_skill_failed => emit_commit_failed_status_and_continue
-// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.3-codex") and commit-staged
+// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.4") and commit-staged
 
 declare function summarizeStage(input: {
   actionable_count: number;
@@ -174,7 +174,7 @@ declare function summarizeStage(input: {
 - Apply severity gate: proceed only when `critical_count == 0` and `high_count == 0`.
 - If severity parsing fails, skip commit and propagate `commit_skip_reason: severity_parse_failed`.
 - If gate fails, skip commit and propagate `commit_skip_reason: severity_gate_failed`.
-- Delegate commit execution to `task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')`.
+- Delegate commit execution to `task(agent_type: 'general-purpose', model: 'gpt-5.4')`.
   Sub-agent performs: git add to stage implementation changes, staged-change pre-check
   (if no staged changes exist, propagate `commit_skip_reason: no_staged_changes` and skip),
   `skill('commit-staged')` invocation when staged-change pre-check passes, and commit artifact JSON write to

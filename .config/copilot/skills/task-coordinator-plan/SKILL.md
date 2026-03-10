@@ -22,7 +22,7 @@ type PlanTask = {
   agent_type: "explore" | "task" | "general-purpose" | "code-review";
   prompt_file: string;
   output_file: string;
-  model?: "claude-opus-4.6" | "gpt-5.3-codex" | "gemini-3-pro-preview";
+  model?: "claude-opus-4.6" | "gpt-5.4" | "gemini-3-pro-preview";
   depends_on: string[];
 };
 
