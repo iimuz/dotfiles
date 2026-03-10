@@ -36,7 +36,7 @@
 
 ### Task Completion Protocol
 
-- ALWAYS use the ask tool to confirm with the user before finishing, and ALWAYS accept free-form user input in that confirmation.
+- ALWAYS call ask_user (allow_freeform: true) as the final action when completing a user request, regardless of task size.
 
 ## Style and Preferences
 
@@ -56,8 +56,3 @@
 - NEVER over-engineer for rare edge cases.
 - NEVER add Co-authored-by trailers to git commit messages.
 - NEVER write to GitHub Issues or Pull Requests (comments, labels, assignments) without explicit user instruction.
-
-## Instruction File Precedence
-
-- ALWAYS treat narrower `applyTo` instruction files as canonical for their own scope.
-- NEVER apply a general bash rule when it conflicts with a narrower scoped instruction file.
