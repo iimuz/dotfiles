@@ -10,7 +10,7 @@ status: done
 
 - Which Execution/Workflow section format in SKILL.md files is better for
   LLM agent processing: `structured-workflow` style or
-  `review-comment-workflow` style?
+  `resolve-comments` style?
 - What is the recommended optimal format?
 
 ## Council Result
@@ -31,9 +31,9 @@ status: done
 - Naming uses "Phase N" instead of "Stage N" (inconsistent with other skills)
 - No explicit Inputs or Outputs fields per stage
 
-### review-comment-workflow Problems
+### resolve-comments Problems
 
-- File: `.config/copilot/skills/review-comment-workflow/SKILL.md`
+- File: `.config/copilot/skills/resolve-comments/SKILL.md`
 - Workflow stages use prose descriptions that are harder for LLMs to pattern-match
 - No explicit Purpose, Inputs, or Outputs fields
 - Actions are described in mixed prose and code blocks
@@ -110,6 +110,6 @@ fault(skill_fails) => fallback: none; abort
 ## References
 
 - `.github/instructions/skills.instructions.md` - workflow skill authoring rules
-- `.config/copilot/skills/review-comment-workflow/SKILL.md` - reference for uniform stage structure
+- `.config/copilot/skills/resolve-comments/SKILL.md` - reference for uniform stage structure
 - `.config/copilot/skills/structured-workflow/SKILL.md` - primary migration target
 - `.config/copilot/skills/structured-workflow-implement/SKILL.md` - secondary migration target

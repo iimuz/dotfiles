@@ -1,11 +1,11 @@
 ---
-name: review-comment-workflow
+name: resolve-comments
 description: Resolve PR review comments when users ask to gather facts, evaluate fixes, verify diffs, and commit approved changes.
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# Review Comment Workflow
+# Resolve Comments Workflow
 
 ## Overview
 
@@ -15,8 +15,8 @@ that prioritizes safe decisions and explicit verification before reporting compl
 At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
 and derives two paths:
 
-- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow/` for intermediate artifacts
-- final output = `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow-summary.md`
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
 
 ## Interface
 
@@ -38,7 +38,7 @@ type SessionFileTypes = {
   implementJson: "implement.json";
   verifyJson: "verify.json";
   commitJson: "commit.json";
-  summaryMd: "YYYYMMDDHHMMSS-review-comment-workflow-summary.md";
+  summaryMd: "YYYYMMDDHHMMSS-resolve-comments-summary.md";
 };
 
 type SeveritySummary = {
@@ -48,7 +48,7 @@ type SeveritySummary = {
   low_count: number;
 };
 
-declare function reviewCommentWorkflow(input: {
+declare function resolveComments(input: {
   comments: string;
   context?: string;
 }): { summary: string };
@@ -196,14 +196,14 @@ declare function summarizeStage(input: {
 
 ```python
 ts = now("YYYYMMDDHHMMSS")
-run_dir = f"{session_dir}/{ts}-review-comment-workflow"
-final_output = f"{session_dir}/{ts}-review-comment-workflow-summary.md"
+run_dir = f"{session_dir}/{ts}-resolve-comments"
+final_output = f"{session_dir}/{ts}-resolve-comments-summary.md"
 gather -> evaluate -> implement -> verify -> commit -> summarize
 ```
 
 ## Output
 
-- Delivery path: `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow-summary.md`
+- Delivery path: `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
 
 ## Session Files
 
@@ -216,7 +216,7 @@ Intermediate files are saved under {run_dir}/. The final output is saved directl
 - `{run_dir}/implement.json`
 - `{run_dir}/verify.json`
 - `{run_dir}/commit.json`
-- `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow-summary.md`
+- `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
 
 ## Examples
 
@@ -229,7 +229,7 @@ Intermediate files are saved under {run_dir}/. The final output is saved directl
 - Verify reports zero critical and zero high findings from
   `{run_dir}/verify.json`, and Commit proceeds after staged-change pre-check.
 - Summarize reports gather, evaluate, implement, verify, and commit outcomes at
-  `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow-summary.md`.
+  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
 
 ### Failure Path
 
@@ -238,4 +238,4 @@ Intermediate files are saved under {run_dir}/. The final output is saved directl
   `commit_skip_reason: severity_gate_failed`.
 - If severity parsing fails, Commit is skipped with `commit_skip_reason: severity_parse_failed` and workflow continues.
 - Summarize includes gather handoff details and explicit commit skip reason at
-  `{session_dir}/YYYYMMDDHHMMSS-review-comment-workflow-summary.md`.
+  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
