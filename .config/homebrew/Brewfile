@@ -38,6 +38,7 @@ cask "azookey"
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 # cask "voiceink"  # instantly transcribe what you say
+cask "handy"  # speech-to-text application
 
 # === LLM
 brew "ollama"
