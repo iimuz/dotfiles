@@ -172,14 +172,9 @@ function copilot_prompt() {
 
   local -r prompt_text="$(
     cat <<EOF
-<user_task>
 ${prompt_section}
-</user_task>
 
-<system_instruction>
-Update ${source_file} by editing only the sections: ## Ref, ## Steps, ## Verify, and ## Scratchpad.
-Keep Scratchpad notes concise and focused on progress updates.
-</system_instruction>
+Update ${source_file}.
 EOF
   )"
 
