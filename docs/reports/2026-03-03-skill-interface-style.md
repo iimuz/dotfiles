@@ -6,7 +6,7 @@
 
 ## 背景
 
-`review-comment-workflow/SKILL.md`（スタイルA: Markdown箇条書き）と
+`resolve-comments/SKILL.md`（スタイルA: Markdown箇条書き）と
 `structured-workflow/SKILL.md`（スタイルB: TypeScript + TypeSpec）で
 Interface・手順の記述スタイルが混在している。
 3モデルによる Council 審議（2026-03-03）の結果をもとに、
@@ -91,7 +91,7 @@ gather -> evaluate -> synthesize
 
 ## 未解決事項
 
-- 既存 SKILL.md（review-comment-workflow、structured-workflow、council など）への
+- 既存 SKILL.md（resolve-comments、structured-workflow、council など）への
   適用タイミングと優先度は未定
 - `@fault` / `@invariant` タグ構文の正式仕様（値の記法、セミコロン区切りなど）は
   実際に適用しながら確定させる
@@ -101,5 +101,5 @@ gather -> evaluate -> synthesize
 - Council 審議アーティファクト:
   `~/.copilot/session-state/38ae5342-987d-4031-9ebf-b6eb684b1a60/files/council-stage5-synthesis-20260303144721.md`
 - 対象スキル:
-  `.config/copilot/skills/review-comment-workflow/SKILL.md`
+  `.config/copilot/skills/resolve-comments/SKILL.md`
   `.config/copilot/skills/structured-workflow/SKILL.md`

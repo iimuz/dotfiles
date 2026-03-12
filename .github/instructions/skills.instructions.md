@@ -142,6 +142,11 @@ disable-model-invocation: false # Required (always false)
 - Rule: In Session Files tables, the Written by column MUST name the op for Knowledge/Transform
   skills and MUST name the Stage, Sub-Skill, or Agent type for Workflow skills
   (e.g., `Stage 2`, `structured-workflow-implement`, `explore sub-agent`).
+- Rule: Workflow skills MUST generate a run timestamp once at execution start using `YYYYMMDDHHMMSS` format.
+- Rule: Workflow skills MUST create a run directory `{session_dir}/YYYYMMDDHHMMSS-{skill-name}/` for all intermediate artifacts.
+- Rule: Workflow skills MUST write the final output file to
+  `{session_dir}/YYYYMMDDHHMMSS-{skill-name}-{descriptor}.md` (or `.yml`/`.json`), not inside the run directory.
+- Rule: The same run timestamp MUST be used for both the run directory name and the final output file name.
 
 ## Best Practices and Design Guidelines
 

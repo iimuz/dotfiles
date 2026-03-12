@@ -18,6 +18,11 @@ Orchestrator that runs a 5-phase development cycle
 looping up to 3 times to resolve Critical and High severity issues.
 The main agent calls orchestrator skills directly via `skill()` and
 delegates non-orchestrator work to sub-agents via `task()`.
+At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
+and derives two paths:
+
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-structured-workflow/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-structured-workflow-summary.md`
 
 ## Schema
 
@@ -50,7 +55,7 @@ type FinalSummary = {
 };
 ```
 
-Input: `{ task: string }` → Output: `FinalSummary`
+Input: `{ task: string }` → Output: `FinalSummary` at `{session_dir}/YYYYMMDDHHMMSS-structured-workflow-summary.md`
 
 ## Constraints
 
@@ -58,8 +63,9 @@ Input: `{ task: string }` → Output: `FinalSummary`
 - Call orchestrator skills (`implementation-plan`, `code-review`, `task-coordinator`,
   `commit-staged`) via `skill()` directly and never wrap them in `task()`.
 - Use `task()` only for non-orchestrator work.
-- Read only `plan_filepath`, `plan-summary.md`, `sw-implement-request-{n}.md`, and
-  `workflow-summary.md` in the main agent context, and abort if any other file is read there.
+- Read only `plan_filepath`, `{run_dir}/plan-summary.md`,
+  `{run_dir}/sw-implement-request-{n}.md`, and `{final_output}` in the main agent context,
+  and abort if any other file is read there.
 - Suppress intermediate step output and show only phase transitions and the final summary to the user.
 - Abort immediately if the `task` input is missing or empty.
 - Obtain `session_id` from the CLI environment at skill start (current session identifier;
@@ -70,7 +76,10 @@ Input: `{ task: string }` → Output: `FinalSummary`
 
 ```python
 session_id = resolve_session_id()  # obtain from CLI environment (see Constraints)
-session_dir = f"~/.copilot/session-state/{session_id}/files/"
+session_dir = f"~/.copilot/session-state/{session_id}/files"
+ts = now("YYYYMMDDHHMMSS")
+run_dir = f"{session_dir}/{ts}-structured-workflow"
+final_output = f"{session_dir}/{ts}-structured-workflow-summary.md"
 prior_issues = []
 stage1_plan()
 for iteration in range(1, 4):
@@ -103,10 +112,10 @@ stage5_final_summary()
     agent_type: explore
     model: claude-opus-4.6
     prompt: |
-      Read {plan_filepath}; write 1-paragraph summary to {session_dir}/plan-summary.md
+      Read {plan_filepath}; write 1-paragraph summary to {run_dir}/plan-summary.md
   ```
 
-- Outputs: `plan_filepath: OpaqueFilePath`, `{session_dir}/plan-summary.md: OpaqueFilePath`
+- Outputs: `plan_filepath: OpaqueFilePath`, `{run_dir}/plan-summary.md: OpaqueFilePath`
 - Guards: plan_filepath extracted from skill result
 - Faults:
   - If the implementation-plan skill fails, abort and report the error.
@@ -124,7 +133,7 @@ stage5_final_summary()
     model: claude-opus-4.6
     prompt: |
       Invoke skill 'structured-workflow-implement' with
-      { session_id, plan_filepath, iteration, prior_issues };
+      { session_id, run_dir, plan_filepath, iteration, prior_issues };
       return request_file path
   - { tool: view, path: "{request_file_path}", output: request_file_content }
   - tool: skill
@@ -132,7 +141,7 @@ stage5_final_summary()
     input: { request: "{request_file_content}" }
   ```
 
-- Outputs: `~/.copilot/session-state/{session_id}/files/sw-implement-request-{iteration}.md: OpaqueFilePath`
+- Outputs: `{run_dir}/sw-implement-request-{iteration}.md: OpaqueFilePath`
 - Guards: request_file readable; task-coordinator succeeds
 - Faults:
   - If the implement task or task-coordinator skill fails, abort and report the error.
@@ -166,7 +175,7 @@ stage5_final_summary()
 
 - Purpose: review committed changes and determine whether further iteration is needed
 
-- Inputs: `session_id: string`, `{session_dir}/plan-summary.md: OpaqueFilePath`
+- Inputs: `session_id: string`, `{run_dir}/plan-summary.md: OpaqueFilePath`
 - Actions:
 
   ```yaml
@@ -175,7 +184,7 @@ stage5_final_summary()
     input:
       session_id: "{session_id}"
       target: HEAD
-      design_info_filepath: "{session_dir}/plan-summary.md"
+      design_info_filepath: "{run_dir}/plan-summary.md"
   ```
 
 - Outputs: `verdict: Verdict`
@@ -187,7 +196,7 @@ stage5_final_summary()
 
 - Purpose: compile Japanese final report from iteration results, present to user, then call ask_user
 
-- Inputs: `plan_filepath: OpaqueFilePath`, `iterations_json: string`, `session_dir: string`
+- Inputs: `plan_filepath: OpaqueFilePath`, `iterations_json: string`, `final_output: string`
 - Actions:
 
   ```yaml
@@ -198,35 +207,34 @@ stage5_final_summary()
       Read {plan_filepath} and iteration data from {iterations_json};
       write Japanese final report with
       plan/fixed/unfixed/history/recommendations
-      to {session_dir}/workflow-summary.md
+      to {final_output}
   ```
 
-- Outputs: `{session_dir}/workflow-summary.md: FinalSummary`
-- Guards: workflow-summary.md written successfully
+- Outputs: `{final_output}: FinalSummary`
+- Guards: final_output written successfully
 - Faults:
   - If the task fails, abort and report the error.
 
 ## Session Files
 
-All files saved to
-`~/.copilot/session-state/{session_id}/files/`:
+Intermediate files are saved under {run_dir}/. The final output is saved directly under {session_dir}/.
 
-| File                           | Written by                                                 | Read by                 |
-| ------------------------------ | ---------------------------------------------------------- | ----------------------- |
-| `{purpose}-{component}-{n}.md` | Stage 1 (implementation-plan skill, owns filename pattern) | Stage 1 (plan_filepath) |
-| `plan-summary.md`              | Stage 1 (explore sub-agent)                                | Stage 4                 |
-| `sw-implement-request-{n}.md`  | Stage 2 (structured-workflow-implement)                    | Stage 2                 |
-| `workflow-summary.md`          | Stage 5 (explore sub-agent)                                | Stage 5                 |
+| File                                                                            | Written by                                                 | Read by                 |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------- |
+| `{session_dir}/YYYYMMDDHHMMSS-implementation-plan/{purpose}-{component}-{n}.md` | Stage 1 (implementation-plan skill, owns filename pattern) | Stage 1 (plan_filepath) |
+| `{run_dir}/plan-summary.md`                                                     | Stage 1 (explore sub-agent)                                | Stage 4                 |
+| `{run_dir}/sw-implement-request-{n}.md`                                         | Stage 2 (structured-workflow-implement)                    | Stage 2                 |
+| `{session_dir}/YYYYMMDDHHMMSS-structured-workflow-summary.md`                   | Stage 5 (explore sub-agent)                                | Stage 5                 |
 
 ## Examples
 
 ### Happy Path
 
 - Input: { task: "Add OAuth login" }
-- All 5 stages succeed; 1 iteration; no Critical/High issues in Stage 4 review
-- Output: FinalSummary written to workflow-summary.md; user shown final report
+- All intermediate artifacts are written under {run_dir}/; 1 iteration; no Critical/High issues in Stage 4 review
+- Output: FinalSummary written to {session_dir}/YYYYMMDDHHMMSS-structured-workflow-summary.md; user shown final report
 
 ### Failure Path
 
 - Input: { task: "..." }; Stage 1 implementation-plan skill fails
-- Stage 1 aborts; error context reported to user
+- Stage 1 aborts; error context reported to user; no {run_dir}/plan-summary.md is produced

@@ -16,6 +16,10 @@ conflict resolution, and final synthesis into a single authoritative plan.
 All stage artifacts use `{session_dir}` which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
 
+- At execution start generate one timestamp `YYYYMMDDHHMMSS`.
+- Derive `run_dir = {session_dir}/YYYYMMDDHHMMSS-implementation-plan/` for intermediate artifacts.
+- Derive final output `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md`.
+
 ## Schema
 
 ```typescript
@@ -28,6 +32,10 @@ interface OrchestrateOutput {
 }
 ```
 
+## Output
+
+- Deliver `plan_filepath` as `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md`.
+
 ## Constraints
 
 - If user_request is missing or empty, abort immediately with no fallback.
@@ -39,8 +47,10 @@ interface OrchestrateOutput {
 ## Execution
 
 ```python
-timestamp = now("YYYYMMDDHHMMSS")
 session_dir = "~/.copilot/session-state/{session_id}/files"
+ts = now("YYYYMMDDHHMMSS")
+run_dir = f"{session_dir}/{ts}-implementation-plan"
+final_output = f"{session_dir}/{ts}-implementation-plan.md"
 stage1_analyze()
 stage2_draft()
 stage3_review()
@@ -65,21 +75,21 @@ return plan_filepath
     prompt: >
       Invoke skill implementation-plan-analyze with
       user_request={user_request},
-      output_filepath={session_dir}/step1-claude-opus-4.6-analysis-{timestamp}.md
+      output_filepath={run_dir}/step1-claude-opus-4.6-analysis.md
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
     prompt: >
       Invoke skill implementation-plan-analyze with
       user_request={user_request},
-      output_filepath={session_dir}/step1-gemini-3-pro-preview-analysis-{timestamp}.md
+      output_filepath={run_dir}/step1-gemini-3-pro-preview-analysis.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-analyze with
       user_request={user_request},
-      output_filepath={session_dir}/step1-gpt-5.3-codex-analysis-{timestamp}.md
+      output_filepath={run_dir}/step1-gpt-5.4-analysis.md
   ```
 
 - Outputs: `stage1_analysis_paths: string[]`
@@ -101,21 +111,21 @@ return plan_filepath
     prompt: >
       Invoke skill implementation-plan-draft with
       analysis_paths={stage1_analysis_paths},
-      output_filepath={session_dir}/step2-claude-opus-4.6-plan-draft-{timestamp}.md
+      output_filepath={run_dir}/step2-claude-opus-4.6-plan-draft.md
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
     prompt: >
       Invoke skill implementation-plan-draft with
       analysis_paths={stage1_analysis_paths},
-      output_filepath={session_dir}/step2-gemini-3-pro-preview-plan-draft-{timestamp}.md
+      output_filepath={run_dir}/step2-gemini-3-pro-preview-plan-draft.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-draft with
       analysis_paths={stage1_analysis_paths},
-      output_filepath={session_dir}/step2-gpt-5.3-codex-plan-draft-{timestamp}.md
+      output_filepath={run_dir}/step2-gpt-5.4-plan-draft.md
   ```
 
 - Outputs: `stage2_draft_paths: string[]`
@@ -137,21 +147,21 @@ return plan_filepath
     prompt: >
       Invoke skill implementation-plan-review with
       draft_paths={stage2_draft_paths},
-      output_filepath={session_dir}/step3-claude-opus-4.6-review-{timestamp}.md
+      output_filepath={run_dir}/step3-claude-opus-4.6-review.md
   - tool: task
     agent_type: "general-purpose"
     model: "gemini-3-pro-preview"
     prompt: >
       Invoke skill implementation-plan-review with
       draft_paths={stage2_draft_paths},
-      output_filepath={session_dir}/step3-gemini-3-pro-preview-review-{timestamp}.md
+      output_filepath={run_dir}/step3-gemini-3-pro-preview-review.md
   - tool: task
     agent_type: "general-purpose"
-    model: "gpt-5.3-codex"
+    model: "gpt-5.4"
     prompt: >
       Invoke skill implementation-plan-review with
       draft_paths={stage2_draft_paths},
-      output_filepath={session_dir}/step3-gpt-5.3-codex-review-{timestamp}.md
+      output_filepath={run_dir}/step3-gpt-5.4-review.md
   ```
 
 - Outputs: `stage3_review_paths: string[]`
@@ -173,14 +183,14 @@ return plan_filepath
     prompt: >
       Invoke skill implementation-plan-aggregate with
       review_paths={stage3_review_paths},
-      output_filepath={session_dir}/step4-consensus-{timestamp}.md
+      output_filepath={run_dir}/step4-consensus.md
   - tool: task
     agent_type: "general-purpose"
     model: "claude-opus-4.6"
     prompt: >
       Invoke skill implementation-plan-validate with
       artifact_paths={stage4_artifact_paths},
-      output_filepath={session_dir}/step4-insights-{timestamp}.md
+      output_filepath={run_dir}/step4-insights.md
   ```
 
 - Outputs: `stage4_consensus_path: string`, `stage4_insights_path: string`
@@ -202,7 +212,7 @@ return plan_filepath
     prompt: >
       Invoke skill implementation-plan-resolve with
       consensus_path={stage4_consensus_path},
-      output_filepath={session_dir}/step5-resolutions-{timestamp}.md
+      output_filepath={run_dir}/step5-resolutions.md
   ```
 
 - Outputs: `stage5_resolutions_path: string`
@@ -224,33 +234,35 @@ return plan_filepath
       Invoke skill implementation-plan-synthesize with
       reference_filepaths={stage6_reference_filepaths},
       user_request={user_request},
-      output_filepath={session_dir}/implementation-plan-{timestamp}.md
+      output_filepath={final_output}
   ```
 
 - Outputs: `plan_filepath: string`
-- Guards: output filepath is `{session_dir}/implementation-plan-{timestamp}.md`
+- Guards: output filepath is `{final_output}`
 - Faults:
   - If synthesis fails, abort immediately with no fallback.
 
 ## Session Files
 
-| File                                                    | Written by | Read by                   |
-| ------------------------------------------------------- | ---------- | ------------------------- |
-| `{session_dir}/step1-{model}-analysis-{timestamp}.md`   | Stage 1    | Stage 2                   |
-| `{session_dir}/step2-{model}-plan-draft-{timestamp}.md` | Stage 2    | Stage 3, Stage 4, Stage 6 |
-| `{session_dir}/step3-{model}-review-{timestamp}.md`     | Stage 3    | Stage 4, Stage 6          |
-| `{session_dir}/step4-consensus-{timestamp}.md`          | Stage 4    | Stage 5, Stage 6          |
-| `{session_dir}/step4-insights-{timestamp}.md`           | Stage 4    | Stage 6                   |
-| `{session_dir}/step5-resolutions-{timestamp}.md`        | Stage 5    | Stage 6                   |
-| `{session_dir}/implementation-plan-{timestamp}.md`      | Stage 6    | Final output              |
+Intermediate files are saved under {run_dir}/. The final output is saved directly under {session_dir}/.
+
+| File                                                  | Written by | Read by                   |
+| ----------------------------------------------------- | ---------- | ------------------------- |
+| `{run_dir}/step1-{model}-analysis.md`                 | Stage 1    | Stage 2                   |
+| `{run_dir}/step2-{model}-plan-draft.md`               | Stage 2    | Stage 3, Stage 4, Stage 6 |
+| `{run_dir}/step3-{model}-review.md`                   | Stage 3    | Stage 4, Stage 6          |
+| `{run_dir}/step4-consensus.md`                        | Stage 4    | Stage 5, Stage 6          |
+| `{run_dir}/step4-insights.md`                         | Stage 4    | Stage 6                   |
+| `{run_dir}/step5-resolutions.md`                      | Stage 5    | Stage 6                   |
+| `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md` | Stage 6    | Final output              |
 
 ## Examples
 
 ### Happy Path
 
 - Input: { user_request: "Add user auth to the API" }
-- Stages 1–6 all succeed; final plan written to step artifacts and output_filepath
-- Output: { plan_filepath: "{session_dir}/implementation-plan-{timestamp}.md" }
+- Stages 1–6 all succeed; intermediate artifacts are written under {run_dir}/
+- Output: { plan_filepath: "{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md" }
 
 ### Failure Path
 

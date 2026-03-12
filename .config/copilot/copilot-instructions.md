@@ -12,16 +12,17 @@
 
 ### Subagent Strategy and Parallel Execution
 
-- ALWAYS use subagents to offload heavy-context operations and keep the main context focused.
-- NEVER use subagents for micro-operations such as single-file reads, tiny edits, or one-step lookups.
-- ALWAYS delegate cohesive workflows with crisp input context and explicit output contracts.
+- ALWAYS delegate to subagents by default to offload heavy-context operations and keep the main context focused.
+- NEVER put raw source code or verbose output in the main context; keep it to decisions, coordination, and conclusions.
+- ALWAYS delegate cohesive, goal-oriented workflows with crisp context, explicit output contracts, and evidence-backed conclusions.
 - ALWAYS execute independent subagent workflows in parallel rather than sequentially.
 - ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
+- ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user for explicit resolution.
 
 ### Model Selection
 
 - ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
-- ALWAYS use gpt-5.3-codex for implementation tasks (code generation, file editing, commit preparation).
+- ALWAYS use gpt-5.4 for implementation tasks (code generation, file editing, commit preparation).
 - ALWAYS use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
 
 ### Privacy
@@ -36,7 +37,7 @@
 
 ### Task Completion Protocol
 
-- ALWAYS use the ask tool to confirm with the user before finishing, and ALWAYS accept free-form user input in that confirmation.
+- ALWAYS call ask_user (allow_freeform: true) as the final action when completing a user request, regardless of task size.
 
 ## Style and Preferences
 
@@ -56,8 +57,3 @@
 - NEVER over-engineer for rare edge cases.
 - NEVER add Co-authored-by trailers to git commit messages.
 - NEVER write to GitHub Issues or Pull Requests (comments, labels, assignments) without explicit user instruction.
-
-## Instruction File Precedence
-
-- ALWAYS treat narrower `applyTo` instruction files as canonical for their own scope.
-- NEVER apply a general bash rule when it conflicts with a narrower scoped instruction file.

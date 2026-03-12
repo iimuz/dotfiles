@@ -43,7 +43,7 @@ return {
 							"--deny-tool=shell(sudo:*)",
 							"--allow-all-tools",
 							-- 共通 skills のアクセスチェックが入るため
-							"--add-dir=~/.config/.copilot/skills",
+							"--add-dir=~/.copilot/skills",
 						},
 						env = github_copilot_token(),
 					},
@@ -62,7 +62,7 @@ return {
 							"--deny-tool=shell(sudo:*)",
 							"--allow-all-tools",
 							-- 共通 skills のアクセスチェックが入るため
-							"--add-dir=~/.config/.copilot/skills",
+							"--add-dir=~/.copilot/skills",
 							"--resume",
 						},
 						env = github_copilot_token(),

@@ -2,7 +2,7 @@
 
 ## 発生した問題
 
-`review-comment-workflow` skill を実行する際、PR データの取得を coordinator 文脈で直接実行した。
+`resolve-comments` skill を実行する際、PR データの取得を coordinator 文脈で直接実行した。
 具体的には `github-mcp-server-pull_request_read` を2回（`get_review_comments` と `get`）coordinator から直接呼び出し、取得したデータの大部分（PR 本体のメタデータ）を使用しなかった。
 
 ## 既存指示との矛盾

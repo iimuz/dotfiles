@@ -1,16 +1,22 @@
 ---
-name: review-comment-workflow
+name: resolve-comments
 description: Resolve PR review comments when users ask to gather facts, evaluate fixes, verify diffs, and commit approved changes.
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# Review Comment Workflow
+# Resolve Comments Workflow
 
 ## Overview
 
 Use this workflow to resolve pull request review comments with a staged orchestration
 that prioritizes safe decisions and explicit verification before reporting completion.
+
+At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
+and derives two paths:
+
+- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments/` for intermediate artifacts
+- final output = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
 
 ## Interface
 
@@ -21,18 +27,18 @@ type ModelRoles = {
   evaluator: "skill('council')";
   implementer: "skill('task-coordinator')";
   verifier: "skill('code-review', model: 'claude-opus-4.6')";
-  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')";
+  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.4')";
 };
 
 type SessionFileTypes = {
-  gatherMd: "review-comment-workflow-{timestamp}-gather.md";
-  evalInputMd: "review-comment-workflow-{timestamp}-eval-input.md";
-  councilJson: "review-comment-workflow-{timestamp}-council.json";
-  fixPlanJson: "review-comment-workflow-{timestamp}-fix-plan.json";
-  implementJson: "review-comment-workflow-{timestamp}-implement.json";
-  verifyJson: "review-comment-workflow-{timestamp}-verify.json";
-  commitJson: "review-comment-workflow-{timestamp}-commit.json";
-  summaryMd: "review-comment-workflow-{timestamp}-summary.md";
+  gatherMd: "gather.md";
+  evalInputMd: "eval-input.md";
+  councilJson: "council.json";
+  fixPlanJson: "fix-plan.json";
+  implementJson: "implement.json";
+  verifyJson: "verify.json";
+  commitJson: "commit.json";
+  summaryMd: "YYYYMMDDHHMMSS-resolve-comments-summary.md";
 };
 
 type SeveritySummary = {
@@ -42,7 +48,7 @@ type SeveritySummary = {
   low_count: number;
 };
 
-declare function reviewCommentWorkflow(input: {
+declare function resolveComments(input: {
   comments: string;
   context?: string;
 }): { summary: string };
@@ -95,7 +101,7 @@ declare function commitStage(input: {
 }): { commit_status: string; commit_skip_reason?: string };
 // @fault git_add_failed => abort_with_git_add_failed_status
 // @fault commit_skill_failed => emit_commit_failed_status_and_continue
-// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.3-codex") and commit-staged
+// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.4") and commit-staged
 
 declare function summarizeStage(input: {
   actionable_count: number;
@@ -115,8 +121,8 @@ declare function summarizeStage(input: {
 - Delegate gather artifact construction to
   `task(agent_type: 'general-purpose', model: 'gemini-3-pro-preview')` using
   `comments` and optional `context`.
-- Require deterministic filename pattern: `review-comment-workflow-{timestamp}-gather.md`.
-- Sub-agent writes artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-gather.md`.
+- Require deterministic filename pattern: `gather.md`.
+- Sub-agent writes artifact: `{run_dir}/gather.md`.
 - Validate gather file exists on disk and contains only factual observations before proceeding.
 - Output: `{ gather_artifact_path }` used by Stage 2.
 - fault(gather_generation_failed) => fallback: abort_with_error_summary; abort
@@ -125,17 +131,19 @@ declare function summarizeStage(input: {
 
 1. Evaluate
 
-- Delegate eval-input construction to `task(agent_type: 'general-purpose')` by reading and sanitizing `gather_artifact_path`.
+- Delegate eval-input construction to `task(agent_type: 'general-purpose')` by
+  reading and sanitizing `gather_artifact_path`.
 - Strip judgmental wording, advisory language, and uncertain claims from the gather content before eval-input creation.
-- Sub-agent writes artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-eval-input.md`.
+- Sub-agent writes artifact: `{run_dir}/eval-input.md`.
 - Validate eval-input file exists on disk before council invocation.
-- Run `skill('council')` with `review-comment-workflow-{timestamp}-eval-input.md` file path as input, not inline text.
-- Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-council.json`.
+- Run `skill('council')` with
+  `{run_dir}/eval-input.md` file path as input, not inline text.
+- Write artifact: `{run_dir}/council.json`.
 - Parse council output into a structured fix plan with item IDs, owners, and concrete change actions.
 - Apply fail-closed gate: when a judgment is ambiguous, classify as non-actionable.
 - Compute `actionable_count` and set `skip_decision` where true means implementation is skipped.
 - Enforce gate: `actionable_count == 0` forces skip.
-- Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-fix-plan.json`.
+- Write artifact: `{run_dir}/fix-plan.json`.
 - Output: `{ actionable_count, skip_decision, fix_plan }` used by Stage 3.
 - fault(eval_input_generation_failed) => fallback: abort_with_error_summary; abort
 - fault(eval_input_file_missing) => fallback: abort_with_error_summary; abort
@@ -146,16 +154,18 @@ declare function summarizeStage(input: {
 - Run this stage only when `skip_decision` is false.
 - Call `skill('task-coordinator')` with `fix_plan` as the implementation request.
 - If skipped, emit `implementation_status: skipped` with reason `no_actionable_items`.
-- Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-implement.json`.
+- Write artifact: `{run_dir}/implement.json`.
 - Output: implementation result payload or skip payload.
 - fault(task_coordinator_failed) => fallback: emit_failed_implementation_status; continue
 
 1. Verify
 
 - Call `skill('code-review', model: 'claude-opus-4.6')` against unstaged working-tree changes produced by Stage 3.
-- When Stage 3 was skipped, verify that no unintended unstaged changes exist and mark verification as passed-with-skip-context.
-- Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-verify.json`.
-- Output: verification findings with explicit severity summary `{ critical_count, high_count, medium_count, low_count }`.
+- When Stage 3 was skipped, verify that no unintended unstaged changes exist and
+  mark verification as passed-with-skip-context.
+- Write artifact: `{run_dir}/verify.json`.
+- Output: verification findings with explicit severity summary
+  `{ critical_count, high_count, medium_count, low_count }`.
 - fault(code_review_failed) => fallback: emit_verification_unavailable_and_continue; continue
 
 1. Commit
@@ -164,11 +174,11 @@ declare function summarizeStage(input: {
 - Apply severity gate: proceed only when `critical_count == 0` and `high_count == 0`.
 - If severity parsing fails, skip commit and propagate `commit_skip_reason: severity_parse_failed`.
 - If gate fails, skip commit and propagate `commit_skip_reason: severity_gate_failed`.
-- Delegate commit execution to `task(agent_type: 'general-purpose', model: 'gpt-5.3-codex')`.
+- Delegate commit execution to `task(agent_type: 'general-purpose', model: 'gpt-5.4')`.
   Sub-agent performs: git add to stage implementation changes, staged-change pre-check
   (if no staged changes exist, propagate `commit_skip_reason: no_staged_changes` and skip),
   `skill('commit-staged')` invocation when staged-change pre-check passes, and commit artifact JSON write to
-  `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-commit.json`.
+  `{run_dir}/commit.json`.
 - Output: `{ commit_status, commit_skip_reason? }` used by Stage 6.
 - fault(git_add_failed) => fallback: abort_with_git_add_failed_status; abort
 - fault(commit_skill_failed) => fallback: emit_commit_failed_status_and_continue; continue
@@ -178,38 +188,54 @@ declare function summarizeStage(input: {
 - Produce a final summary covering gather outcome, evaluation outcome,
   implementation status, verification results, and commit status.
 - Keep wording explicit about skips, degraded paths, unresolved risks, and any `commit_skip_reason`.
-- Write artifact: `~/.copilot/session-state/{session_id}/files/review-comment-workflow-{timestamp}-summary.md`.
+- Write artifact: `{final_output}`.
 - Output: `{ summary: string }`.
 - fault(summary_artifact_write_failed) => fallback: abort_with_error_summary; abort
 
 ## Execution
 
-```text
+```python
+ts = now("YYYYMMDDHHMMSS")
+run_dir = f"{session_dir}/{ts}-resolve-comments"
+final_output = f"{session_dir}/{ts}-resolve-comments-summary.md"
 gather -> evaluate -> implement -> verify -> commit -> summarize
 ```
 
+## Output
+
+- Delivery path: `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
+
 ## Session Files
 
-- `review-comment-workflow-{timestamp}-gather.md`
-- `review-comment-workflow-{timestamp}-council.json`
-- `review-comment-workflow-{timestamp}-eval-input.md`
-- `review-comment-workflow-{timestamp}-fix-plan.json`
-- `review-comment-workflow-{timestamp}-implement.json`
-- `review-comment-workflow-{timestamp}-verify.json`
-- `review-comment-workflow-{timestamp}-commit.json`
-- `review-comment-workflow-{timestamp}-summary.md`
+Intermediate files are saved under {run_dir}/. The final output is saved directly under {session_dir}/.
+
+- `{run_dir}/gather.md`
+- `{run_dir}/council.json`
+- `{run_dir}/eval-input.md`
+- `{run_dir}/fix-plan.json`
+- `{run_dir}/implement.json`
+- `{run_dir}/verify.json`
+- `{run_dir}/commit.json`
+- `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
 
 ## Examples
 
 ### Happy Path
 
-- Gather extracts facts to `review-comment-workflow-{timestamp}-gather.md` and hands off sanitized input to Evaluate.
-- Evaluate produces actionable fix plan items and Implement applies approved changes.
-- Verify reports zero critical and zero high findings, and Commit proceeds after staged-change pre-check.
-- Summarize reports gather, evaluate, implement, verify, and commit outcomes.
+- Gather extracts facts to `{run_dir}/gather.md`
+  and hands off sanitized input to Evaluate.
+- Evaluate reads `{run_dir}/eval-input.md` and
+  writes plan artifacts under `{run_dir}/`.
+- Verify reports zero critical and zero high findings from
+  `{run_dir}/verify.json`, and Commit proceeds after staged-change pre-check.
+- Summarize reports gather, evaluate, implement, verify, and commit outcomes at
+  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
 
 ### Failure Path
 
-- Gather succeeds, but Verify returns high-severity findings so Commit is skipped with `commit_skip_reason: severity_gate_failed`.
+- Gather succeeds, but Verify returns high-severity findings in
+  `{run_dir}/verify.json` so Commit is skipped with
+  `commit_skip_reason: severity_gate_failed`.
 - If severity parsing fails, Commit is skipped with `commit_skip_reason: severity_parse_failed` and workflow continues.
-- Summarize includes gather handoff details and explicit commit skip reason.
+- Summarize includes gather handoff details and explicit commit skip reason at
+  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
