@@ -12,11 +12,12 @@
 
 ### Subagent Strategy and Parallel Execution
 
-- ALWAYS use subagents to offload heavy-context operations and keep the main context focused.
-- NEVER use subagents for micro-operations such as single-file reads, tiny edits, or one-step lookups.
-- ALWAYS delegate cohesive workflows with crisp input context and explicit output contracts.
+- ALWAYS delegate to subagents by default to offload heavy-context operations and keep the main context focused.
+- NEVER put raw source code or verbose output in the main context; keep it to decisions, coordination, and conclusions.
+- ALWAYS delegate cohesive, goal-oriented workflows with crisp context, explicit output contracts, and evidence-backed conclusions.
 - ALWAYS execute independent subagent workflows in parallel rather than sequentially.
 - ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
+- ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user for explicit resolution.
 
 ### Model Selection
 
