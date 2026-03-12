@@ -41,7 +41,7 @@ cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 cask "handy"  # speech-to-text application
 
 # === LLM
-brew "ollama"
+cask "lm-studio"
 
 # === plantuml
 # brew "graphviz"
