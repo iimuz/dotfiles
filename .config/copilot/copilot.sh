@@ -63,7 +63,7 @@ function copilot_prompt() {
   local strategy_specified=""
   local launch_mode="interactive"
   local model="claude-sonnet-4.6"
-  local agent="orchestrator"
+  local agent="default"
   local source_file=""
   local mode_specified=""
   local -a extra_args=()
@@ -164,7 +164,7 @@ function copilot_prompt() {
   fi
 
   local prompt_section
-  prompt_section="$(rg -U --pcre2 '(?s)^## Prompt\n(.*?)(?=^## |\z)' -- "$source_file")" || true
+  prompt_section="$(rg -U --pcre2 '(?s)^## Prompt\n(.*?)(?=^## |\z)' -- "$source_file" | tail -n +2)" || true
   if [ -z "$prompt_section" ]; then
     echo "## Prompt section is empty or missing: $source_file" >&2
     return 1
