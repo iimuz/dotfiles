@@ -1,23 +1,20 @@
-# ADR: [Short Name]
+---
+id: "0000"
+status: Proposed
+date: YYYY-MM-DD
+supersedes: []
+---
 
-## DECISION_RECORD
+# ADR-0000: [Short Title]
 
-- ID: [Number]
-- Title: [Short Title]
-- Status: Proposed
-- Date: [YYYY-MM-DD]
+## Context
 
-## PROBLEM
+Why we needed to make this decision. Background, constraints, and alternatives considered.
 
-- Context: [Description]
-- Constraint: [Tech/Resource]
+## Decision
 
-## SOLUTION
+What we decided and the rationale.
 
-- Choice: [Tech/Pattern]
-- Reason: [Justification]
+## Consequences
 
-## IMPACT
-
-- Positive: [Benefit]
-- Negative: [Trade-off]
+What happens as a result. Include positive, negative, and risks.
