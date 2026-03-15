@@ -9,38 +9,29 @@ disable-model-invocation: false
 
 ## Overview
 
-Improve internal structure after a confirmed green phase while preserving observable behavior,
-and prove tests remain green.
-Execution order: validate_green_proof -> apply_refactor -> verify_pass_preservation.
-
-## Constraints
-
-- If green proof is absent or evidence is empty, abort immediately.
-- If behavior changes during refactor, revert the refactor, restore baseline, and abort.
-- If tests fail after refactor, revert the refactor, keep baseline, and abort.
+Improve internal structure after a confirmed Green phase while preserving observable behavior, and
+prove the relevant tests stay green under the Refactor-phase rules in `references/tdd-rules.md`.
+Abort if Green proof is missing, and if behavior changes or tests fail after refactoring, restore
+the pre-refactor baseline before stopping.
 
 ## Input
 
-| Field            | Type     | Required | Description                                    |
-| ---------------- | -------- | -------- | ---------------------------------------------- |
-| `unitSpec`       | `string` | yes      | Atomic behavior scope for safe refactor bounds |
-| `greenPassProof` | `object` | yes      | Verified green evidence from preceding stage   |
-| `testCommand`    | `string` | yes      | Command used to verify post-refactor pass      |
+- `unitSpec: string` - Atomic behavior that bounds the safe refactor, such as enforcing the
+  sixth-attempt lockout response.
+- `greenPassProof: object` - Verified Green evidence from the preceding phase.
+- `testCommand: string` - Command used to confirm behavior is preserved after refactoring.
 
 ## Output
 
-- refactoredFiles: Paths changed during behavior-preserving refactor.
-- passPreservationProof: Command, summary, and evidence showing tests still pass.
+- `refactoredFiles: array<string>` - Files changed during the behavior-preserving refactor.
+- `passPreservationProof: object` - Command, exit status, and passing evidence showing the
+  refactor kept the tests green.
 
 ## Examples
 
-### Happy Path
-
-- Valid green proof is provided.
-- Internal cleanup changes are applied without behavioral change.
-- testCommand remains green and RefactorOutput is returned.
-
-### Failure Path
-
-- testCommand fails after refactor.
-- Revert refactor, keep baseline, and abort.
+- Happy: Extracting `increment_failed_attempts` from `app/auth.py` keeps
+  `pytest tests/auth_lockout_test.py -k sixth_attempt` green after the Green
+  proof already passed.
+- Failure: Renaming logic in `app/auth.py` aborts and restores the baseline
+  when `pytest tests/auth_lockout_test.py -k sixth_attempt` starts failing with
+  `Expected status 429 but received 200`.

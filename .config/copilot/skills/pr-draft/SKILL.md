@@ -3,271 +3,58 @@ name: pr-draft
 description: Create GitHub pull request drafts using Conventional Commit parameters (validates inputs).
 ---
 
-# PR Draft Skill
+# PR Draft
 
-## Purpose
+## Overview
 
-This skill provides standardized GitHub pull request creation with Conventional Commits style formatting. It ensures
-consistent PR structure with proper type validation.
+Create a draft pull request on GitHub with a Conventional Commits-style title and a
+standardized body, using the shipped shell scripts.
 
-## Prerequisites
+Execute all scripts from the target git repository root, never from the skill directory.
+Use only the shipped scripts; do not run extra git or gh commands. Title must be natural
+language in imperative mood with no trailing period and no file paths. Title and body
+default to English unless the user explicitly requests another language.
 
-**IMPORTANT**: All scripts must be executed from the **git repository root directory** where you want to create the PR.
+## Operations
 
-Example:
+### Check Branch Status
 
-```bash
-# Correct: Execute from repo root
-cd /path/to/your/repo
-bash /path/to/skill/scripts/check-branch-status.sh
+Run `bash scripts/check-branch-status.sh [--base <branch>]` to inspect uncommitted
+changes, commit history, and diff statistics. Abort if the branch has no commits
+differing from the base.
 
-# Incorrect: Execute from skill directory
-cd /path/to/skill
-bash scripts/check-branch-status.sh  # This may operate on the wrong repo!
-```
+### Create Draft PR
 
-Requirements:
+Choose type from [references/type-reference.md](references/type-reference.md), write a
+title and change bullets, then run `bash scripts/create-pr.sh` with accepted flags.
+Pass `--changes` as bullet lines starting with `-`. The script validates type and
+required parameters; abort on validation errors.
 
-- Working directory must be a git repository
-- Current branch should have commits that differ from its base branch
-- Repository must have a remote named 'origin'
+Accepted flags: `--type`, `--title`, `--changes`, `--related-urls`, `--confirmation`,
+`--review-points`, `--limitations`, `--additional`, `--base`.
 
-## Contract
-
-- Use only the scripts shipped with this skill (do not run extra git/gh commands)
-  - Review branch status via `bash scripts/check-branch-status.sh` (from repo root)
-  - Create the PR via `bash scripts/create-pr.sh ...` (from repo root)
-- Creates draft PRs only
-- Requires `--title` to be a natural-language summary (not file paths)
-- Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
-
-## Workflow
-
-1. **Change to repository root directory first**:
-
-   ```bash
-   cd /path/to/your/repo
-   ```
-
-2. Review branch status (uncommitted changes, commit history, diff; stop if issues):
-
-   ```bash
-   bash /path/to/skill/scripts/check-branch-status.sh [--base <branch>]
-   ```
-
-   The script displays repository information and compares with the specified base branch (or remote HEAD branch
-   if not specified)
-
-3. Choose `--type`, `--title`, `--changes`, and optional sections based on the changes.
-   - Title/body default to English (use specified language if explicitly requested); title is imperative, no trailing period
-   - `--changes` should use bullet points starting with "-"
-
-4. Execute the PR creation using `scripts/create-pr.sh`:
-
-   ```bash
-   bash /path/to/skill/scripts/create-pr.sh \
-     --type <type> \
-     --title "<summary>" \
-     --changes "<bullets>" \
-     [--related-urls "<urls>"] \
-     [--confirmation "<results>"] \
-     [--review-points "<points>"] \
-     [--limitations "<limitations>"] \
-     [--additional "<notes>"] \
-     [--base "<branch>"]
-   ```
-
-## Available Tools
-
-### check-branch-status.sh
-
-A bash script that displays branch status information for PR creation.
-
-**Location**: `scripts/check-branch-status.sh`
-
-**Usage**:
-
-```bash
-bash scripts/check-branch-status.sh [--base <branch>]
-```
-
-**Parameters**:
-
-- `--base`: (Optional) Base branch name to compare against. If not specified, uses the remote HEAD branch
-
-**Output**:
-
-- Repository information (current branch, base branch for comparison)
-- Uncommitted changes (git status)
-- Commit history comparing with base branch
-- Diff statistics from merge base with base branch
-- Note: When --base is not specified, displays a note that `gh pr create` will automatically determine the actual base branch
-
-### create-pr.sh
-
-A bash script that formats and executes GitHub PR creation with standardized format.
-
-**Location**: `scripts/create-pr.sh`
-
-**Usage**:
-
-```bash
-bash scripts/create-pr.sh \
-  --type <type> \
-  --title <title> \
-  --changes <changes> \
-  [--related-urls <urls>] \
-  [--confirmation <results>] \
-  [--review-points <points>] \
-  [--limitations <limitations>] \
-  [--additional <notes>] \
-  [--base <branch>]
-```
-
-**Parameters**:
-
-- `--type`: (Required) PR type. Must be one of: build, chore, ci, docs, feat, fix, perf, refactor, revert, style,
-  test, i18n
-- `--title`: (Required) Short description of the change (max 100 chars including type)
-- `--changes`: (Required) Description of changes with bullet points
-- `--related-urls`: (Optional) Related URLs or issue links
-- `--confirmation`: (Optional) Confirmation test results
-- `--review-points`: (Optional) Points to review
-- `--limitations`: (Optional) Known limitations
-- `--additional`: (Optional) Additional notes
-- `--base`: (Optional) Base branch name for the pull request. If not specified, GitHub will use the default branch
-
-**Output Format**:
-
-PR Title:
-
-```text
-<type>: <title>
-```
-
-PR Body:
-
-```markdown
-## Related URLs
-
-<related-urls or empty>
-
-## Changes
-
-<changes>
-
-## Confirmation Results
-
-<confirmation or empty comment>
-
-## Review Points
-
-<review-points or empty comment>
-
-## Limitations
-
-<limitations or empty comment>
-
-<additional if provided>
-```
-
-**Validation**:
-
-- Only allowed parameters are accepted
-- Type must be from the allowed list
-- Returns exit code 1 on validation errors
-
-## Writing a good PR (important)
-
-Write **natural language** based on branch changes:
-
-- Summarize _what_ changed (and ideally _why_) in a few words
-- Do **not** use a file-path list as the title (e.g. ".github/.../file.go, ...")
-- Default to English (use specified language if explicitly requested), imperative mood, no trailing period
-
-## Type Reference
-
-| Type     | Description                                 |
-| -------- | ------------------------------------------- |
-| build    | Build system or external dependency changes |
-| chore    | Maintenance tasks, scripts, config          |
-| ci       | CI configuration and scripts                |
-| docs     | Documentation changes                       |
-| feat     | New features                                |
-| fix      | Bug fixes                                   |
-| perf     | Performance improvements                    |
-| refactor | Code refactoring                            |
-| revert   | Revert previous commits                     |
-| style    | Code style changes (formatting, whitespace) |
-| test     | Test additions or corrections               |
-| i18n     | Internationalization                        |
+Output body structure: [references/output-format.md](references/output-format.md).
 
 ## Examples
 
-### Simple PR with minimal sections
+- Happy: branch has 3 commits fixing auth -- draft PR created as `fix: resolve token expiration`.
+- Failure: no differing commits from base branch -- abort after check-branch-status.
 
 ```bash
-bash scripts/create-pr.sh \
-  --type feat \
-  --title "add user authentication" \
-  --changes "- implement JWT-based authentication
-- add login/logout endpoints
-- add user session management"
+bash scripts/check-branch-status.sh --base main
+bash scripts/create-pr.sh --type docs --title "clarify PR draft skill" \
+  --changes "- rewrite the skill overview
+- extract the type reference
+- extract the PR body template" \
+  --base main
 ```
 
-### Full PR with all sections
-
 ```bash
-bash scripts/create-pr.sh \
-  --type fix \
-  --title "resolve authentication token expiration" \
-  --related-urls "Fixes #123" \
+bash scripts/check-branch-status.sh
+bash scripts/create-pr.sh --type fix --title "resolve token expiration" \
   --changes "- update token refresh logic
-- add proper error handling for expired tokens
-- improve token validation" \
-  --confirmation "- tested token refresh flow
-- verified error handling with expired tokens" \
-  --review-points "- token refresh timing
-- error message clarity
-- backward compatibility" \
+- add proper error handling for expired tokens" \
+  --confirmation "- tested token refresh flow" \
+  --review-points "- token refresh timing" \
   --limitations "- requires frontend update for new error codes"
 ```
-
-### PR with custom base branch
-
-```bash
-# Create PR from feature branch to develop branch
-bash scripts/create-pr.sh \
-  --type feat \
-  --title "add user profile editing" \
-  --changes "- implement profile edit form
-- add validation for user inputs
-- update API endpoints" \
-  --base develop
-```
-
-## Rules and Guidelines
-
-1. **Title**:
-   - Format: `<type>: <title>`
-   - Use imperative mood
-   - No capitalization
-   - No period at the end
-   - Max 100 characters per line
-   - Default to English (use specified language if explicitly requested)
-
-2. **Body Sections**:
-   - Use bullet points with "-" for lists
-   - Max 100 characters per line
-   - Use line breaks for long bullet points
-   - Explain what and why
-   - Default to English (use specified language if explicitly requested)
-
-3. **Validation**:
-   - Unknown parameters will cause an error
-   - Invalid type will cause an error
-   - Missing required parameters will cause an error
-
-4. **PR Type**:
-   - Always created as draft
-   - Can be marked ready for review later via GitHub UI

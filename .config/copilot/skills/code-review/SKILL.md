@@ -9,237 +9,106 @@ disable-model-invocation: false
 
 ## Overview
 
-Thin orchestrator that delegates review work to specialized sub-skills.
-It runs parallel aspect reviews across three models, then gap analysis, optional cross-checks, and final consolidation.
+Orchestrator that runs parallel multi-model, multi-aspect code reviews, then performs
+gap analysis, cross-checks, and final consolidation into a single report.
 
-All stage artifacts use `{session_dir}` which resolves to
-`~/.copilot/session-state/{session_id}/files/` for the current session.
+At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
-At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
-and derives two paths:
+- Intermediate artifacts: `{session_dir}/{timestamp}-code-review/` (referred to as `run_dir`)
+- Final output: `{session_dir}/{timestamp}-code-review-consolidated-review.md`
 
-- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-code-review/` for intermediate artifacts
-- final output = `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`
-
-## Schema
-
-```typescript
-type OrchestrateInput = {
-  session_dir: string;
-  target: string;
-  design_info?: string;
-  design_info_filepath?: string;
-};
-
-type ConsolidatedReview = {
-  files_reviewed: number;
-  total_issues: number;
-  critical: number;
-  warnings: number;
-  suggestions: number;
-  cross_checks: { valid: number; invalid: number; uncertain: number };
-};
-```
-
-## Constraints
-
-- If design_info is not provided or unresolvable, skip design-compliance.
-- design_info_filepath takes precedence over design_info when both are provided.
-- Resolved design_info must not exceed 8000 characters.
+`session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
 
 ## Input
 
-| Field                  | Type     | Required | Description                                                |
-| ---------------------- | -------- | -------- | ---------------------------------------------------------- |
-| `session_dir`          | `string` | yes      | Session files directory placeholder path                   |
-| `target`               | `string` | yes      | Commit SHA, branch, PR number, `"staged"`, or `"unstaged"` |
-| `design_info`          | `string` | no       | Design reference text for compliance review                |
-| `design_info_filepath` | `string` | no       | Design reference file path, used when present              |
+- `target`: Mentioned by the user in conversation. One of: commit SHA, branch name,
+  PR number, `"staged"`, or `"unstaged"`. Ask the user if not specified.
+- `design_info`: Design reference text, if mentioned by the user.
+- `design_info_filepath`: Design reference file path, if mentioned. Takes precedence
+  over `design_info`.
+
+Skip the design-compliance aspect when design_info is unspecified or unresolvable.
+Resolved design_info must not exceed 8000 characters.
 
 ## Output
 
-Delivery file: `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`
+The final report includes:
 
-| Field            | Type                                                    | Description                  |
-| ---------------- | ------------------------------------------------------- | ---------------------------- |
-| `files_reviewed` | `number`                                                | Number of files evaluated    |
-| `total_issues`   | `number`                                                | Total merged findings        |
-| `critical`       | `number`                                                | Count of critical findings   |
-| `warnings`       | `number`                                                | Count of warning findings    |
-| `suggestions`    | `number`                                                | Count of suggestion findings |
-| `cross_checks`   | `{ valid: number; invalid: number; uncertain: number }` | Cross-check summary counts   |
+- Files reviewed `files_reviewed: number`
+- Total issues `total_issues: number`
+- Severity counts `critical: number`, `warnings: number`, `suggestions: number`
+- Cross-check results `cross_checks: { valid: number, invalid: number, uncertain: number }`
 
-## Execution
-
-```python
-def run_code_review(session_dir, target, design_info=None, design_info_filepath=None):
-    ts = now("YYYYMMDDHHMMSS")
-    run_dir = f"{session_dir}/{ts}-code-review"
-    final_output = f"{session_dir}/{ts}-code-review-consolidated-review.md"
-    stage1_parallel_aspect_reviews(run_dir, target, design_info, design_info_filepath)
-    stage2_gap_analysis(run_dir)
-    if read_gaps_found(run_dir) > 0:
-        stage3_cross_check(run_dir)
-    stage4_consolidate_and_deliver(run_dir, final_output)
-```
+## Execution Flow
 
 ### Stage 1: Parallel Aspect Reviews
 
-- Purpose: Launch 12-15 parallel subagents (3 models x 4 mandatory aspects,
-  plus design-compliance when design_info is provided) to generate per-aspect review files.
-- Inputs: `run_dir: string`, `target: string`, `design_info?: string`, `design_info_filepath?: string`
-- Actions:
+Launch parallel subagents for each (model, aspect) pair:
+3 models (claude-opus-4.6, gemini-3-pro-preview, gpt-5.4) x
+4 mandatory aspects (security, quality, performance, best-practices).
+Add design-compliance when design_info is resolved (up to 15 parallel).
+Adapt the prompt template below with the actual aspect, model, target, and run_dir.
 
-  ```yaml
-  # Launch 12-15 parallel subagents (3 models x 4-5 aspects)
-  # Models: claude-opus-4.6, gemini-3-pro-preview, gpt-5.4
-  # Aspects: security, quality, performance, best-practices
-  # Conditional aspect: design-compliance (only when design_info resolved)
-  # For each (model, aspect) pair, launch one subagent:
-  - tool: task
-    agent_type: "general-purpose"
-    model: "{model}"
-    prompt: >
-      Invoke skill code-review-{aspect} with
-      target={target},
-      output_filepath={run_dir}/review-{aspect}-{model}.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "{model}"
-    prompt: >
-      Invoke skill code-review-design-compliance with
-      target={target},
-      design_info={resolved_design_info},
-      output_filepath={run_dir}/review-design-compliance-{model}.md
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: `{run_dir}/review-{aspect}-{model}.md`
-- Guards: Each non-design aspect must have at least two model outputs;
-  include design-compliance only when design info is resolved.
-- Faults:
-  - If a model fails, retry once and continue.
-  - If fewer than 2 models succeed for any aspect, abort immediately.
-  - If exactly 2 models succeed for an aspect, note degraded mode in the final report and continue.
+> Invoke skill code-review-{aspect} with
+> target={target},
+> output_filepath={run_dir}/review-{aspect}-{model}.md
+
+For design-compliance, add `design_info={resolved_design_info}`.
+
+- Output: `{run_dir}/review-{aspect}-{model}.md` (read by Stage 2, 4)
+- Fault: Retry failed model once. Fewer than 2 successes per aspect: abort.
+  Exactly 2 successes: note degraded mode in final report and continue.
 
 ### Stage 2: Gap Analysis
 
-- Purpose: Compare per-aspect findings across models and produce gap routing data.
-- Inputs: `run_dir: string`,
-  `review_file_paths: string[]`,
-  `aspects: ("security" | "quality" | "performance" | "best-practices" | "design-compliance")[]`
-- Actions:
+Compare findings across models to identify concerns missed by specific reviewers.
+Adapt the prompt template below with the collected review file paths.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill code-review-gap-analysis with
-      review_file_paths={review_file_paths},
-      output_filepath={run_dir}/gap-list.yml.
-      Return exactly: gaps_found: <N>.
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: `{run_dir}/gap-list.yml`
-- Guards: Stage 1 review files exist for every included aspect.
-- Faults:
-  - If gap analysis fails, abort immediately.
+> Invoke skill code-review-gap-analysis with
+> review_file_paths={review_file_paths},
+> output_filepath={run_dir}/gap-list.yml
 
-### Stage 3: Cross-Check
+- Output: `{run_dir}/gap-list.yml` (read by Stage 3, 4). Returns `gaps_found: {N}`.
+- Fault: Abort immediately on failure.
 
-- Purpose: Validate concerns that one or more reviewers missed according to `gap-list.yml`.
-- Inputs: `run_dir: string`, `gap_list_path: string`
-- Actions:
+### Stage 3: Cross-Check (only when gaps_found > 0)
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      From {run_dir}/gap-list.yml, for entries where missed_by=claude-opus-4.6,
-      group by aspect and invoke code-review-cross-check with
-      aspect={aspect},
-      concerns={concerns},
-      output_filepath={run_dir}/crosscheck-{aspect}-claude-opus-4.6.md.
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: >
-      From {run_dir}/gap-list.yml, for entries where missed_by=gemini-3-pro-preview,
-      group by aspect and invoke code-review-cross-check with
-      aspect={aspect},
-      concerns={concerns},
-      output_filepath={run_dir}/crosscheck-{aspect}-gemini-3-pro-preview.md.
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: >
-      From {run_dir}/gap-list.yml, for entries where missed_by=gpt-5.4,
-      group by aspect and invoke code-review-cross-check with
-      aspect={aspect},
-      concerns={concerns},
-      output_filepath={run_dir}/crosscheck-{aspect}-gpt-5.4.md.
-  ```
+For each gap entry, launch the model named in `missed_by` to verify the concern.
+Group entries by model and aspect into a single invocation. Adapt the prompt template
+below with the actual aspect, concerns, and model.
 
-- Outputs: `{run_dir}/crosscheck-{aspect}-{model}.md`
-- Guards: Run only when `gaps_found > 0`; skip when `gaps_found == 0`.
-- Faults:
-  - If cross-check fails, note the failure in the final report and continue.
+task(general-purpose, model={missed_by_model}):
+
+> Invoke skill code-review-cross-check with
+> aspect={aspect}, concerns={concerns},
+> output_filepath={run_dir}/crosscheck-{aspect}-{model}.md
+
+- Output: `{run_dir}/crosscheck-{aspect}-{model}.md` (read by Stage 4)
+- Fault: Note failure in the final report and continue.
 
 ### Stage 4: Consolidation and Delivery
 
-- Purpose: Merge all review artifacts and produce the final user-facing summary.
-- Inputs: `run_dir: string`,
-  `review_file_paths: string[]`,
-  `gap_list_path: string`,
-  `crosscheck_paths: string[]`,
-  `aspects: ("security" | "quality" | "performance" | "best-practices" | "design-compliance")[]`,
-  `models: ("claude-opus-4.6" | "gemini-3-pro-preview" | "gpt-5.4")[]`,
-  `final_output: string`
-- Actions:
+Merge all artifacts from Stages 1-3 into the final report. Adapt the prompt template
+below with the collected file paths and the final output path.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill code-review-consolidate with
-      review_file_paths={review_file_paths},
-      gap_list_path={gap_list_path},
-      crosscheck_paths={crosscheck_paths},
-      output_filepath={final_output}.
-      Return the consolidated review file path.
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: `{final_output}` (resolved to `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md`)
-- Guards: Consolidation must include available review files and available cross-check files.
-- Faults:
-  - If consolidation fails, abort immediately.
+> Invoke skill code-review-consolidate with
+> review_file_paths={review_file_paths},
+> gap_list_path={run_dir}/gap-list.yml,
+> crosscheck_paths={crosscheck_paths},
+> output_filepath={final_output}
 
-## Session Files
-
-Intermediate files are saved under `{run_dir}/`. The final output is saved directly under `{session_dir}/`.
-
-| File                                                              | Written by | Read by          |
-| ----------------------------------------------------------------- | ---------- | ---------------- |
-| `{run_dir}/review-{aspect}-{model}.md`                            | Stage 1    | Stage 2, Stage 4 |
-| `{run_dir}/gap-list.yml`                                          | Stage 2    | Stage 3, Stage 4 |
-| `{run_dir}/crosscheck-{aspect}-{model}.md`                        | Stage 3    | Stage 4          |
-| `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md` | Stage 4    | User             |
+- Output: `{final_output}` (final output path)
+- Fault: Abort immediately on failure.
 
 ## Examples
 
-### Happy Path
-
-- Input: `{ session_dir: "{session_dir}", target: "HEAD", design_info: "API must return JSON" }`
-- Stage 1 runs aspect reviews into
-  `{run_dir}/review-{aspect}-{model}.md`, Stage 2 writes `{run_dir}/gap-list.yml`,
-  Stage 3 writes `{run_dir}/crosscheck-{aspect}-{model}.md`, Stage 4 consolidates.
-- Output: `{session_dir}/YYYYMMDDHHMMSS-code-review-consolidated-review.md` is delivered
-  with blocking and non-blocking findings.
-
-### Failure Path
-
-- Input: `{ session_dir: "{session_dir}", target: "HEAD", design_info_filepath: "/missing.md" }`
-- Stage 1 cannot resolve design info because the file is missing or unreadable.
-- If design_info is not provided or unresolvable, skip design-compliance.
+- Happy: `target: "HEAD"`, `design_info: "API must return JSON"` --
+  all 5 aspects reviewed, final report delivered.
+- Failure: `design_info_filepath: "/missing.md"` with no `design_info` --
+  design-compliance skipped, 4 aspects reviewed.

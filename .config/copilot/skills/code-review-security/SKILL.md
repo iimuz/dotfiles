@@ -9,33 +9,28 @@ disable-model-invocation: false
 
 ## Overview
 
-Read the provided change target (diff or filtered file list), analyze changes for security
-vulnerabilities and exploitability criteria, and keep findings within security scope.
-Format findings in the specified output format and write the review to `output_filepath`.
+Read the change target (diff or file list) and analyze for security vulnerabilities
+and exploitability issues. Keep findings strictly within security scope.
+Write the review to `output_filepath`.
 
-## Constraints
-
-- Abort immediately if findings drift outside security scope.
-- Critical findings must include file and line number.
-- Abort immediately if the output file already exists.
+Abort if findings drift outside security scope.
+Abort if the output file already exists.
+Critical findings must include file and line number.
 
 ## Input
 
-| Field             | Type       | Required | Description                                                |
-| ----------------- | ---------- | -------- | ---------------------------------------------------------- |
-| `target`          | `string`   | yes      | Commit SHA, branch, PR number, `"staged"`, or `"unstaged"` |
-| `output_filepath` | `string`   | yes      | Absolute path for saving the review output                 |
-| `file_scope`      | `string[]` | no       | Optional file filter                                       |
-| `directory_scope` | `string`   | no       | Optional directory filter                                  |
+- `target: string` (required): Commit SHA, branch, PR number, `"staged"`, or `"unstaged"`
+- `output_filepath: string` (required): Absolute path for saving review output
+- `file_scope: string[]` (optional): File filter
+- `directory_scope: string` (optional): Directory filter
 
 ## Output
 
-Output written to `output_filepath`.
-
+Written to `output_filepath`. Priority levels: CRITICAL, HIGH, MEDIUM, LOW.
 Format per finding:
 
 ```text
-[PRIORITY] Brief description
+[CRITICAL|HIGH|MEDIUM|LOW] Brief description
 File: path/to/file.ext:line_number
 Issue: Detailed explanation
 Fix: How to resolve it
@@ -43,12 +38,5 @@ Fix: How to resolve it
 
 ## Examples
 
-### Happy Path
-
-- Input: `{ target: "HEAD", output_filepath: "/tmp/security-review.md" }`
-- Output: review written to `/tmp/security-review.md` with 4 findings.
-
-### Failure Path
-
-- Input: `{ target: "invalid-ref", output_filepath: "/tmp/security-review.md" }`
-- Abort: invalid or empty target (invalid-ref/no changes).
+- Happy: target="HEAD", output="/tmp/security-review.md" -- review with 4 findings.
+- Failure: target="invalid-ref" -- abort: invalid or empty target.

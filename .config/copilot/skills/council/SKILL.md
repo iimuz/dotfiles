@@ -13,219 +13,128 @@ disable-model-invocation: false
 
 ## Overview
 
-Orchestrate a 3-stage multi-LLM deliberation: parallel response generation, anonymized peer
-review with ranking, and chairman synthesis. Use for complex questions where a single model's
-blind spots could lead to an incomplete answer.
+Orchestrate a five-stage multi-LLM deliberation: parallel response generation,
+anonymization, peer review, ranking aggregation, and chairman synthesis. Use this
+for complex questions where one model's blind spots could produce an incomplete answer.
 
-At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
-and derives two paths:
+At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
-- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-council/` for intermediate artifacts
-- final output = `{session_dir}/YYYYMMDDHHMMSS-council-synthesis.md`
+- Intermediate artifacts: `{session_dir}/{timestamp}-council/` (referred to as `run_dir`)
+- Final output: `{session_dir}/{timestamp}-council-synthesis.md`
 
-All paths are rooted under `{session_dir}` which resolves to
-`~/.copilot/session-state/{session_id}/files/` for the current session.
+`session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
+The question must be non-empty; abort with an input validation error if missing.
 
-## Schema
+Read only `{session_dir}/{timestamp}-council-synthesis.md` and present it to the user
+without modification. Do not read other session files.
 
-```typescript
-type Response = {
-  model: string;
-  content: string;
-  artifact_path: string;
-};
+## Input
 
-type SynthesizeInput = {
-  session_id: string;
-  question: string;
-  responses: Response[];
-  reviews: Array<{
-    reviewer: string;
-    ranking: string[];
-    artifact_path: string;
-  }>;
-  rankings?: string;
-};
-```
+- `session_id: string` - Current session identifier used to derive `session_dir`.
+- `question: string` - Non-empty user question to send through the council workflow.
 
-## Constraints
+## Output
 
-- If fewer than 2 responses are received, abort immediately.
-- If only 2 of 3 responses succeed, continue with 2 responses and note the degradation in output.
-- Question must be non-empty; abort with an explicit input validation error if missing.
-- If anonymized input or label mapping is missing, abort immediately.
-- Anonymized content must not contain model names; abort and regenerate anonymized artifacts if detected.
-- If fewer than 2 valid reviews are received, continue with available reviews.
-- If all review parses fail, skip Stage 4 and proceed to Stage 5 without rankings.
-- Reviewer output must include a FINAL RANKING section; discard invalid reviews and continue.
-- If aggregate ranking fails or the output file is missing, proceed to Stage 5 without aggregate rankings.
-- Ranking table must use canonical header ordering; regenerate the table before returning if incorrect.
-- If chairman synthesis fails, invoke council-fallback with available Stage 1 paths and continue.
-- Synthesis output path must be absolute and session-scoped; abort with a path validation error if not.
+- `synthesis_path: string` - Absolute final path for the presentation-ready synthesis.
+- `degraded_mode: boolean` - Whether the workflow continued with only 2 Stage 1 responses.
+- `rankings_used: boolean` - Whether Stage 5 received aggregate rankings from Stage 4.
 
-## Execution
-
-```python
-ts = now("YYYYMMDDHHMMSS")
-run_dir = f"{session_dir}/{ts}-council"
-final_output = f"{session_dir}/{ts}-council-synthesis.md"
-generate_responses()
-anonymize()
-reviews = peer_review()
-if reviews:
-    aggregate_rankings()
-synthesize()
-```
+## Execution Flow
 
 ### Stage 1: Parallel Response Generation
 
-- Purpose: Produce independent Stage 1 responses in parallel and enforce quorum.
-- Inputs: question: string
-- Actions:
+Launch three independent Stage 1 responses in parallel with `claude-opus-4.6`,
+`gemini-3-pro-preview`, and `gpt-5.4`. Each model must answer the same question without
+seeing the others. This stage establishes quorum for the rest of the workflow.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill council-respond with
-      question={question},
-      output_filepath={run_dir}/council-stage1-claude-opus-4.6.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: >
-      Invoke skill council-respond with
-      question={question},
-      output_filepath={run_dir}/council-stage1-gemini-3-pro-preview.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: >
-      Invoke skill council-respond with
-      question={question},
-      output_filepath={run_dir}/council-stage1-gpt-5.4.md
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: stage1_response_paths: string[] (3 files)
-- Guards: At least 2 successful responses are required.
-- Faults:
-  - If fewer than 2 responses succeed, abort immediately with no fallback.
-  - If only 2 of 3 responses succeed, continue with 2 responses and note the degradation in output.
+> Invoke skill council-respond with
+> question={question},
+> output_filepath={run_dir}/council-stage1-{model}.md
+
+- Output: `{run_dir}/council-stage1-{model}.md` (3 files expected; read by Stage 2, 5)
+- Fault: Fewer than 2 successes: abort. Exactly 2 successes: continue in degraded mode.
 
 ### Stage 2: Anonymize
 
-- Purpose: Strip model identity and produce anonymized Stage 2 artifacts.
-- Inputs: question: string, stage1_response_paths: string[]
-- Actions:
+Strip model identity from the Stage 1 responses and prepare the shared peer-review input.
+This stage also emits the anonymized artifact paths and label mapping that later stages
+need to reconnect anonymized labels to original artifacts. Abort if either artifact is
+missing or if anonymized content still contains model names.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill council-anonymize with
-      question={question},
-      response_paths={stage1_response_paths},
-      output_anonymized_path={run_dir}/council-stage2-input.md,
-      label_map_path={run_dir}/council-label-mapping.json
-      Return the anonymized artifact path and label map path.
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: anonymized_input_path: string, anonymized_artifact_paths: string[], label_map_path: string
-- Guards: Both anonymized input and label mapping files exist.
-- Faults:
-  - If anonymized input or label mapping is missing, abort immediately with no fallback.
+> Invoke skill council-anonymize with
+> question={question},
+> response_paths={stage1_response_paths},
+> output_anonymized_path={run_dir}/council-stage2-input.md,
+> label_map_path={run_dir}/council-label-mapping.json
+
+- Output: `{run_dir}/council-stage2-input.md`, `anonymized_artifact_paths`, `{run_dir}/council-label-mapping.json`
+- Fault: Missing artifact or leaked model identity: abort.
 
 ### Stage 3: Parallel Peer Review
 
-- Purpose: Collect independent peer reviews and rankings over anonymized responses.
-- Inputs: anonymized_input_path: string
-- Actions:
+Ask the same three models to review the anonymized Stage 2 input in parallel. Keep only
+parseable reviews that include a `FINAL RANKING` section. If fewer than 2 valid reviews are
+received, continue with what is available. If all reviews fail to parse, skip Stage 4 and
+send Stage 5 the anonymized artifacts without rankings.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-claude-opus-4.6.md"
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gemini-3-pro-preview.md"
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: "Use the skill tool to invoke council-review with anonymized_artifact_path={anonymized_input_path}, output_review_path={run_dir}/council-stage3-gpt-5.4.md"
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: stage3_review_paths: string[] (up to 3 files)
-- Guards: Continue when at least one parseable review exists.
-- Faults:
-  - If fewer than 2 valid reviews are received, continue with available reviews.
-  - If all review parses fail, skip Stage 4 and proceed to Stage 5 without rankings.
+> Invoke skill council-review with
+> anonymized_artifact_path={anonymized_input_path},
+> output_review_path={run_dir}/council-stage3-{model}.md
+
+- Output: `{run_dir}/council-stage3-{model}.md` (0-3 files; read by Stage 4, 5)
+- Fault: All reviews invalid: skip Stage 4. Partial valid reviews: continue.
 
 ### Stage 4: Aggregate Rankings
 
-- Purpose: Aggregate Stage 3 rankings into a consensus ranking table.
-- Inputs: stage3_review_paths: string[], label_map_path: string
-- Actions:
+Aggregate the valid Stage 3 rankings into a consensus table using the label mapping.
+Run this stage only when Stage 3 produced at least one parseable review. The ranking
+table must use canonical header ordering, and if the header ordering is wrong it must be
+regenerated before returning. If aggregation fails or the output file is missing, continue
+to Stage 5 without aggregate rankings.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill council-aggregate with
-      review_artifact_paths={stage3_review_paths},
-      label_map_path={label_map_path},
-      output_rankings_path={run_dir}/council-aggregate-rankings.md
-      Return the rankings file path.
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: aggregate_ranking_path: string (or skipped)
-- Guards: Skip this stage when allParseFailures occurred in Stage 3.
-- Faults:
-  - If aggregate ranking fails or the output file is missing, proceed to Stage 5 without aggregate rankings.
+> Invoke skill council-aggregate with
+> review_artifact_paths={stage3_review_paths},
+> label_map_path={label_map_path},
+> output_rankings_path={run_dir}/council-aggregate-rankings.md
+
+- Output: `{run_dir}/council-aggregate-rankings.md` (optional; read by Stage 5)
+- Fault: Missing or invalid aggregate rankings: continue without rankings.
 
 ### Stage 5: Synthesis
 
-- Purpose: Produce final synthesis and invoke fallback when chairman synthesis fails.
-- Inputs: question: string, anonymized_artifact_paths: string[],
-  aggregate_ranking_path: string, label_map_path: string,
-  stage1_response_paths: string[], stage3_review_paths: string[]
-- Actions:
+Produce the final chairman synthesis from the original responses, anonymized artifacts,
+optional aggregate rankings, label mapping, and any valid reviews. The final synthesis
+path must be absolute and session-scoped. If synthesis fails, invoke `council-fallback`
+with the question, available Stage 1 response paths, optional aggregate ranking path,
+label map path, and `output_fallback_path={session_dir}/{timestamp}-council-fallback.md`.
+Pass `aggregate_ranking_path` only when it is available.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill council-synthesize with
-      question={question},
-      anonymized_artifact_paths={anonymized_artifact_paths},
-      aggregate_ranking_path={aggregate_ranking_path},
-      label_map_path={label_map_path},
-      response_paths={stage1_response_paths},
-      review_paths={stage3_review_paths},
-      output_synthesis_path={final_output}
-      Include aggregate_ranking_path={aggregate_ranking_path} only when aggregate_ranking_path is available.
-      Return the synthesis file path.
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: synthesis_path: string
-- Guards: Final synthesis artifact exists and is presentation-ready.
-- Faults:
-  - If chairman synthesis fails, invoke council-fallback with question={question},
-    response_paths={stage1_response_paths}, aggregate_ranking_path={aggregate_ranking_path},
-    label_map_path={label_map_path},
-    output_fallback_path={session_dir}/{ts}-council-fallback.md and continue.
+> Invoke skill council-synthesize with
+> question={question},
+> anonymized_artifact_paths={anonymized_artifact_paths},
+> aggregate_ranking_path={aggregate_ranking_path},
+> label_map_path={label_map_path},
+> response_paths={stage1_response_paths},
+> review_paths={stage3_review_paths},
+> output_synthesis_path={final_output}
 
-Read only `{session_dir}/{ts}-council-synthesis.md` and present its content to the user without modification.
-The main agent must not read any other session file.
+- Output: `{session_dir}/{timestamp}-council-synthesis.md`
+- Fault: On synthesis failure, invoke `council-fallback` and continue.
 
 ## Session Files
 
-Intermediate files are saved under `{run_dir}/`. The final output is saved directly under `{session_dir}/`.
+Intermediate files are saved under `{run_dir}/`. The final output is saved directly under
+`{session_dir}/`.
 
 | File                                                | Written by | Read by          |
 | --------------------------------------------------- | ---------- | ---------------- |
@@ -238,16 +147,5 @@ Intermediate files are saved under `{run_dir}/`. The final output is saved direc
 
 ## Examples
 
-### Happy Path
-
-- Input: { question: "What is the best approach to database indexing?" }
-- Stages 1-5 all succeed; 3/3 responses, 3/3 reviews, rankings aggregated
-- Intermediate artifacts: `{run_dir}/council-stage1-{model}.md`, `{run_dir}/council-stage2-input.md`
-- Intermediate artifacts: `{run_dir}/council-stage3-{model}.md`, `{run_dir}/council-aggregate-rankings.md`
-- Output: `{session_dir}/YYYYMMDDHHMMSS-council-synthesis.md`; main agent reads and presents content
-
-### Failure Path
-
-- Input: { question: "..." }; Stage 1 returns 1/3 successful responses
-- Partial artifacts remain under `{run_dir}/`; no final synthesis file is read
-- fault(responses.length < 2) => fallback: none; abort
+- Happy: `question: "What is the best approach to database indexing?"` -- all 5 stages succeed.
+- Failure: `question: "..."` with only 1 Stage 1 response -- abort before synthesis.

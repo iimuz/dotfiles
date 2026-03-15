@@ -9,53 +9,29 @@ disable-model-invocation: false
 
 ## Overview
 
-Transform a feature request into an ordered list of atomic TDD units so each unit maps to one
-behavior and one red-green-refactor cycle.
-Execution order: parse_request -> split_behaviors -> build_units -> order_units.
-
-## Schema
-
-```typescript
-type PlannedUnit = Readonly<{
-  id: string;
-  behavior: string;
-  testPath: string;
-  testCommand: string;
-  expectedFailure: string;
-  implementationPath: string;
-  refactorScope: string;
-  doneWhen: string;
-}>;
-```
-
-## Constraints
-
-- If feature request is missing or empty, abort immediately.
-- If no atomic behavior can be extracted, abort immediately.
-- If unit mapping is incomplete, regenerate missing fields; if still incomplete, abort.
-- If ordering conflicts occur, prioritize lowest-dependency behavior first and continue.
+Transform a concrete feature request into an ordered list of atomic TDD units so each unit
+covers one observable behavior, one test path, one test command, and one implementation target.
+Abort when the request is empty or no atomic behavior can be extracted, and when unit metadata is
+incomplete regenerate missing fields once before failing; if ordering conflicts appear, prefer the
+lowest-dependency behavior first and continue with a deterministic sequence.
 
 ## Input
 
-| Field                | Type     | Required | Description                                   |
-| -------------------- | -------- | -------- | --------------------------------------------- |
-| `featureRequest`     | `string` | yes      | Natural-language feature statement            |
-| `constraints`        | `string` | no       | Optional non-functional or domain constraints |
-| `acceptanceCriteria` | `string` | no       | Optional observable success criteria          |
+- `featureRequest: string` - Natural-language feature statement such as account lockout after
+  repeated login failures.
+- `constraints: string | undefined` - Optional domain limits such as keep the lockout window at
+  ten minutes.
+- `acceptanceCriteria: string | undefined` - Optional observable outcomes such as the fifth failed
+  login returns HTTP 429.
 
 ## Output
 
-- orderedUnits: Ordered, atomic TDD units with test and implementation metadata.
+- `orderedUnits: array<object>` - Ordered atomic units with behavior, test path, test command,
+  expected failure, implementation path, refactor scope, and done condition.
 
 ## Examples
 
-### Happy Path
-
-- Input describes login lockout after repeated failures.
-- Behaviors are split into independent validation units.
-- orderedUnits contains deterministic unit order and complete metadata.
-
-### Failure Path
-
-- Input is too vague to extract observable behavior.
-- Abort: feature request is empty or no atomic behavior extractable.
+- Happy: "Lock an account for 10 minutes after 5 failed logins" becomes ordered
+  units for counting failures, denying the sixth attempt, and clearing the lock
+  after the timeout.
+- Failure: "Make auth better somehow" aborts because no atomic observable behavior can be extracted.

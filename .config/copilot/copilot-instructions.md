@@ -22,8 +22,11 @@
 ### Model Selection
 
 - ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
-- ALWAYS use gpt-5.4 for implementation tasks (code generation, file editing, commit preparation).
-- ALWAYS use gemini-3-pro-preview for synthesis, summarization, and exploration tasks.
+- ALWAYS use claude-opus-4.6 for tasks requiring judgment, reasoning, or contextual understanding
+  (architecture decisions, scope analysis, review interpretation, report writing).
+- ALWAYS use gpt-5.4 for mechanical operations (git staging, file writing, template expansion,
+  straightforward code edits with clear specifications).
+- ALWAYS use gemini-3-pro-preview for large-volume text summarization and bulk exploration.
 
 ### Privacy
 

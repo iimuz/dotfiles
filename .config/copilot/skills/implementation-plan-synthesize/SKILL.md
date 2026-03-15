@@ -9,43 +9,31 @@ disable-model-invocation: false
 
 ## Overview
 
-Discover input files from the reference path list, select the most recent file per prefix when
-duplicates exist, and consolidate collective analysis into a single authoritative plan following
-the 9-section output structure.
+Read all files listed in `reference_filepaths` and consolidate the artifacts into a single
+authoritative plan written to `output_filepath`.
 
-## Constraints
-
-- If fewer than 2 draft files are found, abort immediately.
-- If the final plan is incomplete, abort immediately.
-- Ensure the final plan has all required sections and no TODO or TBD placeholders.
-- If output filepath is missing, abort immediately.
-- Write only to the output filepath and confirm the file exists after write.
+Ensure the plan is complete and contains no TODO or TBD placeholders. Write only to
+`output_filepath` and confirm the file exists after writing. Abort if fewer than 2 input files
+are found. Abort if `output_filepath` is missing. Abort if the final plan is incomplete.
 
 ## Input
 
-| Field                 | Type       | Required | Description                                         |
-| --------------------- | ---------- | -------- | --------------------------------------------------- |
-| `user_request`        | `string`   | yes      | The original implementation request                 |
-| `reference_filepaths` | `string[]` | yes      | Absolute paths to all input artifacts               |
-| `output_filepath`     | `string`   | yes      | Absolute path for saving the final synthesized plan |
+- `user_request: string` (required): The original implementation request.
+- `reference_filepaths: string[]` (required): Absolute paths to all input artifacts.
+- `output_filepath: string` (required): Absolute path to write the final synthesized plan.
 
 ## Output
 
-Output written to `output_filepath`.
+- `output_filepath: string`: The written final plan file path.
 
-Required sections: Introduction, Requirements, Architecture & Design, Implementation Phases,
-Dependencies & Risks, Testing & Validation, Rollout & Monitoring, Documentation & Communication,
-and Appendices.
+For the required output structure, see
+[output-format.md](references/output-format.md).
 
 ## Examples
 
-### Happy Path
-
-- Input: { user_request: "Add auth", reference_filepaths: ["/tmp/d1.md", "/tmp/d2.md"],
-  output_filepath: "/tmp/final-plan.md" }
-- Output: plan written to `output_filepath`.
-
-### Failure Path
-
-- Input: { reference_filepaths: ["/tmp/d1.md"], output_filepath: "/tmp/final-plan.md" }; only 1 draft
-- Abort: fewer than 2 draft files available.
+- Happy: `user_request="Add auth"`,
+  `reference_filepaths=["/tmp/d1.md", "/tmp/d2.md"]`,
+  `output_filepath="/tmp/final-plan.md"` -- final plan written.
+- Failure: `reference_filepaths=["/tmp/d1.md"]`,
+  `output_filepath="/tmp/final-plan.md"` -- abort because fewer than 2 draft files
+  were found.
