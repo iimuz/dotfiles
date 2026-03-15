@@ -1,5 +1,5 @@
 ---
-applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/**/*.md,docs/debt/**/*.md,docs/design/**/*.md,docs/plans/**/*.md"
+applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.md,.github/instructions/**/*.md,docs/**/*.md"
 ---
 
 # Doc Standards

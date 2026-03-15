@@ -9,59 +9,30 @@ disable-model-invocation: false
 
 ## Overview
 
-Determine the implementation scope from a plan or prior review issues and write a
-natural-language request file for downstream execution. For iteration 1, read the plan file
-and extract all tasks/changes to implement. For iteration > 1, filter prior issues to severity
-Critical and High only, excluding pre-existing issues unrelated to the plan goal.
-Execution order: determine_scope -> write_checkpoint -> write_request -> write_checkpoint.
-
-## Schema
-
-```typescript
-type PriorIssue = {
-  issue_id: string;
-  severity: "Critical" | "High" | "Medium" | "Low";
-  file: string;
-  action: string;
-};
-
-type CheckpointInput = {
-  iteration: number;
-  scope_summary: string;
-  status: "scope_done" | "complete";
-};
-```
-
-## Constraints
-
-- If the plan file is unreadable, abort immediately.
-- If the checkpoint write fails, abort immediately.
-- If the request write fails, abort immediately.
-- If request and complete checkpoint already exist for this iteration, return existing paths without regeneration.
+Prepare a bounded natural-language implementation request for the current iteration. Execution
+order: determine_scope -> write_checkpoint -> write_request -> write_checkpoint. On iteration 1,
+read `plan_filepath` and extract the work required by the plan. On later iterations, use only
+Critical and High `prior_issues` that still advance the plan goal and exclude unrelated or
+pre-existing findings. If `{run_dir}/sw-implement-request-{n}.md` and the matching complete
+checkpoint already exist for the same iteration, return the existing paths without regenerating
+them. Abort if `plan_filepath` cannot be read or if any required checkpoint or request write
+fails.
 
 ## Input
 
-| Field           | Type           | Required | Description                           |
-| --------------- | -------------- | -------- | ------------------------------------- |
-| `plan_filepath` | `string`       | yes      | Absolute path to the plan file        |
-| `iteration`     | `number`       | yes      | Current iteration number              |
-| `prior_issues`  | `PriorIssue[]` | no       | Review issues from previous iteration |
-| `output_dir`    | `string`       | yes      | Absolute path to output directory     |
+- `plan_filepath: string` - Absolute path to the plan file.
+- `iteration: number` - Current iteration number.
+- `prior_issues: array` - Previous review issues with severity and change context.
+- `run_dir: string` - Absolute path to the run directory.
 
 ## Output
 
-- request_file: path to the written request file
-- checkpoint_file: path to the written checkpoint file
+- `request_filepath: string` - Path to `{run_dir}/sw-implement-request-{n}.md`.
+- `complete_checkpoint_filepath: string` - Path to the matching complete checkpoint.
 
 ## Examples
 
-### Happy Path
-
-- Input: { plan_filepath: "/tmp/plan.md", iteration: 1, prior_issues: [], output_dir: "/tmp/run/" }
-- determine_scope -> write_checkpoint -> write_request -> write_checkpoint all succeed
-- Output: { request_file: "/tmp/run/sw-implement-request-1.md" }
-
-### Failure Path
-
-- Input: { plan_filepath: "/tmp/missing.md", ... }; plan file not found
-- Abort: plan file is unreadable.
+- Happy: iteration 1 reads `/tmp/plan.md`, writes `/tmp/run/sw-implement-request-1.md`, and
+  returns both output paths.
+- Failure: iteration 2 filters out Medium, Low, and unrelated findings, then aborts because the
+  request file cannot be written.

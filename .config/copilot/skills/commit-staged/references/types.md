@@ -1,41 +1,29 @@
 # Commit Type Reference
 
-Complete list of valid commit types for Conventional Commits.
+Valid types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `build`, `perf`,
+`style`, `revert`, `i18n`.
 
-## Type Descriptions
+- `feat`: New features
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `refactor`: Code refactoring
+- `test`: Test additions or corrections
+- `chore`: Maintenance tasks, scripts, config
+- `ci`: CI configuration and scripts
+- `build`: Build system or external dependency changes
+- `perf`: Performance improvements
+- `style`: Code style changes (formatting, whitespace)
+- `revert`: Revert previous commits
+- `i18n`: Internationalization
 
-| Type     | Description                                 | Examples                      |
-| -------- | ------------------------------------------- | ----------------------------- |
-| feat     | New features                                | add user authentication       |
-| fix      | Bug fixes                                   | resolve token expiration      |
-| docs     | Documentation changes                       | update API documentation      |
-| refactor | Code refactoring                            | extract validation logic      |
-| test     | Test additions or corrections               | add integration tests         |
-| chore    | Maintenance tasks, scripts, config          | update dependencies           |
-| ci       | CI configuration and scripts                | add GitHub Actions workflow   |
-| build    | Build system or external dependency changes | upgrade webpack to v5         |
-| perf     | Performance improvements                    | optimize database queries     |
-| style    | Code style changes (formatting, whitespace) | apply code formatter          |
-| revert   | Revert previous commits                     | revert authentication changes |
-| i18n     | Internationalization                        | add Japanese translations     |
+## Selection Priority
 
-## Commit Type Selection Rules
+When multiple types could apply, use this priority (highest first):
 
-Use the staged diff to choose the most specific type from the Type Descriptions table.
+1. Whitespace or formatting only -> `style`
+2. Only test files changed -> `test`
+3. Only documentation files changed -> `docs`
+4. Otherwise -> analyze the diff and pick the most specific type above.
 
-| Priority | Condition                                                | Required Type                                                               |
-| -------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
-| 1        | The change set is only whitespace or formatting updates. | `style`                                                                     |
-| 2        | The change set touches only test files.                  | `test`                                                                      |
-| 3        | The change set touches only documentation files.         | `docs`                                                                      |
-| 4        | None of the above conditions apply.                      | Analyze the diff and select the most specific matching type from the table. |
-
-## Constraints
-
-- Match the diff against the table and choose exactly one type.
-- Apply the priority rules in order so that higher-priority conditions always win.
-- Reject any type that is not listed in the Type Descriptions table.
-
-## Fault Handling
-
-- If the selected type is not in the table, abort with `invalid commit type`.
+Choose exactly one type. Reject any type not listed. Abort with `invalid commit type`
+on mismatch.

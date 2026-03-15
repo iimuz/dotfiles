@@ -9,37 +9,27 @@ disable-model-invocation: false
 
 ## Overview
 
-Read 2+ analysis files to understand multi-perspective findings. Before drafting, read
-`references/plan-template.md` for the required output structure. Synthesize analyses into a
-complete implementation plan using TASK-### identifiers.
+Read 2 or more analysis files to understand multi-perspective findings. Before drafting, read
+`references/plan-template.md` for the required structure. Synthesize the analyses into a complete
+implementation plan that uses TASK-### identifiers and write it to `output_filepath`.
 
-## Constraints
-
-- If fewer than 2 analysis files are found, abort immediately.
-- If output contains placeholder text (TODO, TBD), abort immediately.
-- If output filepath is missing, abort immediately.
+Abort if fewer than 2 analysis files are provided. Abort if `output_filepath` is missing. Abort
+if the draft contains placeholder text such as TODO or TBD.
 
 ## Input
 
-| Field             | Type       | Required | Description                                    |
-| ----------------- | ---------- | -------- | ---------------------------------------------- |
-| `analysis_paths`  | `string[]` | yes      | Absolute paths to analysis files (2+ required) |
-| `output_filepath` | `string`   | yes      | Absolute path for saving the plan draft        |
+- `analysis_paths: string[]` (required): Absolute paths to the analysis files;
+  2 or more are required.
+- `output_filepath: string` (required): Absolute path to write the plan draft.
 
 ## Output
 
-Output written to `output_filepath`.
-
-The draft must follow the template structure defined in `@references/plan-template.md`.
+- `output_filepath: string`: The written draft file path.
+- `structure: string`: The draft follows `references/plan-template.md`.
 
 ## Examples
 
-### Happy Path
-
-- Input: { analysis_paths: ["/tmp/a1.md", "/tmp/a2.md"], output_filepath: "/tmp/draft.md" }
-- Output: draft written to `output_filepath`.
-
-### Failure Path
-
-- Input: { analysis_paths: ["/tmp/a1.md"], output_filepath: "/tmp/draft.md" }; only 1 file
-- Abort: fewer than 2 analysis files available.
+- Happy: `analysis_paths=["/tmp/a1.md", "/tmp/a2.md"]`, `output_filepath="/tmp/draft.md"` -- draft written.
+- Failure: `analysis_paths=["/tmp/a1.md"]`,
+  `output_filepath="/tmp/draft.md"` -- abort because fewer than 2 analysis files
+  were provided.

@@ -9,62 +9,28 @@ disable-model-invocation: false
 
 ## Overview
 
-Transform the request into a validated execution plan. Read `references/planner-protocol.md` for
-prompt strategy, then read `references/plan-schema.md` for validation rules. Decompose the request
-into tasks, validate the plan against the schema, and persist `plan.json`. When validation fails,
-write `plan-errors.json` and abort.
-
-## Schema
-
-```typescript
-type PlanTask = {
-  id: string;
-  agent_type: "explore" | "task" | "general-purpose" | "code-review";
-  prompt_file: string;
-  output_file: string;
-  model?: "claude-opus-4.6" | "gpt-5.4" | "gemini-3-pro-preview";
-  depends_on: string[];
-};
-
-type Plan = {
-  schema_version: string;
-  run_id: string;
-  goal: string;
-  tasks: PlanTask[];
-  synthesis_output_file: string;
-};
-```
-
-## Constraints
-
-- Retry once and continue when planner output is missing.
-- Abort after writing `plan-errors.json` when plan validation fails.
-- Keep all `prompt_file` and `output_file` paths under `run_dir`.
-- Copy the input `run_id` into the plan output `run_id` field without modification.
-- Follow `references/planner-protocol.md` for planner prompt templates, receipt format, and validation rules.
-- Follow `references/plan-schema.md` for schema definitions, validation rules, field references, and mode logic.
+Transform the request into a validated execution plan. Read `references/planner-protocol.md`
+for prompt strategy and `references/plan-schema.md` for validation rules. Decompose the request
+into executable tasks, validate the plan against the schema, and persist `plan.json` only after
+validation succeeds. Keep every generated `prompt_file` and `output_file` scoped under `run_dir`
+and reject any plan that escapes that directory. Copy the input `run_id` into the output plan
+`run_id` field without modification. If planner output is missing, retry once and continue only
+if a complete plan is recovered. If validation fails, write `plan-errors.json` and abort.
 
 ## Input
 
-| Field     | Type     | Required | Description                                             |
-| --------- | -------- | -------- | ------------------------------------------------------- |
-| `request` | `string` | yes      | User request to decompose                               |
-| `run_id`  | `string` | yes      | Run identifier provided by orchestrator                 |
-| `run_dir` | `string` | yes      | Run directory path provided by orchestrator for scoping |
+- `request: string` - User request to decompose into a validated execution plan.
+- `run_id: string` - Run identifier provided by the orchestrator and copied into the plan output.
+- `run_dir: string` - Run-scoped directory that must contain every generated prompt and output path.
 
 ## Output
 
-- plan: validated plan ready for execution
-- validation errors: persisted to `plan-errors.json` when validation fails
+- `plan: json file` - Validated `plan.json` ready for execution when planning succeeds.
+- `validation_errors: json file` - `plan-errors.json` written when schema validation fails.
 
 ## Examples
 
-### Happy Path
-
-- Input: { request: "Build auth module", run_dir: "/tmp/run-1" }
-- Output: plan.json written to /tmp/run-1/plan.json with 3 tasks
-
-### Failure Path
-
-- `validate_plan` detects cyclic dependency.
-- Abort after writing `plan-errors.json`.
+- Happy: request "Build auth module" produces a validated `plan.json` under the run directory
+  with all task files scoped inside that directory.
+- Failure: schema validation detects a cyclic dependency, writes `plan-errors.json`, and aborts
+  without emitting `plan.json`.
