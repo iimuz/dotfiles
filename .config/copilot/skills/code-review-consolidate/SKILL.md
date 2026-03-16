@@ -9,31 +9,24 @@ disable-model-invocation: false
 
 ## Overview
 
-Read review files, gap list results, and cross-check outputs, then deduplicate findings
-and apply cross-check assessments. Synthesize a unified report from the remaining findings
-and write it to `output_filepath`.
+Read review files, gap list results, and cross-check outputs. Deduplicate findings,
+apply cross-check assessments, and synthesize a unified report.
+Write the result to `output_filepath`.
 
-## Constraints
-
-- Abort immediately if review input files are missing.
-- Abort immediately if the output report shape is invalid.
-- Abort immediately if the consolidated report is missing when delivering.
-- Read only the consolidated report for formatting the final response.
+Abort if review input files are missing.
+Abort if the consolidated report shape is invalid.
+Read only the consolidated report for formatting the final response.
 
 ## Input
 
-| Field               | Type       | Required | Description                                    |
-| ------------------- | ---------- | -------- | ---------------------------------------------- |
-| `review_file_paths` | `string[]` | yes      | Absolute paths to aspect review files          |
-| `gap_list_path`     | `string`   | no       | Absolute path to gap analysis results          |
-| `crosscheck_paths`  | `string[]` | no       | Absolute paths to cross-check assessment files |
-| `output_filepath`   | `string`   | yes      | Absolute path for saving consolidated report   |
+- `review_file_paths: string[]` (required): Absolute paths to aspect review files
+- `gap_list_path: string` (optional): Absolute path to gap analysis results
+- `crosscheck_paths: string[]` (optional): Absolute paths to cross-check assessment files
+- `output_filepath: string` (required): Absolute path for saving consolidated report
 
 ## Output
 
-Output written to `output_filepath`.
-
-Delivery template sections:
+Written to `output_filepath`. Sections:
 
 - `## Code Review Summary`
 - `### Critical Issues (Blocking)`
@@ -42,12 +35,5 @@ Delivery template sections:
 
 ## Examples
 
-### Happy Path
-
-- Input: `{ review_file_paths: ["/tmp/sec.md", "/tmp/qual.md"], output_filepath: "/tmp/consolidated.md" }`
-- Output: consolidated report written to `/tmp/consolidated.md` with 5 findings.
-
-### Failure Path
-
-- Input: `{ review_file_paths: [], output_filepath: "/tmp/consolidated.md" }`
-- Abort: missing review files.
+- Happy: 2 review files provided -- consolidated report with 5 findings.
+- Failure: empty review_file_paths -- abort: missing review files.

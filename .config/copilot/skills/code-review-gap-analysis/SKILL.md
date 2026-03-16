@@ -9,29 +9,22 @@ disable-model-invocation: false
 
 ## Overview
 
-Read the review files, compare findings across reviewers, and identify gaps where one
-reviewer found a concern that others missed. Write the gap list output to
-`output_filepath`.
+Read review files, compare findings across reviewers, and identify gaps where one
+reviewer found a concern that others missed. Write the gap list to `output_filepath`.
 
-## Constraints
-
-- If a review file cannot be parsed, skip that model for the affected aspect and continue.
-- Compare findings only within the same aspect and keep concern text to a single line.
-- Abort immediately if the output file already exists.
-- Return exactly one response line in the format `gaps_found: <N>`.
+If a review file cannot be parsed, skip that model for the affected aspect and continue.
+Compare findings only within the same aspect. Keep concern text to a single line.
+Abort if the output file already exists.
+Return exactly one response line: `gaps_found: {N}`.
 
 ## Input
 
-| Field               | Type       | Required | Description                              |
-| ------------------- | ---------- | -------- | ---------------------------------------- |
-| `review_file_paths` | `string[]` | yes      | Absolute paths to aspect review files    |
-| `output_filepath`   | `string`   | yes      | Absolute path for saving gap list output |
+- `review_file_paths: string[]` (required): Absolute paths to aspect review files
+- `output_filepath: string` (required): Absolute path for saving gap list output
 
 ## Output
 
-Output written to `output_filepath`.
-
-Format:
+Written to `output_filepath`. Format:
 
 ```yaml
 gaps_found: N
@@ -43,16 +36,9 @@ entries:
     found_by: model-name
 ```
 
-Return value: exactly one line `gaps_found: <N>`.
+Return value: exactly one line `gaps_found: {N}`.
 
 ## Examples
 
-### Happy Path
-
-- Input: `{ review_file_paths: ["/tmp/sec-a.md", "/tmp/sec-b.md"], output_filepath: "/tmp/gaps.yml" }`
-- Output: gap list written to `/tmp/gaps.yml` with 2 results.
-
-### Failure Path
-
-- Input: `{ review_file_paths: [], output_filepath: "/tmp/gaps.yml" }`
-- Abort: invalid or missing `review_file_paths` or unparseable inputs.
+- Happy: 2 review files provided -- gap list with 2 entries.
+- Failure: empty review_file_paths -- abort: missing inputs.

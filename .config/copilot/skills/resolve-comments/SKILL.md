@@ -5,237 +5,126 @@ user-invocable: true
 disable-model-invocation: false
 ---
 
-# Resolve Comments Workflow
+# Resolve Comments
 
 ## Overview
 
-Use this workflow to resolve pull request review comments with a staged orchestration
-that prioritizes safe decisions and explicit verification before reporting completion.
+Resolve pull request review comments through a staged workflow: gather facts, evaluate
+what should change, apply approved fixes, verify the result, and report the outcome.
 
-At execution start, the orchestrator generates a run timestamp (`YYYYMMDDHHMMSS`)
-and derives two paths:
+At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
-- `run_dir` = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments/` for intermediate artifacts
-- final output = `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
+- Intermediate artifacts: `{session_dir}/{timestamp}-resolve-comments/` (referred to as `run_dir`)
+- Final output: `{session_dir}/{timestamp}-resolve-comments-summary.md`
 
-## Interface
-
-```typescript
-type ModelRoles = {
-  coordinator: "Runs stage sequencing, gates, and artifact handoff.";
-  gatherer: "task(agent_type: 'general-purpose', model: 'gemini-3-pro-preview')";
-  evaluator: "skill('council')";
-  implementer: "skill('task-coordinator')";
-  verifier: "skill('code-review', model: 'claude-opus-4.6')";
-  committer: "task(agent_type: 'general-purpose', model: 'gpt-5.4')";
-};
-
-type SessionFileTypes = {
-  gatherMd: "gather.md";
-  evalInputMd: "eval-input.md";
-  councilJson: "council.json";
-  fixPlanJson: "fix-plan.json";
-  implementJson: "implement.json";
-  verifyJson: "verify.json";
-  commitJson: "commit.json";
-  summaryMd: "YYYYMMDDHHMMSS-resolve-comments-summary.md";
-};
-
-type SeveritySummary = {
-  critical_count: number;
-  high_count: number;
-  medium_count: number;
-  low_count: number;
-};
-
-declare function resolveComments(input: {
-  comments: string;
-  context?: string;
-}): { summary: string };
-// @fault input_missing_comments => abort_with_error_summary
-// @invariant orchestrator_skill_calls_use_skill_not_task
-// @invariant gather_output_is_facts_only_no_judgments_recommendations_or_opinions
-// @invariant fail_closed_for_ambiguous_evaluation_output
-// @invariant artifacts_saved_under_session_state_files
-// @invariant (gather_contains_judgment_or_opinion) => abort("Gather stage must remain facts-only")
-// @invariant (coordinator_builds_eval_input_inline_without_gather_artifact) => abort("Delegate gather/eval-input construction to sub-agent")
-// @invariant model_roles: ModelRoles
-// @invariant session_file_types: SessionFileTypes
-
-declare function gatherStage(input: { comments: string; context?: string }): {
-  gather_artifact_path: string;
-};
-// @fault gather_generation_failed => abort_with_error_summary
-// @fault gather_file_missing => abort_with_error_summary
-// @fault gather_contains_non_facts => abort_with_error_summary
-// @invariant uses task(agent_type: "general-purpose", model: "gemini-3-pro-preview")
-
-declare function evaluateStage(input: { gather_artifact_path: string }): {
-  actionable_count: number;
-  skip_decision: boolean;
-  fix_plan: string;
-};
-// @fault eval_input_generation_failed => abort_with_error_summary
-// @fault eval_input_file_missing => abort_with_error_summary
-// @fault council_invocation_failed => abort_with_error_summary
-// @invariant uses skill("council") with eval-input artifact path
-
-declare function implementStage(input: {
-  skip_decision: boolean;
-  fix_plan: string;
-}): { implementation_status: string; implementation_artifact_path: string };
-// @fault task_coordinator_failed => emit_failed_implementation_status_and_continue
-// @invariant uses skill("task-coordinator") when skip_decision is false
-
-declare function verifyStage(input: {
-  implementation_artifact_path: string;
-  skip_decision: boolean;
-}): SeveritySummary;
-// @fault code_review_failed => emit_verification_unavailable_and_continue
-// @invariant uses skill("code-review", model: "claude-opus-4.6")
-
-declare function commitStage(input: {
-  critical_count: number;
-  high_count: number;
-  implementation_artifact_path: string;
-}): { commit_status: string; commit_skip_reason?: string };
-// @fault git_add_failed => abort_with_git_add_failed_status
-// @fault commit_skill_failed => emit_commit_failed_status_and_continue
-// @invariant uses task(agent_type: "general-purpose", model: "gpt-5.4") and commit-staged
-
-declare function summarizeStage(input: {
-  actionable_count: number;
-  commit_status: string;
-  commit_skip_reason?: string;
-}): { summary: string };
-// @fault summary_artifact_write_failed => abort_with_error_summary
-// @invariant summarizes gather, evaluate, implement, verify, and commit outcomes
-```
+`session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
 
 ## Workflow
 
-- fault(input_missing_comments) => fallback: abort_with_error_summary; abort
+### Stage 1: Gather
 
-1. Gather
+Extract factual observations from the review comments. Record referenced files, explicit
+requests, and comment context. Never include recommendations, prioritization, or opinions.
 
-- Delegate gather artifact construction to
-  `task(agent_type: 'general-purpose', model: 'gemini-3-pro-preview')` using
-  `comments` and optional `context`.
-- Require deterministic filename pattern: `gather.md`.
-- Sub-agent writes artifact: `{run_dir}/gather.md`.
-- Validate gather file exists on disk and contains only factual observations before proceeding.
-- Output: `{ gather_artifact_path }` used by Stage 2.
-- fault(gather_generation_failed) => fallback: abort_with_error_summary; abort
-- fault(gather_file_missing) => fallback: abort_with_error_summary; abort
-- fault(gather_contains_non_facts) => fallback: abort_with_error_summary; abort
+task(general-purpose, model=gemini-3-pro-preview):
 
-1. Evaluate
+> Read the review comments and optional context. Extract only factual statements.
+> Write the result to {run_dir}/gather.md.
 
-- Delegate eval-input construction to `task(agent_type: 'general-purpose')` by
-  reading and sanitizing `gather_artifact_path`.
-- Strip judgmental wording, advisory language, and uncertain claims from the gather content before eval-input creation.
-- Sub-agent writes artifact: `{run_dir}/eval-input.md`.
-- Validate eval-input file exists on disk before council invocation.
-- Run `skill('council')` with
-  `{run_dir}/eval-input.md` file path as input, not inline text.
-- Write artifact: `{run_dir}/council.json`.
-- Parse council output into a structured fix plan with item IDs, owners, and concrete change actions.
-- Apply fail-closed gate: when a judgment is ambiguous, classify as non-actionable.
-- Compute `actionable_count` and set `skip_decision` where true means implementation is skipped.
-- Enforce gate: `actionable_count == 0` forces skip.
-- Write artifact: `{run_dir}/fix-plan.json`.
-- Output: `{ actionable_count, skip_decision, fix_plan }` used by Stage 3.
-- fault(eval_input_generation_failed) => fallback: abort_with_error_summary; abort
-- fault(eval_input_file_missing) => fallback: abort_with_error_summary; abort
-- fault(council_invocation_failed) => fallback: abort_with_error_summary; abort
+- Output: `{run_dir}/gather.md` (read by Stage 2)
+- Fault: Abort if the task fails, the file is missing, or the output contains evaluative language.
 
-1. Implement
+### Stage 2: Evaluate
 
-- Run this stage only when `skip_decision` is false.
-- Call `skill('task-coordinator')` with `fix_plan` as the implementation request.
-- If skipped, emit `implementation_status: skipped` with reason `no_actionable_items`.
-- Write artifact: `{run_dir}/implement.json`.
-- Output: implementation result payload or skip payload.
-- fault(task_coordinator_failed) => fallback: emit_failed_implementation_status; continue
+Transform the gather artifact into eval-input, then run council deliberation to produce
+a fix plan. The coordinator must not build eval-input inline; delegate that transformation
+to a sub-agent. Classify ambiguous evaluation results as non-actionable (fail-closed).
 
-1. Verify
+task(general-purpose):
 
-- Call `skill('code-review', model: 'claude-opus-4.6')` against unstaged working-tree changes produced by Stage 3.
-- When Stage 3 was skipped, verify that no unintended unstaged changes exist and
-  mark verification as passed-with-skip-context.
-- Write artifact: `{run_dir}/verify.json`.
-- Output: verification findings with explicit severity summary
-  `{ critical_count, high_count, medium_count, low_count }`.
-- fault(code_review_failed) => fallback: emit_verification_unavailable_and_continue; continue
+> Read {run_dir}/gather.md, strip judgmental or advisory language, and write
+> sanitized input to {run_dir}/eval-input.md.
 
-1. Commit
+skill(council):
 
-- Read verify artifact severity fields and attempt strict parsing for `critical_count` and `high_count`.
-- Apply severity gate: proceed only when `critical_count == 0` and `high_count == 0`.
-- If severity parsing fails, skip commit and propagate `commit_skip_reason: severity_parse_failed`.
-- If gate fails, skip commit and propagate `commit_skip_reason: severity_gate_failed`.
-- Delegate commit execution to `task(agent_type: 'general-purpose', model: 'gpt-5.4')`.
-  Sub-agent performs: git add to stage implementation changes, staged-change pre-check
-  (if no staged changes exist, propagate `commit_skip_reason: no_staged_changes` and skip),
-  `skill('commit-staged')` invocation when staged-change pre-check passes, and commit artifact JSON write to
-  `{run_dir}/commit.json`.
-- Output: `{ commit_status, commit_skip_reason? }` used by Stage 6.
-- fault(git_add_failed) => fallback: abort_with_git_add_failed_status; abort
-- fault(commit_skill_failed) => fallback: emit_commit_failed_status_and_continue; continue
+> Evaluate {run_dir}/eval-input.md. Write council output to {run_dir}/council.json.
 
-1. Summarize
+Parse the council output into a structured fix plan with item IDs and concrete change
+actions. Compute actionable_count and set skip_decision (true when no actionable items
+exist). Write `{run_dir}/fix-plan.json`.
 
-- Produce a final summary covering gather outcome, evaluation outcome,
-  implementation status, verification results, and commit status.
-- Keep wording explicit about skips, degraded paths, unresolved risks, and any `commit_skip_reason`.
-- Write artifact: `{final_output}`.
-- Output: `{ summary: string }`.
-- fault(summary_artifact_write_failed) => fallback: abort_with_error_summary; abort
+- Output: `{run_dir}/eval-input.md`, `{run_dir}/council.json`, `{run_dir}/fix-plan.json` (read by Stage 3)
+- Fault: Abort if eval-input or council invocation fails.
 
-## Execution
+### Stage 3: Implement
 
-```python
-ts = now("YYYYMMDDHHMMSS")
-run_dir = f"{session_dir}/{ts}-resolve-comments"
-final_output = f"{session_dir}/{ts}-resolve-comments-summary.md"
-gather -> evaluate -> implement -> verify -> commit -> summarize
-```
+Execute the fix plan when actionable items exist. Skip when skip_decision is true and
+write skip status instead.
 
-## Output
+skill(task-coordinator):
 
-- Delivery path: `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
+> Implement the changes described in {run_dir}/fix-plan.json.
+
+- Output: `{run_dir}/implement.json` (read by Stage 4)
+- Fault: Continue with recorded failure status if task-coordinator cannot complete the plan.
+
+### Stage 4: Verify
+
+Review the implemented changes and record severity counts for the commit gate.
+
+skill(code-review, model=claude-opus-4.6):
+
+> Review unstaged working-tree changes produced by Stage 3.
+
+When Stage 3 was skipped, verify that no unintended unstaged changes exist and mark
+verification as passed-with-skip-context.
+
+- Output: `{run_dir}/verify.json` with `{ critical_count, high_count, medium_count, low_count }` (read by Stage 5)
+- Fault: Continue with verification-unavailable status if code-review fails.
+
+### Stage 5: Commit
+
+Commit the changes only when the severity gate passes: critical_count == 0 and
+high_count == 0. Read verify.json and parse critical_count and high_count strictly.
+
+task(general-purpose, model=gpt-5.4):
+
+> Stage implementation changes with git add. If no staged changes exist, skip with
+> commit_skip_reason: no_staged_changes. Otherwise invoke skill(commit-staged).
+> Write result to {run_dir}/commit.json.
+
+- Output: `{run_dir}/commit.json` (read by Stage 6)
+- Fault: Skip commit when critical_count > 0, high_count > 0, or severity parsing fails.
+- Fault: Continue with commit-failed status if commit-staged fails after staging.
+
+### Stage 6: Summarize
+
+Write a final summary covering gather, evaluate, implement, verify, and commit outcomes.
+Report skips, degraded paths, unresolved risks, and any commit_skip_reason explicitly.
+
+- Output: `{session_dir}/{timestamp}-resolve-comments-summary.md`
+- Fault: Abort if the final summary file cannot be written.
 
 ## Session Files
 
-Intermediate files are saved under {run_dir}/. The final output is saved directly under {session_dir}/.
-
 - `{run_dir}/gather.md`
-- `{run_dir}/council.json`
 - `{run_dir}/eval-input.md`
+- `{run_dir}/council.json`
 - `{run_dir}/fix-plan.json`
 - `{run_dir}/implement.json`
 - `{run_dir}/verify.json`
 - `{run_dir}/commit.json`
-- `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`
+- `{session_dir}/{timestamp}-resolve-comments-summary.md`
+
+## Output
+
+Final output path: `{session_dir}/{timestamp}-resolve-comments-summary.md`
 
 ## Examples
 
-### Happy Path
-
-- Gather extracts facts to `{run_dir}/gather.md`
-  and hands off sanitized input to Evaluate.
-- Evaluate reads `{run_dir}/eval-input.md` and
-  writes plan artifacts under `{run_dir}/`.
-- Verify reports zero critical and zero high findings from
-  `{run_dir}/verify.json`, and Commit proceeds after staged-change pre-check.
-- Summarize reports gather, evaluate, implement, verify, and commit outcomes at
-  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
-
-### Failure Path
-
-- Gather succeeds, but Verify returns high-severity findings in
-  `{run_dir}/verify.json` so Commit is skipped with
-  `commit_skip_reason: severity_gate_failed`.
-- If severity parsing fails, Commit is skipped with `commit_skip_reason: severity_parse_failed` and workflow continues.
-- Summarize includes gather handoff details and explicit commit skip reason at
-  `{session_dir}/YYYYMMDDHHMMSS-resolve-comments-summary.md`.
+- Happy: review requests a null check and test update, both are actionable, verification
+  is clean, commit succeeds.
+- Failure: review comments are contradictory, evaluation classifies them as non-actionable,
+  implementation and commit are skipped, summary reports the skip reason.
+- Failure: implementation succeeds but verification reports one high issue, commit is
+  skipped with severity_gate_failed, summary reports the blocked commit.

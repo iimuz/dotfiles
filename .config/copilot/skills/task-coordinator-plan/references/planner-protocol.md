@@ -1,31 +1,5 @@
 # Planner Protocol
 
-## Types
-
-```typescript
-type PlannerContext = {
-  request: string;
-  session_id: string;
-  run_id: string;
-  run_dir: string;
-};
-
-type PlannerReceipt = {
-  status: "PLANNER_OK";
-  plan_file: string;
-  task_count: number;
-  mode: "inline" | "pipeline";
-};
-
-type PromptFile = {
-  Objective: string;
-  Scope: string;
-  Constraints: string;
-  Output_contract: string;
-  Acceptance_criteria: string;
-};
-```
-
 ## Steps
 
 Execute the following steps directly:
@@ -77,11 +51,11 @@ Execute the following steps directly:
 
 ## Model Reference
 
-| Model                | Best For                                                 |
-| :------------------- | :------------------------------------------------------- |
-| claude-opus-4.6      | Nuanced reasoning, code review, complex refactoring      |
-| gpt-5.4              | Code generation, structured output, tool-heavy workflows |
-| gemini-3-pro-preview | Broad knowledge synthesis, summarization, exploration    |
+| Model                | Best For                                                              |
+| :------------------- | :-------------------------------------------------------------------- |
+| claude-opus-4.6      | Judgment, reasoning, contextual understanding, architecture decisions |
+| gpt-5.4              | Mechanical operations, file writing, template expansion               |
+| gemini-3-pro-preview | Large-volume text summarization and bulk exploration                  |
 
 - Canonical source: plan-schema.md
 - When `model` is unspecified in a task, the task tool uses its default model.

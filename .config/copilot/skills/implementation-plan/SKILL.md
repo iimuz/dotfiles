@@ -9,263 +9,144 @@ disable-model-invocation: false
 
 ## Overview
 
-Thin orchestrator that delegates all planning work to specialized sub-skills. Launch 3 parallel
-analyses, 3 parallel plan drafts, 3 parallel cross-reviews, parallel aggregation and validation,
-conflict resolution, and final synthesis into a single authoritative plan.
+Thin orchestrator that delegates all planning work to specialized sub-skills. Run Stage 1
+through Stage 6 in order to produce independent analyses, competing plan drafts, cross-reviews,
+consensus and insight artifacts, conflict resolutions, and one final authoritative plan.
 
-All stage artifacts use `{session_dir}` which resolves to
+All stage artifacts use `{session_dir}`, which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
 
-- At execution start generate one timestamp `YYYYMMDDHHMMSS`.
-- Derive `run_dir = {session_dir}/YYYYMMDDHHMMSS-implementation-plan/` for intermediate artifacts.
-- Derive final output `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md`.
+- Generate `{timestamp}` in `YYYYMMDDHHMMSS` format at execution start.
+- Derive `{run_dir}` as `{session_dir}/{timestamp}-implementation-plan/` for intermediate artifacts.
+- Derive `{final_output}` as `{session_dir}/{timestamp}-implementation-plan.md`.
+- Abort immediately if `user_request` is missing or empty.
+- Read only `{final_output}` when returning the result to the caller.
+- Do not call `skill()` directly from the main agent.
+- Do not inspect the codebase with `glob`, `rg`, or `view`; all planning work must flow through delegated stages.
 
-## Schema
+## Input
 
-```typescript
-interface OrchestrateInput {
-  user_request: string;
-}
-
-interface OrchestrateOutput {
-  plan_filepath: string;
-}
-```
+- `user_request: string` - Non-empty implementation planning request.
 
 ## Output
 
-- Deliver `plan_filepath` as `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md`.
+- `plan_filepath: string` - Final path written to `{final_output}`.
 
-## Constraints
-
-- If user_request is missing or empty, abort immediately with no fallback.
-- The main agent reads only the final plan filepath.
-- The main agent must not call skill() directly.
-- The main agent must not run glob/grep/view on the codebase.
-- Generate timestamp in YYYYMMDDHHMMSS format, then execute Stage 1 through Stage 6 in order.
-
-## Execution
-
-```python
-session_dir = "~/.copilot/session-state/{session_id}/files"
-ts = now("YYYYMMDDHHMMSS")
-run_dir = f"{session_dir}/{ts}-implementation-plan"
-final_output = f"{session_dir}/{ts}-implementation-plan.md"
-stage1_analyze()
-stage2_draft()
-stage3_review()
-stage4_artifact_paths = stage2_draft_paths + stage3_review_paths
-stage4_consolidate()
-stage5_resolve()
-stage6_reference_filepaths = stage2_draft_paths + stage3_review_paths + [stage4_consensus_path, stage4_insights_path, stage5_resolutions_path]
-stage6_synthesize()
-return plan_filepath
-```
+## Execution Flow
 
 ### Stage 1: Parallel Analysis
 
-- Purpose: Produce three independent codebase analyses from distinct models
-- Inputs: `session_dir: string`, `user_request: string`
-- Actions:
+Launch three independent analyses in parallel with `claude-opus-4.6`,
+`gemini-3-pro-preview`, and `gpt-5.4`. Each analysis should interpret the same
+`user_request` without seeing the others so later drafting starts from distinct perspectives.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-analyze with
-      user_request={user_request},
-      output_filepath={run_dir}/step1-claude-opus-4.6-analysis.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: >
-      Invoke skill implementation-plan-analyze with
-      user_request={user_request},
-      output_filepath={run_dir}/step1-gemini-3-pro-preview-analysis.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: >
-      Invoke skill implementation-plan-analyze with
-      user_request={user_request},
-      output_filepath={run_dir}/step1-gpt-5.4-analysis.md
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: `stage1_analysis_paths: string[]`
-- Guards: at least two analysis artifacts are written
-- Faults:
-  - If fewer than 2 analysis models complete, abort immediately.
-  - If a single model fails, note degraded mode and continue.
+> Invoke skill implementation-plan-analyze with
+> user_request={user_request},
+> output_filepath={run_dir}/step1-{model}-analysis.md
+
+- Output: `{run_dir}/step1-{model}-analysis.md` (3 files expected; read by Stage 2)
+- Fault: Fewer than 2 analysis artifacts: abort. Exactly 2 analysis artifacts: continue in degraded mode.
 
 ### Stage 2: Parallel Plan Drafting
 
-- Purpose: Draft three complete implementation plans from Stage 1 analyses
-- Inputs: `session_dir: string`, `stage1_analysis_paths: string[]`
-- Actions:
+Use the successful Stage 1 analyses to draft three complete implementation plans in parallel.
+This stage turns exploratory analysis into concrete execution options that can later be compared
+and reviewed.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-draft with
-      analysis_paths={stage1_analysis_paths},
-      output_filepath={run_dir}/step2-claude-opus-4.6-plan-draft.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: >
-      Invoke skill implementation-plan-draft with
-      analysis_paths={stage1_analysis_paths},
-      output_filepath={run_dir}/step2-gemini-3-pro-preview-plan-draft.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: >
-      Invoke skill implementation-plan-draft with
-      analysis_paths={stage1_analysis_paths},
-      output_filepath={run_dir}/step2-gpt-5.4-plan-draft.md
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: `stage2_draft_paths: string[]`
-- Guards: Stage 1 artifacts exist and at least two drafts complete
-- Faults:
-  - If fewer than 2 draft models complete, abort immediately.
-  - If a single model fails, note degraded mode and continue.
+> Invoke skill implementation-plan-draft with
+> analysis_paths={stage1_analysis_paths},
+> output_filepath={run_dir}/step2-{model}-plan-draft.md
+
+- Output: `{run_dir}/step2-{model}-plan-draft.md` (3 files expected; read by Stage 3, Stage 4, and Stage 6)
+- Fault: Fewer than 2 draft artifacts: abort. Exactly 2 draft artifacts: continue in degraded mode.
 
 ### Stage 3: Parallel Cross-Review
 
-- Purpose: Cross-review all draft plans from three model perspectives
-- Inputs: `session_dir: string`, `stage2_draft_paths: string[]`
-- Actions:
+Ask the same three models to cross-review the Stage 2 draft set in parallel. These reviews are
+used both to identify consensus and to surface disagreements or missing ideas before synthesis.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-review with
-      draft_paths={stage2_draft_paths},
-      output_filepath={run_dir}/step3-claude-opus-4.6-review.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gemini-3-pro-preview"
-    prompt: >
-      Invoke skill implementation-plan-review with
-      draft_paths={stage2_draft_paths},
-      output_filepath={run_dir}/step3-gemini-3-pro-preview-review.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "gpt-5.4"
-    prompt: >
-      Invoke skill implementation-plan-review with
-      draft_paths={stage2_draft_paths},
-      output_filepath={run_dir}/step3-gpt-5.4-review.md
-  ```
+task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-- Outputs: `stage3_review_paths: string[]`
-- Guards: Stage 2 drafts exist and at least one review succeeds
-- Faults:
-  - If all reviews fail, abort immediately.
-  - If a single review fails, note the missing reviewer and continue.
+> Invoke skill implementation-plan-review with
+> draft_paths={stage2_draft_paths},
+> output_filepath={run_dir}/step3-{model}-review.md
+
+- Output: `{run_dir}/step3-{model}-review.md` (1-3 files expected; read by Stage 4 and Stage 6)
+- Fault: All reviews fail: abort. Partial review success: continue with available reviewers.
 
 ### Stage 4: Parallel Consolidation
 
-- Purpose: Aggregate consensus and validate unique insights in parallel
-- Inputs: `session_dir: string`, `stage3_review_paths: string[]`, `stage4_artifact_paths: string[]`
-- Actions:
+Run consolidation in parallel to extract consensus from the reviews and validate unique insights
+across the draft and review artifacts. This stage separates shared recommendations from novel but
+credible ideas so later resolution and synthesis can weigh both.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-aggregate with
-      review_paths={stage3_review_paths},
-      output_filepath={run_dir}/step4-consensus.md
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-validate with
-      artifact_paths={stage4_artifact_paths},
-      output_filepath={run_dir}/step4-insights.md
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: `stage4_consensus_path: string`, `stage4_insights_path: string`
-- Guards: Stage 3 reviews are available
-- Faults:
-  - If aggregation fails, forward reviews to synthesize with a fallback notice and continue.
-  - If validation fails, skip unique insights in synthesis and continue.
+> Invoke skill implementation-plan-aggregate with
+> review_paths={stage3_review_paths},
+> output_filepath={run_dir}/step4-consensus.md
+
+task(general-purpose, model=claude-opus-4.6):
+
+> Invoke skill implementation-plan-validate with
+> artifact_paths={stage4_artifact_paths},
+> output_filepath={run_dir}/step4-insights.md
+
+- Output: `{run_dir}/step4-consensus.md`, `{run_dir}/step4-insights.md` (`step4-consensus.md`
+  is read by Stage 5 and Stage 6; `step4-insights.md` is read by Stage 6)
+- Fault: Missing consensus: continue with reviews forwarded to synthesis. Missing insights: continue without unique insights.
 
 ### Stage 5: Conflict Resolution
 
-- Purpose: Resolve conflicts from consensus into definitive decisions
-- Inputs: `session_dir: string`, `stage4_consensus_path: string`
-- Actions:
+Resolve conflicts identified in the consensus artifact into a definitive set of planning
+decisions. Even when there are no substantive conflicts, this stage normalizes the decision set
+so synthesis receives a stable input.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-resolve with
-      consensus_path={stage4_consensus_path},
-      output_filepath={run_dir}/step5-resolutions.md
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: `stage5_resolutions_path: string`
-- Guards: Stage 4 completed; empty conflicts still permit Stage 6
-- Faults:
-  - If resolution fails, proceed to Stage 6 without resolutions and continue.
+> Invoke skill implementation-plan-resolve with
+> consensus_path={stage4_consensus_path},
+> output_filepath={run_dir}/step5-resolutions.md
+
+- Output: `{run_dir}/step5-resolutions.md` (optional; read by Stage 6)
+- Fault: Resolution failure: continue to Stage 6 without resolutions.
 
 ### Stage 6: Synthesis
 
-- Purpose: Produce the final authoritative plan and return plan_filepath
-- Inputs: `session_dir: string`, `user_request: string`, `stage6_reference_filepaths: string[]`
-- Actions:
+Produce the final authoritative implementation plan from the plan drafts, reviews, consensus,
+validated insights, and optional conflict resolutions. This stage is the only stage allowed to
+write the final artifact returned to the caller.
 
-  ```yaml
-  - tool: task
-    agent_type: "general-purpose"
-    model: "claude-opus-4.6"
-    prompt: >
-      Invoke skill implementation-plan-synthesize with
-      reference_filepaths={stage6_reference_filepaths},
-      user_request={user_request},
-      output_filepath={final_output}
-  ```
+task(general-purpose, model=claude-opus-4.6):
 
-- Outputs: `plan_filepath: string`
-- Guards: output filepath is `{final_output}`
-- Faults:
-  - If synthesis fails, abort immediately with no fallback.
+> Invoke skill implementation-plan-synthesize with
+> reference_filepaths={stage6_reference_filepaths},
+> user_request={user_request},
+> output_filepath={final_output}
+
+- Output: `{final_output}`
+- Fault: Synthesis failure: abort with no fallback.
 
 ## Session Files
 
-Intermediate files are saved under {run_dir}/. The final output is saved directly under {session_dir}/.
+Intermediate files are saved under `{run_dir}/`. The final output is saved directly under
+`{session_dir}/`.
 
-| File                                                  | Written by | Read by                   |
-| ----------------------------------------------------- | ---------- | ------------------------- |
-| `{run_dir}/step1-{model}-analysis.md`                 | Stage 1    | Stage 2                   |
-| `{run_dir}/step2-{model}-plan-draft.md`               | Stage 2    | Stage 3, Stage 4, Stage 6 |
-| `{run_dir}/step3-{model}-review.md`                   | Stage 3    | Stage 4, Stage 6          |
-| `{run_dir}/step4-consensus.md`                        | Stage 4    | Stage 5, Stage 6          |
-| `{run_dir}/step4-insights.md`                         | Stage 4    | Stage 6                   |
-| `{run_dir}/step5-resolutions.md`                      | Stage 5    | Stage 6                   |
-| `{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md` | Stage 6    | Final output              |
+| File                                               | Written by | Read by                   |
+| -------------------------------------------------- | ---------- | ------------------------- |
+| `{run_dir}/step1-{model}-analysis.md`              | Stage 1    | Stage 2                   |
+| `{run_dir}/step2-{model}-plan-draft.md`            | Stage 2    | Stage 3, Stage 4, Stage 6 |
+| `{run_dir}/step3-{model}-review.md`                | Stage 3    | Stage 4, Stage 6          |
+| `{run_dir}/step4-consensus.md`                     | Stage 4    | Stage 5, Stage 6          |
+| `{run_dir}/step4-insights.md`                      | Stage 4    | Stage 6                   |
+| `{run_dir}/step5-resolutions.md`                   | Stage 5    | Stage 6                   |
+| `{session_dir}/{timestamp}-implementation-plan.md` | Stage 6    | Final output              |
 
 ## Examples
 
-### Happy Path
-
-- Input: { user_request: "Add user auth to the API" }
-- Stages 1–6 all succeed; intermediate artifacts are written under {run_dir}/
-- Output: { plan_filepath: "{session_dir}/YYYYMMDDHHMMSS-implementation-plan.md" }
-
-### Failure Path
-
-- Input: { user_request: "" }
-- Orchestration aborts immediately because user_request is missing.
-- No fallback is available; the workflow aborts.
+- Happy: `user_request: "Add user auth to the API"` -- all six stages succeed and write `{plan_filepath}`.
+- Failure: `user_request: ""` -- abort because the required request is empty.

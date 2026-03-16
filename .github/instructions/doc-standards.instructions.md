@@ -1,5 +1,5 @@
 ---
-applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.md,.github/instructions/**/*.md,docs/adr/**/*.md,docs/debt/**/*.md,docs/design/**/*.md,docs/plans/**/*.md"
+applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.md,.github/instructions/**/*.md,docs/**/*.md"
 ---
 
 # Doc Standards
@@ -29,9 +29,9 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
   - Template: docs/templates/plan.md
   - Example: 2024-03-20-add-login.md
 - Type: ADR
-  - Pattern: [000-Index]-[slug].md
+  - Pattern: [0000-Index]-[slug].md
   - Template: docs/templates/adr.md
-  - Example: 001-init-stack.md
+  - Example: 0001-init-stack.md
 - Type: Design
   - Pattern: [topic].md
   - Template: N/A

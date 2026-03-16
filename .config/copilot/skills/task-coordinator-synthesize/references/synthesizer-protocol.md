@@ -1,26 +1,5 @@
 # Synthesis Protocol
 
-## Types
-
-```typescript
-type SynthesizerContext = {
-  goal: string;
-  output_files: string[];
-  synthesis_output_file: string;
-};
-
-type SynthesisFile = {
-  summary: string;
-  findings: string;
-  gaps?: string;
-};
-
-type WorkerContent = {
-  path: string;
-  content: string | null;
-};
-```
-
 ## Steps
 
 Execute the following steps directly:

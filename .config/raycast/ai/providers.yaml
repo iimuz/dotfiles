@@ -1,29 +1,19 @@
 providers:
-  - id: litellm
-    name: LiteLLM
-    base_url: http://localhost:4000
+  - id: lm-studio
+    name: LM Studio
+    base_url: http://localhost:1234/v1
+    api_key: lm-studio
     models:
-      - id: gpt-4.1
-        name: "gpt-4.1"
-        context: 128000
+      - id: google/gemma-3-4b
+        name: "gemma3:4b"
+        context: 16384
+        provider: lm-studio
         abilities:
           temperature:
             supported: true
           vision:
-            supported: false
+            supported: true
           system_message:
             supported: true
           tools:
-            supported: true
-      - id: gpt-5-mini
-        name: "gpt-5-mini"
-        context: 128000
-        abilities:
-          temperature:
             supported: false
-          vision:
-            supported: false
-          system_message:
-            supported: true
-          tools:
-            supported: true

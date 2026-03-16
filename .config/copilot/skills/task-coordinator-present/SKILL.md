@@ -9,56 +9,24 @@ disable-model-invocation: false
 
 ## Overview
 
-Read the synthesis or inline result file and render a formatted summary to the user.
-Persist `PresentationReceipt` to `presentation-receipt.json`.
-
-## Schema
-
-```typescript
-type PresentationReceipt = {
-  status: "ok" | "degraded";
-  mode: "inline" | "pipeline";
-  result_file: string;
-  message: string;
-};
-```
-
-## Constraints
-
-- Abort without fallback when presentation formatting fails.
-- Emit a degraded receipt and continue when `result_file` is unreadable.
-- Keep output concise and focused on the result summary.
+Read the synthesis or inline result file and render a concise summary to the user. Use
+`references/output-format.md` for the required presentation format. Persist the presentation
+receipt to `presentation-receipt.json` after rendering. If `result_file` is unreadable, emit a
+degraded receipt and continue with a concise message explaining the degraded status. If
+presentation formatting fails, abort without fallback.
 
 ## Input
 
-| Field         | Type     | Required | Description                             |
-| ------------- | -------- | -------- | --------------------------------------- |
-| `mode`        | `string` | yes      | Execution mode selected by orchestrator |
-| `result_file` | `string` | yes      | Result or synthesis artifact path       |
+- `mode: string` - Execution mode selected by the orchestrator.
+- `result_file: string` - Result artifact or synthesis artifact path to read and summarize.
 
 ## Output
 
-- result_file: presented artifact path
-- receipt: `PresentationReceipt` with status and user-facing message
-
-Use the following presentation format:
-
-```text
-Result Summary
-- Mode: {mode}
-- Result File: {result_file}
-- Status: {ok|degraded}
-- Message: {message}
-```
+- `result_summary: text output` - User-facing summary rendered with the format defined in `references/output-format.md`.
+- `receipt: json file` - `presentation-receipt.json` containing mode, result file, status, and message.
 
 ## Examples
 
-### Happy Path
-
-- Input: { mode: "pipeline", result_file: "/tmp/synthesis.md" }
-- Output: formatted summary rendered; receipt with status: ok
-
-### Failure Path
-
-- `result_file` cannot be read.
-- Emit degraded receipt and continue.
+- Happy: mode "pipeline" with a readable result file renders the output format and writes an ok
+  receipt to `presentation-receipt.json`.
+- Failure: unreadable result file emits a degraded receipt and returns a concise degraded summary.

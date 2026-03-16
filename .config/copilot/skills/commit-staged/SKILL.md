@@ -1,74 +1,52 @@
 ---
 name: commit-staged
 description: Commit staged changes using Conventional Commit parameters (validates inputs).
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Commit Staged Changes
 
 ## Overview
 
-Execute a Conventional Commits 1.0.0-compliant git commit from already-staged changes, automatically deriving type
-and message without user confirmation.
+Execute a Conventional Commits 1.0.0-compliant git commit from already-staged changes,
+automatically deriving type and message without user confirmation.
 
-## Interface
+Execution order: inspect staged files -> analyze diff -> commit.
+Execute all scripts from the git repository root, not from the skill directory.
+Never stage or unstage files; operate on the current staged state only.
 
-```typescript
-/**
- * @skill commit-staged
- * @input  { /* implicit: current git staged state */ }
- * @output { commit: CommitRef }
- */
+## Input
 
-type CommitType =
-  | "build" | "chore" | "ci"   | "docs" | "feat" | "fix"
-  | "i18n"  | "perf"  | "refactor" | "revert" | "style" | "test";
+No explicit input. The skill reads the current git staged state.
 
-type CommitParams = {
-  type:         CommitType;
-  description:  string;   // imperative English, no trailing period, max 100 chars with type prefix
-  body?:        string;   // optional; bullet lines each starting with "-"
-};
+## Output
 
-type StagedDiff = { files: string[]; diff: string };
-
-type CommitRef = { sha: string; message: string };
-
-/**
- * @invariants
- * 1. Zero_Verbosity:      imperative sentences => remove
- * 2. Signature_Integrity: all ops fully typed
- * 3. Script_Root:         scripts => execute from git repository root, not skill directory
- * 4. Staged_Only:         never stage or unstage files; operate on current staged state only
- */
-```
+- `sha: string`: The commit SHA created by the commit script.
+- `message: string`: The full commit message.
 
 ## Operations
 
-```typespec
-op inspect_staged() -> StagedDiff {
-  bash(script: @scripts/staged-files.sh);
-  invariant: (staged_empty) => abort("no staged files to commit");
-}
+### Inspect Staged Files
 
-op analyze(diff: StagedDiff) -> CommitParams {
-  // Derive type from @references/types.md; description: natural language summary of what changed and why
-  invariant: (description_is_filepath) => abort("description must be natural language, not a file path");
-  invariant: (description_empty)       => abort("description is required");
-}
+Run [`scripts/staged-files.sh`](scripts/staged-files.sh) to collect the staged file list
+and diff. Abort if no files are staged.
 
-op commit(params: CommitParams) -> CommitRef {
-  bash(script: @scripts/commit.sh, args: {
-    "--type": params.type, "--description": params.description, "--body": params.body
-  });
-  invariant: (type_invalid)   => abort("invalid type; see references/types.md");
-  invariant: (commit_fails)   => abort("git commit failed");
-}
-```
+### Analyze Diff
 
-## Execution
+Derive the commit type from [`references/types.md`](references/types.md) and write a
+natural-language description summarizing what changed and why. The description must be
+imperative English, have no trailing period, and fit within 100 characters including the
+type prefix. Abort if the description is empty or is a file path instead of natural language.
+Optionally produce a body with bullet lines each starting with `-`.
 
-```text
-inspect_staged -> analyze -> commit
-```
+### Commit
 
-Execute scripts via absolute path from the git repository root. Type reference: [`references/types.md`](references/types.md).
+Run [`scripts/commit.sh`](scripts/commit.sh) with `--type`, `--description`, and
+optionally `--body`. Abort if the type is not listed in
+[`references/types.md`](references/types.md) or if git commit fails.
+
+## Examples
+
+- Happy: 3 files staged with a bug fix -- commit created as `fix: resolve token expiration`.
+- Failure: no staged files -- abort with "no staged files to commit".

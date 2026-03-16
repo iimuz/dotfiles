@@ -9,39 +9,31 @@ disable-model-invocation: false
 
 ## Overview
 
-Implement only the smallest production change required to satisfy a verified Red test,
-then prove the target test command is green.
-Execution order: validate_red_proof -> implement_minimal_change -> verify_green.
-
-## Constraints
-
-- If red proof is absent or empty, abort immediately.
-- If unrelated behavior is added during implementation, abort immediately.
-- If tests still fail after implementation, abort immediately.
+Implement only the smallest production change required to satisfy a verified Red test, then prove
+the target command is green while following the Green-phase constraints in
+`references/tdd-rules.md`. Abort if Red proof is missing, if the change adds unrelated behavior,
+or if the verification command still fails.
 
 ## Input
 
-| Field                | Type     | Required | Description                                |
-| -------------------- | -------- | -------- | ------------------------------------------ |
-| `unitSpec`           | `string` | yes      | One atomic behavior that must become green |
-| `redFailureProof`    | `object` | yes      | Red-phase command and observed failure     |
-| `testCommand`        | `string` | yes      | Command used to verify green state         |
-| `implementationPath` | `string` | yes      | Target production file to edit             |
+- `unitSpec: string` - One atomic behavior that must become green, such as returning HTTP 429 on
+  the sixth failed login attempt.
+- `redFailureProof: object` - Verified Red-phase command, exit status, and failure evidence for
+  the targeted behavior.
+- `testCommand: string` - Command used to verify the Green result.
+- `implementationPath: string` - Production file that receives the minimal change.
 
 ## Output
 
-- implementationFile: Updated production file path.
-- passProof: Command, summary, and raw passing evidence.
+- `implementationFile: string` - Updated production file path.
+- `passProof: object` - Command, exit status, and passing evidence that proves the target test is
+  green.
 
 ## Examples
 
-### Happy Path
-
-- Input includes unitSpec, valid redFailureProof, testCommand, and implementationPath.
-- Minimal implementation change is applied to one production path.
-- testCommand passes and passProof is returned.
-
-### Failure Path
-
-- Input omits redFailureProof or proof does not match the unit.
-- Abort: red proof is absent or empty.
+- Happy: Updating `app/auth.py` makes
+  `pytest tests/auth_lockout_test.py -k sixth_attempt` pass after Red proof
+  showed `Expected status 429 but received 200`.
+- Failure: Editing `app/auth.py` aborts because
+  `pytest tests/auth_lockout_test.py -k sixth_attempt` still fails with
+  `Expected status 429 but received 200`.

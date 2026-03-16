@@ -9,38 +9,31 @@ disable-model-invocation: false
 
 ## Overview
 
-Create one failing test for one atomic unit and prove it fails for the expected reason
-before any production change.
-
-## Constraints
-
-- If the test cannot be written, abort immediately.
-- If the test does not fail, abort immediately.
-- If the observed failure does not match the expected failure, abort immediately.
+Create one failing test for one atomic unit and prove it fails for the expected reason before any
+production change, following the Red-phase rules in `references/tdd-rules.md`. Abort if the test
+cannot be written, if the command passes, or if the observed failure differs from the expected Red
+signal.
 
 ## Input
 
-| Field             | Type     | Required | Description                            |
-| ----------------- | -------- | -------- | -------------------------------------- |
-| `behavior`        | `string` | yes      | Observable behavior the test targets   |
-| `testPath`        | `string` | yes      | Path where the failing test is written |
-| `testCommand`     | `string` | yes      | Command used to execute the new test   |
-| `expectedFailure` | `string` | yes      | Expected failure signal for red phase  |
+- `behavior: string` - Observable behavior targeted by the new test, such as rejecting the sixth
+  failed login attempt.
+- `testPath: string` - File path where the failing test will be written.
+- `testCommand: string` - Command that runs the new test and produces Red evidence.
+- `expectedFailure: string` - Expected failure text or signal, such as
+  `Expected status 429 but received 200`.
 
 ## Output
 
-- testFile: Path to the newly written failing test.
-- failureProof: Command and observed failure evidence.
+- `testFile: string` - Path to the newly written failing test file.
+- `failureProof: object` - Command, exit status, and observed failure evidence that proves the test
+  is Red for the expected reason.
 
 ## Examples
 
-### Happy Path
-
-- One test is written at testPath for one behavior.
-- testCommand fails with expectedFailure evidence.
-- Output returns testFile and failureProof.
-
-### Failure Path
-
-- Test command fails for a different reason than expected.
-- Abort: observed failure does not match expected failure.
+- Happy: A test added to `tests/auth_lockout_test.py` fails with
+  `Expected status 429 but received 200` after running
+  `pytest tests/auth_lockout_test.py -k sixth_attempt`.
+- Failure: `pytest tests/auth_lockout_test.py -k sixth_attempt` aborts because
+  it fails with `Database unavailable` instead of
+  `Expected status 429 but received 200`.

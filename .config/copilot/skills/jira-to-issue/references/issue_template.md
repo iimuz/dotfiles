@@ -4,58 +4,38 @@ Use this template when creating GitHub Issues from JIRA tickets.
 
 ## Title Format
 
-```text
-[{Ticket ID}] {Jira Summary}
-```
+`[{Ticket ID}] {Jira Summary}`
 
-**Example:** `[PROJ-123] Fix login button not responding on mobile devices`
+Example: `[PROJ-123] Fix login button not responding on mobile devices`
 
 ## Body Structure
 
-```markdown
-## Related Information
+### Related Information
 
-Jira Ticket: [{Ticket ID}]({JiraURL})
+Jira Ticket: `[{Ticket ID}]({JiraURL})`
 
-## Overview
+### Overview
 
-{Jira description or event details}
+Jira description or event details.
 
-## Details
+### Details
 
-{Organize detailed Jira information into Markdown sections:}
+Organize detailed Jira information into sections:
 
-### Prerequisites
+Prerequisites: any required setup or conditions.
 
-{Any required setup or conditions}
+Reproduction Steps: numbered list of step-by-step instructions to reproduce the issue.
 
-### Reproduction Steps
+Expected Results: what should happen.
 
-1. {Step-by-step instructions to reproduce the issue}
-2. {Continue numbering each step}
+Actual Results: what actually happens.
 
-### Expected Results
+Error Messages or Logs: any relevant error output or log entries.
 
-{What should happen}
+### Additional Notes
 
-### Actual Results
-
-{What actually happens}
-
-### Error Messages or Logs
-
-{Any relevant error output or log entries}
-
-## Additional Notes
-
-{Include any extra information if available:}
-
-- Test environment details
-- Specification document links
-- Related tickets or issues
-- Workarounds or temporary fixes
-- Screenshots or attachments
-```
+Include any extra information if available: test environment details, specification document
+links, related tickets or issues, workarounds or temporary fixes, screenshots or attachments.
 
 ## Label Requirements
 
