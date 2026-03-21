@@ -17,7 +17,7 @@ If the fetch fails, follow the overview described below instead.
 
 ## Project Policy
 
-The following rules are project-specific policies. When they conflict with the official documentation, these rules take precedence.
+The following rules are project-specific policies.
 
 - Every command object must include `timeoutSec`. Omitting it is not allowed.
 - Most hooks should complete within 5 seconds.

@@ -22,8 +22,6 @@
   Do not invent unsolicited directory structures.
 - Command Discipline: Use only available `mise run` tasks listed in TOOLS.
 - Verification Discipline: Run relevant existing checks after modifications.
-- Evolution Discipline: When correcting a user-reported mistake, fix the issue AND update
-  `.github/instructions/*.md` or `docs/design/*.md` or `docs/adr/*.md` to prevent recurrence.
 
 ### Content Routing
 
@@ -47,14 +45,3 @@
   Output path MUST be one of: `docs/plans/active/`, `docs/plans/done/`, `docs/debt/open/`, `docs/debt/resolved/`.
 - Execute: Implement focused changes.
 - Verify: Run `mise run lint` and `mise run format` after modifications.
-- Evolve (Automatic): After completing Execute and Verify, evaluate whether ANY of the
-  following conditions apply:
-  (a) The task corrected behavior that resulted from a missing or ambiguous instruction.
-  (b) The task introduced a design decision not yet captured in instructions or design docs.
-  (c) The user explicitly requested an instruction update.
-  If ANY condition is true, extract the missing constraint and execute Evolution Discipline
-  BEFORE proceeding to Finalize.
-- Finalize: Confirm outputs match requested scope. Before completing, verify:
-  (1) All code edits during Execute were delegated to subagents.
-  (2) If the task corrected behavior from a missing instruction, Evolve was executed.
-  (3) Evolve output includes: Trigger, Missing Rule, New Rule, and Scope.

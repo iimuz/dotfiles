@@ -4,13 +4,23 @@ applyTo: ".mise/tasks/**"
 
 # Mise Tasks
 
-## Naming Convention
+## Official Documentation
 
-- Rule: Always include a file extension (`.sh` for shell scripts).
-- Reason: mise uses the filename without extension as the task name.
+When working with mise task configuration or encountering unfamiliar mise
+features, use a subagent to fetch the relevant specification details from
+the official documentation:
+
+- [Task Configuration - mise](https://mise.jdx.dev/tasks/task-configuration.html)
+- [Configuration - mise](https://mise.jdx.dev/configuration.html)
+
+## Project Policy
+
+The following rules always apply regardless of whether the official
+documentation was fetched. When they conflict with the official
+documentation, these rules take precedence.
+
+### Naming Convention
+
+- Always include a file extension (`.sh` for shell scripts).
+- mise uses the filename without extension as the task name.
 - Example: `format.sh` becomes task `format`, `lint.sh` becomes task `lint`.
-
-## Script Conventions
-
-- Shebang: Use `#!/usr/bin/env bash` as the shebang line.
-- Safety: Use `set -euo pipefail` at the top.
