@@ -6,17 +6,20 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
 
 ## Syntax Rules
 
-- Format: Markdown Headers (##) + Key-Value pairs or free-text paragraphs.
-- Style: Plain text only. NO bold (\*_), NO italics (_).
-- Lists: Use hyphen (-) for all arrays and properties.
-- Newline: Bullet List, Header separation, or free-text paragraphs permitted.
-- Diagram: Use Mermaid code blocks within Design files.
-- Model: Use TypeScript Interface code blocks within Design files.
-- Update Policy: Overwrite existing state. Append logs only if specified.
+- Use Markdown headers (##) to organize sections.
+- Write content as plain sentences or bullet lists. Choose the format that best communicates each piece of information.
+- Use hyphen (-) for all bullet lists.
+- Do not use bold or italic markup.
+- Do not use tables. Use bullet lists or plain sentences instead.
+- Do not use horizontal rules (---) to separate content. Use headers to organize sections.
+- Separate sections with a blank line after each header.
+- Use Mermaid code blocks for diagrams within Design files.
+- Use TypeScript Interface code blocks for models within Design files.
+- When updating documents, overwrite existing state. Append logs only if specified.
 
 ## Naming Conventions
 
-- Headers & Keys: Title Case with spaces (e.g., Syntax Rules, Package Manager, Last Run).
+- Headers and Keys: Title Case with spaces (e.g., Syntax Rules, Package Manager, Last Run).
 - Values: Sentence case or lowercase. Use exact match only for code variables.
 - Acronyms: Standard capitalization (e.g., macOS, ARM64, WSL).
 - File Names: kebab-case with .md extension.
@@ -25,23 +28,23 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
 ## File Registry
 
 - Type: Plan
-  - Pattern: [YYYY-MM-DD]-[action].md
-  - Template: docs/templates/plan.md
+  - Pattern: `[YYYY-MM-DD]-[action].md`
+  - Template: `docs/templates/plan.md`
   - Example: 2024-03-20-add-login.md
 - Type: ADR
-  - Pattern: [0000-Index]-[slug].md
-  - Template: docs/templates/adr.md
+  - Pattern: `[0000-Index]-[slug].md`
+  - Template: `docs/templates/adr.md`
   - Example: 0001-init-stack.md
 - Type: Design
-  - Pattern: [topic].md
+  - Pattern: `[topic].md`
   - Template: N/A
   - Example: core-beliefs.md
 - Type: Debt
-  - Pattern: [slug].md
-  - Template: docs/templates/debt.md
-  - Directory: docs/debt/open/ (active) or docs/debt/resolved/ (closed)
+  - Pattern: `[slug].md`
+  - Template: `docs/templates/debt.md`
+  - Directory: `docs/debt/open/` (active) or `docs/debt/resolved/` (closed)
 - Type: Report
-  - Pattern: [YYYY-MM-DD]-[topic].md
-  - Template: docs/templates/report.md
-  - Directory: docs/reports/
+  - Pattern: `[YYYY-MM-DD]-[topic].md`
+  - Template: `docs/templates/report.md`
+  - Directory: `docs/reports/`
   - Example: 2024-03-20-skill-interface-style.md

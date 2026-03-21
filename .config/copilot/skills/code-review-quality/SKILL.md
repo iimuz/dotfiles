@@ -17,26 +17,40 @@ Abort if findings drift outside quality scope.
 Abort if the output file already exists.
 Critical findings must include file and line number.
 
-## Input
+## Criteria
 
-- `target: string` (required): Commit SHA, branch, PR number, `"staged"`, or `"unstaged"`
-- `output_filepath: string` (required): Absolute path for saving review output
-- `file_scope: string[]` (optional): File filter
-- `directory_scope: string` (optional): Directory filter
+Focus on code maintainability, readability, and error-handling robustness.
+
+- Large functions: Functions exceeding 50 lines.
+- Large files: Files exceeding 800 lines.
+- Deep nesting: Nesting depth exceeding 4 levels.
+- Missing error handling: Operations without try/catch, error checks, or Result handling.
+- Debug statements: console.log, print(), or similar debug code left in production paths.
+- Mutation patterns: Direct object/array mutations instead of immutable patterns.
+- Missing tests: New code without corresponding test coverage.
+
+Severity mapping: most items default to MEDIUM. Elevate to HIGH when the issue
+significantly hampers readability or causes maintenance burden. Elevate to CRITICAL
+only when the issue causes correctness bugs (e.g., missing error handling that
+silently drops data). Use LOW for minor style-adjacent quality observations.
 
 ## Output
 
-Written to `output_filepath`. Priority levels: CRITICAL, HIGH, MEDIUM, LOW.
-Format per finding:
+Written to `output_filepath`. Organize findings by severity.
+Omit severity sections with no findings.
 
-```text
-[CRITICAL|HIGH|MEDIUM|LOW] Brief description
-File: path/to/file.ext:line_number
-Issue: Detailed explanation
-Fix: How to resolve it
+```markdown
+## CRITICAL
+
+### Brief description — `path/to/file.ext:42`
+
+Detailed explanation.
+
+**Fix**: How to resolve it.
+
+## HIGH
+
+## MEDIUM
+
+## LOW
 ```
-
-## Examples
-
-- Happy: target="HEAD", output="/tmp/quality-review.md" -- review with 3 findings.
-- Failure: target="invalid-ref" -- abort: invalid or empty target.

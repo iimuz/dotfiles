@@ -17,26 +17,43 @@ Abort if findings drift outside best-practices scope.
 Abort if the output file already exists.
 Critical findings must include file and line number.
 
-## Input
+## Criteria
 
-- `target: string` (required): Commit SHA, branch, PR number, `"staged"`, or `"unstaged"`
-- `output_filepath: string` (required): Absolute path for saving review output
-- `file_scope: string[]` (optional): File filter
-- `directory_scope: string` (optional): Directory filter
+Focus on coding standards, conventions, and long-term maintainability.
+
+- Immutability violations: Direct object/array mutations instead of immutable patterns.
+- Missing tests: New code without corresponding test coverage.
+- Emoji usage: Emojis in code, comments, or documentation.
+- TODO/FIXME without tickets: Action items without tracking references.
+- Missing documentation: Public APIs without doc comments.
+- Accessibility issues: Missing ARIA labels, poor contrast, keyboard navigation problems.
+- Poor naming: Non-descriptive variable names (x, tmp, data, etc.).
+- Magic numbers: Numeric literals without explanation or named constants.
+- Inconsistent formatting: Style inconsistencies within the codebase.
+
+Severity mapping: most items default to LOW. Elevate to MEDIUM when the
+violation causes real confusion or maintenance burden (e.g., completely
+undocumented public API). Elevate to HIGH when the violation will likely cause
+bugs during future maintenance. Elevate to CRITICAL only when the violation
+causes correctness issues.
 
 ## Output
 
-Written to `output_filepath`. Priority levels: CRITICAL, HIGH, MEDIUM, LOW.
-Format per finding:
+Written to `output_filepath`. Organize findings by severity.
+Omit severity sections with no findings.
 
-```text
-[CRITICAL|HIGH|MEDIUM|LOW] Brief description
-File: path/to/file.ext:line_number
-Issue: Detailed explanation
-Fix: How to resolve it
+```markdown
+## CRITICAL
+
+### Brief description — `path/to/file.ext:42`
+
+Detailed explanation.
+
+**Fix**: How to resolve it.
+
+## HIGH
+
+## MEDIUM
+
+## LOW
 ```
-
-## Examples
-
-- Happy: target="HEAD", output="/tmp/best-practices-review.md" -- review with 3 findings.
-- Failure: target="invalid-ref" -- abort: invalid or empty target.

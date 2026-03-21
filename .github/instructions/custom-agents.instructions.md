@@ -4,70 +4,53 @@ applyTo: ".config/copilot/agents/**"
 
 # Custom Agents
 
-## Naming Conventions
+## Official Documentation
 
-- ALWAYS place custom agent files under `.config/copilot/agents/`.
-- ALWAYS use `.md` or `.agent.md` file extensions.
-- ALWAYS treat the filename without extension as the default agent identifier.
-- ALWAYS keep `name` lowercase kebab-case to match the file identity when possible.
-- NEVER use spaces, uppercase letters, or ambiguous names in filenames or `name`.
+When creating or modifying custom agent files, use a subagent to fetch
+the latest specification from the official documentation and return the
+relevant specification details:
 
-## Required Frontmatter Fields
+- [Create custom agents for CLI - GitHub Docs](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli)
+- [Custom agents configuration reference - GitHub Docs](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
 
-- ALWAYS define `name` as a string that uniquely identifies the agent.
-- ALWAYS define `description` as a clear trigger-focused string for when to invoke the agent.
-- ALWAYS define `user-invocable` as a boolean to control manual user selection.
-- ALWAYS define `disable-model-invocation` as a boolean to control automatic model delegation.
-- ALWAYS define `tools` as a string array using CLI-compatible tool names.
-- ALWAYS set `description` to concise behavior and trigger scope.
-- NEVER replace `tools` with `allowed-tools` in custom agent frontmatter.
-- NEVER use non-boolean values for `user-invocable` or `disable-model-invocation`.
+If the fetch fails, follow the overview described below instead.
 
-## Agent Body Structure
+## Custom Agent Specification Overview
 
-- ALWAYS start with a single `#` title that names the agent behavior.
-- ALWAYS use `## Overview` as the first section heading to define responsibilities and hard boundaries.
-- NEVER use `## Role` as a section heading in agent bodies.
-- ALWAYS include `## Allowed Tools` to map each declared tool to a clear purpose.
-- ALWAYS include `## Process` with ordered execution steps.
-- ALWAYS include `## Anti-Patterns` when constraints or prohibited behavior must be explicit.
-- NEVER include conflicting directives between body sections.
-- NEVER omit operational boundaries when delegation or automation is expected.
+- Place custom agent files under `.config/copilot/agents/`.
+- Use `.md` or `.agent.md` file extensions.
+- The filename without extension serves as the default agent identifier.
+- Required frontmatter fields: `name`, `description`, `tools`, `user-invocable`, `disable-model-invocation`.
+- The `tools` field is a string array of CLI-compatible tool names. Use MCP
+  tool syntax as `server-name/tool-name` or `server-name/*` when needed.
+- Agent body should include a title, overview section, allowed tools
+  mapping, and a process section with ordered execution steps.
 
-## Tool Declarations
+## Project Policy
 
-- ALWAYS use least-privilege tool declarations in `tools`.
-- ALWAYS prefer explicit allowlists over `"*"` unless full access is required.
-- ALWAYS use CLI-compatible tool names such as `agent`, `skill`, `sql`, `report_intent`, `view`, `bash`.
-- ALWAYS use MCP tool syntax as `server-name/tool-name` or `server-name/*` when needed.
-- ALWAYS keep tool aliases consistent with CLI expectations.
-- NEVER declare tools that the body does not use.
-- NEVER depend on ignored or unknown tool names for required behavior.
-- ALWAYS use minimal examples like:
-  - `tools: ["sql", "report_intent"]`
-  - `tools: ["agent", "skill", "read_agent", "list_agents"]`
-  - `tools: ["github/*", "fetch"]`
-  - NEVER use `tools: ["*"]` unless it is a last-resort option with explicit justification.
+When they conflict with the official documentation, these rules take precedence.
 
-## Anti-Patterns
+### Naming
 
-- NEVER use missing frontmatter delimiters (`---`) around metadata.
-- NEVER write vague `description` values that do not indicate trigger conditions.
-- NEVER grant broad tool access when a narrow list can satisfy the workflow.
-- NEVER define agent behavior that requires tools not declared in `tools`.
-- NEVER mix CLI requirements with editor-only features as required dependencies.
-- NEVER rely on retired `infer` semantics when `disable-model-invocation` and `user-invocable` can express intent.
+- Keep `name` lowercase kebab-case to match the file identity.
+- Do not use spaces, uppercase letters, or ambiguous names in filenames or `name`.
 
-## VS Code Exclusions
+### Tool Declarations
 
-- NEVER require `mcp-servers` support as a VS Code custom-agent dependency.
-- NEVER require `metadata` support as a VS Code custom-agent dependency.
-- NEVER rely on `argument-hint` in CLI-targeted custom agent guidance.
-- NEVER rely on `handoffs` in CLI-targeted custom agent guidance.
-- NEVER assume model override behavior is portable across CLI, VS Code, and GitHub.com contexts.
+- Use least-privilege tool declarations. Prefer explicit allowlists over
+  `"*"` unless full access is required with explicit justification.
+- Do not declare tools that the agent body does not use.
 
-## Linter-Enforceable Rules Exclusions
+### Anti-Patterns
 
-- NEVER define indentation rules in this file; `mise run format` enforces indentation.
-- NEVER define trailing whitespace rules in this file; `mise run format` enforces whitespace normalization.
-- NEVER define line length or shell syntax rules in this file; `mise run lint` enforces those checks.
+- Do not write vague `description` values that do not indicate trigger conditions.
+- Do not define agent behavior that requires tools not declared in `tools`.
+- Do not use `allowed-tools` in custom agent frontmatter. Use `tools` instead.
+- Do not rely on `argument-hint` or `handoffs` in CLI-targeted custom agent guidance.
+- Do not assume model override behavior is portable across CLI, VS Code, and GitHub.com contexts.
+
+### Linter-Enforceable Rules Exclusions
+
+- Do not define indentation, trailing whitespace, line length, or shell
+  syntax rules in this file. Those are enforced by `mise run format` and
+  `mise run lint`.

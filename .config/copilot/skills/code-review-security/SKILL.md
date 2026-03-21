@@ -17,26 +17,42 @@ Abort if findings drift outside security scope.
 Abort if the output file already exists.
 Critical findings must include file and line number.
 
-## Input
+## Criteria
 
-- `target: string` (required): Commit SHA, branch, PR number, `"staged"`, or `"unstaged"`
-- `output_filepath: string` (required): Absolute path for saving review output
-- `file_scope: string[]` (optional): File filter
-- `directory_scope: string` (optional): Directory filter
+Focus on security vulnerabilities and risks that could lead to data breaches,
+unauthorized access, or system compromise.
+
+- Hardcoded credentials: API keys, passwords, tokens, secrets in source code.
+- SQL injection risks: String concatenation in SQL queries.
+- XSS vulnerabilities: Unescaped user input in HTML/templates.
+- Missing input validation: User input accepted without validation.
+- Insecure dependencies: Outdated or vulnerable libraries.
+- Path traversal risks: User-controlled file paths without sanitization.
+- CSRF vulnerabilities: Missing CSRF protection in state-changing operations.
+- Authentication bypasses: Logic errors allowing unauthorized access.
+
+Severity mapping: most items default to CRITICAL. Downgrade to HIGH only when
+the risk is clearly mitigated by surrounding context. Use MEDIUM for
+defense-in-depth recommendations that are not exploitable as-is. Use LOW for
+informational security observations.
 
 ## Output
 
-Written to `output_filepath`. Priority levels: CRITICAL, HIGH, MEDIUM, LOW.
-Format per finding:
+Written to `output_filepath`. Organize findings by severity.
+Omit severity sections with no findings.
 
-```text
-[CRITICAL|HIGH|MEDIUM|LOW] Brief description
-File: path/to/file.ext:line_number
-Issue: Detailed explanation
-Fix: How to resolve it
+```markdown
+## CRITICAL
+
+### Brief description — `path/to/file.ext:42`
+
+Detailed explanation.
+
+**Fix**: How to resolve it.
+
+## HIGH
+
+## MEDIUM
+
+## LOW
 ```
-
-## Examples
-
-- Happy: target="HEAD", output="/tmp/security-review.md" -- review with 4 findings.
-- Failure: target="invalid-ref" -- abort: invalid or empty target.

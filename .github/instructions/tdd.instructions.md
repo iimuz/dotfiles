@@ -6,47 +6,43 @@ applyTo: "dummy/**"
 
 ## Iron Law
 
-- NEVER write production code without a failing test. No exceptions.
-- Write code before its test? Delete it. Start over.
+Do not write production code without a failing test. No exceptions. If code is
+written before its test, delete it and start over.
 
 ## Red-Green-Refactor Workflow
 
-- ALWAYS write one failing test before writing production code.
-- ALWAYS verify the test fails for the expected reason before implementation.
-- ALWAYS write the minimal production code required to make the test pass.
-- NEVER add unrelated behavior during the green phase.
-- ALWAYS refactor only after tests are green.
-- ALWAYS keep behavior unchanged during refactor.
-- ALWAYS repeat the cycle for each behavior change.
+1. Write one failing test before writing production code.
+2. Verify the test fails for the expected reason before implementation.
+3. Write the minimal production code required to make the test pass. Do not add unrelated behavior during this phase.
+4. Refactor only after tests are green. Keep behavior unchanged during refactor.
+5. Repeat the cycle for each behavior change.
 
 ## Test Quality
 
-- Minimal: ALWAYS keep each test focused on one behavior.
-- Clear: ALWAYS use test names that describe observable behavior.
-- Shows Intent: ALWAYS show intent through inputs, outputs, and side effects.
-- ALWAYS test through public interfaces.
-- NEVER rely on unclear names, broad setup, or multi-purpose assertions.
+- Keep each test focused on one behavior.
+- Use test names that describe observable behavior.
+- Show intent through inputs, outputs, and side effects.
+- Test through public interfaces.
+- Do not rely on unclear names, broad setup, or multi-purpose assertions.
 
 ## Anti-Patterns
 
-- NEVER mock implementation details or internal calls as primary assertions.
-- NEVER test private fields, private methods, or internal data structures.
-- NEVER add production methods intended only for tests.
-- NEVER over-mock fast in-process dependencies.
-- NEVER build excessive fixture setup that hides test intent.
-- ALWAYS mock only external dependencies when unavoidable.
-- ALWAYS prefer observable behavior over interaction-count assertions.
+- Do not mock implementation details or internal calls as primary assertions.
+  Mock only external dependencies when unavoidable. Prefer observable behavior
+  over interaction-count assertions.
+- Do not test private fields, private methods, or internal data structures.
+- Do not add production methods intended only for tests.
+- Do not over-mock fast in-process dependencies.
+- Do not build excessive fixture setup that hides test intent.
 
 ## Verification
 
-- ALWAYS ensure every new function/method has a test.
-- ALWAYS watch each test fail before implementing.
-- ALWAYS ensure each test failed for the expected reason.
-- ALWAYS write minimal code to pass.
-- ALWAYS ensure all tests pass and output is pristine.
-- ALWAYS ensure tests use real code and cover edge cases.
-- NEVER proceed when any check is unchecked; TDD was skipped. Start over.
+- Ensure every new function/method has a test.
+- Watch each test fail before implementing. Ensure each test failed for the expected reason.
+- Write minimal code to pass. Ensure all tests pass and output is pristine.
+- Ensure tests use real code and cover edge cases.
+- Do not proceed when any check is unchecked. TDD was skipped. Start over.
 
 ## Exceptions
 
-- NEVER require TDD for documentation, configuration, or non-code file edits.
+TDD is not required for documentation, configuration, or non-code file edits.
