@@ -112,6 +112,13 @@ sudo apt-get install -y --no-install-recommends libclang-dev
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
+
+# === [mise](https://github.com/jdx/mise)
+if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
+if type mise >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
+fi
+
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
@@ -130,10 +137,10 @@ if type git >/dev/null 2>&1; then
 fi
 # === github copoilot cli
 if type copilot >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.config/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.config/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.config/.copilot/mcp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.config/.copilot/copilot-instructions.md"
+  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
+  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
+  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
+  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
 fi
 # === gpg
 if type gpg >/dev/null 2>&1; then
@@ -143,11 +150,6 @@ fi
 if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
-fi
-# === [mise](https://github.com/jdx/mise)
-if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
-if type mise >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
 fi
 # === neovim
 if ! type nvim >/dev/null 2>&1; then _install_neovim; fi
