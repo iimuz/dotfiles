@@ -22,7 +22,8 @@ If the fetch fails, follow the overview described below instead.
 - `SKILL.md` consists of YAML frontmatter and a Markdown body.
 - Required frontmatter fields: `name`, `description`, `user-invocable`, `disable-model-invocation`.
 - Optional frontmatter field: `allowed-tools` (space-separated tool identifiers).
-- The `description` field is the only trigger the AI uses to determine when to invoke the skill. The Markdown body is only loaded after the skill is triggered.
+- The `description` field is the only trigger the AI uses to determine when to invoke
+  the skill. The Markdown body is only loaded after the skill is triggered.
 - Templates:
   - Workflow Orchestrator: [`docs/templates/skill-workflow/`](../../docs/templates/skill-workflow/SKILL.md)
   - Single-operation Skill: [`docs/templates/skill-single-operation/`](../../docs/templates/skill-single-operation/SKILL.md)
@@ -35,13 +36,17 @@ documentation, these rules take precedence.
 
 ### Naming
 
-- `name`: 1-64 characters, lowercase alphanumeric and hyphens only. No leading/trailing or consecutive hyphens. Must exactly match the parent directory name.
-- Sub-skill `description` must be one sentence, 10 words or fewer. Must not include caller metadata (e.g., "This skill should be used only by...").
+- `name`: 1-64 characters, lowercase alphanumeric and hyphens only.
+  No leading/trailing or consecutive hyphens. Must exactly match the parent directory name.
+- Sub-skill `description` must be one sentence, 10 words or fewer.
+  Must not include caller metadata (e.g., "This skill should be used only by...").
 
 ### Directory Scope Constraint
 
 - A skill may only reference files inside its own `{skill-name}/` directory tree.
-- Do not create shared subdirectories directly under `.config/copilot/skills/`. Only `{skill-name}/` directories are valid children. Files outside a skill directory are silently inaccessible.
+- Do not create shared subdirectories directly under `.config/copilot/skills/`.
+  Only `{skill-name}/` directories are valid children.
+  Files outside a skill directory are silently inaccessible.
 - Shared reference material must be duplicated into each skill's own `references/` subdirectory.
 
 ### Output Safety
@@ -62,7 +67,8 @@ documentation, these rules take precedence.
 
 ### Body Structure
 
-- State each piece of information exactly once, at the point where it is most relevant. Do not duplicate the same information across multiple sections.
+- State each piece of information exactly once, at the point where it is most relevant.
+  Do not duplicate the same information across multiple sections.
 
 ### Required Content
 
@@ -95,19 +101,28 @@ documentation, these rules take precedence.
 
 ### Skill Type Taxonomy
 
-- Workflow Skill: Coordinates multi-step execution across sub-skills or agents. Owns stage sequencing, delegation, and fault routing.
-- Knowledge/Transform Skill: Executes a single bounded transformation or analysis. Does not delegate to other skills or agents.
+- Workflow Skill: Coordinates multi-step execution across sub-skills or agents.
+  Owns stage sequencing, delegation, and fault routing.
+- Knowledge/Transform Skill: Executes a single bounded transformation or analysis.
+  Does not delegate to other skills or agents.
 - Trigger for Workflow Authoring: Skill body contains stage sequencing, task() calls, or sub-skill delegation.
 - Trigger for Knowledge/Transform Authoring: Skill body contains a single op chain with no delegation to other skills.
 
 ### Workflow Skill Authoring
 
-- A workflow skill acts as the sole coordinator. It must not be invoked as a sub-skill by another workflow skill unless an explicit orchestrator-delegation contract is declared in both the parent and child SKILL.md.
+- A workflow skill acts as the sole coordinator. It must not be invoked as a sub-skill
+  by another workflow skill unless an explicit orchestrator-delegation contract is declared
+  in both the parent and child SKILL.md.
 - Invocation Separation: choose by delegation capability, not invocability labels.
-  - Task-capable target (`task()` reachable directly or transitively in its skill-delegation graph) must be invoked via `skill()`.
-  - Task-free target (no reachable `task()` in its delegation graph) may be invoked via `skill()` or from within `task()`.
+  - Task-capable target (`task()` reachable directly or transitively in its
+    skill-delegation graph) must be invoked via `skill()`.
+  - Task-free target (no reachable `task()` in its delegation graph) may be invoked
+    via `skill()` or from within `task()`.
   - If capability is unknown, treat as task-capable. Non-skill processing must use `task()`.
-- Sub-agents invoked by sub-skills must not make further `task()` calls. This applies to the entire skill package including prompt templates in references/ and executable logic in scripts/. Sub-agents cannot call sub-agents. If sub-agent routing is needed, declare it in the main orchestrator skill.
+- Sub-agents invoked by sub-skills must not make further `task()` calls.
+  This applies to the entire skill package including prompt templates in references/
+  and executable logic in scripts/. Sub-agents cannot call sub-agents.
+  If sub-agent routing is needed, declare it in the main orchestrator skill.
 - Blockquotes in workflow skills contain only subagent-facing prompts.
 - Do not chain more than one level of fallback; if the fallback fails, abort.
 
