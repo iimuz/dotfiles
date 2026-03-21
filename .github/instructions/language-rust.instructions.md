@@ -4,58 +4,53 @@ applyTo: "**/*.rs"
 
 # Rust
 
+## Official Documentation
+
+When encountering unfamiliar Rust APIs or patterns, use a subagent to fetch
+the relevant specification details from the official documentation:
+
+- [Rust Standard Library](https://doc.rust-lang.org/std/)
+- [The Rust Reference](https://doc.rust-lang.org/reference/)
+
 ## Safety
 
-- ALWAYS isolate unsafe blocks in dedicated abstraction layers; NEVER use unsafe in application logic.
-- ALWAYS document safety invariants for every unsafe block with a SAFETY comment.
-- ALWAYS verify unsafe code produces no undefined behavior before merging; use MIRI for this.
-- ALWAYS verify unsafe code paths produce no memory errors; use address sanitizer for this.
-- ALWAYS document drop order dependencies when they affect correctness or resource cleanup.
-- NEVER write unsafe code without a corresponding encapsulating safe abstraction that upholds invariants.
-- NEVER expose mutable global state; prefer dependency injection via function arguments or struct fields.
-- ALWAYS use type-state patterns to enforce state machine invariants at compile time.
+- Isolate unsafe blocks in dedicated abstraction layers. Do not use unsafe in application logic.
+- Document safety invariants for every unsafe block with a SAFETY comment. Do not write unsafe code without a corresponding encapsulating safe abstraction that upholds invariants.
+- Verify unsafe code produces no undefined behavior before merging. Use MIRI for this.
+- Verify unsafe code paths produce no memory errors. Use address sanitizer for this.
+- Document drop order dependencies when they affect correctness or resource cleanup.
+- Do not expose mutable global state. Prefer dependency injection via function arguments or struct fields.
+- Use type-state patterns to enforce state machine invariants at compile time.
 
 ## Error Handling
 
-- NEVER use panic! for recoverable errors; ALWAYS return Result or Option instead.
-- ALWAYS design public APIs to be panic-free.
-- ALWAYS document all functions that may panic explicitly in their doc comments.
-- Reserve panic! exclusively for programmer errors such as invariant violations.
-- ALWAYS use ? for error propagation; NEVER swallow errors silently.
-- ALWAYS define custom error types with thiserror for library crates.
-- ALWAYS use anyhow for error handling in application crates.
-- NEVER expose internal error details across library API boundaries without wrapping.
-- ALWAYS implement Display and Debug for all public error types.
-- ALWAYS implement From conversions to avoid manual mapping where idiomatic.
+- Do not use `panic!` for recoverable errors. Return `Result` or `Option` instead. Reserve `panic!` exclusively for programmer errors such as invariant violations.
+- Design public APIs to be panic-free. Document all functions that may panic explicitly in their doc comments.
+- Use `?` for error propagation. Do not swallow errors silently.
+- Define custom error types with `thiserror` for library crates. Use `anyhow` for error handling in application crates. Do not expose internal error details across library API boundaries without wrapping.
+- Implement `Display` and `Debug` for all public error types. Implement `From` conversions to avoid manual mapping where idiomatic.
 
-## Memory
+## Memory and Dependencies
 
-- ALWAYS prefer ownership transfer over cloning when performance matters.
-- ALWAYS prefer borrowing over cloning for read-only access.
-- NEVER clone data in hot paths without profiling justification.
-- ALWAYS commit Cargo.lock for binaries and applications for reproducibility.
-- NEVER commit Cargo.lock for library crates.
-- ALWAYS run cargo audit in CI to detect vulnerable dependencies.
-- NEVER introduce a new dependency without auditing it for soundness and maintenance status.
-- ALWAYS benchmark before optimizing performance-critical code paths.
-- ALWAYS use criterion for reproducible benchmark comparisons.
+- Prefer ownership transfer over cloning when performance matters. Prefer borrowing over cloning for read-only access. Do not clone data in hot paths without profiling justification.
+- Commit `Cargo.lock` for binaries and applications for reproducibility. Do not commit `Cargo.lock` for library crates.
+- Run `cargo audit` in CI to detect vulnerable dependencies. Do not introduce a new dependency without auditing it for soundness and maintenance status.
+- Benchmark before optimizing performance-critical code paths. Use `criterion` for reproducible benchmark comparisons.
 
 ## Concurrency
 
-- ALWAYS verify Send + Sync bounds for types shared across threads.
-- NEVER share non-Sync types across threads.
-- ALWAYS use channels for orchestration and Mutex/RwLock for shared state.
-- ALWAYS manage thread and task lifetimes explicitly; NEVER leak threads.
-- ALWAYS propagate context (cancellation, deadlines) through async call chains.
-- NEVER block the async executor with synchronous I/O; use spawn_blocking for blocking calls.
-- ALWAYS pin futures that require a stable address; document why pinning is necessary.
-- ALWAYS use the ThreadSanitizer or race detector for concurrent code tests.
-
-## Testing
-
-- ALWAYS write table-driven and property-based tests for correctness.
-- ALWAYS fuzz parsing and deserialization logic with cargo-fuzz.
+- Verify `Send` + `Sync` bounds for types shared across threads. Do not share non-`Sync` types across threads.
+- Use channels for orchestration and `Mutex`/`RwLock` for shared state.
+- Manage thread and task lifetimes explicitly. Do not leak threads.
+- Propagate context (cancellation, deadlines) through async call chains. Do not block the async executor with synchronous I/O. Use `spawn_blocking` for blocking calls.
+- Pin futures that require a stable address. Document why pinning is necessary.
 
 ## Documentation
 
-- ALWAYS document all public items; NEVER leave exported symbols without doc comments.
+- Document all public items. Do not leave exported symbols without doc comments.
+
+## Testing
+
+- Write table-driven and property-based tests for correctness.
+- Fuzz parsing and deserialization logic with `cargo-fuzz`.
+- Use the ThreadSanitizer or race detector for concurrent code tests.

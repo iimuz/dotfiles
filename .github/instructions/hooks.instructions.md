@@ -15,7 +15,13 @@ relevant specification details:
 
 If the fetch fails, follow the overview described below instead.
 
-## Project Policy
+## Hooks Specification Overview
+
+- Place hook configuration JSON files inside the `.github/hooks/` directory.
+- Basic structure: `{ "version": 1, "hooks": { "<hookType>": [...] } }`
+- Available hook types: `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`, `subagentStop`, `errorOccurred`
+- Each entry is a command object with `type`, `bash`/`powershell`, and `timeoutSec` properties.
+- Only `preToolUse` hooks can control tool execution by returning a `permissionDecision` via stdout.## Project Policy
 
 The following rules are project-specific policies.
 
@@ -25,11 +31,3 @@ The following rules are project-specific policies.
 - Never output secrets, tokens, or credentials to stdout or stderr.
 - Do not make blocking network calls inside hooks. Use async or background patterns instead.
 - Offload heavy processing to background processes.
-
-## Hooks Specification Overview
-
-- Place hook configuration JSON files inside the `.github/hooks/` directory.
-- Basic structure: `{ "version": 1, "hooks": { "<hookType>": [...] } }`
-- Available hook types: `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`, `subagentStop`, `errorOccurred`
-- Each entry is a command object with `type`, `bash`/`powershell`, and `timeoutSec` properties.
-- Only `preToolUse` hooks can control tool execution by returning a `permissionDecision` via stdout.

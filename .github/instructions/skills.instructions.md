@@ -14,9 +14,8 @@ specification details:
 - [Create skills - GitHub Docs](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-skills)
 
 If the fetch fails, follow the overview described below instead.
-If there are still unclear points, ask the user for clarification.
 
-## Overview
+## Skill Specification Overview
 
 - Each skill is placed in its own directory under `.config/copilot/skills/` and must include at least a `SKILL.md` file.
 - Optional subdirectories: `scripts/`, `references/`, `assets/`.
