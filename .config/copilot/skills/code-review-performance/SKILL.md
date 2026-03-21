@@ -17,26 +17,40 @@ Abort if findings drift outside performance scope.
 Abort if the output file already exists.
 Critical findings must include file and line number.
 
-## Input
+## Criteria
 
-- `target: string` (required): Commit SHA, branch, PR number, `"staged"`, or `"unstaged"`
-- `output_filepath: string` (required): Absolute path for saving review output
-- `file_scope: string[]` (optional): File filter
-- `directory_scope: string` (optional): Directory filter
+Focus on efficiency, resource usage, and optimization opportunities.
+
+- Inefficient algorithms: O(n^2) when O(n log n) or O(n) is possible.
+- Unnecessary re-renders: React components re-rendering without memoization.
+- Missing memoization: Expensive computations without caching.
+- Large bundle sizes: Unnecessary dependencies or missing code splitting.
+- Unoptimized assets: Large images without compression or lazy loading.
+- Missing caching: Repeated identical API calls or computations.
+- N+1 queries: Database queries in loops instead of batch operations.
+
+Severity mapping: most items default to LOW. Elevate to MEDIUM when the
+performance impact is measurable and significant (e.g., N+1 queries on a hot path).
+Elevate to HIGH for issues causing noticeable user-facing latency. Elevate to
+CRITICAL only when the issue causes timeouts, OOM, or denial-of-service conditions.
 
 ## Output
 
-Written to `output_filepath`. Priority levels: CRITICAL, HIGH, MEDIUM, LOW.
-Format per finding:
+Written to `output_filepath`. Organize findings by severity.
+Omit severity sections with no findings.
 
-```text
-[CRITICAL|HIGH|MEDIUM|LOW] Brief description
-File: path/to/file.ext:line_number
-Issue: Detailed explanation
-Fix: How to resolve it
+```markdown
+## CRITICAL
+
+### Brief description — `path/to/file.ext:42`
+
+Detailed explanation.
+
+**Fix**: How to resolve it.
+
+## HIGH
+
+## MEDIUM
+
+## LOW
 ```
-
-## Examples
-
-- Happy: target="HEAD", output="/tmp/performance-review.md" -- review with 2 findings.
-- Failure: target="invalid-ref" -- abort: invalid or empty target.

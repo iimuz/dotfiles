@@ -18,11 +18,6 @@ At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
 `session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
 
-## Input
-
-- `field_name: type` (required): Description of the input field.
-- `optional_field: type`: Description of an optional input field.
-
 ## Output
 
 Description of the final output. Include field names and types if structured.
@@ -57,22 +52,3 @@ task(general-purpose, model=claude-opus-4.6):
 
 - Output: `{final_output}`
 - Fault: Abort immediately on failure.
-
-## Examples
-
-- Happy: `field_name: "value"` -- all stages complete, final report delivered.
-- Failure: `field_name: ""` -- abort because input is empty.
-
-<!--
-  Authoring guidelines:
-  - Target: under 300 lines (single-operation: under 200 lines)
-  - Use inline `field: type` annotations; avoid TypeScript code blocks unless schema is the primary deliverable
-  - Embed constraints inline where they relate to behavior; a separate Constraints section is optional
-  - Blockquotes contain only subagent-facing prompts; do not include orchestrator adaptation logic
-  - Do not chain more than one level of fallback; if the fallback fails, abort
-  - Session artifacts: ~/.copilot/session-state/{session_id}/files/
-  - Run directory: {session_dir}/YYYYMMDDHHMMSS-{skill-name}/
-  - Final output: {session_dir}/YYYYMMDDHHMMSS-{skill-name}-{descriptor}.md
-  - Prefer reasoning-based guidance over bare ALWAYS/NEVER imperatives
-  See also: .config/copilot/skills/code-review/SKILL.md
--->

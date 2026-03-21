@@ -64,6 +64,29 @@ documentation, these rules take precedence.
 
 - State each piece of information exactly once, at the point where it is most relevant. Do not duplicate the same information across multiple sections.
 
+### Required Content
+
+- Every skill must include: purpose and scope, abort conditions, and output format specification.
+- Additional sections are chosen by the skill author based on the skill's purpose
+  (Criteria, Operations, Rules, Input, Examples, etc.).
+- Orchestrator-invoked sub-skills (`user-invocable: false`) may omit Input and Examples
+  when the orchestrator's prompt template provides the parameter contract.
+- Analysis-oriented skills may use domain-specific section names
+  (Criteria, Rules, Checks) instead of Operations.
+
+### Size Targets
+
+- Single-operation skills: under 200 lines.
+- Workflow orchestrator skills: under 300 lines.
+
+### Notation
+
+- Use inline `field: type` annotations for parameters.
+  Avoid TypeScript code blocks unless schema is the primary deliverable.
+- Session artifacts path: `~/.copilot/session-state/{session_id}/files/`.
+- Run directory: `{session_dir}/YYYYMMDDHHMMSS-{skill-name}/`.
+- Final output: `{session_dir}/YYYYMMDDHHMMSS-{skill-name}-{descriptor}.md`.
+
 ### Progressive Disclosure
 
 - If any single section exceeds 30 lines or includes large prompts/data, extract content to `references/` or `assets/`.
@@ -85,6 +108,8 @@ documentation, these rules take precedence.
   - Task-free target (no reachable `task()` in its delegation graph) may be invoked via `skill()` or from within `task()`.
   - If capability is unknown, treat as task-capable. Non-skill processing must use `task()`.
 - Sub-agents invoked by sub-skills must not make further `task()` calls. This applies to the entire skill package including prompt templates in references/ and executable logic in scripts/. Sub-agents cannot call sub-agents. If sub-agent routing is needed, declare it in the main orchestrator skill.
+- Blockquotes in workflow skills contain only subagent-facing prompts.
+- Do not chain more than one level of fallback; if the fallback fails, abort.
 
 ### Autonomous Subagent Design
 
