@@ -19,9 +19,14 @@ If the fetch fails, follow the overview described below instead.
 
 - Place hook configuration JSON files inside the `.github/hooks/` directory.
 - Basic structure: `{ "version": 1, "hooks": { "<hookType>": [...] } }`
-- Available hook types: `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`, `subagentStop`, `errorOccurred`
+- Available hook types: `sessionStart`, `sessionEnd`,
+  `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`,
+  `subagentStop`, `errorOccurred`
 - Each entry is a command object with `type`, `bash`/`powershell`, and `timeoutSec` properties.
-- Only `preToolUse` hooks can control tool execution by returning a `permissionDecision` via stdout.## Project Policy
+- Only `preToolUse` hooks can control tool execution by returning a
+  `permissionDecision` via stdout.
+
+## Project Policy
 
 The following rules are project-specific policies.
 

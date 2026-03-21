@@ -21,8 +21,12 @@ If the fetch fails, follow the overview described below instead.
 - Use `.md` or `.agent.md` file extensions.
 - The filename without extension serves as the default agent identifier.
 - Required frontmatter fields: `name`, `description`, `tools`, `user-invocable`, `disable-model-invocation`.
-- The `tools` field is a string array of CLI-compatible tool names. Use MCP tool syntax as `server-name/tool-name` or `server-name/*` when needed.
-- Agent body should include a title, overview section, allowed tools mapping, and a process section with ordered execution steps.## Project Policy
+- The `tools` field is a string array of CLI-compatible tool names. Use MCP
+  tool syntax as `server-name/tool-name` or `server-name/*` when needed.
+- Agent body should include a title, overview section, allowed tools
+  mapping, and a process section with ordered execution steps.
+
+## Project Policy
 
 When they conflict with the official documentation, these rules take precedence.
 
@@ -33,7 +37,8 @@ When they conflict with the official documentation, these rules take precedence.
 
 ### Tool Declarations
 
-- Use least-privilege tool declarations. Prefer explicit allowlists over `"*"` unless full access is required with explicit justification.
+- Use least-privilege tool declarations. Prefer explicit allowlists over
+  `"*"` unless full access is required with explicit justification.
 - Do not declare tools that the agent body does not use.
 
 ### Anti-Patterns
@@ -46,4 +51,6 @@ When they conflict with the official documentation, these rules take precedence.
 
 ### Linter-Enforceable Rules Exclusions
 
-- Do not define indentation, trailing whitespace, line length, or shell syntax rules in this file. Those are enforced by `mise run format` and `mise run lint`.
+- Do not define indentation, trailing whitespace, line length, or shell
+  syntax rules in this file. Those are enforced by `mise run format` and
+  `mise run lint`.

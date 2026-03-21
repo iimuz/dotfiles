@@ -24,7 +24,9 @@ If there are still unclear points, ask the user for clarification.
 
 ## State and Rendering
 
-- Use the `use()` hook for promise handling and async data fetching. Do not manage loading/error state manually when using `use()` with Suspense and error boundaries.
+- Use the `use()` hook for promise handling and async data fetching. Do not
+  manage loading/error state manually when using `use()` with Suspense and
+  error boundaries.
 - Use `useActionState` for managing form action state and submissions.
 - Use `useFormStatus` to reflect pending state inside form components.
 - Use `useOptimistic` for optimistic UI updates during async operations.
@@ -41,7 +43,8 @@ If there are still unclear points, ask the user for clarification.
 - Use code splitting with `React.lazy()` and dynamic imports for route-level components.
 - Use the Actions API for form handling with progressive enhancement.
 - Use `cacheSignal` in React Server Components to abort cached fetch calls when no longer needed.
-- Use document metadata tags (`title`, `meta`, `link`) directly in components instead of separate head management libraries.
+- Use document metadata tags (`title`, `meta`, `link`) directly in
+  components instead of separate head management libraries.
 
 ## Error Handling
 

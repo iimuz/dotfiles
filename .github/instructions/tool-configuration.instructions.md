@@ -21,7 +21,8 @@ All tool settings are sourced from `.config/rc-settings.sh`.
 
 ## Loading Order
 
-The loading order in `rc-settings.sh` matters. Follow the existing sequence. When adding a new tool, insert it in the appropriate section.
+The loading order in `rc-settings.sh` matters. Follow the existing sequence.
+When adding a new tool, insert it in the appropriate section.
 
 1. Shell basics (bash settings, aliases, commands, paths, xdg).
 2. Homebrew.

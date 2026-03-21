@@ -6,7 +6,8 @@ applyTo: "dummy/**"
 
 ## Iron Law
 
-Do not write production code without a failing test. No exceptions. If code is written before its test, delete it and start over.
+Do not write production code without a failing test. No exceptions. If code is
+written before its test, delete it and start over.
 
 ## Red-Green-Refactor Workflow
 
@@ -26,7 +27,9 @@ Do not write production code without a failing test. No exceptions. If code is w
 
 ## Anti-Patterns
 
-- Do not mock implementation details or internal calls as primary assertions. Mock only external dependencies when unavoidable. Prefer observable behavior over interaction-count assertions.
+- Do not mock implementation details or internal calls as primary assertions.
+  Mock only external dependencies when unavoidable. Prefer observable behavior
+  over interaction-count assertions.
 - Do not test private fields, private methods, or internal data structures.
 - Do not add production methods intended only for tests.
 - Do not over-mock fast in-process dependencies.
