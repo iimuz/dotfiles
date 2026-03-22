@@ -79,7 +79,8 @@ documentation, these rules take precedence.
 
 ### Progressive Disclosure
 
-- If any single section exceeds 30 lines or includes large prompts/data, extract content to `references/` or `assets/`.
+- Extract content to `references/` or `assets/` when a section contains large prompts,
+  data, or format definitions that are better served as standalone files.
 - Link from `SKILL.md` using relative paths and provide guidance on when the AI should read that file.
 - Include a Table of Contents at the beginning of reference files exceeding 300 lines.
 
