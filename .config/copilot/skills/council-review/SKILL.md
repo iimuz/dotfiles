@@ -9,9 +9,8 @@ disable-model-invocation: false
 
 ## Overview
 
-Read the anonymized responses file, which includes the original question and labeled response
-sections (Response A/B/C). Evaluate each response against the question: assess strengths,
-weaknesses, accuracy, and completeness. Produce a per-response assessment followed by a
+Read the anonymized responses file, which includes the original question and labeled
+response sections (Response A/B/C). Produce a per-response assessment followed by a
 final ranking.
 
 Abort if the anonymized artifact file is not found.
@@ -22,10 +21,32 @@ Rewrite the FINAL RANKING block if it does not follow the exact numbered label f
 Abort if the output review file already exists.
 Abort if the output omits either per-response evaluation or the FINAL RANKING block.
 
-## Input
+## Criteria
 
-- `anonymized_artifact_path: string` (required): Absolute path to anonymized responses file.
-- `output_review_path: string` (required): Absolute path for saving the evaluation output.
+### Evaluation Dimensions
+
+- Accuracy: factual correctness, absence of hallucination, proper caveats on uncertain claims.
+- Completeness: coverage of the question's scope, addressing edge cases and caveats.
+- Reasoning Quality: logical coherence, evidence-based arguments, explicit tradeoff analysis.
+- Actionability: practical utility, clarity of recommendations.
+
+### Assessment Method
+
+Evaluate each response independently against the question before comparing across
+responses. Do not evaluate responses relative to each other until the ranking step.
+
+### Ranking Rules
+
+Rank by overall quality across all dimensions. When responses are close, weight
+Accuracy highest, then Completeness, then Reasoning Quality, then Actionability.
+Every response appears exactly once in the ranking. Ties must be broken with stated
+reasoning.
+
+### Bias Constraints
+
+- Do not infer model identity from writing style.
+- Do not penalize conciseness if content is complete.
+- Do not reward verbosity without substance.
 
 ## Output
 
@@ -35,8 +56,3 @@ For the required output structure, see
 [output-format.md](references/output-format.md).
 Each line contains a rank number followed by the response label. All responses must
 be included.
-
-## Examples
-
-- Happy: anonymized_artifact_path="/tmp/anon.md", output="/tmp/review.md" -- write review.
-- Failure: anonymized_artifact_path="/tmp/missing.md" -- abort: file not found.
