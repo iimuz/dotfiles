@@ -1,5 +1,5 @@
 ---
-applyTo: ".config/copilot/skills/**,docs/templates/skill-workflow/**,docs/templates/skill-single-operation/**"
+applyTo: ".config/copilot/skills/**"
 ---
 
 # Agent Skills Creation and Management Rules
@@ -24,9 +24,6 @@ If the fetch fails, follow the overview described below instead.
 - Optional frontmatter field: `allowed-tools` (space-separated tool identifiers).
 - The `description` field is the only trigger the AI uses to determine when to invoke
   the skill. The Markdown body is only loaded after the skill is triggered.
-- Templates:
-  - Workflow Orchestrator: [`docs/templates/skill-workflow/`](../../docs/templates/skill-workflow/SKILL.md)
-  - Single-operation Skill: [`docs/templates/skill-single-operation/`](../../docs/templates/skill-single-operation/SKILL.md)
 
 ## Project Policy
 
@@ -65,48 +62,27 @@ documentation, these rules take precedence.
 - Do not use `<placeholder>` (angle brackets) because it conflicts with HTML parsing.
 - Exception: CLI command argument notation `<arg>` follows standard convention and is permitted.
 
-### Body Structure
+### Domain Logic
 
-- State each piece of information exactly once, at the point where it is most relevant.
-  Do not duplicate the same information across multiple sections.
-
-### Required Content
-
-- Every skill must include: purpose and scope, abort conditions, and output format specification.
-- Additional sections are chosen by the skill author based on the skill's purpose
-  (Criteria, Operations, Rules, Input, Examples, etc.).
-- Orchestrator-invoked sub-skills (`user-invocable: false`) may omit Input and Examples
-  when the orchestrator's prompt template provides the parameter contract.
-- Analysis-oriented skills may use domain-specific section names
-  (Criteria, Rules, Checks) instead of Operations.
+- Skills that perform judgment, evaluation, or analysis should include a domain
+  section (Criteria, Rules, Checks, or equivalent) between Overview and Output
+  that externalizes the evaluation logic. The domain section should state the
+  decision standards, prioritization rules, and rejection or abstention conditions
+  needed to produce consistent output. An I/O contract alone is insufficient when
+  the skill's value depends on how it evaluates, not just what it receives and
+  produces.
 
 ### Size Targets
 
 - Single-operation skills: under 200 lines.
 - Workflow orchestrator skills: under 300 lines.
 
-### Notation
-
-- Use inline `field: type` annotations for parameters.
-  Avoid TypeScript code blocks unless schema is the primary deliverable.
-- Session artifacts path: `~/.copilot/session-state/{session_id}/files/`.
-- Run directory: `{session_dir}/YYYYMMDDHHMMSS-{skill-name}/`.
-- Final output: `{session_dir}/YYYYMMDDHHMMSS-{skill-name}-{descriptor}.md`.
-
 ### Progressive Disclosure
 
-- If any single section exceeds 30 lines or includes large prompts/data, extract content to `references/` or `assets/`.
+- Extract content to `references/` or `assets/` when a section contains large prompts,
+  data, or format definitions that are better served as standalone files.
 - Link from `SKILL.md` using relative paths and provide guidance on when the AI should read that file.
 - Include a Table of Contents at the beginning of reference files exceeding 300 lines.
-
-### Skill Type Taxonomy
-
-- Workflow Skill: Coordinates multi-step execution across sub-skills or agents.
-  Owns stage sequencing, delegation, and fault routing.
-- Knowledge/Transform Skill: Executes a single bounded transformation or analysis.
-  Does not delegate to other skills or agents.
-- Trigger for Workflow Authoring: Skill body contains stage sequencing, task() calls, or sub-skill delegation.
-- Trigger for Knowledge/Transform Authoring: Skill body contains a single op chain with no delegation to other skills.
 
 ### Workflow Skill Authoring
 
@@ -132,7 +108,10 @@ documentation, these rules take precedence.
 - Sub-skills frame instructions as best practices, not mandatory procedures. Only safety constraints are mandatory.
 - Prompt templates in blockquotes describe what to achieve, not how to achieve it.
 
-### Frontmatter Defaults
+### Canonical Examples
 
-- `user-invocable`: `true` for orchestrators, `false` for sub-skills.
-- `disable-model-invocation`: `false` for all skills.
+When creating or modifying skills, refer to existing skills as authoritative examples:
+
+- Single-operation (analysis): `.config/copilot/skills/code-review-security/SKILL.md`
+- Single-operation (utility): `.config/copilot/skills/code-review-cross-check/SKILL.md`
+- Workflow orchestrator: `.config/copilot/skills/code-review/SKILL.md`

@@ -10,8 +10,8 @@ disable-model-invocation: false
 ## Overview
 
 Thin orchestrator that delegates all planning work to specialized sub-skills. Run Stage 1
-through Stage 6 in order to produce independent analyses, competing plan drafts, cross-reviews,
-consensus and insight artifacts, conflict resolutions, and one final authoritative plan.
+through Stage 4 in order to produce competing plan drafts, cross-reviews, a resolution document,
+and one final authoritative plan.
 
 All stage artifacts use `{session_dir}`, which resolves to
 `~/.copilot/session-state/{session_id}/files/` for the current session.
@@ -34,97 +34,62 @@ All stage artifacts use `{session_dir}`, which resolves to
 
 ## Execution Flow
 
-### Stage 1: Parallel Analysis
+### Stage 1: Parallel Draft
 
-Launch three independent analyses in parallel with `claude-opus-4.6`,
-`gemini-3-pro-preview`, and `gpt-5.4`. Each analysis should interpret the same
-`user_request` without seeing the others so later drafting starts from distinct perspectives.
-
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
-
-> Invoke skill implementation-plan-analyze with
-> user_request={user_request},
-> output_filepath={run_dir}/step1-{model}-analysis.md
-
-- Output: `{run_dir}/step1-{model}-analysis.md` (3 files expected; read by Stage 2)
-- Fault: Fewer than 2 analysis artifacts: abort. Exactly 2 analysis artifacts: continue in degraded mode.
-
-### Stage 2: Parallel Plan Drafting
-
-Use the successful Stage 1 analyses to draft three complete implementation plans in parallel.
-This stage turns exploratory analysis into concrete execution options that can later be compared
-and reviewed.
+Launch three independent drafts in parallel with `claude-opus-4.6`,
+`gemini-3-pro-preview`, and `gpt-5.4`. Each model explores the codebase and produces a
+complete draft plan without seeing the others.
 
 task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
 > Invoke skill implementation-plan-draft with
-> analysis_paths={stage1_analysis_paths},
-> output_filepath={run_dir}/step2-{model}-plan-draft.md
+> user_request={user_request},
+> output_filepath={run_dir}/step1-{model}-draft.md
 
-- Output: `{run_dir}/step2-{model}-plan-draft.md` (3 files expected; read by Stage 3, Stage 4, and Stage 6)
+- Output: `{run_dir}/step1-{model}-draft.md` (3 files expected; read by Stage 2 and Stage 4)
 - Fault: Fewer than 2 draft artifacts: abort. Exactly 2 draft artifacts: continue in degraded mode.
 
-### Stage 3: Parallel Cross-Review
+### Stage 2: Parallel Cross-Review
 
-Ask the same three models to cross-review the Stage 2 draft set in parallel. These reviews are
-used both to identify consensus and to surface disagreements or missing ideas before synthesis.
+Ask three models to cross-review the Stage 1 draft set in parallel. Reviews surface consensus,
+conflicts, gaps, and unique insights for downstream resolution.
 
 task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
 > Invoke skill implementation-plan-review with
-> draft_paths={stage2_draft_paths},
-> output_filepath={run_dir}/step3-{model}-review.md
+> draft_paths={stage1_draft_paths},
+> output_filepath={run_dir}/step2-{model}-review.md
 
-- Output: `{run_dir}/step3-{model}-review.md` (1-3 files expected; read by Stage 4 and Stage 6)
-- Fault: All reviews fail: abort. Partial review success: continue with available reviewers.
+- Output: `{run_dir}/step2-{model}-review.md` (1-3 files expected; read by Stage 3)
+- Fault: All reviews fail: abort. Partial review success: continue with available reviews.
 
-### Stage 4: Parallel Consolidation
+### Stage 3: Resolve
 
-Run consolidation in parallel to extract consensus from the reviews and validate unique insights
-across the draft and review artifacts. This stage separates shared recommendations from novel but
-credible ideas so later resolution and synthesis can weigh both.
-
-task(general-purpose, model=claude-opus-4.6):
-
-> Invoke skill implementation-plan-aggregate with
-> review_paths={stage3_review_paths},
-> output_filepath={run_dir}/step4-consensus.md
-
-task(general-purpose, model=claude-opus-4.6):
-
-> Invoke skill implementation-plan-validate with
-> artifact_paths={stage4_artifact_paths},
-> output_filepath={run_dir}/step4-insights.md
-
-- Output: `{run_dir}/step4-consensus.md`, `{run_dir}/step4-insights.md` (`step4-consensus.md`
-  is read by Stage 5 and Stage 6; `step4-insights.md` is read by Stage 6)
-- Fault: Missing consensus: continue with reviews forwarded to synthesis. Missing insights: continue without unique insights.
-
-### Stage 5: Conflict Resolution
-
-Resolve conflicts identified in the consensus artifact into a definitive set of planning
-decisions. Even when there are no substantive conflicts, this stage normalizes the decision set
-so synthesis receives a stable input.
+A single model reads all cross-reviews, aggregates consensus, resolves conflicts, and evaluates
+unique insights into one authoritative resolution document.
 
 task(general-purpose, model=claude-opus-4.6):
 
 > Invoke skill implementation-plan-resolve with
-> consensus_path={stage4_consensus_path},
-> output_filepath={run_dir}/step5-resolutions.md
+> review_paths={stage2_review_paths},
+> output_filepath={run_dir}/step3-resolution.md
 
-- Output: `{run_dir}/step5-resolutions.md` (optional; read by Stage 6)
-- Fault: Resolution failure: continue to Stage 6 without resolutions.
+- Output: `{run_dir}/step3-resolution.md` (read by Stage 4)
+- Fault: Resolution failure: abort.
 
-### Stage 6: Synthesis
+### Stage 4: Synthesis
 
-Produce the final authoritative implementation plan from the plan drafts, reviews, consensus,
-validated insights, and optional conflict resolutions. This stage is the only stage allowed to
-write the final artifact returned to the caller.
+Produce the final authoritative implementation plan from the resolution document and the
+original draft plans. This stage is the only stage allowed to write the final artifact
+returned to the caller.
+
+Collect `{run_dir}/step1-*-draft.md` and `{run_dir}/step3-resolution.md` as
+`{stage4_reference_filepaths}`.
 
 task(general-purpose, model=claude-opus-4.6):
 
 > Invoke skill implementation-plan-synthesize with
-> reference_filepaths={stage6_reference_filepaths},
+> reference_filepaths={stage4_reference_filepaths},
 > user_request={user_request},
 > output_filepath={final_output}
 
@@ -136,17 +101,9 @@ task(general-purpose, model=claude-opus-4.6):
 Intermediate files are saved under `{run_dir}/`. The final output is saved directly under
 `{session_dir}/`.
 
-| File                                               | Written by | Read by                   |
-| -------------------------------------------------- | ---------- | ------------------------- |
-| `{run_dir}/step1-{model}-analysis.md`              | Stage 1    | Stage 2                   |
-| `{run_dir}/step2-{model}-plan-draft.md`            | Stage 2    | Stage 3, Stage 4, Stage 6 |
-| `{run_dir}/step3-{model}-review.md`                | Stage 3    | Stage 4, Stage 6          |
-| `{run_dir}/step4-consensus.md`                     | Stage 4    | Stage 5, Stage 6          |
-| `{run_dir}/step4-insights.md`                      | Stage 4    | Stage 6                   |
-| `{run_dir}/step5-resolutions.md`                   | Stage 5    | Stage 6                   |
-| `{session_dir}/{timestamp}-implementation-plan.md` | Stage 6    | Final output              |
-
-## Examples
-
-- Happy: `user_request: "Add user auth to the API"` -- all six stages succeed and write `{plan_filepath}`.
-- Failure: `user_request: ""` -- abort because the required request is empty.
+| File                                               | Written by | Read by          |
+| -------------------------------------------------- | ---------- | ---------------- |
+| `{run_dir}/step1-{model}-draft.md`                 | Stage 1    | Stage 2, Stage 4 |
+| `{run_dir}/step2-{model}-review.md`                | Stage 2    | Stage 3          |
+| `{run_dir}/step3-resolution.md`                    | Stage 3    | Stage 4          |
+| `{session_dir}/{timestamp}-implementation-plan.md` | Stage 4    | Final output     |

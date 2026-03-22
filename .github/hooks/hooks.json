@@ -1,7 +1,15 @@
 {
   "version": 1,
   "hooks": {
-    "sessionStart": [],
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "command -v bd > /dev/null 2>&1 && bd prime || true",
+        "powershell": "if (Get-Command bd -ErrorAction SilentlyContinue) { bd prime }",
+        "cwd": ".",
+        "timeoutSec": 3
+      }
+    ],
     "sessionEnd": [],
     "userPromptSubmitted": [],
     "preToolUse": [],

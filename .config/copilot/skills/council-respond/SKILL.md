@@ -18,16 +18,6 @@ Abort if the response references other models.
 Abort if the output file already exists.
 Abort if the output path is not absolute.
 
-## Input
-
-- `question: string` (required): The question to answer.
-- `output_filepath: string` (required): Absolute path for saving the response.
-
 ## Output
 
 - `saved_filepath: string`: Absolute path of the saved response file.
-
-## Examples
-
-- Happy: question="What is X?", output="/tmp/response.md" -- response written.
-- Failure: output="/tmp/existing.md" where file exists -- abort: output file already exists.

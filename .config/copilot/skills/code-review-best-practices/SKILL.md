@@ -45,7 +45,9 @@ Omit severity sections with no findings.
 ```markdown
 ## CRITICAL
 
-### Brief description — `path/to/file.ext:42`
+### Brief description
+
+File: `path/to/file.ext:42`
 
 Detailed explanation.
 
