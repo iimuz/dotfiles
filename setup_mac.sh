@@ -108,6 +108,9 @@ if type nvim >/dev/null 2>&1; then
 fi
 # === tmux
 if type tmux >/dev/null 2>&1; then
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
+  fi
   create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
 fi
 # === vifm
