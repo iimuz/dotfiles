@@ -3,7 +3,7 @@ name: code-review-quality
 description: Readability and error handling review.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Code Review: Quality

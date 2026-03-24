@@ -3,7 +3,7 @@ name: council-anonymize
 description: Strip model identity and emit a deterministic alphabetical label map.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Council Anonymize

@@ -3,7 +3,7 @@ name: council-aggregate
 description: Aggregate review rankings into a consensus ranking table.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Council Aggregate

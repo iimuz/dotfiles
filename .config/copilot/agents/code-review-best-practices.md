@@ -3,7 +3,7 @@ name: code-review-best-practices
 description: Coding standards and conventions review.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Code Review: Best Practices

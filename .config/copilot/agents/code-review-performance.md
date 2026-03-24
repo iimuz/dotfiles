@@ -3,7 +3,7 @@ name: code-review-performance
 description: Performance and efficiency review.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Code Review: Performance

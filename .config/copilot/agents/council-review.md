@@ -3,7 +3,7 @@ name: council-review
 description: Evaluate anonymized council responses and emit a ranked peer review.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Council Review

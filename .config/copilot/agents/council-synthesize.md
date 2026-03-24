@@ -3,7 +3,7 @@ name: council-synthesize
 description: Synthesize council responses and reviews into a Council Verdict.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Council Synthesize

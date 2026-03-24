@@ -3,7 +3,7 @@ name: code-review-design-compliance
 description: Architecture and design compliance review.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Code Review: Design Compliance

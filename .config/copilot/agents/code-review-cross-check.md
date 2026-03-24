@@ -3,7 +3,7 @@ name: code-review-cross-check
 description: Cross-validate concerns across reviewers.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit"]
 ---
 
 # Code Review: Cross-Check

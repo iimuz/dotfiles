@@ -3,7 +3,7 @@ name: council-respond
 description: Generate a single independent council member response to a question.
 user-invocable: false
 disable-model-invocation: true
-tools: ["read", "search"]
+tools: ["read", "search", "edit", "web"]
 ---
 
 # Council Respond
