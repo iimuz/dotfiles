@@ -12,6 +12,7 @@ relevant specification details:
 
 - [Create custom agents for CLI - GitHub Docs](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli)
 - [Custom agents configuration reference - GitHub Docs](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
+- [Your first custom agent - GitHub Docs](https://docs.github.com/en/copilot/tutorials/customization-library/custom-agents/your-first-custom-agent)
 
 If the fetch fails, follow the overview described below instead.
 
@@ -49,12 +50,41 @@ documentation, these rules take precedence.
 - The `description` is the primary signal Copilot uses for auto-delegation.
   A poor description leads to incorrect or missed invocations.
 
+### Body Structure
+
+The prompt body serves as the system prompt when the agent runs. Follow the
+structure demonstrated in the official GitHub Docs tutorial:
+
+- Open with a persona statement: "You are a {role} specialized in {domain}."
+  Establish expertise and scope in the first sentence.
+- Define scope with bold section headers (e.g., Primary Focus, File Types).
+  Keep each section focused on one responsibility.
+- Include an explicit limitations section with "Do NOT" constraints to
+  prevent scope creep and unwanted side effects.
+- End with a guiding principle that reinforces the agent's primary goal.
+
+### Sub-Agent Pattern
+
+When an agent is designed to be invoked only by an orchestrator (skill or
+agent), not directly by users:
+
+- Set `user-invocable: false` to prevent direct user invocation.
+- Set `disable-model-invocation: true` to prevent auto-delegation bypass.
+- Omit `model` from frontmatter so the orchestrator controls model selection
+  per invocation via `task(agent-name, model=X)`.
+
 ### Anti-Patterns
 
 - Do not define agent behavior that requires tools not declared in `tools`.
 - Do not use `allowed-tools` in custom agent frontmatter. Use `tools` instead.
 - Do not rely on `argument-hint` or `handoffs` in CLI-targeted custom agent guidance.
   These properties are not supported in Copilot CLI or GitHub.com.
+
+### Canonical Examples
+
+- Sub-agent (aspect reviewer): `.config/copilot/agents/code-review-security.md`
+- Sub-agent (pipeline utility): `.config/copilot/agents/code-review-consolidate.md`
+- User-facing agent: `.config/copilot/agents/orchestrator.md`
 
 ### Linter-Enforceable Rules Exclusions
 

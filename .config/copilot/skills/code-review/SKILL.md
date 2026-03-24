@@ -49,9 +49,8 @@ Launch parallel subagents for each (model, aspect) pair:
 Add design-compliance when design_info is resolved (up to 15 parallel).
 Adapt the prompt template below with the actual aspect, model, target, and run_dir.
 
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(code-review-{aspect}, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-> Invoke skill code-review-{aspect} with
 > target={target},
 > output_filepath={run_dir}/review-{aspect}-{model}.md
 
@@ -66,9 +65,8 @@ For design-compliance, add `design_info={resolved_design_info}`.
 Compare findings across models to identify concerns missed by specific reviewers.
 Adapt the prompt template below with the collected review file paths.
 
-task(general-purpose, model=claude-opus-4.6):
+task(code-review-gap-analysis, model=claude-opus-4.6):
 
-> Invoke skill code-review-gap-analysis with
 > review_file_paths={review_file_paths},
 > output_filepath={run_dir}/gap-list.yml
 
@@ -81,9 +79,8 @@ For each gap entry, launch the model named in `missed_by` to verify the concern.
 Group entries by model and aspect into a single invocation. Adapt the prompt template
 below with the actual aspect, concerns, and model.
 
-task(general-purpose, model={missed_by_model}):
+task(code-review-cross-check, model={missed_by_model}):
 
-> Invoke skill code-review-cross-check with
 > aspect={aspect}, concerns={concerns},
 > output_filepath={run_dir}/crosscheck-{aspect}-{model}.md
 
@@ -95,9 +92,8 @@ task(general-purpose, model={missed_by_model}):
 Merge all artifacts from Stages 1-3 into the final report. Adapt the prompt template
 below with the collected file paths and the final output path.
 
-task(general-purpose, model=claude-opus-4.6):
+task(code-review-consolidate, model=claude-opus-4.6):
 
-> Invoke skill code-review-consolidate with
 > review_file_paths={review_file_paths},
 > gap_list_path={run_dir}/gap-list.yml,
 > crosscheck_paths={crosscheck_paths},

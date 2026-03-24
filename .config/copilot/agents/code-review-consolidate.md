@@ -2,7 +2,8 @@
 name: code-review-consolidate
 description: Merge aspect reviews into unified report.
 user-invocable: false
-disable-model-invocation: false
+disable-model-invocation: true
+tools: ["read", "search"]
 ---
 
 # Code Review: Consolidate

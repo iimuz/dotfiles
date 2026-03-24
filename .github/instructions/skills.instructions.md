@@ -112,6 +112,6 @@ documentation, these rules take precedence.
 
 When creating or modifying skills, refer to existing skills as authoritative examples:
 
-- Single-operation (analysis): `.config/copilot/skills/code-review-security/SKILL.md`
-- Single-operation (utility): `.config/copilot/skills/code-review-cross-check/SKILL.md`
+- Single-operation (analysis): `.config/copilot/skills/adr-extract/SKILL.md`
+- Single-operation (utility): `.config/copilot/skills/commit-staged/SKILL.md`
 - Workflow orchestrator: `.config/copilot/skills/code-review/SKILL.md`

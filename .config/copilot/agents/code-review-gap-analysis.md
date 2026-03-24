@@ -2,7 +2,8 @@
 name: code-review-gap-analysis
 description: Identify gaps between aspect reviewers.
 user-invocable: false
-disable-model-invocation: false
+disable-model-invocation: true
+tools: ["read", "search"]
 ---
 
 # Code Review: Gap Analysis
