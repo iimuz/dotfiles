@@ -2,7 +2,7 @@
 name: implementation-plan-review
 description: Cross-review plan drafts for gaps and conflicts.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 tools: ["read", "search", "edit"]
 ---
 

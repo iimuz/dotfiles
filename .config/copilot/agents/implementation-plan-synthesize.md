@@ -2,7 +2,7 @@
 name: implementation-plan-synthesize
 description: Synthesize artifacts into the final plan.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 tools: ["read", "edit"]
 ---
 
