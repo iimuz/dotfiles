@@ -2,7 +2,7 @@
 name: code-review-security
 description: Security vulnerability review.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 tools: ["read", "search", "edit"]
 ---
 

@@ -2,7 +2,7 @@
 name: council-fallback
 description: Produce fallback Council Verdict when synthesis is missing or failed.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 tools: ["read", "search", "edit"]
 ---
 

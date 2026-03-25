@@ -2,7 +2,7 @@
 name: implementation-plan-resolve
 description: Aggregate consensus, resolve conflicts, evaluate insights.
 user-invocable: false
-disable-model-invocation: true
+disable-model-invocation: false
 tools: ["read", "search", "edit"]
 ---
 
