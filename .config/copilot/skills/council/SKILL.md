@@ -47,9 +47,8 @@ Launch three independent Stage 1 responses in parallel with `claude-opus-4.6`,
 `gemini-3-pro-preview`, and `gpt-5.4`. Each model must answer the same question without
 seeing the others. This stage establishes quorum for the rest of the workflow.
 
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(council-respond, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-> Invoke skill council-respond with
 > question={question},
 > output_filepath={run_dir}/council-stage1-{model}.md
 
@@ -63,9 +62,8 @@ This stage also emits the anonymized artifact paths and label mapping that later
 need to reconnect anonymized labels to original artifacts. Abort if either artifact is
 missing or if anonymized content still contains model names.
 
-task(general-purpose, model=claude-opus-4.6):
+task(council-anonymize, model=claude-opus-4.6):
 
-> Invoke skill council-anonymize with
 > question={question},
 > response_paths={stage1_response_paths},
 > output_anonymized_path={run_dir}/council-stage2-input.md,
@@ -81,9 +79,8 @@ parseable reviews that include a `FINAL RANKING` section. If fewer than 2 valid 
 received, continue with what is available. If all reviews fail to parse, skip Stage 4 and
 send Stage 5 the anonymized artifacts without rankings.
 
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(council-review, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 
-> Invoke skill council-review with
 > anonymized_artifact_path={anonymized_input_path},
 > output_review_path={run_dir}/council-stage3-{model}.md
 
@@ -98,9 +95,8 @@ table must use canonical header ordering, and if the header ordering is wrong it
 regenerated before returning. If aggregation fails or the output file is missing, continue
 to Stage 5 without aggregate rankings.
 
-task(general-purpose, model=claude-opus-4.6):
+task(council-aggregate, model=claude-opus-4.6):
 
-> Invoke skill council-aggregate with
 > review_artifact_paths={stage3_review_paths},
 > label_map_path={label_map_path},
 > output_rankings_path={run_dir}/council-aggregate-rankings.md
@@ -117,9 +113,8 @@ with the question, available Stage 1 response paths, optional aggregate ranking 
 label map path, and `output_fallback_path={session_dir}/{timestamp}-council-fallback.md`.
 Pass `aggregate_ranking_path` only when it is available.
 
-task(general-purpose, model=claude-opus-4.6):
+task(council-synthesize, model=claude-opus-4.6):
 
-> Invoke skill council-synthesize with
 > question={question},
 > anonymized_artifact_paths={anonymized_artifact_paths},
 > aggregate_ranking_path={aggregate_ranking_path},
