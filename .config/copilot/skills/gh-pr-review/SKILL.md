@@ -1,5 +1,5 @@
 ---
-name: draft-review
+name: gh-pr-review
 description: Create pending PR review drafts with comments and suggestions.
 user-invocable: true
 disable-model-invocation: false
