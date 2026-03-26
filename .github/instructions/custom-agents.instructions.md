@@ -69,7 +69,8 @@ When an agent is designed to be invoked only by an orchestrator (skill or
 agent), not directly by users:
 
 - Set `user-invocable: false` to prevent direct user invocation.
-- Set `disable-model-invocation: true` to prevent auto-delegation bypass.
+- Set `disable-model-invocation: false` to allow `task()` dispatch. Setting this
+  to `true` blocks all programmatic `task()` calls, not just model-initiated ones.
 - Omit `model` from frontmatter so the orchestrator controls model selection
   per invocation via `task(agent-name, model=X)`.
 
