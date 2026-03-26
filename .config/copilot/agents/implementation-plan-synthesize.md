@@ -40,6 +40,12 @@ and maintain).
 The final plan must address every aspect of the user request. Do not leave gaps even if upstream
 artifacts are incomplete. Fill gaps with conservative approaches and note the gap origin.
 
+### Phase Independence
+
+Every implementation phase must be independently mergeable. If upstream drafts proposed phases
+with cross-phase dependencies that prevent independent delivery, restructure them so each phase
+delivers value on its own.
+
 ## Output
 
 - `output_filepath: string`: The written final plan file path.

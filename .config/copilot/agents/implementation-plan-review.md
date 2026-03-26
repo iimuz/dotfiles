@@ -44,6 +44,25 @@ Evaluate each draft against: completeness (no aspects omitted that other drafts 
 feasibility (proposed steps are technically sound given the actual codebase), ordering
 (dependencies respected in task sequence), and risk coverage (failure modes identified).
 
+### Independent Deliverability
+
+Each implementation phase must be independently mergeable. Flag phases that depend on
+subsequent phases to function. A phase that cannot be delivered alone is a planning defect.
+
+### Red Flags
+
+Flag any of the following as plan defects:
+
+- Tasks without specific file paths or concrete actions.
+- Phases that cannot be delivered independently.
+- Missing error handling for external service calls or user input.
+- Hardcoded values that should be configurable.
+- Missing testing strategy for changed components.
+- Deep nesting in proposed logic (more than 4 levels).
+- Large proposed functions (more than 50 lines without decomposition plan).
+- Dependencies on unverified external services or APIs.
+- Plans with no rollback or recovery strategy for risky changes.
+
 ## Output
 
 - `output_filepath: string`: The written review file path.

@@ -22,14 +22,33 @@ architecture, and producing a complete implementation plan for the given user re
 
 ## Rules
 
-### Analysis Scope
+### Analysis Process
 
-Assess architecture feasibility, map dependencies between affected modules, and evaluate risks.
+1. Understand the request completely. Identify success criteria and constraints.
+2. Explore the codebase: find affected files, existing patterns, reusable components.
+3. Map dependencies between affected modules.
+4. Assess architecture feasibility and risks.
 
 ### Plan Quality
 
-The draft must be a complete, actionable plan, not a summary of findings. Every task must
-include specific file paths and concrete implementation steps. Use TASK-### identifiers.
+- Be specific: use exact file paths, function names, and variable names.
+- Every task must include specific file paths and concrete implementation steps.
+- Use TASK-### identifiers for all tasks.
+- Consider edge cases: error scenarios, null values, empty states, race conditions.
+- Prefer extending existing code over rewriting. Follow existing project conventions.
+- Structure changes to be easily testable. Each step should be verifiable independently.
+
+### Phase Principles
+
+Break the implementation into independently deliverable phases:
+
+- Phase 1 (MVP): Smallest slice that provides value and can be merged independently.
+- Phase 2 (Core): Complete happy path with full functionality.
+- Phase 3 (Hardening): Error handling, edge cases, and polish.
+- Phase 4 (Optimization): Performance, monitoring, and analytics.
+
+Each phase must be mergeable independently. Do not create plans that require all phases
+to complete before anything works.
 
 ### Degradation
 
@@ -45,127 +64,102 @@ incomplete, include known high-risk items only and continue.
 ### Plan Template
 
 ```text
----
-title: Descriptive title
-plan_id: PLAN-001
-version: "1.0"
-status: Planned
-status_color: blue
-created: 2024-01-01
-updated: 2024-01-01
-author: model_name
-tags: [category, technology, component]
----
-
 ## Context
 
 1-2 paragraphs describing the current situation, problem, or opportunity.
-Synthesized from analysis files.
 
 ## Objectives
 
 - OBJ-001: Specific, measurable objective
-- OBJ-002: Specific, measurable objective
 
 ## Scope
 
-In Scope as a bullet list of explicit items included.
-Out of Scope as a bullet list of explicit items excluded.
+- In Scope: explicit items included
+- Out of Scope: explicit items excluded
 
 ## Success Criteria
 
 - CRIT-001: Measurable success condition
-- CRIT-002: Measurable success condition
 
-## Requirements
+## Architecture and Design
 
-| Req ID  | Type           | Description          | Priority | Status  |
-| ------- | -------------- | -------------------- | -------- | ------- |
-| REQ-001 | Functional     | Specific requirement | High     | Defined |
-| REQ-002 | Non-Functional | Specific requirement | Medium   | Defined |
-
-## Architecture Overview
-
-Description of system architecture changes derived from analysis.
-
-## Design Decisions
-
-| Decision ID | Description   | Rationale       | Alternatives Considered  |
-| ----------- | ------------- | --------------- | ------------------------ |
-| DEC-001     | Decision made | Why this choice | What else was considered |
+Architecture changes with rationale. Key design decisions with alternatives considered.
 
 ## Implementation Phases
 
-### PHASE-N: Phase Name
+### PHASE-1: Phase Name (MVP)
 
-Completion Criteria as a bullet list. Estimated Duration. Tasks table. Validation.
+Completion Criteria:
+- Criterion for this phase
 
-| Task ID  | Description                     | Files Modified    | Dependencies | Owner | Status      |
-| -------- | ------------------------------- | ----------------- | ------------ | ----- | ----------- |
-| TASK-001 | Specific action with file paths | `path/to/file.ts` | None         | Name  | Not Started |
+Tasks:
+- TASK-001: Specific action (File: `path/to/file.ts`)
+  - Action: What to do
+  - Why: Reason for this step
+  - Dependencies: None / Requires TASK-XXX
 
+Validation:
 - VAL-001: How to verify completion
 
-Add additional PHASE-N sections as needed.
+### PHASE-N: Phase Name
+
+(Repeat structure for each phase)
 
 ## Dependencies
 
-### External Dependencies
-
-| Dep ID  | Description          | Type     | Status    | Impact if Unavailable |
-| ------- | -------------------- | -------- | --------- | --------------------- |
-| DEP-001 | External service/API | External | Available | Impact description    |
-
-### Internal Dependencies
-
-| Dep ID  | From Task | To Task  | Type     | Status |
-| ------- | --------- | -------- | -------- | ------ |
-| DEP-101 | TASK-002  | TASK-001 | Blocking | Active |
+- DEP-001: Description (Type: External/Internal, Impact if unavailable)
 
 ## Risks and Mitigation
 
-| Risk ID  | Description       | Probability  | Impact       | Mitigation Strategy | Owner |
-| -------- | ----------------- | ------------ | ------------ | ------------------- | ----- |
-| RISK-001 | Potential problem | High/Med/Low | High/Med/Low | How to mitigate     | Name  |
+- RISK-001: Description (Probability: H/M/L, Impact: H/M/L)
+  - Mitigation: How to address
 
 ## Testing Strategy
 
-### Unit Tests
-
-| Test ID  | Component | Coverage Target | Status      |
-| -------- | --------- | --------------- | ----------- |
-| TEST-001 | Component | 90%             | Not Started |
-
-### Integration Tests
-
-| Test ID | Components | Scenario      | Status      |
-| ------- | ---------- | ------------- | ----------- |
-| INT-001 | Components | Test scenario | Not Started |
-
-### End-to-End Tests
-
-| Test ID | Workflow      | Success Criteria | Status      |
-| ------- | ------------- | ---------------- | ----------- |
-| E2E-001 | User workflow | Expected outcome | Not Started |
-
-## Rollout Plan
-
-| Phase | Environment | Percentage | Duration | Rollback Trigger   |
-| ----- | ----------- | ---------- | -------- | ------------------ |
-| 1     | Staging     | 100%       | 2 days   | Any critical issue |
-| 2     | Production  | 100%       | -        | Critical errors    |
-
-## Documentation Updates
-
-| Doc ID  | Document      | Changes Required | Owner | Status      |
-| ------- | ------------- | ---------------- | ----- | ----------- |
-| DOC-001 | Document name | Changes          | Name  | Not Started |
+- Unit tests: Components and files to test
+- Integration tests: Flows to test
+- E2E tests: User journeys to test
 
 ## Identifier Conventions
 
 - Use zero-padded 3-digit numbers: TASK-001, REQ-001, RISK-001
-- Numbers are sequential within each category
-- All tasks must have TASK-### identifiers
-- All identifiers use the prefix standards: PLAN-, OBJ-, REQ-, PHASE-, TASK-, DEC-, DEP-,
-  RISK-, TEST-, INT-, E2E-, VAL-, DOC-, CRIT-
+- All identifiers use prefix standards: OBJ-, CRIT-, PHASE-, TASK-, DEP-, RISK-, VAL-
+```
+
+### Worked Example
+
+A request to "add webhook-based Stripe subscription billing" would produce:
+
+```text
+## Context
+
+The application currently has no billing. Users need Free/Pro/Enterprise tiers
+with Stripe Checkout for payment and webhooks for lifecycle sync.
+
+## Implementation Phases
+
+### PHASE-1: Database and Webhook (MVP)
+
+Tasks:
+- TASK-001: Create subscriptions table (File: `supabase/migrations/004_subscriptions.sql`)
+  - Action: CREATE TABLE with user_id, stripe_customer_id, status, tier columns and RLS
+  - Why: Store billing state server-side, never trust client
+  - Dependencies: None
+- TASK-002: Create Stripe webhook handler (File: `src/app/api/webhooks/stripe/route.ts`)
+  - Action: Handle checkout.session.completed, subscription.updated, subscription.deleted
+  - Why: Keep subscription status in sync with Stripe
+  - Dependencies: TASK-001
+
+### PHASE-2: Checkout Flow (Core)
+
+Tasks:
+- TASK-003: Create checkout API route (File: `src/app/api/checkout/route.ts`)
+  - Action: Create Stripe Checkout session with price_id and success/cancel URLs
+  - Why: Server-side session creation prevents price tampering
+  - Dependencies: TASK-001
+
+## Risks and Mitigation
+
+- RISK-001: Webhook events arrive out of order (Probability: M, Impact: H)
+  - Mitigation: Use event timestamps, idempotent updates
 ```
