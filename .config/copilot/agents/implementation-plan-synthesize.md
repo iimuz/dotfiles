@@ -53,39 +53,59 @@ delivers value on its own.
 ### Output Format
 
 ```text
-## Introduction
+## Context
 
-Overview of the implementation request and synthesis approach.
+1-2 paragraphs describing the current situation, problem, or opportunity.
 
-## Requirements
+## Objectives
 
-Consolidated functional and non-functional requirements from all artifacts.
+- OBJ-001: Specific, measurable objective
+
+## Scope
+
+- In Scope: explicit items included
+- Out of Scope: explicit items excluded
+
+## Success Criteria
+
+- CRIT-001: Measurable success condition
 
 ## Architecture and Design
 
-System architecture changes and design decisions with rationale.
+Architecture changes with rationale. Key design decisions with alternatives considered.
 
 ## Implementation Phases
 
-Phased task breakdown with identifiers, dependencies, and validation criteria.
+### PHASE-1: Phase Name (MVP)
 
-## Dependencies and Risks
+Completion Criteria:
+- Criterion for this phase
 
-External and internal dependencies. Risk assessment with mitigation strategies.
+Tasks:
+- TASK-001: Specific action (File: `path/to/file.ts`)
+  - Action: What to do
+  - Why: Reason for this step
+  - Dependencies: None / Requires TASK-XXX
 
-## Testing and Validation
+Validation:
+- VAL-001: How to verify completion
 
-Unit, integration, and end-to-end testing strategy.
+### PHASE-N: Phase Name
 
-## Rollout and Monitoring
+(Repeat structure for each phase)
 
-Deployment phases, rollback triggers, and monitoring plan.
+## Dependencies
 
-## Documentation and Communication
+- DEP-001: Description (Type: External/Internal, Impact if unavailable)
 
-Documentation updates and stakeholder communication plan.
+## Risks and Mitigation
 
-## Appendices
+- RISK-001: Description (Probability: H/M/L, Impact: H/M/L)
+  - Mitigation: How to address
 
-Supporting materials, references, and supplementary analysis.
+## Testing Strategy
+
+- Unit tests: Components and files to test
+- Integration tests: Flows to test
+- E2E tests: User journeys to test
 ```
