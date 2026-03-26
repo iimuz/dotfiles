@@ -1,5 +1,5 @@
 ---
-name: resolve-comments
+name: gh-pr-resolve
 description: Resolve PR review comments when users ask to gather facts, evaluate fixes, verify diffs, and commit approved changes.
 user-invocable: true
 disable-model-invocation: false
@@ -14,8 +14,8 @@ what should change, apply approved fixes, verify the result, and report the outc
 
 At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
-- Intermediate artifacts: `{session_dir}/{timestamp}-resolve-comments/` (referred to as `run_dir`)
-- Final output: `{session_dir}/{timestamp}-resolve-comments-summary.md`
+- Intermediate artifacts: `{session_dir}/{timestamp}-gh-pr-resolve/` (referred to as `run_dir`)
+- Final output: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
 
 `session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
 
@@ -102,7 +102,7 @@ task(general-purpose, model=gpt-5.4):
 Write a final summary covering gather, evaluate, implement, verify, and commit outcomes.
 Report skips, degraded paths, unresolved risks, and any commit_skip_reason explicitly.
 
-- Output: `{session_dir}/{timestamp}-resolve-comments-summary.md`
+- Output: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
 - Fault: Abort if the final summary file cannot be written.
 
 ## Session Files
@@ -114,11 +114,11 @@ Report skips, degraded paths, unresolved risks, and any commit_skip_reason expli
 - `{run_dir}/implement.json`
 - `{run_dir}/verify.json`
 - `{run_dir}/commit.json`
-- `{session_dir}/{timestamp}-resolve-comments-summary.md`
+- `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
 
 ## Output
 
-Final output path: `{session_dir}/{timestamp}-resolve-comments-summary.md`
+Final output path: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
 
 ## Examples
 

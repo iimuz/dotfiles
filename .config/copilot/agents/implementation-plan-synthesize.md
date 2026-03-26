@@ -40,6 +40,12 @@ and maintain).
 The final plan must address every aspect of the user request. Do not leave gaps even if upstream
 artifacts are incomplete. Fill gaps with conservative approaches and note the gap origin.
 
+### Phase Independence
+
+Every implementation phase must be independently mergeable. If upstream drafts proposed phases
+with cross-phase dependencies that prevent independent delivery, restructure them so each phase
+delivers value on its own.
+
 ## Output
 
 - `output_filepath: string`: The written final plan file path.
@@ -47,39 +53,42 @@ artifacts are incomplete. Fill gaps with conservative approaches and note the ga
 ### Output Format
 
 ```text
-## Introduction
+## Context
 
-Overview of the implementation request and synthesis approach.
-
-## Requirements
-
-Consolidated functional and non-functional requirements from all artifacts.
+1-2 paragraphs describing the current situation, problem, or opportunity.
 
 ## Architecture and Design
 
-System architecture changes and design decisions with rationale.
+Architecture changes with rationale. Key design decisions with alternatives considered.
 
 ## Implementation Phases
 
-Phased task breakdown with identifiers, dependencies, and validation criteria.
+### PHASE-1: Phase Name (MVP)
 
-## Dependencies and Risks
+Completion Criteria:
+- Criterion for this phase
 
-External and internal dependencies. Risk assessment with mitigation strategies.
+Tasks:
+- TASK-001: Specific action (File: `path/to/file.ts`)
+  - Action: What to do
+  - Why: Reason for this step
+  - Dependencies: None / Requires TASK-XXX
 
-## Testing and Validation
+Validation:
+- VAL-001: How to verify completion
 
-Unit, integration, and end-to-end testing strategy.
+### PHASE-N: Phase Name
 
-## Rollout and Monitoring
+(Repeat structure for each phase)
 
-Deployment phases, rollback triggers, and monitoring plan.
+## Risks and Mitigation
 
-## Documentation and Communication
+- RISK-001: Description (Probability: H/M/L, Impact: H/M/L)
+  - Mitigation: How to address
 
-Documentation updates and stakeholder communication plan.
+## Testing Strategy
 
-## Appendices
-
-Supporting materials, references, and supplementary analysis.
+- Unit tests: Components and files to test
+- Integration tests: Flows to test
+- E2E tests: User journeys to test
 ```

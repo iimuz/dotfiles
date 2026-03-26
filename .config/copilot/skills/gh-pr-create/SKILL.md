@@ -1,5 +1,5 @@
 ---
-name: pr-draft
+name: gh-pr-create
 description: Create GitHub pull request drafts using Conventional Commit parameters (validates inputs).
 ---
 
