@@ -12,23 +12,14 @@ disable-model-invocation: false
 
 ## Overview
 
-This workflow skill coordinates iterative CloudWatch Logs investigation through task subagents.
+This workflow skill dispatches a single autonomous investigation subagent for CloudWatch Logs.
 The main agent never runs AWS CLI commands and never reads raw log files.
-
-Subagents are autonomous investigators. The orchestrator provides the problem, the infrastructure
-context, and the findings accumulated so far. Each investigation subagent independently decides
-which log groups to query, what time ranges to search, and what analysis to perform.
 
 At execution start, generate one `YYYYMMDDHHMMSS` timestamp. Resolve `session_dir` to
 `~/.copilot/session-state/{session_id}/files/`, derive `{session_dir}/{timestamp}-aws-cli/`
 as `run_dir`, and derive `{session_dir}/{timestamp}-aws-cli-summary.md` for the final summary.
 Create `run_dir` once, verify it exists immediately after creation, and abort if that
 verification fails.
-
-The investigation loop runs for at most 5 iterations. After each unresolved result, re-dispatch
-Stage 2 with the accumulated prior summaries so the next investigation subagent can pivot
-autonomously. If the loop still ends unresolved, write a partial final summary with findings,
-artifact paths, and remaining unknowns.
 
 ## Input
 
@@ -43,8 +34,8 @@ artifact paths, and remaining unknowns.
 - `summary_path: string` (required) - Final summary path at
   `{session_dir}/{timestamp}-aws-cli-summary.md`.
 - `resolved: boolean` (required) - Whether the investigation reached a satisfactory conclusion.
-- `findings: string[]` (required) - Iteration summaries accumulated through the loop.
-- `artifact_paths: string[]` (required) - Paths saved by investigation subagents.
+- `findings: string[]` (required) - Investigation findings from the subagent.
+- `artifact_paths: string[]` (required) - Paths saved by the investigation subagent.
 - `remaining_unknowns: string[]` (optional) - Outstanding questions when the investigation remains
   unresolved.
 
@@ -53,56 +44,43 @@ artifact paths, and remaining unknowns.
 ### Stage 1: Initialize
 
 Create one run timestamp, derive `run_dir`, create it under
-`{session_dir}/{timestamp}-aws-cli/`, and verify the directory exists before any subagent work
-begins. Initialize empty arrays for findings, artifact paths, and prior summaries, prepare the
-final summary path at `{session_dir}/{timestamp}-aws-cli-summary.md`, and set loop state for up
-to 5 iterations.
+`{session_dir}/{timestamp}-aws-cli/`, and verify the directory exists before subagent work
+begins. Prepare the final summary path at `{session_dir}/{timestamp}-aws-cli-summary.md`.
 
-- Output: `timestamp`, `run_dir`, `summary_path`, and the initial loop state.
+- Output: `timestamp`, `run_dir`, `summary_path`.
 - Fault: Abort if `run_dir` cannot be created or verified.
 
 ### Stage 2: Investigate
 
-Dispatch a task subagent for the current iteration. Adapt the prompt template below with the
-current iteration context, including optional hints and the summaries accumulated so far.
+Dispatch a single autonomous investigation subagent. The subagent handles its own
+retrieval-analysis iteration loop internally (up to 5 cycles). Adapt the prompt template below
+with the actual context.
 
-task(general-purpose, model=claude-opus-4.6):
+task(aws-cli-log-retrieval, model=claude-opus-4.6):
 
-> Here is the user problem, the infrastructure context including `profile`, `region`, and
-> `run_dir`, any optional hints such as `log_groups` and `time_range`, and the prior findings
-> from earlier iterations. Invoke `aws-cli-log-retrieval` via `skill()` for retrieval best
-> practices, investigate autonomously, and return only `summary`, `saved_paths`, and `resolved`.
-> Never include raw log content.
+> request={request},
+> run_dir={run_dir},
+> profile={profile},
+> region={region},
+> investigation_context={request} with optional hints: log_groups={log_groups},
+> time_range={time_range}
 
-- Output: `summary`, `saved_paths`, `resolved`, and any artifacts written in `run_dir`.
-- Fault: If the subagent returns malformed structure or raw log content, retry once with a
-  refined prompt and abort on repeat failure.
+- Output: `summary`, `saved_paths`, `resolved`, and `remaining_unknowns`.
+- Fault: Retry once on malformed output. Abort on repeat failure.
 
-### Stage 3: Evaluate
+### Stage 3: Finalize
 
-Review the Stage 2 result, append valid summaries and saved paths to the running findings, and
-decide whether the investigation is resolved or unresolved. If it is unresolved and iterations
-remain, continue the loop by re-dispatching Stage 2 with the accumulated prior summaries and
-artifact paths so the next subagent can pivot from earlier findings.
-
-- Output: Updated findings, artifact paths, prior summaries, and the next loop decision.
-- Fault: Treat empty or malformed investigation results as unresolved and continue only if the
-  iteration limit has not been reached.
-
-### Stage 4: Finalize
-
-End the loop when `resolved` becomes true or when 5 iterations have been used. Write the final
-summary to `{session_dir}/{timestamp}-aws-cli-summary.md`, include the findings gathered across
-iterations, list all artifact paths, and note whether the result is resolved or partial. When the
-loop ends unresolved, the summary must explicitly include remaining unknowns, any failed log
-groups, and expired credential findings that limited the investigation.
+Write the final summary to `{session_dir}/{timestamp}-aws-cli-summary.md`. Include the
+subagent findings, list all artifact paths, and note whether the result is resolved or partial.
+When unresolved, the summary must explicitly include remaining unknowns, any failed log groups,
+and expired credential findings that limited the investigation.
 
 - Output: Final summary at `{session_dir}/{timestamp}-aws-cli-summary.md`.
 - Fault: Abort if the final summary cannot be written, and report the filesystem failure.
 
 ## Examples
 
-- Happy: Investigate Lambda timeout errors, loop through autonomous subagent iterations, and
+- Happy: Investigate Lambda timeout errors, subagent iterates autonomously, and
   write a resolved summary with saved artifact paths.
-- Failure: Exhaust 5 autonomous investigation iterations, preserve accumulated findings, and
+- Failure: Subagent exhausts investigation cycles, preserve accumulated findings, and
   write a partial summary with remaining unknowns.
