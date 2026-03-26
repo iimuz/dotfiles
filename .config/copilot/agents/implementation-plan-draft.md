@@ -68,19 +68,6 @@ incomplete, include known high-risk items only and continue.
 
 1-2 paragraphs describing the current situation, problem, or opportunity.
 
-## Objectives
-
-- OBJ-001: Specific, measurable objective
-
-## Scope
-
-- In Scope: explicit items included
-- Out of Scope: explicit items excluded
-
-## Success Criteria
-
-- CRIT-001: Measurable success condition
-
 ## Architecture and Design
 
 Architecture changes with rationale. Key design decisions with alternatives considered.
@@ -105,10 +92,6 @@ Validation:
 
 (Repeat structure for each phase)
 
-## Dependencies
-
-- DEP-001: Description (Type: External/Internal, Impact if unavailable)
-
 ## Risks and Mitigation
 
 - RISK-001: Description (Probability: H/M/L, Impact: H/M/L)
@@ -122,8 +105,8 @@ Validation:
 
 ## Identifier Conventions
 
-- Use zero-padded 3-digit numbers: TASK-001, REQ-001, RISK-001
-- All identifiers use prefix standards: OBJ-, CRIT-, PHASE-, TASK-, DEP-, RISK-, VAL-
+- Use zero-padded 3-digit numbers: TASK-001, RISK-001
+- All identifiers use prefix standards: PHASE-, TASK-, RISK-, VAL-
 ```
 
 ### Worked Example

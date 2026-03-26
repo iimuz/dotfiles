@@ -57,19 +57,6 @@ delivers value on its own.
 
 1-2 paragraphs describing the current situation, problem, or opportunity.
 
-## Objectives
-
-- OBJ-001: Specific, measurable objective
-
-## Scope
-
-- In Scope: explicit items included
-- Out of Scope: explicit items excluded
-
-## Success Criteria
-
-- CRIT-001: Measurable success condition
-
 ## Architecture and Design
 
 Architecture changes with rationale. Key design decisions with alternatives considered.
@@ -93,10 +80,6 @@ Validation:
 ### PHASE-N: Phase Name
 
 (Repeat structure for each phase)
-
-## Dependencies
-
-- DEP-001: Description (Type: External/Internal, Impact if unavailable)
 
 ## Risks and Mitigation
 
