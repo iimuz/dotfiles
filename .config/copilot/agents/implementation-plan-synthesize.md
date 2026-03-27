@@ -1,6 +1,7 @@
 ---
 name: implementation-plan-synthesize
 description: Synthesize artifacts into the final plan.
+model: claude-opus-4.6
 user-invocable: false
 disable-model-invocation: false
 tools: ["read", "edit"]

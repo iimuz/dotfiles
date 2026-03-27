@@ -1,6 +1,7 @@
 ---
 name: council-synthesize
 description: Synthesize council responses and reviews into a Council Verdict.
+model: claude-opus-4.6
 user-invocable: false
 disable-model-invocation: false
 tools: ["read", "search", "edit"]

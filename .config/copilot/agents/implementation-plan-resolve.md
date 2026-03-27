@@ -1,6 +1,7 @@
 ---
 name: implementation-plan-resolve
 description: Aggregate consensus, resolve conflicts, evaluate insights.
+model: claude-opus-4.6
 user-invocable: false
 disable-model-invocation: false
 tools: ["read", "search", "edit"]

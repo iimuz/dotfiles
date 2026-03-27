@@ -24,9 +24,8 @@ agent), not directly by users:
 - Set `user-invocable: false` to prevent direct user invocation.
 - Set `disable-model-invocation: false` to allow `task()` dispatch. Setting this
   to `true` blocks all programmatic `task()` calls, not just model-initiated ones.
-- Omit `model` from frontmatter so the orchestrator controls model selection
-  per invocation via `task(agent-name, model=X)`. Agents that Copilot
-  auto-selects (not orchestrator-invoked) may specify `model` explicitly.
+- Set `model` when the agent has a clear model affinity per the Model Selection
+  policy. Orchestrators can still override via `task(agent-name, model=X)`.
 
 ### Tool Property
 
