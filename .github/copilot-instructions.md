@@ -35,10 +35,7 @@
 ## Workflow
 
 1. Read: Open file manifest entries and extract constraints relevant to the task.
-2. Plan: Determine the minimal set of changes needed. Create or open a plan
-   file before executing, except for single-file single-line edits (e.g.,
-   typo fix). If the user provided a tagged plan file, use that file.
-   Otherwise, create `docs/plans/[YYYY-MM-DD]-[action].md` from
-   `docs/templates/plan.md`.
+2. Plan: Determine the minimal set of changes needed. If the user provided a
+   tagged plan file, use that file.
 3. Execute: Implement focused changes.
 4. Verify: Run `mise run lint` and `mise run format` after modifications.
