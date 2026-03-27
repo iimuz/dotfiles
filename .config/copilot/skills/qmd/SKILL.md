@@ -1,12 +1,15 @@
 ---
 name: qmd
-description: Search personal markdown knowledge bases, notes, meeting transcripts, and documentation using QMD - a local hybrid search engine. Combines BM25 keyword search, vector semantic search, and LLM re-ranking. Use when users ask to search notes, find documents, look up information in their knowledge base, retrieve meeting notes, or search documentation. Triggers on "search markdown files", "search my notes", "find in docs", "look up", "what did I write about", "meeting notes about".
+description: >-
+  Use when searching personal markdown notes, knowledge bases, meeting
+  transcripts, or documentation. Triggers on "search notes", "find in docs",
+  "look up".
 license: MIT
 compatibility: Requires qmd CLI or MCP server. Install via `bun install -g https://github.com/tobi/qmd`.
 metadata:
   author: tobi
   version: "1.1.1"
-allowed-tools: Bash(qmd:*), mcp__qmd__*
+allowed-tools: Bash(qmd:*) mcp__qmd__*
 ---
 
 # QMD - Quick Markdown Search

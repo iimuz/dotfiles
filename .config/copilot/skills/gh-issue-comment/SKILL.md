@@ -1,6 +1,8 @@
 ---
 name: gh-issue-comment
-description: Post a summary + collapsible details comment to a GitHub Issue. Use when recording investigation results, review summaries, or incident reports on Issues.
+description: >-
+  Use when recording investigation results, review summaries, or incident
+  reports as comments on GitHub Issues.
 user-invocable: true
 disable-model-invocation: false
 ---

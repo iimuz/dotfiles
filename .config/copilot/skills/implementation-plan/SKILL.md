@@ -1,6 +1,8 @@
 ---
 name: implementation-plan
-description: Multi-model parallel implementation plan orchestrator. Use when creating implementation plans, breaking down features into tasks, or when the user asks to plan code changes, architecture decisions, or feature development.
+description: >-
+  Use when creating implementation plans, breaking down features into tasks,
+  or planning code changes and architecture decisions.
 user-invocable: true
 disable-model-invocation: false
 ---

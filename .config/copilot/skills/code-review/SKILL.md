@@ -1,6 +1,8 @@
 ---
 name: code-review
-description: Multi-model parallel code review orchestrator. Use when reviewing code changes, analyzing staged/unstaged diffs, or when the user asks to review code quality, security, performance, or design compliance.
+description: >-
+  Use when reviewing code changes, analyzing staged/unstaged diffs, or when the
+  user asks to review code quality, security, performance, or design compliance.
 user-invocable: true
 disable-model-invocation: false
 ---

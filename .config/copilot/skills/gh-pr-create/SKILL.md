@@ -1,6 +1,9 @@
 ---
 name: gh-pr-create
-description: Create GitHub pull request drafts using Conventional Commit parameters (validates inputs).
+description: >-
+  Create GitHub pull request drafts using Conventional Commit parameters (validates inputs).
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # PR Draft

@@ -1,9 +1,8 @@
 ---
 name: adr-extract
 description: >-
-  Extract and create Architecture Decision Records (ADRs) from plans,
-  conversations, or code changes. Use when the user asks to create an ADR,
-  record a decision, or extract decisions from completed work.
+  Use when the user asks to create an ADR, record a decision, or extract
+  decisions from plans or code changes.
 user-invocable: true
 disable-model-invocation: false
 ---

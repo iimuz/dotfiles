@@ -1,10 +1,8 @@
 ---
 name: council
-description: >
-  Produce high-quality answers by synthesizing perspectives from multiple AI models
-  through structured multi-stage deliberation.
-  This skill should be used when seeking high-quality, comprehensive answers that benefit
-  from multiple AI perspectives and collective deliberation.
+description: >-
+  Use when seeking high-quality answers that benefit from multiple AI model
+  perspectives through structured multi-stage deliberation.
 user-invocable: true
 disable-model-invocation: false
 ---

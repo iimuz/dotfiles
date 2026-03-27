@@ -46,13 +46,9 @@ by an orchestrator:
 
 - Do not wrap reference file content in a code block. The AI reads the file as raw text.
 - Do not use HTML tags (`<details>`, `<summary>`, etc.) in reference files. They are non-functional in CLI environments.
-- Reference files must contain only format definitions and templates. Behavioral instructions must remain in SKILL.md.
 
 ### Workflow Skill Authoring
 
-- A workflow skill is the sole top-level coordinator. Do not nest workflow skills.
-- Sub-agent call depth is at most two levels: orchestrator dispatches sub-agents,
-  but sub-agents must not dispatch further sub-agents.
 - Orchestrators describe the goal and constraints, not step-by-step procedures.
 - Blockquotes in workflow skills contain only subagent-facing prompts.
 - Do not chain more than one level of fallback; if the fallback fails, abort.

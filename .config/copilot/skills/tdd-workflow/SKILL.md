@@ -1,6 +1,8 @@
 ---
 name: tdd-workflow
-description: Coordinates strict red-green-refactor delivery for feature requests when users ask to implement or fix behavior with test-first TDD evidence, staged gate checks, and end-to-end cycle reporting.
+description: >-
+  Use when implementing or fixing behavior with strict test-first TDD evidence,
+  staged gate checks, and red-green-refactor cycle reporting.
 user-invocable: true
 disable-model-invocation: false
 ---

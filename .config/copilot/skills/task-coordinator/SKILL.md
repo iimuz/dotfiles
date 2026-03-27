@@ -1,9 +1,8 @@
 ---
 name: task-coordinator
-description: >
-  Coordinate complex tasks by decomposing them into subtasks and delegating each
-  to specialized subagents in parallel. Use for multi-step workflows requiring
-  parallel execution and result synthesis.
+description: >-
+  Use for complex multi-step workflows requiring parallel subtask decomposition,
+  delegation to specialized subagents, and result synthesis.
 user-invocable: true
 disable-model-invocation: false
 ---

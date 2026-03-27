@@ -1,6 +1,8 @@
 ---
 name: jira-to-issue
 description: Convert JIRA bug tickets to GitHub Issues using a standardized Markdown template with proper formatting and labels.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Jira To Issue

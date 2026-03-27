@@ -1,10 +1,8 @@
 ---
 name: structured-workflow
-description: >
-  Orchestrate Plan, Implement, Review, and Commit phases in an automated
-  iterative loop. This skill should be used when coordinating
-  implementation-plan, code-review, and commit-staged skills without
-  manual confirmation between phases.
+description: >-
+  Use when coordinating Plan, Implement, Review, and Commit phases in an
+  automated iterative loop without manual confirmation.
 user-invocable: true
 disable-model-invocation: false
 ---

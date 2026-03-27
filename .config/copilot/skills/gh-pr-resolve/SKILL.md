@@ -1,6 +1,8 @@
 ---
 name: gh-pr-resolve
-description: Resolve PR review comments when users ask to gather facts, evaluate fixes, verify diffs, and commit approved changes.
+description: >-
+  Use when users ask to resolve PR review comments by gathering facts,
+  evaluating fixes, verifying diffs, and committing approved changes.
 user-invocable: true
 disable-model-invocation: false
 ---

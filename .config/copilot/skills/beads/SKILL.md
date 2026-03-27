@@ -1,10 +1,8 @@
 ---
 name: beads
-description: >
-  Persistent issue tracker for multi-session work with dependencies.
-  Use when work spans sessions, has blockers, or needs context recovery
-  after compaction. Trigger on "create task", "track this work",
-  "show tasks", "resume after compaction".
+description: >-
+  Use when work spans sessions, has blockers, or needs context recovery after
+  compaction. Trigger on "create task", "track this work", "show tasks".
 user-invocable: true
 disable-model-invocation: false
 ---

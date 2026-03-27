@@ -1,6 +1,8 @@
 ---
 name: gh-pr-review
-description: Create pending PR review drafts with comments and suggestions.
+description: >-
+  Use when creating pending PR review drafts with comments and suggestions
+  on GitHub pull requests.
 user-invocable: true
 disable-model-invocation: false
 ---
