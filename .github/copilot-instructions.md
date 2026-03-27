@@ -1,13 +1,18 @@
 # Copilot Instructions
 
+## Project Context
+
+- Type: Cross-platform shell configuration and tool setup.
+- Languages: Bash, Zsh, Lua.
+- Runtime: Bash 5+ / Zsh 5+.
+- No Homebrew on non-macOS environments.
+
 ## File Manifest
 
 - Setup Scripts: `setup_*.sh`, `update_*.sh`
 - Configurations: `.config/`
 - Mise Settings: `.mise/`
 - Documents: `docs/`
-  - Core Beliefs: `docs/design/core-beliefs.md`
-  - Architecture: `docs/design/architecture.md`
   - Design: `docs/design/`
   - Debt: `docs/debt/`
   - Plans: `docs/plans/`
@@ -15,7 +20,6 @@
 
 ## Directives
 
-- Resolve conflicts using `core-beliefs.md`, then scoped instruction files.
 - Apply the smallest viable change set for the requested task.
 - Verify file existence before reading or referencing files.
 - When creating new files, place them according to established project
