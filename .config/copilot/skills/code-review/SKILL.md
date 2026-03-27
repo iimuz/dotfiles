@@ -67,7 +67,7 @@ For design-compliance, add `design_info={resolved_design_info}`.
 Compare findings across models to identify concerns missed by specific reviewers.
 Adapt the prompt template below with the collected review file paths.
 
-task(code-review-gap-analysis, model=claude-opus-4.6):
+task(code-review-gap-analysis):
 
 > review_file_paths={review_file_paths},
 > output_filepath={run_dir}/gap-list.yml
@@ -94,7 +94,7 @@ task(code-review-cross-check, model={missed_by_model}):
 Merge all artifacts from Stages 1-3 into the final report. Adapt the prompt template
 below with the collected file paths and the final output path.
 
-task(code-review-consolidate, model=claude-opus-4.6):
+task(code-review-consolidate):
 
 > review_file_paths={review_file_paths},
 > gap_list_path={run_dir}/gap-list.yml,

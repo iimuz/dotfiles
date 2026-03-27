@@ -60,7 +60,7 @@ This stage also emits the anonymized artifact paths and label mapping that later
 need to reconnect anonymized labels to original artifacts. Abort if either artifact is
 missing or if anonymized content still contains model names.
 
-task(council-anonymize, model=claude-opus-4.6):
+task(council-anonymize):
 
 > question={question},
 > response_paths={stage1_response_paths},
@@ -93,7 +93,7 @@ table must use canonical header ordering, and if the header ordering is wrong it
 regenerated before returning. If aggregation fails or the output file is missing, continue
 to Stage 5 without aggregate rankings.
 
-task(council-aggregate, model=claude-opus-4.6):
+task(council-aggregate):
 
 > review_artifact_paths={stage3_review_paths},
 > label_map_path={label_map_path},
@@ -111,7 +111,7 @@ with the question, available Stage 1 response paths, optional aggregate ranking 
 label map path, and `output_fallback_path={session_dir}/{timestamp}-council-fallback.md`.
 Pass `aggregate_ranking_path` only when it is available.
 
-task(council-synthesize, model=claude-opus-4.6):
+task(council-synthesize):
 
 > question={question},
 > anonymized_artifact_paths={anonymized_artifact_paths},

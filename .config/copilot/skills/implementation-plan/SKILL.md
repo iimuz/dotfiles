@@ -68,7 +68,7 @@ task(implementation-plan-review, model=claude-opus-4.6 / gemini-3-pro-preview / 
 A single model reads all cross-reviews, aggregates consensus, resolves conflicts, and evaluates
 unique insights into one authoritative resolution document.
 
-task(implementation-plan-resolve, model=claude-opus-4.6):
+task(implementation-plan-resolve):
 
 > review_paths={stage2_review_paths},
 > output_filepath={run_dir}/step3-resolution.md
@@ -85,7 +85,7 @@ returned to the caller.
 Collect `{run_dir}/step1-*-draft.md` and `{run_dir}/step3-resolution.md` as
 `{stage4_reference_filepaths}`.
 
-task(implementation-plan-synthesize, model=claude-opus-4.6):
+task(implementation-plan-synthesize):
 
 > reference_filepaths={stage4_reference_filepaths},
 > user_request={user_request},
