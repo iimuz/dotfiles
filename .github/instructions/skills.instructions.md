@@ -38,6 +38,18 @@ documentation, these rules take precedence.
 - Sub-skill `description` must be one sentence, 10 words or fewer.
   Must not include caller metadata (e.g., "This skill should be used only by...").
 
+### Description for Model-Discovered Skills
+
+When `disable-model-invocation` is false and the skill is not explicitly called
+by an orchestrator, the description must serve as an effective trigger for
+autonomous model invocation:
+
+- Lead with a trigger phrase ("Must be used for...", "Use when...").
+  Do not lead with a capability declaration ("Coordinator for...").
+- Include keywords that match user requests: action verbs users actually say
+  ("get", "retrieve", "debug") and domain terms (specific service or tool names).
+- Target 15-25 words. Below 10 words risks missing trigger keywords.
+
 ### Directory Scope Constraint
 
 - A skill may only reference files inside its own `{skill-name}/` directory tree.

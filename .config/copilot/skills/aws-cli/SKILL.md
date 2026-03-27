@@ -1,9 +1,7 @@
 ---
 name: aws-cli
 description: >-
-  AWS CLI CloudWatch Logs investigation coordinator. Use when the user asks to
-  retrieve, analyze, or investigate CloudWatch Logs, debug Lambda or ECS
-  issues using log data, or correlate events across AWS services.
+  Must be used for any AWS CloudWatch Logs retrieval, search, or debugging via AWS CLI.
 user-invocable: true
 disable-model-invocation: false
 ---
