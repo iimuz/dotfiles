@@ -1,17 +1,16 @@
 ---
-status: TODO
+issue:
 ---
 
 # TASK: [Short Name]
 
 ## Goal
 
-- Goal: [One sentence goal]
+[One sentence goal]
 
 ## Ref
 
-- `docs/context.md`
-- `src/target_file.ts`
+- `path/to/relevant/file`
 
 ## Steps
 
@@ -20,8 +19,12 @@ status: TODO
 
 ## Verify
 
-- Verify: Run `npm test` AND ensure coverage > 80%.
+[Single verification command or condition]
+
+## Log
+
+Append-only record of decisions and findings during execution.
 
 ## Scratchpad
 
-- Description: Agent workspace for Chain of Thought and investigation notes.
+Agent workspace for investigation notes.

@@ -23,13 +23,6 @@
 - Use only available `mise run` tasks listed in Tools section.
 - Run relevant existing checks after modifications.
 
-### Content Routing
-
-- Place plan files in `docs/plans/active/` (in-progress) or `docs/plans/done/` (completed).
-- Place debt files in `docs/debt/open/` (active) or `docs/debt/resolved/` (resolved).
-- Do not embed plan content in non-plan files.
-- Do not embed debt content in non-debt files.
-
 ## Tools
 
 - Lint: `mise run lint`
@@ -41,7 +34,7 @@
 2. Plan: Determine the minimal set of changes needed. Create or open a plan
    file before executing, except for single-file single-line edits (e.g.,
    typo fix). If the user provided a tagged plan file, use that file.
-   Otherwise, create `docs/plans/active/[YYYY-MM-DD]-[action].md` from
+   Otherwise, create `docs/plans/[YYYY-MM-DD]-[action].md` from
    `docs/templates/plan.md`.
 3. Execute: Implement focused changes.
 4. Verify: Run `mise run lint` and `mise run format` after modifications.

@@ -2,16 +2,16 @@
 
 ## Summary
 
-- Description: Short issue summary.
+Short issue summary.
 
 ## Location
 
-- Path: `src/api/user.ts`
+- `src/api/user.ts`
 
-## Issue
+## Detail
 
-- Detail: Using mock data instead of DB.
+Using mock data instead of DB.
 
 ## Fix Condition
 
-- Condition: Implement actual query when DB schema is finalized.
+Implement actual query when DB schema is finalized.

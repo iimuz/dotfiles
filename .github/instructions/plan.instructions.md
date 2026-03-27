@@ -7,27 +7,24 @@ applyTo: "docs/plans/**"
 ## Template Compliance
 
 - Before creating any file under `docs/plans/`, read `docs/templates/plan.md` and strictly follow its structure.
-- Frontmatter requires the key `status` with value `TODO`, `IN_PROGRESS`, or `DONE`. No additional keys.
+- Frontmatter has a single optional key `issue` for linking to a GitHub Issue number. No additional keys.
 - Required sections in order: `## Goal`, `## Ref`, `## Steps`, `## Verify`,
-  `## Scratchpad`. Do not remove, rename, or reorder these sections.
-- Optional sections may be added between `## Verify` and `## Scratchpad` when needed. Use descriptive names.
+  `## Log`, `## Scratchpad`. Do not remove, rename, or reorder these sections.
+- Optional sections may be added between `## Verify` and `## Log` when needed. Use descriptive names.
 
 ## Lifecycle
 
-- Set frontmatter `status` to `IN_PROGRESS` when starting work on a plan file.
+- Plan files are ephemeral working documents. GitHub Issues are the permanent record.
 - Update the plan file at each step: check off completed steps in `## Steps` and write notes in `## Scratchpad` or `## Log`.
-- On finalize: Confirm `## Steps` reflects all completed work. Add a
-  `## Summary` section between `## Verify` and optional sections containing a
-  one-paragraph outcome, significant issues with resolutions, and final
-  verification result. Do not include implementation details.
-- When the user sets status to `DONE`, move the file from `docs/plans/active/` to `docs/plans/done/`.
-- Only the user decides when status changes to `DONE`. Do not set `DONE` without explicit user instruction.
+- On finalize: Confirm `## Steps` reflects all completed work. Post relevant
+  findings and outcomes to the corresponding GitHub Issue as a comment.
+- Only the user decides when a plan is complete. Do not delete plan files without explicit user instruction.
+- When the user marks a plan as complete, delete the plan file from `docs/plans/`.
 
 ## Naming Convention
 
 - Pattern: `[YYYY-MM-DD]-[action].md` (e.g., `2026-02-22-fix-ci-mise.md`).
-- Active plans: `docs/plans/active/`.
-- Completed plans: `docs/plans/done/`.
+- Location: `docs/plans/`.
 
 ## Content Rules
 
@@ -36,11 +33,6 @@ applyTo: "docs/plans/**"
 - Steps: Checkbox list `- [ ] Step N: ...`. One action per step.
 - Verify: Single verification command or condition.
 - Log: Append-only record of issues, corrections, decisions, and findings
-  captured during execution. Format entries as subsection headers
-  `### [YYYY-MM-DD] Type: Title` where Type is Issue, Correction, Decision, or
-  Finding. Follow each header with free-form content describing the context,
-  reasoning, and resolution. Do not delete or modify existing log entries.
-- Summary: Written at completion by Copilot. Contains outcome paragraph,
-  issues list with resolutions, and verification result. Plain prose, no
-  checkboxes. Added during finalize.
+  captured during execution. Free-form bullets or subsection headers as needed.
+  Do not delete or modify existing log entries.
 - Scratchpad: Agent workspace for notes. Free-form.

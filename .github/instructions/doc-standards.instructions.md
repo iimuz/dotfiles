@@ -30,19 +30,22 @@ applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.m
 - Type: Plan
   - Pattern: `[YYYY-MM-DD]-[action].md`
   - Template: `docs/templates/plan.md`
+  - Directory: `docs/plans/`
   - Example: 2024-03-20-add-login.md
 - Type: ADR
   - Pattern: `[0000-Index]-[slug].md`
   - Template: `docs/templates/adr.md`
+  - Directory: `docs/adr/`
   - Example: 0001-init-stack.md
 - Type: Design
   - Pattern: `[topic].md`
   - Template: N/A
+  - Directory: `docs/design/`
   - Example: core-beliefs.md
 - Type: Debt
   - Pattern: `[slug].md`
   - Template: `docs/templates/debt.md`
-  - Directory: `docs/debt/open/` (active) or `docs/debt/resolved/` (closed)
+  - Directory: `docs/debt/`
 - Type: Report
   - Pattern: `[YYYY-MM-DD]-[topic].md`
   - Template: `docs/templates/report.md`

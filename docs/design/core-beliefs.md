@@ -20,7 +20,7 @@
 
 - Context and Constraints: `docs/design/core-beliefs.md`
 - Design Documents: `docs/design/`
-- Active Tasks: `docs/plans/active/`
+- Active Tasks: `docs/plans/`
 - Tech Debt and State: `docs/debt/`
 - Document Templates: `docs/templates/`
 
