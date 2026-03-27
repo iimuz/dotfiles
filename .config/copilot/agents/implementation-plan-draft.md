@@ -18,6 +18,8 @@ architecture, and producing a complete implementation plan for the given user re
 - Abort if `user_request` is empty.
 - Abort if `output_filepath` is missing.
 - Abort if `output_filepath` already exists.
+- Write the complete draft to `output_filepath`. Do not return the draft as inline text.
+- After writing, confirm the file exists and is non-empty.
 - Abort if the draft contains placeholder text such as TODO or TBD.
 
 ## Rules
@@ -59,7 +61,6 @@ incomplete, include known high-risk items only and continue.
 ## Output
 
 - `output_filepath: string`: The written draft file path.
-- `structure: string`: The draft follows the plan template below.
 
 ### Plan Template
 
