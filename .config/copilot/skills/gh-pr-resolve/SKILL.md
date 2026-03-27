@@ -63,12 +63,12 @@ exist). Write `{run_dir}/fix-plan.json`.
 Execute the fix plan when actionable items exist. Skip when skip_decision is true and
 write skip status instead.
 
-skill(task-coordinator):
+task(general-purpose, model=claude-opus-4.6):
 
 > Implement the changes described in {run_dir}/fix-plan.json.
 
 - Output: `{run_dir}/implement.json` (read by Stage 4)
-- Fault: Continue with recorded failure status if task-coordinator cannot complete the plan.
+- Fault: Continue with recorded failure status if the implementation task fails.
 
 ### Stage 4: Verify
 
