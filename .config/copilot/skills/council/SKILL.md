@@ -42,10 +42,10 @@ without modification. Do not read other session files.
 ### Stage 1: Parallel Response Generation
 
 Launch three independent Stage 1 responses in parallel with `claude-opus-4.6`,
-`gemini-3-pro-preview`, and `gpt-5.4`. Each model must answer the same question without
+`gpt-5.3-codex`, and `gpt-5.4`. Each model must answer the same question without
 seeing the others. This stage establishes quorum for the rest of the workflow.
 
-task(council-respond, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(council-respond, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
 
 > question={question},
 > output_filepath={run_dir}/council-stage1-{model}.md
@@ -77,7 +77,7 @@ parseable reviews that include a `FINAL RANKING` section. If fewer than 2 valid 
 received, continue with what is available. If all reviews fail to parse, skip Stage 4 and
 send Stage 5 the anonymized artifacts without rankings.
 
-task(council-review, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(council-review, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
 
 > anonymized_artifact_path={anonymized_input_path},
 > output_review_path={run_dir}/council-stage3-{model}.md

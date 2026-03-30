@@ -28,7 +28,7 @@ At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 Extract factual observations from the review comments. Record referenced files, explicit
 requests, and comment context. Never include recommendations, prioritization, or opinions.
 
-task(general-purpose, model=gemini-3-pro-preview):
+task(general-purpose, model=claude-opus-4.6):
 
 > Read the review comments and optional context. Extract only factual statements.
 > Write the result to {run_dir}/gather.md.

@@ -39,7 +39,7 @@ skill(implementation-plan):
 > Invoke `implementation-plan` with `{ session_id, user_request: {task} }` and return
 > `plan_filepath`.
 
-task(explore, model=gemini-3-pro-preview):
+task(explore, model=claude-sonnet-4.6):
 
 > Read `{plan_filepath}` and write a one-paragraph summary to `{run_dir}/plan-summary.md`.
 
