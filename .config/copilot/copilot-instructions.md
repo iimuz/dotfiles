@@ -26,7 +26,6 @@
   (architecture decisions, scope analysis, review interpretation, report writing).
 - ALWAYS use gpt-5.4 for mechanical operations (git staging, file writing, template expansion,
   straightforward code edits with clear specifications).
-- ALWAYS use gemini-3-pro-preview for large-volume text summarization and bulk exploration.
 
 ### Privacy
 

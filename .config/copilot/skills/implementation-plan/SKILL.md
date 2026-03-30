@@ -1,6 +1,8 @@
 ---
 name: implementation-plan
-description: Multi-model parallel implementation plan orchestrator. Use when creating implementation plans, breaking down features into tasks, or when the user asks to plan code changes, architecture decisions, or feature development.
+description: >-
+  Use when creating implementation plans, breaking down features into tasks,
+  or planning code changes and architecture decisions.
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -37,12 +39,11 @@ All stage artifacts use `{session_dir}`, which resolves to
 ### Stage 1: Parallel Draft
 
 Launch three independent drafts in parallel with `claude-opus-4.6`,
-`gemini-3-pro-preview`, and `gpt-5.4`. Each model explores the codebase and produces a
+`gpt-5.3-codex`, and `gpt-5.4`. Each model explores the codebase and produces a
 complete draft plan without seeing the others.
 
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(implementation-plan-draft, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
 
-> Invoke skill implementation-plan-draft with
 > user_request={user_request},
 > output_filepath={run_dir}/step1-{model}-draft.md
 
@@ -54,9 +55,8 @@ task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 Ask three models to cross-review the Stage 1 draft set in parallel. Reviews surface consensus,
 conflicts, gaps, and unique insights for downstream resolution.
 
-task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
+task(implementation-plan-review, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
 
-> Invoke skill implementation-plan-review with
 > draft_paths={stage1_draft_paths},
 > output_filepath={run_dir}/step2-{model}-review.md
 
@@ -68,9 +68,8 @@ task(general-purpose, model=claude-opus-4.6 / gemini-3-pro-preview / gpt-5.4):
 A single model reads all cross-reviews, aggregates consensus, resolves conflicts, and evaluates
 unique insights into one authoritative resolution document.
 
-task(general-purpose, model=claude-opus-4.6):
+task(implementation-plan-resolve):
 
-> Invoke skill implementation-plan-resolve with
 > review_paths={stage2_review_paths},
 > output_filepath={run_dir}/step3-resolution.md
 
@@ -86,9 +85,8 @@ returned to the caller.
 Collect `{run_dir}/step1-*-draft.md` and `{run_dir}/step3-resolution.md` as
 `{stage4_reference_filepaths}`.
 
-task(general-purpose, model=claude-opus-4.6):
+task(implementation-plan-synthesize):
 
-> Invoke skill implementation-plan-synthesize with
 > reference_filepaths={stage4_reference_filepaths},
 > user_request={user_request},
 > output_filepath={final_output}

@@ -1,6 +1,8 @@
 ---
 name: commit-staged
-description: Commit staged changes using Conventional Commit parameters (validates inputs).
+description: >-
+  Use when committing staged changes with Conventional Commit format.
+  Validates type, description, scope, and breaking change parameters.
 user-invocable: true
 disable-model-invocation: false
 ---

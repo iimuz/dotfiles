@@ -91,11 +91,10 @@ decomposition, or planning, use `general-purpose`.
 
 ### Model
 
-| Model                  | Best For                                                 |
-| :--------------------- | :------------------------------------------------------- |
-| `claude-opus-4.6`      | Nuanced reasoning, code review, complex refactoring      |
-| `gpt-5.4`              | Code generation, structured output, tool-heavy workflows |
-| `gemini-3-pro-preview` | Broad knowledge synthesis, summarization, exploration    |
+| Model             | Best For                                                 |
+| :---------------- | :------------------------------------------------------- |
+| `claude-opus-4.6` | Nuanced reasoning, code review, complex refactoring      |
+| `gpt-5.4`         | Code generation, structured output, tool-heavy workflows |
 
 Prefer consistency: keep the same model within a multi-step subtask.
 

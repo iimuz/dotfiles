@@ -1,10 +1,8 @@
 ---
 name: structured-workflow
-description: >
-  Orchestrate Plan, Implement, Review, and Commit phases in an automated
-  iterative loop. This skill should be used when coordinating
-  implementation-plan, code-review, and commit-staged skills without
-  manual confirmation between phases.
+description: >-
+  Use when coordinating Plan, Implement, Review, and Commit phases in an
+  automated iterative loop without manual confirmation.
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -41,7 +39,7 @@ skill(implementation-plan):
 > Invoke `implementation-plan` with `{ session_id, user_request: {task} }` and return
 > `plan_filepath`.
 
-task(explore, model=gemini-3-pro-preview):
+task(explore, model=claude-sonnet-4.6):
 
 > Read `{plan_filepath}` and write a one-paragraph summary to `{run_dir}/plan-summary.md`.
 
@@ -61,13 +59,12 @@ task(general-purpose, model=claude-opus-4.6):
 > `{ session_id, run_dir, plan_filepath, iteration: {n}, prior_issues }` and return
 > `{run_dir}/sw-implement-request-{n}.md`.
 
-skill(task-coordinator):
+task(general-purpose, model=claude-opus-4.6):
 
 > Read `{run_dir}/sw-implement-request-{n}.md` and implement the requested work.
 
 - Output: `{run_dir}/sw-implement-request-{n}.md` for the main agent to read in this stage.
-- Fault: Abort and report the error if the helper task fails, the request file cannot be read, or
-  `task-coordinator` fails.
+- Fault: Abort and report the error if the helper task fails or the request file cannot be read.
 
 ### Stage 3: Commit
 
