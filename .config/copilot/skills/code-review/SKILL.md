@@ -12,7 +12,7 @@ disable-model-invocation: false
 ## Overview
 
 Orchestrator that runs parallel multi-model, multi-aspect code reviews, then performs
-gap analysis, cross-checks, and final consolidation into a single report.
+gap analysis, cross-checks, consolidation, and triage into a final prioritized report.
 
 At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
@@ -34,11 +34,12 @@ Resolved design_info must not exceed 8000 characters.
 
 ## Output
 
-The final report includes:
+The final triage report includes:
 
 - Files reviewed `files_reviewed: number`
-- Total issues `total_issues: number`
-- Severity counts `critical: number`, `warnings: number`, `suggestions: number`
+- Total findings `total_findings: number`
+- Triage counts `recommended: number`, `consider: number`
+- Severity counts `critical: number`, `high: number`, `medium: number`, `low: number`
 - Cross-check results `cross_checks: { valid: number, invalid: number, uncertain: number }`
 
 ## Execution Flow
@@ -89,24 +90,42 @@ task(code-review-cross-check, model={missed_by_model}):
 - Output: `{run_dir}/crosscheck-{aspect}-{model}.md` (read by Stage 4)
 - Fault: Note failure in the final report and continue.
 
-### Stage 4: Consolidation and Delivery
+### Stage 4: Consolidation
 
-Merge all artifacts from Stages 1-3 into the final report. Adapt the prompt template
-below with the collected file paths and the final output path.
+Merge all artifacts from Stages 1-3 into the consolidated report. Adapt the prompt template
+below with the collected file paths and the intermediate output path.
 
 task(code-review-consolidate):
 
 > review_file_paths={review_file_paths},
 > gap_list_path={run_dir}/gap-list.yml,
 > crosscheck_paths={crosscheck_paths},
+> output_filepath={run_dir}/consolidated-review.md
+
+- Output: `{run_dir}/consolidated-review.md` (read by Stage 5)
+- Fault: Abort immediately on failure.
+
+### Stage 5: Triage
+
+Classify all findings from the consolidated report into Recommended and Consider
+tiers using source code context. Adapt the prompt template below with the
+consolidated report path, target, and final output path.
+
+task(code-review-triage):
+
+> consolidated_report_path={run_dir}/consolidated-review.md,
+> target={target},
 > output_filepath={final_output}
 
 - Output: `{final_output}` (final output path)
-- Fault: Abort immediately on failure.
+- Fault: On failure, copy `{run_dir}/consolidated-review.md` to `{final_output}`.
+  Prepend a header note: `> Triage stage failed - showing untriaged consolidated report.`
 
 ## Examples
 
 - Happy: `target: "HEAD"`, `design_info: "API must return JSON"` --
-  all 5 aspects reviewed, final report delivered.
+  all 5 aspects reviewed, triaged final report delivered with Recommended and Consider tiers.
+- Degraded triage: Stage 5 fails -- consolidated (untriaged) report delivered
+  with degraded-mode note.
 - Failure: `design_info_filepath: "/missing.md"` with no `design_info` --
   design-compliance skipped, 4 aspects reviewed.

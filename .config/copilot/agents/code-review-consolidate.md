@@ -27,6 +27,17 @@ Abort if the consolidated report shape is invalid.
 - When duplicates exist, keep the finding with the highest severity.
   If severity is equal, keep the finding with the most detailed explanation.
 - Preserve the original aspect label on each finding even after deduplication.
+- During deduplication, count the number of distinct models (identified from
+  source review filenames `review-{aspect}-{model}.md`) that independently
+  reported each deduplicated finding. Record this count as the finding's
+  `agreed_by` value. Set `agreed_by = 1` for findings reported by only one
+  model.
+- A VALID cross-check result does not increment `agreed_by`. Cross-check is
+  verification by the `missed_by` model, not independent discovery. Only
+  findings appearing in Stage 1 review files count toward `agreed_by`.
+- When a finding's source model cannot be determined from its review filename
+  (e.g., degraded mode without a model suffix), treat `agreed_by` as 1
+  (conservative default).
 
 ### Severity Conflict Resolution
 
@@ -83,6 +94,8 @@ Cross-check results: valid: N, invalid: N, uncertain: N
 
 File: `path/to/file.ext:42`
 Aspect: security
+Severity: CRITICAL
+Agreement: N models
 
 Detailed explanation.
 
@@ -94,6 +107,8 @@ Detailed explanation.
 
 File: `path/to/file.ext:42`
 Aspect: quality
+Severity: MEDIUM
+Agreement: N models
 
 Detailed explanation.
 
