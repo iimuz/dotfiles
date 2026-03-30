@@ -2,7 +2,7 @@
 issue:
 ---
 
-# TASK: [Short Name]
+# Planning: [Short Name]
 
 ## Goal
 
@@ -20,6 +20,10 @@ issue:
 ## Verify
 
 [Single verification command or condition]
+
+## Debt
+
+Deferred items discovered during this task. Transfer to GitHub Issues on finalize.
 
 ## Log
 

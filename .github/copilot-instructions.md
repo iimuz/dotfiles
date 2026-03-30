@@ -14,8 +14,7 @@
 - Mise Settings: `.mise/`
 - Documents: `docs/`
   - Design: `docs/design/`
-  - Debt: `docs/debt/`
-  - Plans: `docs/plans/`
+  - Planning: `docs/planning.md`
   - Templates: `docs/templates/`
 
 ## Directives
