@@ -35,6 +35,29 @@ function copilot_auto() {
   env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
 }
 
+function copilot_custom() {
+  local -ar env_vars=(
+    "EDITOR=${EDITOR:-nvim}"
+  )
+  local -ar OPTIONS=(
+    "--deny-tool=shell(git push:*)"
+    "--deny-tool=shell(rm -f:*)"
+    "--deny-tool=shell(rm -rf:*)"
+    "--deny-tool=shell(sudo:*)"
+    # tmp 利用は許可
+    "--add-dir=/tmp"
+    # mac の場合 tmp が `/private/tmp` へのリンクのため許可
+    "--add-dir=/private/tmp"
+    # source code 関連は相互参照を許可
+    "--add-dir=$HOME/src"
+    # 共通 skills のアクセスチェックが入るため
+    "--add-dir=$HOME/.copilot/skills"
+    # session フォルダへの書き出しと相互参照を許可
+    "--add-dir=$HOME/.copilot/session-state"
+  )
+  env "${env_vars[@]}" copilot "${OPTIONS[@]}" "$@"
+}
+
 function copilot_yolo() {
   local -ar env_vars=(
     "EDITOR=${EDITOR:-nvim}"
