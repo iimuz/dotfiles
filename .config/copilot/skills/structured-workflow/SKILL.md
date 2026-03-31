@@ -76,12 +76,12 @@ task(general-purpose, model=gpt-5.4):
 > Run `git status`, stage only implementation-related files for iteration `{n}` with `git add`,
 > and report whether anything relevant was staged.
 
-skill(commit-staged):
+skill(git-commit):
 
 > Create a Conventional Commit from the current staged state.
 
 - Output: `commit` metadata for Stage 4 and Stage 5.
-- Fault: Abort and report the context if nothing relevant is staged or if `commit-staged` fails.
+- Fault: Abort and report the context if nothing relevant is staged or if `git-commit` fails.
 
 ### Stage 4: Review
 

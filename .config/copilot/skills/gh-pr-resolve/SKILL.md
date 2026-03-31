@@ -92,12 +92,12 @@ high_count == 0. Read verify.json and parse critical_count and high_count strict
 task(general-purpose, model=gpt-5.4):
 
 > Stage implementation changes with git add. If no staged changes exist, skip with
-> commit_skip_reason: no_staged_changes. Otherwise invoke skill(commit-staged).
+> commit_skip_reason: no_staged_changes. Otherwise invoke skill(git-commit).
 > Write result to {run_dir}/commit.json.
 
 - Output: `{run_dir}/commit.json` (read by Stage 6)
 - Fault: Skip commit when critical_count > 0, high_count > 0, or severity parsing fails.
-- Fault: Continue with commit-failed status if commit-staged fails after staging.
+- Fault: Continue with commit-failed status if git-commit fails after staging.
 
 ### Stage 6: Summarize
 
