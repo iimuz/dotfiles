@@ -47,12 +47,12 @@ The final triage report includes:
 ### Stage 1: Parallel Aspect Reviews
 
 Launch parallel subagents for each (model, aspect) pair:
-3 models (claude-opus-4.6, gpt-5.3-codex, gpt-5.4) x
+3 models (claude-opus-4.6, claude-sonnet-4.6, gpt-5.4) x
 4 mandatory aspects (security, quality, performance, best-practices).
 Add design-compliance when design_info is resolved (up to 15 parallel).
 Adapt the prompt template below with the actual aspect, model, target, and run_dir.
 
-task(code-review-{aspect}, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
+task(code-review-{aspect}, model=claude-opus-4.6 / claude-sonnet-4.6 / gpt-5.4):
 
 > target={target},
 > output_filepath={run_dir}/review-{aspect}-{model}.md

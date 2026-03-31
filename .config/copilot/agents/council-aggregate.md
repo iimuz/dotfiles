@@ -1,7 +1,7 @@
 ---
 name: council-aggregate
 description: Aggregate review rankings into a consensus ranking table.
-model: gpt-5.4
+model: claude-sonnet-4.6
 user-invocable: false
 disable-model-invocation: false
 tools: ["read", "search", "edit"]

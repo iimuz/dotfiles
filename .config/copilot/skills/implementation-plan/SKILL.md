@@ -39,10 +39,10 @@ All stage artifacts use `{session_dir}`, which resolves to
 ### Stage 1: Parallel Draft
 
 Launch three independent drafts in parallel with `claude-opus-4.6`,
-`gpt-5.3-codex`, and `gpt-5.4`. Each model explores the codebase and produces a
+`claude-sonnet-4.6`, and `gpt-5.4`. Each model explores the codebase and produces a
 complete draft plan without seeing the others.
 
-task(implementation-plan-draft, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
+task(implementation-plan-draft, model=claude-opus-4.6 / claude-sonnet-4.6 / gpt-5.4):
 
 > user_request={user_request},
 > output_filepath={run_dir}/step1-{model}-draft.md
@@ -55,7 +55,7 @@ task(implementation-plan-draft, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4)
 Ask three models to cross-review the Stage 1 draft set in parallel. Reviews surface consensus,
 conflicts, gaps, and unique insights for downstream resolution.
 
-task(implementation-plan-review, model=claude-opus-4.6 / gpt-5.3-codex / gpt-5.4):
+task(implementation-plan-review, model=claude-opus-4.6 / claude-sonnet-4.6 / gpt-5.4):
 
 > draft_paths={stage1_draft_paths},
 > output_filepath={run_dir}/step2-{model}-review.md

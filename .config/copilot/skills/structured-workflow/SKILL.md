@@ -71,7 +71,7 @@ task(general-purpose, model=claude-opus-4.6):
 Stage only implementation-related changes for iteration `{n}` and create a commit for the reviewed
 state. Never include unrelated working-tree changes in this stage.
 
-task(general-purpose, model=gpt-5.4):
+task(general-purpose, model=claude-sonnet-4.6):
 
 > Run `git status`, stage only implementation-related files for iteration `{n}` with `git add`,
 > and report whether anything relevant was staged.

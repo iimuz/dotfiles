@@ -89,7 +89,7 @@ verification as passed-with-skip-context.
 Commit the changes only when the severity gate passes: critical_count == 0 and
 high_count == 0. Read verify.json and parse critical_count and high_count strictly.
 
-task(general-purpose, model=gpt-5.4):
+task(general-purpose, model=claude-sonnet-4.6):
 
 > Stage implementation changes with git add. If no staged changes exist, skip with
 > commit_skip_reason: no_staged_changes. Otherwise invoke skill(git-commit).

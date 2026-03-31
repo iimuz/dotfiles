@@ -1,7 +1,7 @@
 ---
 name: council-anonymize
 description: Strip model identity and emit a deterministic alphabetical label map.
-model: gpt-5.4
+model: claude-sonnet-4.6
 user-invocable: false
 disable-model-invocation: false
 tools: ["read", "search", "edit"]
