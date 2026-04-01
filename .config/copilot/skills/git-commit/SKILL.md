@@ -11,25 +11,42 @@ disable-model-invocation: false
 
 ## Overview
 
-Thin orchestrator that delegates the entire commit workflow to a sub-agent.
-The sub-agent stages changes if needed, analyzes the diff, derives a Conventional Commit
-message, and executes the commit. The main agent receives only the final result.
+Execute a Conventional Commits 1.0.0-compliant git commit, automatically deriving
+type and message from the current working tree or staged state. If no files are staged,
+stage all changes before committing.
+
+Execute all scripts from the git repository root, not from the skill directory.
 
 ## Output
 
-- `sha: string`: The commit SHA.
+- `sha: string`: The commit SHA created by the commit script.
 - `message: string`: The full commit message.
 
-## Execution
+## Operations
 
-Launch a sub-agent to handle the complete workflow:
+### Prepare Staged Changes
 
-task(general-purpose, model=claude-sonnet-4.6):
+Run `git diff --staged --name-only` to detect staged files.
 
-> Invoke `skill(git-commit-execute)` and return its result.
-> The skill handles staging, diff analysis, commit message derivation, and commit execution.
-> Return the JSON output containing sha and message.
-> If the skill fails, report the error.
+- If files are already staged, skip to collecting the diff.
+- If nothing is staged, run `git add -A` to stage all changes.
+- If still nothing is staged after `git add -A`, abort with "no changes to commit".
 
-Report the sub-agent result (sha and message) to the caller.
-Do not read diffs, git status, or any intermediate output in the main agent.
+Collect the staged file list with `git diff --staged --name-only` and the full diff with
+`git --no-pager diff --staged`.
+
+### Analyze Diff
+
+Derive the commit type from [`references/types.md`](references/types.md) and write a
+natural-language description summarizing what changed and why. The description must be
+imperative English, have no trailing period, and fit within 100 characters including the
+type prefix. Abort if the description is empty or is a file path instead of natural language.
+Optionally produce a body with bullet lines each starting with `-`.
+
+### Commit
+
+Run [`scripts/commit.sh`](scripts/commit.sh) with `--type`, `--description`, and
+optionally `--body`, plus `--json` for structured output. Abort if the type is not listed
+in [`references/types.md`](references/types.md) or if git commit fails.
+
+Return the JSON output from commit.sh as the final result.
