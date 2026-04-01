@@ -1,8 +1,6 @@
 ---
 name: git-commit
-description: >-
-  Use when committing changes with Conventional Commit format.
-  Handles staging and commit message derivation automatically.
+description: Must be used for all git commit operations.
 user-invocable: true
 disable-model-invocation: false
 ---
