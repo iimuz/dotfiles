@@ -1,11 +1,6 @@
 # === env
 .env
 
-# === LLM Agent
-.agent
-.agent/
-AGENTS.md
-
 # === Mac
 .DS_Store
 
@@ -14,6 +9,3 @@ AGENTS.md
 mise.local.toml
 mise-tasks
 mise-tasks/
-
-# === Neovim
-.lazy.lua
