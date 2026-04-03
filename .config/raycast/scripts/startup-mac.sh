@@ -21,9 +21,9 @@ brew bundle --file ../../homebrew/Brewfile cleanup --force
 # ref: <https://qiita.com/bonji/items/183160eab52919aaf93e>
 # brew upgrade --cask --greedy
 mise up
-gh extension upgrade --all
+mise exec -- gh extension upgrade --all
 
-open -a "Scroll Reverser" # マウスによるscrollの逆転
+# open -a "Scroll Reverser" # マウスによるscrollの逆転
 
 # password and vpn
 # open -a Bitwarden # bitwardenの起動設定で対処
@@ -36,10 +36,10 @@ open -a "Microsoft Edge"
 # open -a "firefox"
 
 # communication tool
-open -a "Slack"
-open -a "OneDrive"
-open -a "Microsoft Teams"
-open -a "Microsoft Outlook"
+# open -a "Slack"
+# open -a "OneDrive"
+# open -a "Microsoft Teams"
+# open -a "Microsoft Outlook"
 
 # work tools
 open -a "Ghostty"

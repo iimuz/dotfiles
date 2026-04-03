@@ -2,14 +2,14 @@
 
 # === application management
 brew "mas"
-cask "appcleaner"
+# cask "appcleaner"
 mas "RunCat", id: 1429033973
 
 # === communication tools
-cask "brave-browser"
+# cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
-cask "slack"
+# cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
 # === desktop management
@@ -19,85 +19,47 @@ cask "raycast"  # 検索 + rectangle
 cask "rancher"  # dockerd
 
 # === fonts
-cask "font-cica"
-cask "font-hack-nerd-font"
+# cask "font-cica"
+# cask "font-hack-nerd-font"
 cask "font-hackgen-nerd"
 
 # === git
 tap "microsoft/git"
 brew "git"
 brew "git-lfs"
-brew "lazygit"
 
 # === key management
-brew "stoken"  # pass generateor
 mas "bitwarden", id: 1352778147  # password manager(app store版を利用しないとブラウザの生体認証が利用できない)
 
 # === keyboard, mouse and trackpad management
 cask "azookey"
 cask "karabiner-elements"  # Alt単体押しによる日本語切り替え
 cask "scroll-reverser"  # マウスのみスクロール方向を逆転
-# cask "voiceink"  # instantly transcribe what you say
 cask "handy"  # speech-to-text application
 
 # === LLM
 cask "lm-studio"
 
-# === plantuml
-# brew "graphviz"
-# brew "plantuml"
-
 # === project
 brew "bash"
-brew "jq"
-# brew "pwgen"
-# brew "licensed"
 
 # === programming tools
-# brew "cargo-make"
-# brew "dprint"  # markdown formatter
-# brew "go-task"
 brew "mise"
-cask "obsidian"
-cask "visual-studio-code"
-cask "coteditor"
+# cask "visual-studio-code"
 
 # === recording
-brew "ffmpeg"
+# brew "ffmpeg"
 cask "obs"
 
-# === ruby
-# rubyをmiseでインストールするときに必要
-# brew "autoconf"
-# brew "gmp"
-# brew "libyaml"
-# brew "openssl@3"
-# brew "readline"
-
-# === rust
-# 2024-07-24 rustup-init -> rustupの変更タイミングで正常にインストールできなくなったので公式の方法に従う。
-# `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-# see: <https://www.rust-lang.org/ja/tools/install>
-# brew "rustup"
-
 # === terminal
-brew "bat"
 brew "cmake"
-brew "eza"  # replace ls -> exa -> eza
-brew "fd"  # replace find
-brew "fzf"  # fuzzy finder
 brew "gcc"
-brew "git-delta"  # diff viewer
-brew "gh"  # github cli
 cask "ghostty"
-brew "luarocks"  # for lazy.nvim plugin
+# brew "luarocks"  # for lazy.nvim plugin -> おそらく lua 導入で不要になっているはず
 brew "neovim"  # neovim
 brew "pkg-config"
-brew "pngpaste"  # for img-clip.nvim plugin
-brew "ripgrep"  # replace grep
+# brew "pngpaste"  # for img-clip.nvim plugin
 brew "starship"  # Shell prompt
 brew "tmux"
-brew "vifm"  # tui filer
+brew "vifm"
 brew "wget"
-brew "yq"
-# brew "zellij" # terminal multiplexers
