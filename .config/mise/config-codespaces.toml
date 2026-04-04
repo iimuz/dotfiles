@@ -1,21 +1,21 @@
 [tools]
-cargo-binstall = "latest"
-"cargo:tree-sitter-cli" = "latest"                       # for neovim
-go = "1"
-lua = "5.1"                                              # neovim luarocksで要求しているバージョンが5.1
-node = "22"
-"npm:@aikidosec/safe-chain" = "latest"
-"npm:mcp-remote" = "latest"                              # for copilot
-"npm:neovim" = "latest"                                  # for neovim
-"pipx:awslabs.aws-documentation-mcp-server" = "latest"
-"pipx:markitdown-mcp" = { version = "latest", all = "" } # for copilot
-"pipx:pynvim" = "latest"                                 # for neovim
-pnpm = "latest"
-python = "3.13"
-rust = "stable"
-shellcheck = "latest"
-shfmt = "latest"
-uv = "latest"
+cargo-binstall = "1.17.9"
+"cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
+go = "1.26.1"
+lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
+node = "22.22.2"
+"npm:@aikidosec/safe-chain" = "1.4.7"
+"npm:mcp-remote" = "0.1.38"                               # for copilot
+"npm:neovim" = "5.4.0"                                    # for neovim
+"pipx:awslabs.aws-documentation-mcp-server" = "1.1.20"
+"pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
+"pipx:pynvim" = "0.6.0"                                   # for neovim
+pnpm = "10.33.0"
+python = "3.13.12"
+rust = "1.94.1"
+shellcheck = "0.11.0"
+shfmt = "3.13.0"
+uv = "0.11.3"
 
 [settings]
 experimental = true
