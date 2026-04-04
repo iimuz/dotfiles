@@ -7,14 +7,14 @@
   "prHourlyLimit": 5,
   "labels": ["dependencies"],
   "mise": {
-    "fileMatch": ["\\.config/mise/config-.+\\.toml$"]
+    "managerFilePatterns": ["/\.config/mise/config-.+\.toml$/"]
   },
   "packageRules": [
     {
       "description": "Constrain lua to 5.1.x for neovim compatibility",
       "matchManagers": ["mise"],
       "matchPackageNames": ["lua"],
-      "allowedVersions": "/^5\\.1\\./"
+      "allowedVersions": "/^5\.1\./"
     },
     {
       "description": "Group all mise major updates into a single PR",
