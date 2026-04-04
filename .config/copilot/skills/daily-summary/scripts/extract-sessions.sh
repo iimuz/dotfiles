@@ -133,7 +133,7 @@ main() {
     remote_url=$(git -C "$cwd" remote get-url origin 2>/dev/null || echo "")
     owner_repo=""
     if [[ -n "$remote_url" ]]; then
-      owner_repo=$(echo "$remote_url" | sed -E 's|.*[:/]([^/]+)/([^/]+?)(\.git)?$|\1/\2|')
+      owner_repo=$(echo "$remote_url" | sed -E 's|.*[:/]([^/]+)/([^/]+)$|\1/\2|; s/\.git$//')
     fi
 
     local result
