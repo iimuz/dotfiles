@@ -4,6 +4,10 @@
 # Identify Copilot sessions for a specified date range.
 # Outputs a JSON array of session paths and workspace metadata to stdout.
 # Does NOT parse events.jsonl; session details are read by sub-agents.
+#
+# Dates are compared in the execution environment's local timezone.
+# The created_at timestamp from workspace.yaml (UTC) is converted to local
+# date before comparison.
 set -euo pipefail
 
 usage() {
@@ -105,7 +109,8 @@ main() {
 
     local ws_created_at
     ws_created_at=$(sed -n 's/^created_at: //p' "$ws")
-    local session_date="${ws_created_at:0:10}"
+    local session_date
+    session_date=$(date -d "$ws_created_at" +%Y-%m-%d 2>/dev/null || echo "${ws_created_at:0:10}")
 
     if [[ "$session_date" < "$date" ]] || [[ "$session_date" > "$end_date" ]]; then
       continue
@@ -124,6 +129,13 @@ main() {
     summary=$(sed -n 's/^summary: //p' "$ws")
     cwd=$(sed -n 's/^cwd: //p' "$ws")
 
+    local remote_url owner_repo
+    remote_url=$(git -C "$cwd" remote get-url origin 2>/dev/null || echo "")
+    owner_repo=""
+    if [[ -n "$remote_url" ]]; then
+      owner_repo=$(echo "$remote_url" | sed -E 's|.*[:/]([^/]+)/([^/]+)$|\1/\2|; s/\.git$//')
+    fi
+
     local result
     result=$(jq -nc \
       --arg id "$session_id" \
@@ -131,7 +143,9 @@ main() {
       --arg created_at "$created_at" \
       --arg summary "${summary:-}" \
       --arg cwd "$cwd" \
-      '{session_id: $id, session_path: $path, created_at: $created_at, summary: $summary, cwd: $cwd}')
+      --arg remote_url "$remote_url" \
+      --arg owner_repo "$owner_repo" \
+      '{session_id: $id, session_path: $path, created_at: $created_at, summary: $summary, cwd: $cwd, remote_url: $remote_url, owner_repo: $owner_repo}')
     results+=("$result")
   done
 
