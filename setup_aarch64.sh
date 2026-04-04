@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Setup script.
 
 set -eu
@@ -5,17 +6,17 @@ set -o pipefail
 
 # Create symlink if link does not exist.
 function create_symlink() {
-  local -r SRC=$1
-  local -r DST=$2
+  local -r src=$1
+  local -r dst=$2
 
-  if [ -e "$DST" ]; then
-    echo "already exist $DST"
+  if [ -e "$dst" ]; then
+    echo "already exist $dst"
     return 0
   fi
 
-  echo "symlink $SRC to $DST"
-  mkdir -p "$(dirname "$DST")"
-  ln -s "$SRC" "$DST"
+  echo "symlink $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  ln -s "$src" "$dst"
 }
 
 # Install lazygit
@@ -53,25 +54,25 @@ function _install_yq() {
 
 # Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
-  local -r FILENAME="$1"
+  local -r filename="$1"
 
   if [[ "$SHELL" == *zsh* ]]; then
     # zshを利用しているので設定ファイルが異なる
-    local -r RCFILE="$HOME/.zshrc"
+    local -r rcfile="$HOME/.zshrc"
   else
     # bashを想定している
-    local -r RCFILE="$HOME/.bashrc"
+    local -r rcfile="$HOME/.bashrc"
   fi
 
   # if setting exits in rc file, do nothing.
-  if grep "$FILENAME" -l "$RCFILE" >/dev/null 2>&1; then
-    echo "already setting in $RCFILE: $FILENAME"
+  if grep -qF -- "$filename" "$rcfile" >/dev/null 2>&1; then
+    echo "already setting in $rcfile: $filename"
     return 0
   fi
 
   # Add file path.
-  echo "set load setting in $RCFILE: $FILENAME"
-  echo -e "if [ -f \"${FILENAME}\" ]; then . \"${FILENAME}\"; fi\n" >>"$RCFILE"
+  echo "set load setting in $rcfile: $filename"
+  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
 }
 
 # === 共通パスの設定
@@ -134,7 +135,7 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
 fi
-# === github copoilot cli
+# === github copilot cli
 if type copilot >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
   create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"

@@ -2,7 +2,7 @@
 #
 # Setting for Git.
 
-# Gurad if command does not exist.
+# Guard if command does not exist.
 if ! type git >/dev/null 2>&1; then return 0; fi
 
 # Completion

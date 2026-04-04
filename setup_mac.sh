@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
 # Setup script.
 
 set -eu
+set -o pipefail
 
 # Create symlink if link does not exist.
 function create_symlink() {
@@ -77,7 +79,7 @@ if type bash >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.inputrc" "$HOME/.inputrc"
 fi
 
-# === git
+# === gh
 if type gh >/dev/null 2>&1; then
   gh extension install dlvhdr/gh-dash
   create_symlink "$SCRIPT_DIR/.config/gh-dash/config.yml" "$HOME/.config/gh-dash/config.yml"
