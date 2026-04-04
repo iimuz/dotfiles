@@ -64,6 +64,12 @@ function setup_dotfiles() {
 function setup_nvim() {
   log_info "Setting up Neovim..."
 
+  # Bootstrap lazy.nvim by running Neovim once without any extra commands.
+  # On first run, lazy-init.lua clones lazy.nvim synchronously via vim.fn.system.
+  # Exiting immediately avoids a conflict between lazy.nvim's async first-run
+  # auto-install and the Lazy! sync command that follows.
+  nvim --headless +qa 2>/dev/null || true
+
   # Neovim plugin installation may fail in devcontainer provisioning (e.g., network
   # issues, missing dependencies). These failures are non-fatal.
   nvim --headless "+Lazy! sync" +qa || true
