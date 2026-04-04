@@ -1,0 +1,38 @@
+{
+  "name": "Default",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true
+    },
+    "ghcr.io/devcontainers/features/copilot-cli:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "extensions": "dlvhdr/gh-dash"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
+      // - libclang-dev: mise で tree sitter cli の cargo install で必要
+      // - libreadline-dev: mise で lua をインストールするために必要
+      "packages": "git-delta,libclang-dev,libreadline-dev,ripgrep,vifm"
+    },
+    "ghcr.io/devcontainers-extra/features/fzf:1": {},
+    "ghcr.io/devcontainers-extra/features/starship:1": {},
+    "ghcr.io/devcontainers-extra/features/tmux-apt-get:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
+      // jq, yq をインストール
+      "yqVersion": "4"
+    },
+    "ghcr.io/GeorgOfenbeck/features/lazygit-linuxbinary:1": {},
+    "ghcr.io/roul/devcontainer-features/mise:1": {},
+    "ghcr.io/stu-bell/devcontainer-features/neovim:0": {}
+  },
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "FFGHQ_MAXDEPTH": "1",
+    "FFGHQ_MINDEPTH": "1",
+    "SOURCE_ROOT": "/workspaces"
+  },
+  "postCreateCommand": "bash .devcontainer/post-install.sh"
+}
