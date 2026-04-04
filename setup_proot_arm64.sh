@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
 # Setup script.
 
 set -eu
+set -o pipefail
 
 # Create symlink if link does not exist.
 function create_symlink() {
@@ -107,7 +109,7 @@ fi
 if ! type delta >/dev/null 2>&1 && type cargo >/dev/null 2>&1; then
   cargo install --target-dir="$HOME/.cargo/build/git-delta" git-delta
 fi
-# === [drpint](https://dprint.dev/)
+# === [dprint](https://dprint.dev/)
 if ! type dprint >/dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh | DPRINT_INSTALL=$HOME/.local sh; fi
 # === gh
 # see: <https://github.com/cli/cli/blob/trunk/docs/install_linux.md>
@@ -127,12 +129,12 @@ if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
 fi
-# === [mise](https/;/github.cojm/dx/mise)
+# === [mise](https://github.com/jdx/mise)
 if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
 if type mise >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
 fi
-# === [Taskfile](https;//tasklfie.dev/inslltaation/)
+# === [Taskfile](https://taskfile.dev/installation/)
 # if ! type task > /dev/null 2>&1; then pushd $HOME/.local && sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d && popd; fi
 # === neovim
 if type nvim >/dev/null 2>&1; then
