@@ -12,14 +12,28 @@
       "allowedVersions": "/^5\\.1\\./"
     },
     {
-      "description": "Group all mise tool updates into a single PR",
+      "description": "Group all mise major updates into a single PR",
       "matchManagers": ["mise"],
-      "groupName": "mise tools"
+      "matchUpdateTypes": ["major"],
+      "groupName": "mise tools (major)"
     },
     {
-      "description": "Group all GitHub Actions updates into a single PR",
+      "description": "Group all mise minor and patch updates into a single PR",
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "mise tools (minor/patch)"
+    },
+    {
+      "description": "Group all GitHub Actions major updates into a single PR",
       "matchManagers": ["github-actions"],
-      "groupName": "github actions"
+      "matchUpdateTypes": ["major"],
+      "groupName": "github actions (major)"
+    },
+    {
+      "description": "Group all GitHub Actions minor and patch updates into a single PR",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "github actions (minor/patch)"
     }
   ]
 }
