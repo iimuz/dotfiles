@@ -4,6 +4,7 @@
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "dependencyDashboard": true,
   "minimumReleaseAge": "14 days",
+  "prHourlyLimit": 5,
   "labels": ["dependencies"],
   "mise": {
     "fileMatch": ["\\.config/mise/config-.+\\.toml$"]
