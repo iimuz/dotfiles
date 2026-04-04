@@ -88,7 +88,6 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # aptでインストール可能なコマンドはaptでインストールする
 sudo apt-get install -y --no-install-recommends \
   build-essential \
-  fzf \
   gh \
   git-delta \
   jq \

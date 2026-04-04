@@ -3,6 +3,7 @@ aws-vault = "7.2.0"
 awscli = { version = "latest", symlink_bins = "true" }
 cargo-binstall = "latest"
 "cargo:tree-sitter-cli" = "latest"                       # for neovim
+fzf = "0.70.0"
 go = "1"
 lua = "5.1"                                              # neovim luarocksで要求しているバージョンが5.1
 node = "24"
