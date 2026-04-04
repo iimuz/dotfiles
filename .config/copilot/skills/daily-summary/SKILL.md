@@ -22,9 +22,10 @@ sub-agent analysis -> consolidate and merge -> save and present.
 
 ## Input
 
-- `date: string` (optional): Target date in YYYY-MM-DD format. Defaults to today.
+- `date: string` (optional): Target date in YYYY-MM-DD format. Interpreted
+  in the execution environment's local timezone. Defaults to today.
 - `end_date: string` (optional): End date for a range in YYYY-MM-DD format.
-  Defaults to `date` when omitted.
+  Same timezone as `date`. Defaults to `date` when omitted.
 
 ## Output
 
@@ -41,8 +42,13 @@ sub-agent analysis -> consolidate and merge -> save and present.
 
 Resolve the target date from user input. If no date is specified, use today
 in YYYY-MM-DD format (derive from the current datetime provided in the
-conversation context). If the user specifies a date range, set both `date`
-and `end_date`.
+conversation context, adjusted to the execution environment's local timezone).
+If the user specifies a date range, set both `date` and `end_date`.
+
+All dates are interpreted in the execution environment's local timezone.
+Session timestamps (stored in UTC) are converted to local dates before
+comparison. GitHub API queries are expanded to cover the corresponding UTC
+range automatically.
 
 ### Stage 2: Identify Sources
 
@@ -64,6 +70,11 @@ Output is a JSON array of session metadata:
 - `created_at`: ISO 8601 timestamp
 - `summary`: Session summary from workspace.yaml
 - `cwd`: Working directory (repository path)
+- `remote_url`: Git remote origin URL (empty if cwd is deleted or not a
+  git repository)
+- `owner_repo`: Parsed `owner/repo` from remote URL (e.g., `iimuz/dotfiles`).
+  Empty if remote URL is unavailable. Use this field for deterministic
+  repository matching with GitHub activity data.
 
 #### 2b: Identify GitHub Activities
 
@@ -96,6 +107,14 @@ sources are not required.
 
 Create a run directory for intermediate outputs:
 `~/.copilot/session-state/{session_id}/files/{YYYYMMDDHHMMSS}-daily-summary/`
+
+Derive `{YYYYMMDDHHMMSS}` from the `current_datetime` in the conversation
+context. Do not use shell command substitution (e.g., `$(date ...)`) inside
+bash commands to generate timestamps.
+
+Sub-agent task names must be kept under 25 characters to avoid agent ID
+truncation. Use short patterns such as `session-{short_id}` (first 8 chars
+of UUID) and `act-{number}` instead of encoding the full owner/repo/number.
 
 Launch all sub-agents in parallel across both source types.
 
@@ -159,11 +178,14 @@ Generate a consolidated markdown summary following the format defined in
 Key synthesis tasks:
 
 - Group completed items by repository, deduplicating same-task entries.
-- Merge overlapping Copilot sessions and GitHub activities that refer to the
-  same work. Indicators of overlap include: same repository and branch name,
-  PR or issue number referenced in session events, similar task descriptions.
-  When merging, combine the context from both sources to write a richer
-  description than either source alone provides.
+- Merge overlapping Copilot sessions and GitHub activities that refer to
+  the same work. Use a tiered matching strategy: (1) match session
+  `Related Issues`/`Related PRs` fields against activity numbers for
+  high-confidence links, (2) match session `owner_repo` and branch name
+  against activity repository and PR head ref, (3) fall back to text
+  similarity in task descriptions. When merging, combine the context from
+  both sources to write a richer description than either source alone
+  provides.
 - When the same logical task spans multiple repositories, group them
   into a single collective entry.
 - Identify significant decisions across all sessions and activities.
