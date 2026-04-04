@@ -1,0 +1,32 @@
+name: Renovate
+
+on:
+  schedule:
+    # Run weekly on Saturday at 15:00 UTC (Sunday 00:00 JST)
+    - cron: "0 15 * * 6"
+  workflow_dispatch:
+    inputs:
+      log_level:
+        description: "Log level for Renovate"
+        type: choice
+        default: info
+        options:
+          - info
+          - debug
+
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@3633cede7d4d4598438e654eac4a695e46004420 # v46.1.7
+        with:
+          token: ${{ secrets.RENOVATE_TOKEN }}
+        env:
+          LOG_LEVEL: ${{ inputs.log_level || 'info' }}

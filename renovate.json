@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices", "helpers:pinGitHubActionDigests"],
+  "dependencyDashboard": true,
+  "minimumReleaseAge": "14 days",
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Constrain lua to 5.1.x for neovim compatibility",
+      "matchManagers": ["mise"],
+      "matchPackageNames": ["lua"],
+      "allowedVersions": "/^5\\.1\\./"
+    },
+    {
+      "description": "Group all mise tool updates into a single PR",
+      "matchManagers": ["mise"],
+      "groupName": "mise tools"
+    },
+    {
+      "description": "Group all GitHub Actions updates into a single PR",
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    }
+  ]
+}
