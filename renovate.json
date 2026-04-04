@@ -17,12 +17,6 @@
       "allowedVersions": "/^5\\.1\\./"
     },
     {
-      "description": "Constrain python to 3.13.x",
-      "matchManagers": ["mise"],
-      "matchDepNames": ["python"],
-      "allowedVersions": "/^3\\.13\\./"
-    },
-    {
       "description": "Group all mise major updates into a single PR",
       "matchManagers": ["mise"],
       "matchUpdateTypes": ["major"],
