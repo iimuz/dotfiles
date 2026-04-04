@@ -22,12 +22,7 @@ function err() {
   exit 1
 }
 
-function cleanup() {
-  echo "cleanup completed" >/dev/null
-}
-
 trap 'err ${LINENO} "$BASH_COMMAND"' ERR
-trap cleanup EXIT
 
 function usage() {
   cat <<EOF
