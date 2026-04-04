@@ -14,7 +14,6 @@ node = "24.14.1"
 "npm:neovim" = "5.4.0"                                    # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.20"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
-"pipx:oraios/serena" = "0.9.1"                            # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
 pnpm = "10.33.0"
 python = "3.14.3"
@@ -24,6 +23,7 @@ shfmt = "3.13.0"
 uv = "0.11.3"
 
 [env]
+ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [settings]

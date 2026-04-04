@@ -16,7 +16,6 @@ fi
 
 if type mise >/dev/null 2>&1; then
   mise self-update -y
-  mise up
   mise prune -y
   mise cache clean -y
 fi
