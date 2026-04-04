@@ -53,6 +53,8 @@ final actions.
 - Branch: branch-name
 - Task: One-line description of what was being worked on
 - Status: completed | failed | abandoned | in-progress
+- Related Issues: [N, M] or empty []
+- Related PRs: [N, M] or empty []
 
 ## Outcomes
 
@@ -69,3 +71,8 @@ final actions.
 ```
 
 Omit Decisions or Issues sections if none were identified.
+
+Populate `Related Issues` and `Related PRs` by extracting GitHub issue and
+PR numbers referenced anywhere in the session events (user messages,
+assistant messages, tool outputs, URLs). Use exact numbers only. These
+fields enable deterministic overlap detection during consolidation.

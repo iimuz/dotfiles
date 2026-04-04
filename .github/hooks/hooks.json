@@ -5,15 +5,7 @@
     "sessionEnd": [],
     "userPromptSubmitted": [],
     "preToolUse": [],
-    "postToolUse": [
-      {
-        "type": "command",
-        "bash": "mise run format",
-        "powershell": "mise run format",
-        "cwd": ".",
-        "timeoutSec": 30
-      }
-    ],
+    "postToolUse": [],
     "agentStop": [],
     "subagentStop": [],
     "errorOccurred": []
