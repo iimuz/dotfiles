@@ -88,7 +88,6 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # aptでインストール可能なコマンドはaptでインストールする
 sudo apt-get install -y --no-install-recommends \
   build-essential \
-  fzf \
   gh \
   git-delta \
   jq \
@@ -138,9 +137,10 @@ fi
 # === github copoilot cli
 if type copilot >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
   create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
+  create_symlink "$SCRIPT_DIR/.config/copilot/lsp-config.json" "$HOME/.copilot/lsp-config.json"
+  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
+  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
 fi
 # === gpg
 if type gpg >/dev/null 2>&1; then
@@ -163,6 +163,9 @@ if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh
 if ! type tailscale >/dev/null 2>&1; then curl -fsSL https://tailscale.com/install.sh | sh; fi
 # === tmux
 if type tmux >/dev/null 2>&1; then
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
+  fi
   create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
 fi
 # === vifm
