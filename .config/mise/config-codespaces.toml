@@ -11,7 +11,7 @@ node = "24.14.0"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
 pnpm = "10.33.0"
-python = "3.13.12"
+python = "3.14.3"
 rust = "1.94.1"
 shellcheck = "0.11.0"
 shfmt = "3.13.0"
