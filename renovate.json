@@ -5,6 +5,9 @@
   "dependencyDashboard": true,
   "minimumReleaseAge": "14 days",
   "labels": ["dependencies"],
+  "mise": {
+    "fileMatch": ["\\.config/mise/config-.+\\.toml$"]
+  },
   "packageRules": [
     {
       "description": "Constrain lua to 5.1.x for neovim compatibility",
