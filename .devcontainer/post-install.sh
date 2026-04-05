@@ -74,6 +74,11 @@ function setup_nvim() {
       https://github.com/folke/lazy.nvim.git "$lazypath"
   fi
 
+  # Diagnostic: check if init.lua loads and Lazy command is available.
+  # Headless Neovim suppresses Lua errors from init files, so capture them explicitly.
+  log_info "Checking Neovim init..."
+  nvim --headless -c 'lua io.stderr:write("init loaded, :Lazy exists=" .. tostring(vim.fn.exists(":Lazy") ~= 0) .. "\n")' -c 'qa' 2>&1 || true
+
   # Neovim plugin installation may fail in devcontainer provisioning (e.g., network
   # issues, missing dependencies). These failures are non-fatal.
   nvim --headless "+Lazy! sync" +qa || true
