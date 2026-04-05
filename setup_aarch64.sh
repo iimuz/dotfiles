@@ -86,20 +86,15 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 
 # Installが確認できていないツール
 # - eza
-# aptでインストール可能なコマンドはaptでインストールする
+# apt でインストールするとバージョンが古い場合があるので mise でツール類は管理する
 sudo apt-get install -y --no-install-recommends \
   build-essential \
-  gh \
-  git-delta \
-  jq \
-  ripgrep \
   rsync \
-  vifm \
   vim \
   tmux \
   unzip \
   zsh
-# プロセス監視
+# プロセス監視 (mise になく github で pre-build binary も配布していない)
 sudo apt-get install -y --no-install-recommends htop
 # ssh agent の管理
 sudo apt-get install -y --no-install-recommends keychain

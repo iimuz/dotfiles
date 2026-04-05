@@ -3,8 +3,12 @@ aws-vault = "7.2.0"
 awscli = { version = "2.34.24", symlink_bins = "true" }
 cargo-binstall = "1.17.9"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
+delta = "0.19.1"
 fzf = "0.70.0"
+gh = "2.88.1"
+"github:vifm/vifm" = "v0.14.3"
 go = "1.26.1"
+jq = "1.8.1"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
 node = "24.14.1"
 "npm:@aikidosec/safe-chain" = "1.4.7"
@@ -20,6 +24,7 @@ python = "3.14.3"
 rust = "1.94.1"
 shellcheck = "0.11.0"
 shfmt = "3.13.0"
+ripgrep = "15.1.0"
 uv = "0.11.3"
 
 [env]
