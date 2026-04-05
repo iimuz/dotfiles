@@ -22,7 +22,6 @@ return {
 			preset = "helix",
 		})
 		wk.add({
-			{ "<Leader>a", group = "Avante" },
 			{ "<Leader>A", group = "AutoLastmod" },
 			{ "<Leader>b", group = "Trouble" },
 			{ "<Leader>B", group = "Tab" },
@@ -33,9 +32,7 @@ return {
 			{ "<Leader>f", group = "File" },
 			{ "<Leader>F", group = "FrontMatterSearcher" },
 			{ "<Leader>g", group = "GitSigns" },
-			{ "<Leader>G", group = "Copilot" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
-			{ "<Leader>H", group = "McpHub" },
 			{ "<Leader>k", group = "Kulala" },
 			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = [K]i
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用
@@ -61,13 +58,11 @@ return {
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
-			{ "<Leader>s", group = "Sidekick" },
 			{ "<Leader>S", group = "Csvview" },
 			{ "<Leader>t", group = "Telescope" },
 			{ "<Leader>tl", group = "LSP" },
 			{ "<Leader>T", group = "ToggleTerm" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
-			{ "<Leader>U", group = "ClaudeCode" },
 			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
 		})

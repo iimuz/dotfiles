@@ -7,7 +7,6 @@ return {
 	"saghen/blink.cmp",
 	version = "1.*",
 	dependencies = {
-		"fang2hou/blink-copilot",
 		"L3MON4D3/LuaSnip",
 	},
 	---@module 'blink.cmp'
@@ -28,15 +27,7 @@ return {
 		},
 		completion = { documentation = { auto_show = true } },
 		sources = {
-			default = { "snippets", "copilot", "lsp", "path", "buffer" },
-			providers = {
-				copilot = {
-					name = "copilot",
-					module = "blink-copilot",
-					score_offset = 100,
-					async = true,
-				},
-			},
+			default = { "snippets", "lsp", "path", "buffer" },
 		},
 		snippets = { preset = "luasnip" },
 		fuzzy = { implementation = "prefer_rust_with_warning" },

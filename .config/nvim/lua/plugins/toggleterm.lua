@@ -6,17 +6,6 @@
 -- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
 -- 数字を設定しなければ、最初の端末を開くことができきる。
 
--- cluade codeコマンドのターミナルを開閉
-local function claudeCodeToggle()
-	local Terminal = require("toggleterm.terminal").Terminal
-	local cc = Terminal:new({
-		cmd = "claude",
-		direction = "float",
-		hidden = true,
-	})
-	cc:toggle()
-end
-
 -- gh dashコマンドのターミナルを開閉
 local function ghDashToggle()
 	local Terminal = require("toggleterm.terminal").Terminal
@@ -71,7 +60,6 @@ return {
 	opts = {},
 	keys = {
 		{ "<Leader>Ta", ghDashToggle, desc = "⭐︎ToggleTerm: Open gh dash." },
-		{ "<Leader>Tc", claudeCodeToggle, desc = "⭐︎ToggleTerm: Open claude code." },
 		{
 			"<Leader>Tf",
 			"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
