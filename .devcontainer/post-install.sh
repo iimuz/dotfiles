@@ -64,6 +64,36 @@ function setup_dotfiles() {
 function setup_nvim() {
   log_info "Setting up Neovim..."
 
+  # Clone lazy.nvim directly via shell to avoid silent failures in headless Neovim.
+  # lazy-init.lua normally handles this, but init.lua errors can prevent it from running.
+  local -r lazypath="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/lazy.nvim"
+  if [[ ! -d "$lazypath" ]]; then
+    log_info "Bootstrapping lazy.nvim..."
+    mkdir -p "$(dirname "$lazypath")"
+    git clone --filter=blob:none --branch=stable \
+      https://github.com/folke/lazy.nvim.git "$lazypath"
+  fi
+
+  # Diagnostic: check which init.lua modules loaded and where the chain breaks.
+  log_info "Checking Neovim init..."
+  nvim --headless -c 'lua
+    local diag = {}
+    local mods = {"base", "keymaps", "lazy-init", "lazy"}
+    for _, m in ipairs(mods) do
+      table.insert(diag, m .. "=" .. tostring(package.loaded[m] ~= nil))
+    end
+    if not package.loaded["base"] then
+      local ok, err = pcall(require, "base")
+      table.insert(diag, "base_err=" .. tostring(err):sub(1, 200))
+    end
+    if not package.loaded["lazy-init"] and package.loaded["base"] then
+      local ok, err = pcall(require, "lazy-init")
+      table.insert(diag, "lazy-init_err=" .. tostring(err):sub(1, 200))
+    end
+    table.insert(diag, ":Lazy=" .. tostring(vim.fn.exists(":Lazy") ~= 0))
+    io.stderr:write(table.concat(diag, "\n") .. "\n")
+  ' -c 'qa' 2>&1 || true
+
   # Neovim plugin installation may fail in devcontainer provisioning (e.g., network
   # issues, missing dependencies). These failures are non-fatal.
   nvim --headless "+Lazy! sync" +qa || true
