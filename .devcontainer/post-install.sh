@@ -64,10 +64,15 @@ function setup_dotfiles() {
 function setup_nvim() {
   log_info "Setting up Neovim..."
 
-  # Bootstrap lazy.nvim: clone the plugin manager before issuing plugin commands.
-  # Running Neovim once triggers lazy-init.lua which clones lazy.nvim synchronously
-  # via vim.fn.system, then exits before lazy's async auto-install can interfere.
-  nvim --headless +qa || true
+  # Clone lazy.nvim directly via shell to avoid silent failures in headless Neovim.
+  # lazy-init.lua normally handles this, but init.lua errors can prevent it from running.
+  local -r lazypath="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/lazy.nvim"
+  if [[ ! -d "$lazypath" ]]; then
+    log_info "Bootstrapping lazy.nvim..."
+    mkdir -p "$(dirname "$lazypath")"
+    git clone --filter=blob:none --branch=stable \
+      https://github.com/folke/lazy.nvim.git "$lazypath"
+  fi
 
   # Neovim plugin installation may fail in devcontainer provisioning (e.g., network
   # issues, missing dependencies). These failures are non-fatal.

@@ -76,6 +76,7 @@ E492: Not an editor command: TSUpdateSync
 
 - 2026-04-05: Initial analysis. PR #182 bootstrap step does NOT fix E492 errors. Root cause is likely silent failure during `nvim --headless +qa 2>/dev/null`. The `2>/dev/null` hides all diagnostic output.
 - 2026-04-05: Confirmed Neovim v0.12.0 in devcontainer. `vim.loop` is deprecated (0.10+) but still available as alias. Not the primary cause but should be updated.
+- 2026-04-05: v2 log (after removing 2>/dev/null and adding vim.uv fix) shows same E492 errors. Bootstrap `nvim --headless +qa` produces NO output at all, suggesting init.lua or lazy-init.lua fails silently in headless mode. Changed approach: clone lazy.nvim directly via shell `git clone` in post-install.sh to bypass headless Neovim issues entirely.
 
 ## Scratchpad
 
