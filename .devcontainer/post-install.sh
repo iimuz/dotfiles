@@ -77,7 +77,23 @@ function setup_nvim() {
   # Diagnostic: check if init.lua loads and Lazy command is available.
   # Headless Neovim suppresses Lua errors from init files, so capture them explicitly.
   log_info "Checking Neovim init..."
-  nvim --headless -c 'lua io.stderr:write("init loaded, :Lazy exists=" .. tostring(vim.fn.exists(":Lazy") ~= 0) .. "\n")' -c 'qa' 2>&1 || true
+  nvim --headless -c 'lua
+    local diag = {}
+    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+    local stat = (vim.uv or vim.loop).fs_stat(lazypath)
+    table.insert(diag, "lazypath=" .. lazypath)
+    table.insert(diag, "dir_exists=" .. tostring(stat ~= nil))
+    local in_rtp = false
+    for _, p in ipairs(vim.opt.rtp:get()) do
+      if p:find("lazy%.nvim") then in_rtp = true; break end
+    end
+    table.insert(diag, "in_rtp=" .. tostring(in_rtp))
+    local ok, mod = pcall(require, "lazy")
+    table.insert(diag, "require_lazy=" .. tostring(ok))
+    if not ok then table.insert(diag, "err=" .. tostring(mod)) end
+    table.insert(diag, ":Lazy=" .. tostring(vim.fn.exists(":Lazy") ~= 0))
+    io.stderr:write(table.concat(diag, ", ") .. "\n")
+  ' -c 'qa' 2>&1 || true
 
   # Neovim plugin installation may fail in devcontainer provisioning (e.g., network
   # issues, missing dependencies). These failures are non-fatal.
