@@ -117,7 +117,7 @@ MCP tool with:
 
 - `cloudId`: from `getAccessibleAtlassianResources`
 - `jql`: `(assignee = currentUser() OR reporter = currentUser())
-AND updated >= "{date}" AND updated <= "{end_date}"
+AND updated >= "{date} 00:00" AND updated <= "{end_date} 23:59"
 ORDER BY updated DESC`
 - `fields`: `["summary", "status", "issuetype", "project", "updated"]`
 - `maxResults`: 50
