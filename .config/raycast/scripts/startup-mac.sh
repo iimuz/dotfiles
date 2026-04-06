@@ -17,7 +17,6 @@ brew upgrade
 brew bundle --file ../../homebrew/Brewfile cleanup --force
 
 # update mise
-mise self-update -y
 mise prune -y
 mise cache clean -y
 mise exec -- gh extension upgrade --all
