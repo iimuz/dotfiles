@@ -93,8 +93,9 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
 fi
 # === ghostty
-# ghostty が存在するかチェックできないため、設定ファイルは作成してしまう
 create_symlink "$SCRIPT_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
+# === cmux
+create_symlink "$SCRIPT_DIR/.config/cmux/settings.json" "$HOME/.config/cmux/settings.json"
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"

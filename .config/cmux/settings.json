@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux-settings.schema.json",
+  "schemaVersion": 1,
+
+  // tmux-compatible keybindings using ctrl+g as chord prefix.
+  // Concept mapping: tmux session = workspace, tmux window = surface, tmux pane = split pane.
+  // Only core tmux workflow actions are overridden; all others retain cmux defaults.
+
+  "app": {
+    "language": "ja",
+    "keepWorkspaceOpenWhenClosingLastSurface": true,
+    "sendAnonymousTelemetry": false,
+    "commandPaletteSearchesAllSurfaces": true
+  },
+
+  "shortcuts": {
+    "bindings": {
+      // Surface (tmux window): c = new, n/p for next/prev
+      "newSurface": ["ctrl+g", "c"],
+      "prevSurface": ["ctrl+g", "p"],
+      "nextSurface": ["ctrl+g", "n"],
+
+      // Copy mode
+      "toggleTerminalCopyMode": ["ctrl+g", "["],
+
+      // Split pane focus: vim-style h/j/k/l (frequent, within workspace)
+      "focusLeft": ["ctrl+g", "h"],
+      "focusDown": ["ctrl+g", "j"],
+      "focusUp": ["ctrl+g", "k"],
+      "focusRight": ["ctrl+g", "l"],
+
+      // Split pane: v = right, s = down, z = zoom
+      "splitRight": ["ctrl+g", "v"],
+      "splitDown": ["ctrl+g", "s"],
+      "toggleSplitZoom": ["ctrl+g", "z"]
+    }
+  }
+}
