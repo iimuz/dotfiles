@@ -28,7 +28,6 @@ return {
 			{ "<Leader>c", group = "Clipboard" },
 			{ "<Leader>C", group = "Conform" },
 			{ "<Leader>d", group = "Diffview" },
-			{ "<Leader>e", group = "Neotest" },
 			{ "<Leader>f", group = "File" },
 			{ "<Leader>F", group = "FrontMatterSearcher" },
 			{ "<Leader>g", group = "GitSigns" },
