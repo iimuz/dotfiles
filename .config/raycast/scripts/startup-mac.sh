@@ -23,5 +23,5 @@ mise exec -- gh extension upgrade --all
 
 # Open tools
 open -a "Cisco Secure Client"
-open -a "Ghostty"
+open -a "cmux"
 open -a "Microsoft Edge"
