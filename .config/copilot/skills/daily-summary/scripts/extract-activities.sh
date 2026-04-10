@@ -138,8 +138,15 @@ main() {
   # Start of local start-date in UTC may be the previous day (e.g., JST+9).
   # End boundary is start of the day AFTER local end-date in UTC.
   local utc_start utc_end
-  utc_start=$(date -u -d "$date" +%Y-%m-%d)
-  utc_end=$(date -u -d "$end_date + 1 day" +%Y-%m-%d)
+  if date --version >/dev/null 2>&1; then
+    # GNU coreutils (Linux)
+    utc_start=$(date -u -d "$date" +%Y-%m-%d)
+    utc_end=$(date -u -d "$end_date + 1 day" +%Y-%m-%d)
+  else
+    # BSD date (macOS)
+    utc_start=$(date -u -j -f "%Y-%m-%d" "$date" +%Y-%m-%d)
+    utc_end=$(date -u -j -v+1d -f "%Y-%m-%d" "$end_date" +%Y-%m-%d)
+  fi
   local -r date_range="${utc_start}..${utc_end}"
 
   local issues_json prs_involves_json prs_reviewed_json

@@ -2,7 +2,8 @@
 name: daily-summary
 description: >-
   Use when summarizing daily work activity into a report by analyzing
-  Copilot session logs and GitHub activity (issues, PRs) for a specified date.
+  Copilot session logs, GitHub activity (issues, PRs), and Atlassian
+  activity (Jira issues, Confluence pages) for a specified date.
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -11,11 +12,16 @@ disable-model-invocation: false
 
 ## Overview
 
-Generate a qualitative daily work summary from Copilot session logs and
-GitHub activity (issues, PRs). Scripts identify sessions and GitHub
-activities for the target date, sub-agents analyze each source in parallel,
-then the results are consolidated into a structured daily report that merges
-overlapping items from both sources.
+Generate a qualitative daily work summary from Copilot session logs,
+GitHub activity (issues, PRs), and Atlassian activity (Jira issues,
+Confluence pages). Scripts and MCP tools identify sessions and activities
+for the target date, sub-agents analyze each source in parallel, then
+the results are consolidated into a structured daily report that merges
+overlapping items from all sources.
+
+Atlassian activity is retrieved via Atlassian MCP tools. When MCP tools
+are unavailable (not connected, authentication expired), Atlassian sources
+are silently skipped and the report is generated from remaining sources.
 
 Execution order: determine date -> identify sources (parallel) -> parallel
 sub-agent analysis -> consolidate and merge -> save and present.
@@ -31,6 +37,8 @@ sub-agent analysis -> consolidate and merge -> save and present.
 
 - Per-session summaries saved to `{run_dir}/session-{uuid}.md`.
 - Per-activity summaries saved to `{run_dir}/activity-{type}-{owner}-{repo}-{number}.md`.
+- Per-Jira summaries saved to `{run_dir}/activity-jira-{key}.md`.
+- Per-Confluence summaries saved to `{run_dir}/activity-confluence-{pageId}.md`.
 - Consolidated report saved to `{run_dir}/{date}-daily-summary.md`.
 - The summary content is also presented directly to the user.
 - If the user requests saving to another location, copy the file accordingly.
@@ -52,7 +60,9 @@ range automatically.
 
 ### Stage 2: Identify Sources
 
-Run both scripts in parallel to collect Copilot sessions and GitHub activities.
+Run scripts and MCP queries in parallel to collect all activity sources.
+Stages 2a and 2b run via shell scripts. Stages 2c and 2d run via
+Atlassian MCP tools. Launch all four discovery operations in parallel.
 
 #### 2a: Identify Sessions
 
@@ -95,13 +105,75 @@ Output is a JSON array of activity metadata:
 - `url`: GitHub URL
 - `state`: Current state
 
+#### 2c: Identify Jira Activities
+
+Call the `atlassian-getAccessibleAtlassianResources` MCP tool to discover
+the Atlassian cloud ID. Then call the `atlassian-atlassianUserInfo` MCP
+tool to get the current user's account ID (needed by sub-agents to
+identify the user's comments).
+
+Search for Jira issues using the `atlassian-searchJiraIssuesUsingJql`
+MCP tool with:
+
+- `cloudId`: from `getAccessibleAtlassianResources`
+- `jql`: `(assignee = currentUser() OR reporter = currentUser())
+AND updated >= "{date} 00:00" AND updated <= "{end_date} 23:59"
+ORDER BY updated DESC`
+- `fields`: `["summary", "status", "issuetype", "project", "updated"]`
+- `maxResults`: 50
+- `responseContentFormat`: `markdown`
+
+Normalize results into a metadata list. Each item contains:
+
+- `source`: `jira`
+- `key`: Jira issue key (e.g., `API-15`)
+- `project_key`: Project key (e.g., `API`)
+- `project_name`: Project display name
+- `summary`: Issue summary
+- `status`: Status name
+- `type`: Issue type name
+- `updated`: Last update timestamp
+- `url`: `https://{site}/browse/{key}`
+- `cloud_id`: Atlassian cloud ID
+
+If any MCP call fails (tool not available, authentication expired, network
+error), log the error to stderr and return an empty array. Do not fail the
+entire workflow.
+
+#### 2d: Identify Confluence Activities
+
+Search for Confluence pages using the `atlassian-searchConfluenceUsingCql`
+MCP tool with:
+
+- `cloudId`: from `getAccessibleAtlassianResources` (reuse from 2c)
+- `cql`: `contributor = currentUser() AND lastmodified >= "{date}" ORDER BY lastmodified DESC`
+- `limit`: 50
+
+Filter results to only include pages where `lastModified` falls within the
+target date range (the CQL `lastmodified` filter does not support a range
+upper bound, so post-filter on `end_date`).
+
+Normalize results into a metadata list. Each item contains:
+
+- `source`: `confluence`
+- `page_id`: Content ID
+- `title`: Page title
+- `space_key`: Space key
+- `space_name`: Space display name
+- `last_modified`: Last modification timestamp
+- `url`: Full page URL
+- `excerpt`: Content excerpt
+- `cloud_id`: Atlassian cloud ID
+
+If any MCP call fails, log the error and return an empty array.
+
 #### Handling Empty Results
 
-If both outputs are empty arrays, inform the user that no sessions or
+If all outputs are empty arrays, inform the user that no sessions or
 activities were found for the specified date and stop.
 
-If only one source has results, proceed with that source alone. Both
-sources are not required.
+If only some sources have results, proceed with those sources alone.
+Not all sources are required.
 
 ### Stage 3: Parallel Analysis
 
@@ -116,7 +188,7 @@ Sub-agent task names must be kept under 25 characters to avoid agent ID
 truncation. Use short patterns such as `session-{short_id}` (first 8 chars
 of UUID) and `act-{number}` instead of encoding the full owner/repo/number.
 
-Launch all sub-agents in parallel across both source types.
+Launch all sub-agents in parallel across all source types.
 
 #### 3a: Session Sub-Agents
 
@@ -160,6 +232,47 @@ specifies the model, tools, and analysis procedure. Each sub-agent fetches
 the full issue/PR history, understands the complete context, and produces a
 summary scoped to the user's activity within the target period.
 
+#### 3c: Jira Sub-Agents
+
+For each Jira issue from Stage 2c, launch a sub-agent (`task()` with
+`agent_type: "daily-summary-jira"`) to analyze the issue in full.
+
+Pass each sub-agent:
+
+- `key`: Jira issue key
+- `project_name`: Project display name
+- `cloud_id`: Atlassian cloud ID (from Stage 2c)
+- `date`: Start date of the target period
+- `end_date`: End date of the target period
+- `atlassian_user_id`: User account ID (from Stage 2c)
+- `output_filepath`: `{run_dir}/activity-jira-{key}.md`
+
+The agent definition at `.config/copilot/agents/daily-summary-jira.md`
+specifies the model, tools, and analysis procedure. Each sub-agent
+fetches the full issue via Atlassian MCP tools and produces a summary
+scoped to the user's activity within the target period.
+
+#### 3d: Confluence Sub-Agents
+
+For each Confluence page from Stage 2d, launch a sub-agent (`task()` with
+`agent_type: "daily-summary-confluence"`) to analyze the page content.
+
+Pass each sub-agent:
+
+- `page_id`: Confluence content ID
+- `title`: Page title
+- `space_key`: Space key
+- `cloud_id`: Atlassian cloud ID (from Stage 2c)
+- `date`: Start date of the target period
+- `end_date`: End date of the target period
+- `atlassian_user_id`: User account ID (from Stage 2c)
+- `output_filepath`: `{run_dir}/activity-confluence-{page_id}.md`
+
+The agent definition at `.config/copilot/agents/daily-summary-confluence.md`
+specifies the model, tools, and analysis procedure. Each sub-agent
+fetches the full page content via Atlassian MCP tools and produces a
+summary of the page and its relevance to the user's work.
+
 #### Failure Handling
 
 If a sub-agent fails, note the failure and continue with other items.
@@ -170,14 +283,18 @@ Do not retry failed sub-agents.
 Read all summary files from the run directory:
 
 - Session summaries: `{run_dir}/session-*.md`
-- Activity summaries: `{run_dir}/activity-*.md`
+- GitHub activity summaries: `{run_dir}/activity-issue-*.md`, `{run_dir}/activity-pr-*.md`
+- Jira activity summaries: `{run_dir}/activity-jira-*.md`
+- Confluence activity summaries: `{run_dir}/activity-confluence-*.md`
 
 Generate a consolidated markdown summary following the format defined in
 [`references/output-format.md`](references/output-format.md).
 
 Key synthesis tasks:
 
-- Group completed items by repository, deduplicating same-task entries.
+- Group completed items by repository or project, deduplicating same-task
+  entries. Use repository name for GitHub items and project name for Jira
+  items.
 - Merge overlapping Copilot sessions and GitHub activities that refer to
   the same work. Use a tiered matching strategy: (1) match session
   `Related Issues`/`Related PRs` fields against activity numbers for
@@ -186,9 +303,18 @@ Key synthesis tasks:
   similarity in task descriptions. When merging, combine the context from
   both sources to write a richer description than either source alone
   provides.
-- When the same logical task spans multiple repositories, group them
-  into a single collective entry.
-- Identify significant decisions across all sessions and activities.
+- Merge overlapping Jira activities with Copilot sessions or GitHub
+  activities when they refer to the same work. Indicators: Jira issue
+  key mentioned in session events or GitHub PR/issue body, similar task
+  descriptions, same repository referenced in Jira remote links.
+- Integrate Confluence page summaries as context for related work items.
+  Meeting notes that reference specific tasks or decisions should enrich
+  the corresponding work item description. Standalone documentation work
+  (page creation, significant updates) appears as its own completed item.
+- When the same logical task spans multiple repositories or projects,
+  group them into a single collective entry.
+- Identify significant decisions across all sessions and activities,
+  including decisions recorded in Confluence meeting notes.
 - List open items with meaningful activity in the period as in-progress items.
 - Exclude failed or abandoned sessions from completed items (mention
   them separately if relevant).
@@ -205,16 +331,21 @@ to an additional location, copy or write the file to the specified path.
 ## Examples
 
 - Happy: user asks for today's summary, script finds 8 sessions across
-  3 repositories and 5 GitHub activities (3 PRs, 2 issues), 13 parallel
-  sub-agents produce summaries, 2 sessions and PRs overlap and are merged,
-  the consolidated report groups work by repository and lists 7 completed
-  items with 2 in-progress items and 1 decision.
-- Session only: no GitHub activities found (gh not authenticated or no
-  activity), proceeds with Copilot sessions alone. Behaves like the
-  original workflow.
-- Activity only: no Copilot sessions found but GitHub activities exist,
-  proceeds with activities alone.
-- Empty: both sources return empty arrays, the user is informed that no
+  3 repositories, 5 GitHub activities (3 PRs, 2 issues), 3 Jira issues,
+  and 2 Confluence pages; 18 parallel sub-agents produce summaries; 2
+  sessions and PRs overlap and are merged, 1 Jira issue links to a GitHub
+  PR and they are merged; the consolidated report groups work by repository
+  and project, listing 9 completed items with 3 in-progress items and
+  2 decisions.
+- Session only: no GitHub or Atlassian activities found, proceeds with
+  Copilot sessions alone.
+- Activity only: no Copilot sessions found but GitHub and/or Atlassian
+  activities exist, proceeds with activities alone.
+- Atlassian unavailable: Atlassian MCP tools fail (not connected or
+  authentication expired), Jira and Confluence sources are skipped with
+  a logged warning, report is generated from Copilot sessions and GitHub
+  activities only. Behaves like the original workflow.
+- Empty: all sources return empty arrays, the user is informed that no
   sessions or activities were found.
-- Partial failure: 1 of 13 sub-agents fails, the remaining 12 summaries
+- Partial failure: 1 of 18 sub-agents fails, the remaining 17 summaries
   are consolidated successfully with a note about the failed item.

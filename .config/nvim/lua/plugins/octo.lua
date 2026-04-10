@@ -14,11 +14,11 @@ return {
 	cmd = { "Octo" },
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		"nvim-telescope/telescope.nvim",
 		"nvim-tree/nvim-web-devicons",
 	},
 	config = function()
 		require("octo").setup({
+			picker = "snacks",
 			mappings_disable_default = false, -- defaultのショートカットキーは無効化
 		})
 	end,

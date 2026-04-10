@@ -28,7 +28,6 @@ return {
 			{ "<Leader>c", group = "Clipboard" },
 			{ "<Leader>C", group = "Conform" },
 			{ "<Leader>d", group = "Diffview" },
-			{ "<Leader>e", group = "Neotest" },
 			{ "<Leader>f", group = "File" },
 			{ "<Leader>F", group = "FrontMatterSearcher" },
 			{ "<Leader>g", group = "GitSigns" },
@@ -59,8 +58,6 @@ return {
 			{ "<Leader>R", group = "RenderMarkdown" },
 			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>S", group = "Csvview" },
-			{ "<Leader>t", group = "Telescope" },
-			{ "<Leader>tl", group = "LSP" },
 			{ "<Leader>T", group = "ToggleTerm" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
 			{ "<Leader>v", group = "VSCode" },
