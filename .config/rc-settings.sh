@@ -29,7 +29,6 @@ if [ -n "$ZSH_VERSION" ]; then . "$_DOTFILES_CONFIG_DIR/zsh/zsh-settings.sh"; fi
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings.sh"
 . "$_DOTFILES_CONFIG_DIR/bitwarden/settings-gui.sh"
 
-. "$_DOTFILES_CONFIG_DIR/cmux/cmux-commands.sh"
 . "$_DOTFILES_CONFIG_DIR/fzf/fzf.bash"
 . "$_DOTFILES_CONFIG_DIR/gh/gh-settings.sh"
 . "$_DOTFILES_CONFIG_DIR/git/settings.sh"

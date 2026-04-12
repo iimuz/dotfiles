@@ -63,6 +63,3 @@ brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"
 brew "wget"
-
-tap "manaflow-ai/cmux" # ghostty-based macOS terminal
-cask "cmux" # ghostty-based macOS terminal

@@ -94,8 +94,6 @@ if type git >/dev/null 2>&1; then
 fi
 # === ghostty
 create_symlink "$SCRIPT_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
-# === cmux
-create_symlink "$SCRIPT_DIR/.config/cmux/settings.json" "$HOME/.config/cmux/settings.json"
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
