@@ -67,6 +67,7 @@ fi
 if type copilot >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
   create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
+  create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
   create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
 fi
 # === lazygit
