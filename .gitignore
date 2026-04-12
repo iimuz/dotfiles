@@ -5,3 +5,4 @@
 temp/
 
 docs/planning.md
+.config/copilot/hooks/__pycache__/
