@@ -10,17 +10,6 @@ function copilot_auto() {
     "EDITOR=${EDITOR:-nvim}"
   )
   local -ar OPTIONS=(
-    "--deny-tool=shell(git checkout:*)"
-    "--deny-tool=shell(git push:*)"
-    "--deny-tool=shell(git rebase:*)"
-    "--deny-tool=shell(git reset:*)"
-    "--deny-tool=shell(git switch:*)"
-    "--deny-tool=shell(npm remove:*)"
-    "--deny-tool=shell(npm uninstall:*)"
-    "--deny-tool=shell(rm -f:*)"
-    "--deny-tool=shell(rm -rf:*)"
-    "--deny-tool=shell(sudo:*)"
-    "--allow-all-tools"
     # tmp 利用は許可
     "--add-dir=/tmp"
     # mac の場合 tmp が `/private/tmp` へのリンクのため許可
@@ -40,10 +29,6 @@ function copilot_yolo() {
     "EDITOR=${EDITOR:-nvim}"
   )
   local -ar OPTIONS=(
-    "--deny-tool=shell(git push:*)"
-    "--deny-tool=shell(rm -f:*)"
-    "--deny-tool=shell(rm -rf:*)"
-    "--deny-tool=shell(sudo:*)"
     "--allow-url=github.com"
     "--allow-url=aws.amazon.com"
     "--allow-all-tools"

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "$HOME/.copilot/hooks/session-start-cleanup.sh",
+        "timeoutSec": 5
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "$HOME/.copilot/hooks/pre-tool-use-permission.sh",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}
