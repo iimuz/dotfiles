@@ -14,6 +14,7 @@ mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
 # === desktop management
 cask "raycast"  # 検索 + rectangle
+mas "tot", id: 1491071483 # 非常に簡易なメモ
 
 # === docker
 cask "rancher"  # dockerd
