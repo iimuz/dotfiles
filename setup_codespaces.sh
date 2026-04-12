@@ -86,6 +86,7 @@ if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh
 # === tmux
 if type tmux >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
+  create_symlink "$SCRIPT_DIR/.config/tmux/new-window-fzf.sh" "$HOME/.config/tmux/new-window-fzf.sh"
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then

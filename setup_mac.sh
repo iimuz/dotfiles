@@ -94,8 +94,6 @@ if type git >/dev/null 2>&1; then
 fi
 # === ghostty
 create_symlink "$SCRIPT_DIR/.config/ghostty/config" "$HOME/.config/ghostty/config"
-# === cmux
-create_symlink "$SCRIPT_DIR/.config/cmux/settings.json" "$HOME/.config/cmux/settings.json"
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
@@ -115,6 +113,7 @@ if type tmux >/dev/null 2>&1; then
     git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
   fi
   create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
+  create_symlink "$SCRIPT_DIR/.config/tmux/new-window-fzf.sh" "$HOME/.config/tmux/new-window-fzf.sh"
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then

@@ -1,5 +1,5 @@
 ---
-applyTo: ".github/hooks/**"
+applyTo: ".github/hooks/**,.config/copilot/hooks/**"
 ---
 
 # GitHub Copilot CLI Hooks

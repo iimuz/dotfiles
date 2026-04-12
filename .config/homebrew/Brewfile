@@ -38,7 +38,7 @@ cask "scroll-reverser"  # マウスのみスクロール方向を逆転
 cask "handy"  # speech-to-text application
 
 # === LLM
-cask "lm-studio"
+cask "ollama-app"
 
 # === project
 brew "bash"
@@ -63,6 +63,3 @@ brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"
 brew "wget"
-
-tap "manaflow-ai/cmux" # ghostty-based macOS terminal
-cask "cmux" # ghostty-based macOS terminal
