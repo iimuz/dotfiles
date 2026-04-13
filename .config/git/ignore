@@ -4,6 +4,9 @@
 # === Mac
 .DS_Store
 
+# === lefthook
+lefthook-local.yml
+
 # === mise
 .mise.local.toml
 mise.local.toml
