@@ -106,6 +106,9 @@ class TestIsSafeCommand:
             "git --no-pager log | head -5",
             "find . -name '*.py' | sort",
             "wc -l file.txt",
+            "mkdir -p /tmp/test",
+            "sed -n '1,50p' file.txt",
+            "cat file.txt | sed -n '1,30p'",
         ],
     )
     def test_safe_commands(self, cmd: str) -> None:
@@ -120,6 +123,7 @@ class TestIsSafeCommand:
             "curl https://example.com",
             "git commit -m test",
             "cat file.txt && npm install",
+            "sed -i 's/old/new/' file.txt",
         ],
     )
     def test_unsafe_commands(self, cmd: str) -> None:

@@ -29,12 +29,14 @@ SAFE_CMDS = frozenset(
         "head",
         "tail",
         "ls",
+        "mkdir",
         "which",
         "type",
         "wc",
         "sort",
         "uniq",
         "tr",
+        "sed",
         "basename",
         "dirname",
         "test",
@@ -107,6 +109,9 @@ def is_safe_command(cmd: str) -> bool:
         first_word = seg.split()[0]
         if first_word == "git":
             if not is_safe_git(seg):
+                return False
+        elif first_word == "sed":
+            if re.search(r"\s-[a-zA-Z]*i", seg):
                 return False
         elif first_word not in SAFE_CMDS:
             return False
