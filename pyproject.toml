@@ -1,0 +1,18 @@
+[project]
+name = "dotfiles"
+version = "0.0.0"
+requires-python = ">=3.9"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.12"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+extend-exclude = [".config/raycast/", ".config/copilot/skills/gh-pr-review/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

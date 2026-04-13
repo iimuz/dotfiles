@@ -3,10 +3,10 @@ pre-commit:
   commands:
     format:
       priority: 1
-      glob: "**/*.{sh,toml,md}"
+      glob: "**/*.{sh,toml,md,py}"
       stage_fixed: true
       run: mise run format -- {staged_files}
     lint:
       priority: 2
-      glob: "**/*.{sh,md}"
+      glob: "**/*.{sh,md,py}"
       run: mise run lint -- {staged_files}

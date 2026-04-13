@@ -59,7 +59,7 @@ def _search_latest_file(directory: Path, pattern: str) -> Path:
 
 
 def _wait_for_file_unlock(file_path: Path) -> None:
-    # lsofコマンドでOSレベルのファイルロックを確認（安全装置）
+    # lsofコマンドでOSレベルのファイルロックを確認(安全装置)
     for _ in range(60):
         if os.system(f"lsof '{file_path.absolute()}' > /dev/null 2>&1") != 0:
             return
