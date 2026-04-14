@@ -36,16 +36,13 @@ vim.opt.laststatus = 3
 -- 不可視文字を可視化
 vim.opt.listchars = { nbsp = "%", tab = ">-", extends = "<", trail = "-" }
 vim.opt.list = true
-vim.api.nvim_exec(
-	[[
+vim.cmd([[
 augroup highlightIdegraphicSpace
   autocmd!
   autocmd Colorscheme * highlight IdeographicSpace term=underline ctermbg=DarkGreen guibg=DarkGreen
   autocmd VimEnter,WinEnter * match IdeographicSpace /　/
 augroup END
-]],
-	false
-)
+]])
 vim.opt.expandtab = true -- Tab文字を半角スペースにする
 vim.opt.tabstop = 2 -- 行頭以外のTab文字の表示幅（スペースいくつ分）
 vim.opt.shiftwidth = 2 -- 行頭でのTab文字の表示幅

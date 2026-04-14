@@ -21,7 +21,7 @@ return {
 			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 				return
 			end
-			return { lsp_fallback = true, async = false, timeout_ms = 1000 }
+			return { lsp_format = "fallback", async = false, timeout_ms = 1000 }
 		end
 
 		-- ファイルタイプごとのformatterの設定
@@ -117,7 +117,7 @@ return {
 		{
 			"<Leader>Cf",
 			function(opts)
-				opts = vim.tbl_extend("keep", opts or {}, { lsp_fallback = true, async = false, timeout_ms = 1000 })
+				opts = vim.tbl_extend("keep", opts or {}, { lsp_format = "fallback", async = false, timeout_ms = 1000 })
 				require("conform").format(opts)
 			end,
 			desc = "⭐︎Conform: Format file or range.",

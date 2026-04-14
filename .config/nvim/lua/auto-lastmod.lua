@@ -45,7 +45,7 @@ local function UpdateLastmod()
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, max_line, false) -- 先頭からmax_line行のみ確認する
 
 	-- auto-saveから実行するときにファイルタイプを考慮しないので、ここで確認する
-	local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+	local filetype = vim.bo[buf].filetype
 	if filetype ~= "markdown" then
 		return
 	end

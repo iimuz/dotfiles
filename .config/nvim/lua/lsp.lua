@@ -12,22 +12,12 @@ function M.setup()
 			set("n", "gd", vim.lsp.buf.definition, { desc = "⭐︎LSP: Go to definition.", buffer = ctx.buf })
 			set("n", "gD", vim.lsp.buf.declaration, { desc = "⭐︎LSP: Go to declaration.", buffer = ctx.buf })
 			set("n", "K", vim.lsp.buf.hover, { desc = "⭐︎LSP: Show hover.", buffer = ctx.buf })
-			set(
-				"n",
-				"[d",
-				-- `vim.diagnostic.goto_next` はdeprecatedだが移行先の以下のコマンドでエラーするので暫定で戻す
-				-- vim.diagnostic.jump({ count = 1, float = true }),
-				vim.diagnostic.goto_next,
-				{ desc = "⭐︎LSP: Go to previous diagnostics.", buffer = ctx.buf }
-			)
-			set(
-				"n",
-				"]d",
-				-- `vim.diagnostic.goto_prev` はdeprecatedだが移行先の以下のコマンドでエラーするので暫定で戻す
-				-- vim.diagnostic.jump({ count = -1, float = true }),
-				vim.diagnostic.goto_prev,
-				{ desc = "⭐︎LSP: Go to next diagnostics.", buffer = ctx.buf }
-			)
+			set("n", "[d", function()
+				vim.diagnostic.jump({ count = -1, float = true })
+			end, { desc = "⭐︎LSP: Go to previous diagnostics.", buffer = ctx.buf })
+			set("n", "]d", function()
+				vim.diagnostic.jump({ count = 1, float = true })
+			end, { desc = "⭐︎LSP: Go to next diagnostics.", buffer = ctx.buf })
 			set(
 				"n",
 				"<C-k>",
@@ -49,8 +39,8 @@ function M.setup()
 				vim.diagnostic.setloclist,
 				{ desc = "⭐︎LSP: Set loclist diagnostics.", buffer = ctx.buf }
 			)
-			set("n", "<Leader>ls", "<cmd>LspRestart<CR>", { desc = "⭐︎LSP: Restart lsp.", buffer = ctx.buf })
-			set("n", "<Leader>lS", "<cmd>LspInfo<CR>", { desc = "⭐︎LSP: Show lsp info.", buffer = ctx.buf })
+			set("n", "<Leader>ls", "<cmd>lsp restart<CR>", { desc = "⭐︎LSP: Restart lsp.", buffer = ctx.buf })
+			set("n", "<Leader>lS", "<cmd>checkhealth vim.lsp<CR>", { desc = "⭐︎LSP: Show lsp info.", buffer = ctx.buf })
 
 			-- 以下のキーは既に<gr>のグループに割り当てられていたので割り当てない
 			-- - gra: code action
