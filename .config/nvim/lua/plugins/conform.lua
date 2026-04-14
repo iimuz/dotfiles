@@ -47,7 +47,7 @@ return {
 					end
 				end,
 				rest = { "kulala-fmt" },
-				rust = { "rust_analyzer" },
+				rust = { "rustfmt", lsp_format = "fallback" },
 				sh = { "shfmt" },
 				-- solidity pluginが必要
 				-- `npm install --save-dev prettier prettier-plugin-solidity`
