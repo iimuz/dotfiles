@@ -43,6 +43,14 @@ SAFE_CMDS = frozenset(
         "true",
         "false",
         "date",
+        "diff",
+        "file",
+        "jq",
+        "readlink",
+        "realpath",
+        "shellcheck",
+        "stat",
+        "tput",
     ]
 )
 
@@ -51,10 +59,14 @@ SAFE_GIT_SUBS = frozenset(
         "add",
         "blame",
         "branch",
+        "check-ignore",
+        "clone",
         "describe",
         "diff",
         "fetch",
         "for-each-ref",
+        "help",
+        "init",
         "log",
         "ls-files",
         "ls-remote",
@@ -66,15 +78,58 @@ SAFE_GIT_SUBS = frozenset(
         "rev-parse",
         "shortlog",
         "show",
-        "stash",
         "status",
         "symbolic-ref",
         "tag",
         "version",
+        "worktree",
     ]
 )
 
 _GIT_SUB_RE = re.compile(r"git\s+(--no-pager\s+)?(\S+)")
+
+SAFE_GH_SUBS = frozenset(
+    [
+        "api",
+        "issue",
+        "pr",
+        "repo",
+        "run",
+        "search",
+        "status",
+    ]
+)
+
+SAFE_GH_ACTIONS = frozenset(
+    [
+        "checks",
+        "diff",
+        "list",
+        "status",
+        "view",
+    ]
+)
+
+SAFE_CARGO_SUBS = frozenset(
+    [
+        "bench",
+        "build",
+        "check",
+        "clippy",
+        "doc",
+        "fmt",
+        "test",
+        "tree",
+    ]
+)
+
+SAFE_STANDALONE_CMDS = frozenset(
+    [
+        "lefthook",
+        "markdownlint",
+        "zizmor",
+    ]
+)
 
 
 # --- Pure evaluation functions -------------------------------------------- #
@@ -96,7 +151,35 @@ def is_safe_git(segment: str) -> bool:
     m = _GIT_SUB_RE.match(segment.strip())
     if not m:
         return False
-    return m.group(2) in SAFE_GIT_SUBS
+    sub = m.group(2)
+    if sub not in SAFE_GIT_SUBS:
+        return False
+    # Reject destructive operations on otherwise-safe subcommands
+    if sub == "branch" and re.search(r"\s-[dD]\b", segment):
+        return False
+    if sub == "tag" and re.search(r"\s-d\b", segment):
+        return False
+    return not (sub == "worktree" and re.search(r"\s(add|remove|prune)\b", segment))
+
+
+def is_safe_gh(segment: str) -> bool:
+    """Check if a gh CLI command is read-only."""
+    m = re.match(r"gh\s+(\S+)(?:\s+(\S+))?", segment.strip())
+    if not m:
+        return False
+    sub = m.group(1)
+    action = m.group(2) or ""
+    if sub == "api":
+        return not re.search(r"--method\s+(PUT|PATCH|DELETE|POST)", segment)
+    return sub in SAFE_GH_SUBS and action in SAFE_GH_ACTIONS
+
+
+def is_safe_cargo(segment: str) -> bool:
+    """Check if a cargo command uses only safe subcommands."""
+    m = re.match(r"cargo\s+(\S+)", segment.strip())
+    if not m:
+        return False
+    return m.group(1) in SAFE_CARGO_SUBS
 
 
 def is_safe_command(cmd: str) -> bool:
@@ -110,9 +193,17 @@ def is_safe_command(cmd: str) -> bool:
         if first_word == "git":
             if not is_safe_git(seg):
                 return False
+        elif first_word == "gh":
+            if not is_safe_gh(seg):
+                return False
+        elif first_word == "cargo":
+            if not is_safe_cargo(seg):
+                return False
         elif first_word == "sed":
             if re.search(r"\s-[a-zA-Z]*i", seg):
                 return False
+        elif first_word in SAFE_STANDALONE_CMDS:
+            continue
         elif first_word not in SAFE_CMDS:
             return False
     return True
@@ -173,9 +264,9 @@ def evaluate(
     for pattern, reason in deny_rules:
         if reason == "rm_flags":
             if re.search(pattern, command) and re.search(
-                r"\s-[a-zA-Z]*[rf]|--force|--recursive", command
+                r"\s-[a-zA-Z]*r|--recursive|-[a-zA-Z]*R", command
             ):
-                return ("deny", "rm with force/recursive flags is blocked")
+                return ("deny", "rm with recursive flags is blocked")
         elif re.search(pattern, command):
             return ("deny", reason)
 
@@ -184,6 +275,9 @@ def evaluate(
         (r"git\s+push(\s|$)", "git push modifies remote"),
         (r"git\s+(checkout|switch)\s", "Branch switch may discard uncommitted changes"),
         (r"git\s+rebase(\s|$)", "git rebase rewrites history"),
+        (r"git\s+stash\s+(drop|clear|pop|apply)", "git stash mutation"),
+        (r"git\s+branch\s+-[dD]", "git branch deletion"),
+        (r"git\s+tag\s+-d", "git tag deletion"),
         (r"npm\s+(remove|uninstall)(\s|$)", "npm package removal"),
         (r"(^|[;&|]\s*)kill\s", "Process termination"),
         (r"(^|[;&|]\s*)(ssh|scp)\s", "Remote access"),
