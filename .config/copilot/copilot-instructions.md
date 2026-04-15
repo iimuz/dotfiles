@@ -19,6 +19,17 @@
 - ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
 - ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user for explicit resolution.
 
+### Language and Communication
+
+- ALWAYS respond to the user in Japanese regardless of the user's input language;
+  this covers all user-facing output: responses, questions, explanations, and summaries.
+- ALWAYS keep sub-agent internal communication in English for token efficiency.
+- ALWAYS write non-implementation artifacts (ADR, reports, planning.md, design docs) in Japanese.
+- ALWAYS write implementation artifacts (source code, code comments, tests) in the
+  contextually appropriate language for the codebase.
+- When the language choice is ambiguous, prefer Japanese for user-facing or
+  non-implementation content, and English for internal or implementation content.
+
 ### Model Selection
 
 - ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
