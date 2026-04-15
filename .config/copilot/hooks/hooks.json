@@ -11,6 +11,12 @@
     "preToolUse": [
       {
         "type": "command",
+        "command": "rtk hook copilot",
+        "cwd": ".",
+        "timeout": 5
+      },
+      {
+        "type": "command",
         "bash": "python3 $HOME/.copilot/hooks/pre-tool-use-permission.py",
         "timeoutSec": 5
       }
