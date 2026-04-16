@@ -19,7 +19,9 @@ SAFE_TOOLS = frozenset(["view", "grep", "glob", "edit", "create"])
 
 SAFE_CMDS = frozenset(
     [
+        "awk",
         "cd",
+        "cp",
         "echo",
         "printf",
         "cat",
@@ -152,6 +154,7 @@ SAFE_MISE_SUBS = frozenset(
         "outdated",
         "plugins",
         "registry",
+        "run",
         "search",
         "settings",
         "tasks",
@@ -346,6 +349,14 @@ def is_safe_curl(segment: str) -> bool:
     return not write_flags.search(segment)
 
 
+def strip_rtk_prefix(seg: str) -> str:
+    """Strip leading 'rtk' proxy prefix from a command segment."""
+    words = seg.split()
+    if words and words[0] == "rtk":
+        return " ".join(words[1:])
+    return seg
+
+
 def is_safe_command(cmd: str) -> bool:
     """Check all command-position words are in the safe list."""
     segments = split_command_segments(cmd)
@@ -354,6 +365,9 @@ def is_safe_command(cmd: str) -> bool:
         if not seg:
             continue
         seg = strip_var_assignments(seg)
+        if not seg:
+            continue
+        seg = strip_rtk_prefix(seg)
         if not seg:
             continue
         first_word = seg.split()[0]
@@ -440,7 +454,7 @@ def evaluate(
         (r"(^|[;&|]\s*)(eval|exec)\s", "Dynamic code execution is blocked"),
         (r"(^|[;&|]\s*)(dd\s+if=|mkfs|fdisk)", "Disk destructive operation is blocked"),
         (r"chmod\s+777", "chmod 777 is blocked"),
-        (r"git\s+push\s.*--force", "git push --force is blocked"),
+        (r"git\s+push\s.*--force(?!-with-lease)", "git push --force is blocked"),
         (r"git\s+reset\s.*--hard", "git reset --hard is blocked"),
         (r"git\s+clean\s.*-[a-zA-Z]*f", "git clean -f is blocked"),
     ]

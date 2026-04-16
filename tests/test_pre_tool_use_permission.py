@@ -10,6 +10,7 @@ from config.copilot.hooks.pre_tool_use_permission import (
     is_safe_gh,
     is_safe_git,
     parse_command,
+    strip_rtk_prefix,
 )
 
 HOME = "/Users/testuser"
@@ -42,6 +43,23 @@ class TestParseCommand:
 
     def test_handles_missing_command_key(self) -> None:
         assert parse_command("bash", json.dumps({"path": "/tmp"})) == ""
+
+
+# --- strip_rtk_prefix ----------------------------------------------------- #
+
+
+class TestStripRtkPrefix:
+    def test_strips_rtk(self) -> None:
+        assert strip_rtk_prefix("rtk git status") == "git status"
+
+    def test_no_rtk(self) -> None:
+        assert strip_rtk_prefix("git status") == "git status"
+
+    def test_bare_rtk(self) -> None:
+        assert strip_rtk_prefix("rtk") == ""
+
+    def test_rtk_with_flags(self) -> None:
+        assert strip_rtk_prefix("rtk ls -la /tmp") == "ls -la /tmp"
 
 
 # --- is_safe_git --------------------------------------------------------- #
@@ -193,6 +211,8 @@ class TestIsSafeCommand:
             "diff file1.txt file2.txt",
             "readlink -f path",
             "stat file.txt",
+            "cp file1.txt file2.txt",
+            "awk '{print $1}' file.txt",
         ],
     )
     def test_safe_commands(self, cmd: str) -> None:
@@ -213,6 +233,46 @@ class TestIsSafeCommand:
     )
     def test_unsafe_commands(self, cmd: str) -> None:
         assert is_safe_command(cmd) is False
+
+    # --- rtk prefix stripping ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "rtk ls -la /tmp",
+            "rtk git --no-pager log --oneline -20",
+            "rtk grep pattern file.txt",
+            "rtk head -30 file.txt",
+            "rtk wc -l file.txt",
+            "rtk cat file.txt",
+            "rtk find . -name '*.py'",
+            "cd /tmp && rtk git status",
+        ],
+    )
+    def test_rtk_prefixed_safe(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
+
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "rtk python3 script.py",
+            "rtk npm install",
+        ],
+    )
+    def test_rtk_prefixed_unsafe(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is False
+
+    # --- mise run (Step 10) ---
+    @pytest.mark.parametrize(
+        "cmd",
+        [
+            "mise run lint",
+            "mise run format",
+            "mise run test",
+            "mise run lint file.sh",
+        ],
+    )
+    def test_safe_mise_run(self, cmd: str) -> None:
+        assert is_safe_command(cmd) is True
 
     # --- Quote-aware splitting (Step 1) ---
     @pytest.mark.parametrize(
@@ -256,7 +316,6 @@ class TestIsSafeCommand:
     @pytest.mark.parametrize(
         "cmd",
         [
-            "mise run lint",
             "mise install python",
             "mise use python@3.12",
             "mise exec -- python script.py",
@@ -446,6 +505,7 @@ class TestEvaluateDeny:
             ("eval $SOME_VAR", "Dynamic code execution"),
             ("chmod 777 /tmp/file", "chmod 777"),
             ("git push --force origin main", "git push --force"),
+            ("git push --force-if-includes origin main", "git push --force"),
             ("git reset --hard HEAD", "git reset --hard"),
             ("git clean -fd", "git clean -f"),
         ],
@@ -468,6 +528,7 @@ class TestEvaluateAsk:
             ("git branch -d feature", "branch deletion"),
             ("git branch -D feature", "branch deletion"),
             ("git tag -d v1.0", "tag deletion"),
+            ("git push --force-with-lease origin main", "git push"),
             ("npm remove lodash", "npm package"),
             ("kill 12345", "Process termination"),
             ("ssh user@host", "Remote access"),
@@ -492,7 +553,6 @@ class TestEvaluatePassthrough:
             "rm -f file.json",
             "docker compose exec web bash",
             "docker compose run web python manage.py",
-            "mise run lint",
             "mise env",
         ],
     )
