@@ -18,6 +18,10 @@
 - ALWAYS execute independent subagent workflows in parallel rather than sequentially.
 - ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
 - ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user for explicit resolution.
+- ALWAYS delegate code investigation spanning 2 or more files to a subagent.
+- ALWAYS delegate commands that produce verbose output
+  (tests, builds, lints, installs, migrations) to a subagent and receive only a summary.
+- ALWAYS delegate web research (search, page fetch) to a subagent.
 
 ### Language and Communication
 
