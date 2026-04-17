@@ -12,16 +12,15 @@
 
 ### Subagent Strategy and Parallel Execution
 
-- ALWAYS delegate to subagents by default to offload heavy-context operations and keep the main context focused.
-- NEVER put raw source code or verbose output in the main context; keep it to decisions, coordination, and conclusions.
-- ALWAYS delegate cohesive, goal-oriented workflows with crisp context, explicit output contracts, and evidence-backed conclusions.
-- ALWAYS execute independent subagent workflows in parallel rather than sequentially.
-- ALWAYS launch multiple parallel subagents to test distinct hypotheses for complex or ambiguous tasks.
-- ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user for explicit resolution.
-- ALWAYS delegate code investigation spanning 2 or more files to a subagent.
-- ALWAYS delegate commands that produce verbose output
-  (tests, builds, lints, installs, migrations) to a subagent and receive only a summary.
-- ALWAYS delegate web research (search, page fetch) to a subagent.
+- ALWAYS delegate investigation (file comprehension, log analysis, search across files,
+  command output analysis) to subagents. Require structured summaries as output.
+  The main context handles coordination and decisions. Small, localized edits
+  (a few lines in known locations) may be done directly; delegate larger or
+  multi-file changes to a subagent.
+- ALWAYS use view_range for targeted reads when the edit location is already known.
+  For large or unfamiliar files, delegate comprehension to a subagent first.
+- ALWAYS execute independent subagent workflows in parallel.
+- ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user.
 
 ### Language and Communication
 
