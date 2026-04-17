@@ -35,11 +35,13 @@
 
 ### Model Selection
 
-- ALWAYS use claude-opus-4.6 as the default model; prioritize accuracy over speed.
-- ALWAYS use claude-opus-4.6 for tasks requiring judgment, reasoning, or contextual understanding
-  (architecture decisions, scope analysis, review interpretation, report writing).
-- ALWAYS use gpt-5.4 for mechanical operations (git staging, file writing, template expansion,
-  straightforward code edits with clear specifications).
+- Default: claude-opus-4.7 (fall back to claude-opus-4.6 if unavailable).
+- Judgment and reasoning (architecture decisions, scope analysis, review, report writing):
+  use the default model.
+- Mechanical operations (git staging, file writing, template expansion,
+  straightforward code edits): use claude-sonnet-4.6.
+- Trivial operations (single-command tasks, simple file reads): claude-haiku-4.5 permitted.
+- Alternative perspective (cross-checking decisions, second opinions): use gpt-5.4.
 
 ### Privacy
 
