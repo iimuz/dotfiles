@@ -17,42 +17,70 @@ from pathlib import Path
 
 SAFE_TOOLS = frozenset(["view", "grep", "glob", "edit", "create"])
 
+SAFE_MCP_PREFIXES = ("github-mcp-server-",)
+
+SAFE_MCP_TOOLS = frozenset(
+    [
+        "atlassian-atlassianUserInfo",
+        "atlassian-getAccessibleAtlassianResources",
+        "atlassian-getConfluencePage",
+        "atlassian-getConfluencePageDescendants",
+        "atlassian-getConfluencePageFooterComments",
+        "atlassian-getConfluencePageInlineComments",
+        "atlassian-getConfluenceSpaces",
+        "atlassian-getJiraIssue",
+        "atlassian-getJiraIssueRemoteIssueLinks",
+        "atlassian-getJiraProjectIssueTypesMetadata",
+        "atlassian-getTransitionsForJiraIssue",
+        "atlassian-getVisibleJiraProjects",
+        "atlassian-getPagesInConfluenceSpace",
+        "atlassian-lookupJiraAccountId",
+        "atlassian-searchConfluenceUsingCql",
+        "atlassian-searchJiraIssuesUsingJql",
+    ]
+)
+
 SAFE_CMDS = frozenset(
     [
         "awk",
+        "base64",
+        "basename",
         "cd",
         "cp",
-        "echo",
-        "printf",
         "cat",
-        "grep",
-        "rg",
-        "find",
-        "head",
-        "tail",
-        "ls",
-        "mkdir",
-        "which",
-        "type",
-        "wc",
-        "sort",
-        "uniq",
-        "tr",
-        "sed",
-        "basename",
-        "dirname",
-        "test",
-        "true",
-        "false",
         "date",
         "diff",
+        "dig",
+        "dirname",
+        "echo",
+        "false",
         "file",
+        "find",
+        "grep",
+        "head",
+        "host",
         "jq",
+        "ls",
+        "mkdir",
+        "nslookup",
+        "printf",
+        "read",
         "readlink",
         "realpath",
+        "rg",
+        "sed",
         "shellcheck",
+        "sort",
         "stat",
+        "tail",
+        "test",
         "tput",
+        "tr",
+        "true",
+        "type",
+        "uniq",
+        "wc",
+        "which",
         "xargs",
     ]
 )
@@ -78,6 +106,7 @@ SAFE_GIT_SUBS = frozenset(
         "add",
         "blame",
         "branch",
+        "cat-file",
         "check-ignore",
         "clone",
         "describe",
@@ -337,6 +366,20 @@ def is_safe_docker(segment: str) -> bool:
     return sub in SAFE_DOCKER_SUBS
 
 
+SAFE_AWS_ACTIONS = re.compile(
+    r"^(describe|get|list|filter|batch-get|lookup|search|check|head|select|scan|query)-"
+)
+
+
+def is_safe_aws(segment: str) -> bool:
+    """Check if an aws CLI command is read-only."""
+    m = re.match(r"aws\s+(\S+)\s+(\S+)", segment.strip())
+    if not m:
+        return False
+    action = m.group(2)
+    return bool(SAFE_AWS_ACTIONS.match(action))
+
+
 def is_safe_curl(segment: str) -> bool:
     """Check if a curl command is GET-only (no write flags)."""
     write_flags = re.compile(
@@ -388,6 +431,9 @@ def is_safe_command(cmd: str) -> bool:
         elif first_word == "docker":
             if not is_safe_docker(seg):
                 return False
+        elif first_word == "aws":
+            if not is_safe_aws(seg):
+                return False
         elif first_word == "curl":
             if not is_safe_curl(seg):
                 return False
@@ -422,6 +468,8 @@ def evaluate(
     """
     # Non-bash tools
     if tool_name in SAFE_TOOLS:
+        return ("allow", "")
+    if tool_name in SAFE_MCP_TOOLS or any(tool_name.startswith(p) for p in SAFE_MCP_PREFIXES):
         return ("allow", "")
     if tool_name != "bash":
         return ("exit", "")
