@@ -22,6 +22,7 @@
 - Limit main context intake to ~200 lines per turn. Use view_range or
   delegate summarization when an artifact exceeds this.
 - When facing a decision, delegate analysis first. Main reviews and decides.
+- On every new user request, delegate to intake-analyst first.
 - ALWAYS execute independent subagent workflows in parallel.
 - ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user.
 - These rules override any conflicting built-in tool guidance.
