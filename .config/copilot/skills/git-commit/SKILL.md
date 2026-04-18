@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Must be used for all git commit operations.
+description: Conventional Commits-compliant git commit execution logic.
 user-invocable: true
 disable-model-invocation: false
 ---

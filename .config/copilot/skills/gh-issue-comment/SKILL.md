@@ -1,8 +1,6 @@
 ---
 name: gh-issue-comment
-description: >-
-  Use when recording investigation results, review summaries, or incident
-  reports as comments on GitHub Issues.
+description: GitHub Issue comment posting logic with structured format.
 user-invocable: true
 disable-model-invocation: false
 ---

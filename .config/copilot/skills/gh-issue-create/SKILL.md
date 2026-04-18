@@ -1,6 +1,6 @@
 ---
 name: gh-issue-create
-description: Must be used for all GitHub Issue creation operations.
+description: GitHub Issue creation logic with structured templates.
 user-invocable: true
 disable-model-invocation: false
 ---
