@@ -3,5 +3,8 @@
 .DS_Store
 
 temp/
+.venv/
+.pytest_cache/
 
 docs/planning.md
+__pycache__/

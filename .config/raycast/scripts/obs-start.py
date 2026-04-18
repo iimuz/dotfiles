@@ -83,9 +83,7 @@ def main() -> None:
     TARGET_SCENE = "MacScreenCapture"
 
     # OBS への接続確立
-    client = _connect_obs(
-        host=OBS_HOST, port=OBS_PORT, password=OBS_PASSWORD, retries=5, delay=2
-    )
+    client = _connect_obs(host=OBS_HOST, port=OBS_PORT, password=OBS_PASSWORD, retries=5, delay=2)
 
     # OBSが完全に準備されるまで待機
     for i in range(10):

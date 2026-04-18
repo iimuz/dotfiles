@@ -12,7 +12,7 @@ return {
 		{
 			"<Leader>bd",
 			function()
-				require("trouble").toggle("document_diagnostics")
+				require("trouble").toggle({ mode = "diagnostics", filter = { buf = 0 } })
 			end,
 			desc = "Trouble: Toggle document diagnostics.",
 		},
@@ -26,7 +26,7 @@ return {
 		{
 			"<Leader>bq",
 			function()
-				require("trouble").toggle("quickfix")
+				require("trouble").toggle("qflist")
 			end,
 			desc = "Trouble: Toggle quickfix.",
 		},
@@ -47,7 +47,7 @@ return {
 		{
 			"<Leader>bw",
 			function()
-				require("trouble").toggle("workspace_diagnostics")
+				require("trouble").toggle("diagnostics")
 			end,
 			desc = "Trouble: Toggle workspace diagnostics.",
 		},

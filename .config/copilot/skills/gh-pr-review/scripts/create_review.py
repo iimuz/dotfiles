@@ -31,20 +31,21 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
     print(json.dumps(error_payload), file=sys.stderr)
     sys.exit(exit_code)
 
+
 def main() -> None:
     """
     Parses arguments, constructs a JSON payload, and calls the GitHub API
     to create a pending review.
     """
-    parser = argparse.ArgumentParser(description='Create a pending PR review.')
-    parser.add_argument('--owner', required=True, help='Repository owner')
-    parser.add_argument('--repo', required=True, help='Repository name')
-    parser.add_argument('--pull-number', required=True, type=int, help='PR number')
-    parser.add_argument('--summary-body', required=True, help='Review summary body')
-    parser.add_argument('--comments-json', required=True, help='JSON string of comments array')
-    
+    parser = argparse.ArgumentParser(description="Create a pending PR review.")
+    parser.add_argument("--owner", required=True, help="Repository owner")
+    parser.add_argument("--repo", required=True, help="Repository name")
+    parser.add_argument("--pull-number", required=True, type=int, help="PR number")
+    parser.add_argument("--summary-body", required=True, help="Review summary body")
+    parser.add_argument("--comments-json", required=True, help="JSON string of comments array")
+
     args = parser.parse_args()
-    
+
     try:
         raw_comments = json.loads(args.comments_json)
     except json.JSONDecodeError as e:
@@ -80,8 +81,7 @@ def main() -> None:
                 emit_error(
                     "invalid_suggestion_content",
                     detail=(
-                        f"Comment at index {index} suggestion must not contain "
-                        "triple backticks"
+                        f"Comment at index {index} suggestion must not contain triple backticks"
                     ),
                 )
             suggestion_block = f"\n\n```suggestion\n{suggestion}\n```"
@@ -96,46 +96,30 @@ def main() -> None:
             )
 
         # Construct API comment object
-        api_comment = {
-            "path": path,
-            "body": body,
-            "line": parsed_line,
-            "side": side
-        }
-        
+        api_comment = {"path": path, "body": body, "line": parsed_line, "side": side}
+
         if start_line:
             try:
                 api_comment["start_line"] = int(start_line)
             except (TypeError, ValueError):
                 emit_error(
                     "invalid_comment_location",
-                    detail=(
-                        f"Comment at index {index} has non-integer start_line: "
-                        f"{start_line}"
-                    ),
+                    detail=(f"Comment at index {index} has non-integer start_line: {start_line}"),
                 )
 
         api_comments.append(api_comment)
 
     # Construct payload for GitHub API
-    payload = {
-        "body": args.summary_body,
-        "comments": api_comments
-    }
+    payload = {"body": args.summary_body, "comments": api_comments}
     # event is OMITTED to create a PENDING review
 
     # Call gh api
     endpoint = f"repos/{args.owner}/{args.repo}/pulls/{args.pull_number}/reviews"
     json_payload = json.dumps(payload)
-    
+
     cmd = ["gh", "api", endpoint, "--method", "POST", "--input", "-"]
-    
-    result = subprocess.run(
-        cmd,
-        input=json_payload,
-        capture_output=True,
-        text=True
-    )
+
+    result = subprocess.run(cmd, input=json_payload, capture_output=True, text=True)
 
     if result.returncode != 0:
         emit_error(
@@ -166,6 +150,7 @@ def main() -> None:
         )
 
     print(ReviewResult(id=review_id, html_url=html_url).to_json())
+
 
 if __name__ == "__main__":
     main()
