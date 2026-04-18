@@ -13,7 +13,10 @@ tools: ["read", "search", "edit"]
 
 Read `review_file_paths` and compare findings across reviewers to identify gaps
 where one reviewer found a concern that others missed.
-Write the gap list to `output_filepath`.
+
+Write the gap list to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include the gap list in the response text.
+Return exactly one response line: `gaps_found: {N}`.
 
 If a review file cannot be parsed, skip that model for the affected aspect and continue.
 Compare findings only within the same aspect. Keep concern text to a single line.
@@ -59,7 +62,7 @@ finding at that location or about that condition.
 
 ## Output
 
-Written to `output_filepath`. Format:
+Write the gap list to `output_filepath` using a file-writing tool call. Format:
 
 ```yaml
 gaps_found: N

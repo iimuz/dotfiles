@@ -13,7 +13,11 @@ tools: ["read", "search", "edit"]
 
 Read `review_file_paths`, `gap_list_path`, and `crosscheck_paths`.
 Deduplicate findings, apply cross-check assessments, and synthesize a unified
-report. Write the result to `output_filepath`.
+report.
+
+Write the consolidated report to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include the report in the response text.
+Return only: file path and finding count (e.g., "Written to /path/to/file.md (5 findings)").
 
 Abort if review input files are missing.
 Abort if the consolidated report shape is invalid.
@@ -79,7 +83,7 @@ Abort if the consolidated report shape is invalid.
 
 ## Output
 
-Written to `output_filepath`.
+Write findings to `output_filepath` using a file-writing tool call.
 
 ```markdown
 ## Code Review Summary

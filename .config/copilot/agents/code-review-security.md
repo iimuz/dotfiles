@@ -12,7 +12,11 @@ tools: ["read", "search", "edit"]
 
 Read the change target (diff or file list) and analyze for security vulnerabilities
 and exploitability issues. Keep findings strictly within security scope.
-Write the review to `output_filepath`.
+
+Write findings to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include findings in the response text.
+Return only: file path and finding count (e.g., "Written to /path/to/file.md (3 findings)").
+If there are no findings, still create the file with an empty review body.
 
 Abort if findings drift outside security scope.
 Abort if the output file already exists.
@@ -39,7 +43,7 @@ informational security observations.
 
 ## Output
 
-Written to `output_filepath`. Organize findings by severity.
+Write findings to `output_filepath` using a file-writing tool call. Organize findings by severity.
 Omit severity sections with no findings.
 
 ```markdown
