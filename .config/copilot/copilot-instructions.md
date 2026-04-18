@@ -62,7 +62,9 @@
 
 ### Task Completion Protocol
 
-- ALWAYS call ask_user (allow_freeform: true) as the final action when completing a user request, regardless of task size.
+- ALWAYS call ask_user (allow_freeform: true) at the end of every response to the user.
+  The task is complete only when the user explicitly confirms completion.
+- At the start of every task, add a final TODO: "call ask_user to confirm completion with the user."
 
 ## Style and Preferences
 
