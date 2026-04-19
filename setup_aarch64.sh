@@ -19,39 +19,6 @@ function create_symlink() {
   ln -s "$src" "$dst"
 }
 
-# Install lazygit
-# see: <https://github.com/jesseduffield/lazygit?tab=readme-ov-file#installation>
-# ubuntu25.10以降は単純にaptでインストール可能になる。
-function _install_lazygit() {
-  local LAZYGIT_VERSION=
-  LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
-  readonly LAZYGIT_VERSION
-
-  curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
-  tar xf lazygit.tar.gz lazygit
-  sudo install lazygit -D -t /usr/local/bin/
-}
-
-# Install neovim
-# see: <https://github.com/neovim/neovim/blob/master/INSTALL.md>
-function _install_neovim() {
-  local BINARY=nvim-linux-arm64.appimage
-
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/$BINARY
-  chmod u+x $BINARY
-  sudo install $BINARY -D -t /usr/local/bin/
-  sudo ln -s /usr/local/bin/$BINARY /usr/local/bin/nvim
-}
-
-function _install_yq() {
-  local VERSION=v4.47.1
-  local BINARY=yq_linux_arm64
-
-  wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - | tar xz
-  mv $BINARY yq
-  sudo install yq -D -t /usr/local/bin/
-}
-
 # Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
   local -r filename="$1"
@@ -144,12 +111,10 @@ if type gpg >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.conf"
 fi
 # === lazygit
-if ! type lazygit >/dev/null 2>&1; then _install_lazygit; fi
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
 fi
 # === neovim
-if ! type nvim >/dev/null 2>&1; then _install_neovim; fi
 if type nvim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
 fi
@@ -175,8 +140,6 @@ if type vim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/vim/init.vim" "$HOME/.vimrc"
   create_symlink "$SCRIPT_DIR/.config/vim" "$HOME/.config/vim"
 fi
-# === yq
-if ! type yq >/dev/null 2>&1; then _install_yq; fi
 # === zsh
 if type zsh >/dev/null 2>&1; then
   sudo chsh -s "$(which zsh)" "$(whoami)"

@@ -12,9 +12,13 @@ tools: ["read", "search", "edit"]
 ## Overview
 
 Read `consolidated_report_path` and the source code of files listed in finding
-`File:` references. Classify each finding into one of two tiers and write the
-triage report to `output_filepath`. Pass `target` through to resolve the changed
-file set when needed for context.
+`File:` references. Classify each finding into one of two tiers.
+
+Write the triage report to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include the report in the response text.
+Return only: file path and tier counts (e.g., "Written to /path/to/file.md (2 recommended, 3 consider)").
+
+Pass `target` through to resolve the changed file set when needed for context.
 
 Abort if `consolidated_report_path` is missing or unreadable.
 Abort if the output file already exists.
@@ -112,7 +116,7 @@ If validation fails, abort with an error message describing the discrepancy.
 
 ## Output
 
-Written to `output_filepath`.
+Write the triage report to `output_filepath` using a file-writing tool call.
 
 ```markdown
 ## Code Review Triage Report

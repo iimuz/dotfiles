@@ -12,7 +12,11 @@ tools: ["read", "search", "edit"]
 
 Read the change target (diff or file list) and analyze code changes against design
 reference criteria. Keep findings scoped to design alignment.
-Write the review to `output_filepath`.
+
+Write findings to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include findings in the response text.
+Return only: file path and finding count (e.g., "Written to /path/to/file.md (3 findings)").
+If there are no findings, still create the file with an empty review body.
 
 Abort if `design_info` is missing or empty.
 Abort if the output file already exists.
@@ -37,7 +41,7 @@ MEDIUM. Naming inconsistencies default to LOW.
 
 ## Output
 
-Written to `output_filepath`. Organize findings by severity.
+Write findings to `output_filepath` using a file-writing tool call. Organize findings by severity.
 Omit severity sections with no findings.
 
 ```markdown

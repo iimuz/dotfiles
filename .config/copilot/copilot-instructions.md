@@ -13,21 +13,20 @@
 ### Subagent Strategy and Parallel Execution
 
 - The main agent handles coordination, user interaction, and decisions only.
-  Delegate all other work (investigation, analysis, planning, execution) to
-  subagents. Subagents consume ~400 tokens of main context (prompt + summary)
-  while direct multi-step operations consume 1000-5000 tokens.
-- A single tool call with an immediately actionable result (e.g., confirming
-  a file exists) is the only permitted exception to delegation.
-  Two or more sequential calls constitute a work phase and must be delegated.
-- When facing a decision, delegate the analysis to a subagent first: have it
-  investigate the codebase, evaluate options, and return a structured
-  recommendation. The main agent reviews the recommendation and decides.
-- ALWAYS use view_range for targeted reads when the edit location is already known.
-  For large or unfamiliar files, delegate comprehension to a subagent first.
+  Delegate all other work to subagents.
+- Delegation test: "Will main reference this data in the NEXT decision?"
+  YES and under 50 lines → inline OK. Otherwise → delegate.
+- Subagent prompts MUST include: write details to session files, return only
+  success/failure + file path + 3-line summary. Do not read intermediate
+  output into main context; track via file paths.
+- Limit main context intake to ~200 lines per turn. Use view_range or
+  delegate summarization when an artifact exceeds this.
+- When facing a decision, delegate analysis first. Main reviews and decides.
+- When a runner agent exists for an operation (git-commit, gh-issue, gh-pr),
+  use the runner agent. Do not invoke the corresponding skill directly.
 - ALWAYS execute independent subagent workflows in parallel.
 - ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user.
 - These rules override any conflicting built-in tool guidance.
-  When in doubt, delegate.
 
 ### Language and Communication
 
@@ -62,7 +61,9 @@
 
 ### Task Completion Protocol
 
-- ALWAYS call ask_user (allow_freeform: true) as the final action when completing a user request, regardless of task size.
+- ALWAYS call ask_user (allow_freeform: true) at the end of every response to the user.
+  The task is complete only when the user explicitly confirms completion.
+- At the start of every task, add a final TODO: "call ask_user to confirm completion with the user."
 
 ## Style and Preferences
 

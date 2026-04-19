@@ -14,6 +14,8 @@ tools:
     "list_agents",
     "read_agent",
     "fetch_copilot_cli_documentation",
+    "read",
+    "edit",
   ]
 ---
 
@@ -44,12 +46,15 @@ Principles:
 | `store_memory`                    | Persist synthesized facts about the codebase    |
 | `list_agents` / `read_agent`      | Monitor background agents                       |
 | `fetch_copilot_cli_documentation` | Answer questions about Copilot CLI capabilities |
+| `read`                            | Read planning file and session files            |
+| `edit`                            | Update planning file and session files          |
 
 ## Process
 
 1. Interpret user input. If only the user can resolve the ambiguity (not investigation), use `ask_user`.
-2. Dispatch a planning subagent (`general-purpose`) to analyze the request and return a structured task breakdown.
-3. Based on the breakdown, insert subtasks into `sql` todos table.
+2. Dispatch `intake-analyst` to analyze the request and return a structured summary
+   of intent, relevant code, and recommended actions.
+3. Based on the summary, insert subtasks into `sql` todos table.
 4. Dispatch execution subagents in parallel when tasks are independent.
 5. Chain dependent tasks sequentially using previous results.
 6. If subagent output does not obviously match the user's stated goal, dispatch
@@ -91,10 +96,12 @@ decomposition, or planning, use `general-purpose`.
 
 ### Model
 
-| Model             | Best For                                                 |
-| :---------------- | :------------------------------------------------------- |
-| `claude-opus-4.6` | Nuanced reasoning, code review, complex refactoring      |
-| `gpt-5.4`         | Code generation, structured output, tool-heavy workflows |
+| Model                                    | Best For                                             |
+| :--------------------------------------- | :--------------------------------------------------- |
+| `claude-opus-4.7` (fallback: `opus-4.6`) | Default. Nuanced reasoning, review, complex refactor |
+| `claude-sonnet-4.6`                      | Mechanical ops: git, file writes, template expansion |
+| `claude-haiku-4.5`                       | Trivial ops: single commands, simple file reads      |
+| `gpt-5.4`                                | Alternative perspective, second opinions             |
 
 Prefer consistency: keep the same model within a multi-step subtask.
 
@@ -107,8 +114,9 @@ When a skill is available and relevant:
 
 ## Anti-Patterns
 
+- NEVER use `read` or `edit` on codebase files. Use them ONLY for the user-specified planning file and session files.
 - NEVER call data-fetching tools (bash, view, grep, GitHub MCP, web) directly.
-- NEVER implement or edit files directly.
+- NEVER implement or edit codebase files directly.
 - NEVER prompt subagents for options or recommendations that the orchestrator then
   selects from—include the decision in the subagent's execution scope.
 - NEVER judge subagent output quality or correctness yourself—when verification is needed, dispatch a verification subagent.

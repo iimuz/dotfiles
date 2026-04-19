@@ -12,7 +12,10 @@ tools: ["read", "search", "edit"]
 
 Read the provided `concerns` list for the given `aspect`, verify each concern
 against the code evidence, and assess each as VALID, INVALID, or UNCERTAIN.
-Write the results to `output_filepath`.
+
+Write results to a new file at the exact path given in `output_filepath` using a file-writing tool call.
+Do not include assessment results in the response text.
+Return only: file path and assessment count (e.g., "Written to /path/to/file.md (2 valid, 1 invalid, 0 uncertain)").
 
 Scope is limited to the provided concerns and their specified locations only.
 Do not perform a full review -- only verify the listed concerns.
@@ -59,7 +62,7 @@ Abort if the output file already exists.
 
 ## Output
 
-Written to `output_filepath`. Organize results by assessment.
+Write results to `output_filepath` using a file-writing tool call. Organize results by assessment.
 Omit assessment sections with no entries.
 
 ```markdown

@@ -44,6 +44,14 @@ The final triage report includes:
 
 ## Execution Flow
 
+### Pre-Flight
+
+Create `run_dir` before launching any agents:
+
+```bash
+mkdir -p {run_dir}
+```
+
 ### Stage 1: Parallel Aspect Reviews
 
 Launch parallel subagents for each (model, aspect) pair:
@@ -62,6 +70,10 @@ For design-compliance, add `design_info={resolved_design_info}`.
 - Output: `{run_dir}/review-{aspect}-{model}.md` (read by Stage 2, 4)
 - Fault: Retry failed model once. Fewer than 2 successes per aspect: abort.
   Exactly 2 successes: note degraded mode in final report and continue.
+- File verification: After each agent completes, check that `output_filepath`
+  exists. If missing, write the agent's response text to `output_filepath` as
+  fallback using a file-writing tool call. Log a warning that the agent did not write
+  the file directly.
 
 ### Stage 2: Gap Analysis
 
@@ -75,6 +87,9 @@ task(code-review-gap-analysis):
 
 - Output: `{run_dir}/gap-list.yml` (read by Stage 3, 4). Returns `gaps_found: {N}`.
 - Fault: Abort immediately on failure.
+- File verification: After agent completes, check that `output_filepath`
+  exists. If missing, write the agent's response text to `output_filepath` as
+  fallback.
 
 ### Stage 3: Cross-Check (only when gaps_found > 0)
 
@@ -89,6 +104,9 @@ task(code-review-cross-check, model={missed_by_model}):
 
 - Output: `{run_dir}/crosscheck-{aspect}-{model}.md` (read by Stage 4)
 - Fault: Note failure in the final report and continue.
+- File verification: After each agent completes, check that `output_filepath`
+  exists. If missing, write the agent's response text to `output_filepath` as
+  fallback.
 
 ### Stage 4: Consolidation
 
@@ -104,6 +122,9 @@ task(code-review-consolidate):
 
 - Output: `{run_dir}/consolidated-review.md` (read by Stage 5)
 - Fault: Abort immediately on failure.
+- File verification: After agent completes, check that `output_filepath`
+  exists. If missing, write the agent's response text to `output_filepath` as
+  fallback.
 
 ### Stage 5: Triage
 
@@ -120,6 +141,9 @@ task(code-review-triage):
 - Output: `{final_output}` (final output path)
 - Fault: On failure, copy `{run_dir}/consolidated-review.md` to `{final_output}`.
   Prepend a header note: `> Triage stage failed - showing untriaged consolidated report.`
+- File verification: After agent completes, check that `{final_output}` exists.
+  If missing, apply the same fallback as Fault (copy consolidated report with
+  degraded-mode note).
 
 ## Examples
 
