@@ -13,6 +13,7 @@ on:
         options:
           - info
           - debug
+          - warn
 
 permissions:
   contents: read

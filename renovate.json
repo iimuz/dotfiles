@@ -1,15 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices", "helpers:pinGitHubActionDigests"],
-  "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
-  "dependencyDashboard": true,
+  "ignorePresets": ["security:minimumReleaseAgeNpm"],
+  "dependencyDashboard": false,
   "minimumReleaseAge": "14 days",
   "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
   "labels": ["dependencies"],
   "mise": {
     "managerFilePatterns": ["/\\.config/mise/config-.+\\.toml$/"]
   },
   "packageRules": [
+    {
+      "description": "Skip minimum release age for pin and digest updates",
+      "matchUpdateTypes": ["pin", "digest"],
+      "minimumReleaseAge": "0 days"
+    },
     {
       "description": "Constrain lua to 5.1.x for neovim compatibility",
       "matchManagers": ["mise"],
@@ -23,10 +29,17 @@
       "groupName": "mise tools (major)"
     },
     {
-      "description": "Group all mise minor and patch updates into a single PR",
+      "description": "Group all mise minor updates into a single PR",
       "matchManagers": ["mise"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "mise tools (minor/patch)"
+      "matchUpdateTypes": ["minor"],
+      "groupName": "mise tools (minor)"
+    },
+    {
+      "description": "Group and automerge all mise patch updates",
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "groupName": "mise tools (patch)",
+      "automerge": true
     },
     {
       "description": "Group all GitHub Actions major updates into a single PR",
@@ -35,10 +48,17 @@
       "groupName": "github actions (major)"
     },
     {
-      "description": "Group all GitHub Actions minor and patch updates into a single PR",
+      "description": "Group all GitHub Actions minor updates into a single PR",
       "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "github actions (minor/patch)"
+      "matchUpdateTypes": ["minor"],
+      "groupName": "github actions (minor)"
+    },
+    {
+      "description": "Group and automerge all GitHub Actions patch updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "groupName": "github actions (patch)",
+      "automerge": true
     }
   ]
 }
