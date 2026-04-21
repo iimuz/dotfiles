@@ -1,12 +1,3 @@
----
-name: code-review-triage
-description: Classify consolidated findings into Recommended and Consider tiers.
-model: claude-opus-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Code Review: Triage
 
 ## Overview
@@ -38,12 +29,12 @@ Do not abort on zero findings.
 
 ### Tiers
 
-- **Recommended**: High-confidence, actionable. Act on these before merging.
-- **Consider**: Informational. Review at your discretion.
+- Recommended: High-confidence, actionable. Act on these before merging.
+- Consider: Informational. Review at your discretion.
 
 ### Criteria
 
-Classify as **Recommended** when ANY of the following is true:
+Classify as Recommended when ANY of the following is true:
 
 1. `Agreement:` line shows 2 or more models.
 2. `Severity:` is CRITICAL or HIGH.
@@ -52,7 +43,7 @@ Classify as **Recommended** when ANY of the following is true:
    CRITICAL. An unconfirmed HIGH/CRITICAL finding is still Recommended because
    the risk is too high to defer even under uncertainty.
 
-Classify as **Consider** when NONE of the above criteria are met.
+Classify as Consider when NONE of the above criteria are met.
 
 ### Code-Context Adjustment
 
@@ -60,21 +51,21 @@ After applying the criteria above, read the actual source file at the line cited
 in each finding's `File:` reference (up to 50 lines of surrounding context).
 Adjust the tier:
 
-- A MEDIUM or LOW **Recommended** finding: if code context shows the condition
-  does not exist or is already mitigated, downgrade to **Consider** and append
+- A MEDIUM or LOW Recommended finding: if code context shows the condition
+  does not exist or is already mitigated, downgrade to Consider and append
   `(context: condition not present in source)`.
-- A MEDIUM or LOW **Recommended** finding that is a pure style preference
-  (naming, formatting, convention): classify as **Consider** even if
+- A MEDIUM or LOW Recommended finding that is a pure style preference
+  (naming, formatting, convention): classify as Consider even if
   `Agreement >= 2`, unless it causes actual ambiguity or bugs.
-- A **Consider** finding: if code context confirms the finding is clearly
+- A Consider finding: if code context confirms the finding is clearly
   exploitable or causes an obvious defect visible in the source, upgrade to
-  **Recommended** and append `(context: confirmed in source)`.
+  Recommended and append `(context: confirmed in source)`.
 - A LOW finding in a security-sensitive context (authentication, authorization,
-  input validation, cryptography): promote to **Recommended** if source code
+  input validation, cryptography): promote to Recommended if source code
   confirms it is in a security-critical path.
 - A finding citing a file/line that no longer exists or is unreadable: retain
   the tier from the criteria step and append `(context: source unreadable)`.
-  Exception: if severity is not CRITICAL, classify as **Consider** with
+  Exception: if severity is not CRITICAL, classify as Consider with
   `(stale reference - verify manually)`.
 - HIGH/CRITICAL findings: code-context adjustment may NOT downgrade these to
   Consider. If source inspection suggests the condition is not present, retain

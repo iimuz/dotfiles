@@ -1,12 +1,3 @@
----
-name: code-review-gap-analysis
-description: Identify gaps between aspect reviewers.
-model: claude-opus-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Code Review: Gap Analysis
 
 ## Overview
