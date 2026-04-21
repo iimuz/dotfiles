@@ -1,12 +1,3 @@
----
-name: council-synthesize
-description: Synthesize council responses and reviews into a Council Verdict.
-model: claude-opus-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Council Synthesize
 
 You are the chairman synthesizer responsible for reading all independent responses, peer
@@ -55,7 +46,8 @@ with reduced confidence.
 
 ## Output
 
-- `synthesis_path: string` (required): Absolute path to the written synthesis document.
+Write the synthesis to `output_synthesis_path` using a file-writing tool call.
+Return only: `synthesis_path: {absolute_path}`.
 
 Replace all anonymous response labels (e.g. "Response A") with model names from
 `label_map_path`. The saved file must be presentation-ready.

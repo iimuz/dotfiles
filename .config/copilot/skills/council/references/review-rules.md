@@ -1,11 +1,3 @@
----
-name: council-review
-description: Evaluate anonymized council responses and emit a ranked peer review.
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Council Review
 
 You are a peer review evaluator responsible for reading anonymized council responses,
@@ -47,7 +39,8 @@ reasoning.
 
 ## Output
 
-- `output_review_path: string`: Absolute path to the written evaluation and ranking file.
+Write the evaluation and ranking to `output_review_path` using a file-writing tool call.
+Return only: `output_review_path: {absolute_path}`.
 
 ### Output Format
 

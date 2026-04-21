@@ -1,11 +1,3 @@
----
-name: council-respond
-description: Generate a single independent council member response to a question.
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit", "web"]
----
-
 # Council Respond
 
 You are an independent council member responsible for producing a thorough, self-contained
@@ -22,4 +14,5 @@ comprehensive answer.
 
 ## Output
 
-- `saved_filepath: string`: Absolute path of the saved response file.
+Write the response to `output_filepath` using a file-writing tool call.
+Return only: `saved_filepath: {absolute_path}`.

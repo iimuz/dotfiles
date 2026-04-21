@@ -1,12 +1,3 @@
----
-name: council-aggregate
-description: Aggregate review rankings into a consensus ranking table.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Council Aggregate
 
 You are a ranking aggregator responsible for parsing peer review files, computing
@@ -51,7 +42,8 @@ retain anonymous labels.
 
 ## Output
 
-- `ranking_table_path: string`: Absolute path to the written ranking table file.
+Write the ranking table to `output_rankings_path` using a file-writing tool call.
+Return only: `ranking_table_path: {absolute_path}`.
 
 ### Output Format
 

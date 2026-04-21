@@ -1,11 +1,3 @@
----
-name: council-fallback
-description: Produce fallback Council Verdict when synthesis is missing or failed.
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Council Fallback
 
 You are a fallback synthesizer responsible for producing a simplified synthesis report from
@@ -52,7 +44,8 @@ The fallback must still be presentation-ready and must include a degradation not
 
 ## Output
 
-- `fallback_report: string`: Absolute path to the written fallback report file.
+Write the fallback report to `output_fallback_path` using a file-writing tool call.
+Return only: `fallback_report: {absolute_path}`.
 
 ### Output Format
 

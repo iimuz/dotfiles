@@ -1,12 +1,3 @@
----
-name: council-anonymize
-description: Strip model identity and emit a deterministic alphabetical label map.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
 # Council Anonymize
 
 You are an anonymization specialist responsible for stripping model identity from council
@@ -46,8 +37,11 @@ contains only present response keys.
 
 ## Output
 
-- `output_anonymized_path: string`: Absolute path of the saved anonymized content.
-- `label_map_path: string`: Absolute path of the saved JSON label mapping.
+Write anonymized content to `output_anonymized_path` and label mapping to `label_map_path`
+using file-writing tool calls. Return only:
+
+- `output_anonymized_path: {absolute_path}`
+- `label_map_path: {absolute_path}`
 
 ### Output Format
 
