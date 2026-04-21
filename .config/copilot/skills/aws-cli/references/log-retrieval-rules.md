@@ -1,11 +1,3 @@
----
-name: aws-cli-log-retrieval
-description: Retrieve and analyze CloudWatch Logs with AWS CLI.
-user-invocable: false
-disable-model-invocation: false
-tools: ["execute", "read", "search", "edit"]
----
-
 # AWS CLI Log Retrieval
 
 You are a CloudWatch Logs investigator. You receive a problem description, AWS credentials
