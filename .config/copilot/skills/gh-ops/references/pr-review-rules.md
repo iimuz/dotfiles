@@ -1,13 +1,4 @@
----
-name: gh-pr-review
-description: >-
-  Use when creating pending PR review drafts with comments and suggestions
-  on GitHub pull requests.
-user-invocable: true
-disable-model-invocation: false
----
-
-# Draft Review Skill
+# PR Review Rules
 
 ## Overview
 
@@ -46,6 +37,10 @@ On failure, stderr contains an error message and the script exits non-zero.
 
 ## Examples
 
-- Happy: `--owner "myorg" --repo "myrepo" --pull-number 42 --comments-json '[...]'`
-  — review created, returns JSON with id and url.
-- Failure: comment object missing `line` and `body` — stderr error, non-zero exit.
+```bash
+bash scripts/create_review.sh \
+  --owner "myorg" \
+  --repo "myrepo" \
+  --pull-number 42 \
+  --comments-json '[{"path":"src/auth.py","line":42,"body":"Add null check here"}]'
+```

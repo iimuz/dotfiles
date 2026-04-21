@@ -1,11 +1,4 @@
----
-name: gh-issue-comment
-description: GitHub Issue comment posting logic with structured format.
-user-invocable: true
-disable-model-invocation: false
----
-
-# Issue Comment
+# Issue Comment Rules
 
 ## Overview
 
@@ -38,10 +31,6 @@ Content is provided via stdin JSON:
 
 If `details` is omitted or empty, a summary-only comment is posted.
 
-## Output
-
-- `url: string`: URL of the posted comment returned by `gh issue comment`.
-
 ## Operations
 
 ### Compose Content
@@ -57,19 +46,50 @@ posting. Do not post without that confirmation.
 
 ### Post Comment
 
-Run [`scripts/post-comment.sh`](scripts/post-comment.sh) with `--repo OWNER/REPO`
-and `--issue NUMBER`. Pipe the composed JSON payload (matching the Input schema)
-through stdin.
+Run `bash scripts/post-comment.sh` with `--repo OWNER/REPO` and `--issue NUMBER`.
+Pipe the composed JSON payload through stdin.
 
 The script validates the JSON, assembles the comment body, and posts via
 `gh issue comment`. On success it prints the comment URL to stdout.
 
-For multi-details and summary-only patterns, see
-[references/examples.md](references/examples.md).
+## Output
+
+- `url: string`: URL of the posted comment returned by `gh issue comment`.
 
 ## Examples
 
-- Happy: investigation results are composed into a 5-line summary plus two details
-  sections, the user approves the content, and the comment is posted with a returned URL.
-- Failure: `summary` is empty in the stdin JSON payload -- validation fails and the
-  comment is not posted.
+### Multi-Details
+
+```bash
+cat <<'EOF' | bash scripts/post-comment.sh --repo "owner/repo" --issue 42
+{
+  "summary": "## Investigation Results\n\nRoot cause identified. Creating a fix PR.",
+  "details": [
+    {
+      "label": "Log Analysis",
+      "content": "Error log details..."
+    },
+    {
+      "label": "Reproduction Steps",
+      "content": "1. Step A\n2. Step B"
+    }
+  ]
+}
+EOF
+```
+
+### Summary-Only
+
+```bash
+cat <<'EOF' | bash scripts/post-comment.sh --repo "owner/repo" --issue 42
+{
+  "summary": "## Completion Report\n\nAll checks passed successfully."
+}
+EOF
+```
+
+## Notes
+
+- If the body exceeds 65536 characters, shorten the details before retrying.
+- When a temporary file is needed for inspection or retry logic, keep using
+  `gh issue comment --body-file` rather than inline shell quoting.

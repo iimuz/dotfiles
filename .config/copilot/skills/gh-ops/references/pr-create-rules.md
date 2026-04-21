@@ -1,11 +1,4 @@
----
-name: gh-pr-create
-description: Draft PR creation logic with Conventional Commit parameters.
-user-invocable: true
-disable-model-invocation: false
----
-
-# PR Draft
+# PR Create Rules
 
 ## Overview
 
@@ -27,20 +20,58 @@ differing from the base.
 
 ### Create Draft PR
 
-Choose type from [references/type-reference.md](references/type-reference.md), write a
-title and change bullets, then run `bash scripts/create-pr.sh` with accepted flags.
-Pass `--changes` as bullet lines starting with `-`. The script validates type and
-required parameters; abort on validation errors.
+Choose type from the PR Type Reference below, write a title and change bullets, then
+run `bash scripts/create-pr.sh` with accepted flags. Pass `--changes` as bullet lines
+starting with `-`. The script validates type and required parameters; abort on
+validation errors.
 
 Accepted flags: `--type`, `--title`, `--changes`, `--related-urls`, `--confirmation`,
 `--review-points`, `--limitations`, `--additional`, `--base`.
 
-Output body structure: [references/output-format.md](references/output-format.md).
+## PR Type Reference
+
+| Type     | Description                                 |
+| -------- | ------------------------------------------- |
+| build    | Build system or external dependency changes |
+| chore    | Maintenance tasks, scripts, config          |
+| ci       | CI configuration and scripts                |
+| docs     | Documentation changes                       |
+| feat     | New features                                |
+| fix      | Bug fixes                                   |
+| perf     | Performance improvements                    |
+| refactor | Code refactoring                            |
+| revert   | Revert previous commits                     |
+| style    | Code style changes (formatting, whitespace) |
+| test     | Test additions or corrections               |
+| i18n     | Internationalization                        |
+
+## PR Body Format
+
+```markdown
+## Related URLs
+
+{related_urls}
+
+## Changes
+
+{changes}
+
+## Confirmation Results
+
+{confirmation_results}
+
+## Review Points
+
+{review_points}
+
+## Limitations
+
+{limitations}
+
+{additional}
+```
 
 ## Examples
-
-- Happy: branch has 3 commits fixing auth -- draft PR created as `fix: resolve token expiration`.
-- Failure: no differing commits from base branch -- abort after check-branch-status.
 
 ```bash
 bash scripts/check-branch-status.sh --base main

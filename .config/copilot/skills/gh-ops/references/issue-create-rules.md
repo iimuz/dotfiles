@@ -1,18 +1,10 @@
----
-name: gh-issue-create
-description: GitHub Issue creation logic with structured templates.
-user-invocable: true
-disable-model-invocation: false
----
-
-# Issue Create
+# Issue Create Rules
 
 ## Overview
 
 Create a GitHub Issue with a structured body using one of two templates:
-product-backlog (parent issue) or feature (work item). The script validates
-input, builds the body from the selected template, and creates the issue via
-gh issue create.
+product-backlog (parent issue) or feature (work item). The script validates input,
+builds the body from the selected template, and creates the issue via gh issue create.
 
 Execution order: determine type -> compose content -> confirm with user -> create issue.
 Execute the script from the git repository root, not from the skill directory.
@@ -20,7 +12,7 @@ Execute the script from the git repository root, not from the skill directory.
 ## Input
 
 - `type: string` (required): Issue type, passed as `--type`. Must be `product-backlog`
-  or `feature`. See [references/type-reference.md](references/type-reference.md).
+  or `feature`. See Issue Type Reference below.
 - `repo: string` (optional): Target repository, passed as `--repo OWNER/REPO`. Defaults
   to the current repository.
 - `labels: string` (optional): Comma-separated labels, passed as `--labels`.
@@ -40,14 +32,12 @@ Content is provided via stdin JSON:
 }
 ```
 
-Body structure per type:
-[references/product-backlog-template.md](references/product-backlog-template.md),
-[references/feature-template.md](references/feature-template.md).
+## Issue Type Reference
 
-## Output
-
-- `url: string`: URL of the created issue returned by `gh issue create`.
-- With `--json`: `{ "number": number, "url": string }`.
+- product-backlog: Parent issue defining a product goal and its scope. Contains
+  overview, details, goal, and notes sections.
+- feature: Work item issue linked to a product backlog. Contains related URLs, goal,
+  and details sections.
 
 ## Operations
 
@@ -58,9 +48,7 @@ context when the intent is clear.
 
 ### Compose Content
 
-Prepare title and body fields based on the selected template. For product-backlog,
-compose overview, details, goal, and notes. For feature, compose related URLs, goal,
-and details.
+Prepare title and body fields based on the selected template. See Body Templates below.
 
 ### Confirm with User
 
@@ -69,21 +57,64 @@ creating. Do not create without that confirmation.
 
 ### Create Issue
 
-Run [`scripts/create-issue.sh`](scripts/create-issue.sh) with `--type` and optional
-metadata flags. Pipe the composed JSON payload (matching the Input schema)
-through stdin.
+Run `bash scripts/create-issue.sh` with `--type` and optional metadata flags. Pipe
+the composed JSON payload through stdin.
 
-The script validates the JSON, builds the body from the template, and creates
-the issue via `gh issue create`. On success it prints the issue URL to stdout.
+The script validates the JSON, builds the body from the template, and creates the
+issue via `gh issue create`. On success it prints the issue URL to stdout.
 
-For invocation patterns, see the Examples section.
+## Body Templates
+
+### Product Backlog Body Template
+
+The script builds the product-backlog issue body from this section structure.
+Each {field} is replaced with the corresponding JSON input value.
+Sections with empty content include only the header.
+
+```markdown
+## Overview
+
+{overview}
+
+## Details
+
+{details}
+
+## Goal
+
+{goal}
+
+## Notes
+
+{notes}
+```
+
+### Feature Body Template
+
+The script builds the feature issue body from this section structure.
+Each {field} is replaced with the corresponding JSON input value.
+Sections with empty content include only the header.
+
+```markdown
+## Related URLs
+
+{related_urls}
+
+## Goal
+
+{goal}
+
+## Details
+
+{details}
+```
+
+## Output
+
+- `url: string`: URL of the created issue returned by `gh issue create`.
+- With `--json`: `{ "number": number, "url": string }`.
 
 ## Examples
-
-- Happy: user wants a product-backlog issue for a new auth feature -- title and body
-  composed, user approves, issue created with a returned URL.
-- Failure: `title` is empty in the stdin JSON payload -- validation fails and the
-  issue is not created.
 
 ```bash
 cat <<'EOF' | bash scripts/create-issue.sh --type product-backlog --labels "backlog"
