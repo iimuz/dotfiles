@@ -1,15 +1,4 @@
----
-name: daily-summary-activity
-description: Summarize a single GitHub issue or PR from its full history.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit", "bash"]
----
-
-# Daily Summary: Activity Analyzer
-
-## Overview
+# Activity Analysis Rules
 
 Read a single GitHub issue or pull request in full and produce a structured
 summary focused on the user's activity within a specified date range. Fetch

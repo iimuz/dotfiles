@@ -1,15 +1,4 @@
----
-name: daily-summary-jira
-description: Summarize a single Jira issue from its full history.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "edit", "atlassian/getJiraIssue"]
----
-
-# Daily Summary: Jira Activity Analyzer
-
-## Overview
+# Jira Analysis Rules
 
 Read a single Jira issue in full and produce a structured summary focused
 on the user's activity within a specified date range. Fetch the complete
@@ -34,6 +23,7 @@ The caller provides these parameters:
 "description", "comment", "assignee", "reporter", "created",
 "updated", "labels", "parent"]`
    - `responseContentFormat`: `markdown`
+
 2. Read the complete issue including description and all comments to
    understand the full context.
 3. Identify actions taken by the target user (matching `atlassian_user_id`
@@ -42,6 +32,7 @@ The caller provides these parameters:
    - Comments authored by the user
    - Status changes (visible in comment text or status field)
    - Assignment changes
+
 4. Produce the summary in the output format below.
 
 ## Output

@@ -1,15 +1,4 @@
----
-name: daily-summary-session
-description: Summarize a single Copilot session from its event log.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools: ["read", "search", "edit"]
----
-
-# Daily Summary: Session Analyzer
-
-## Overview
+# Session Analysis Rules
 
 Read a single Copilot session directory and produce a structured summary.
 Examine `workspace.yaml` for session metadata and `events.jsonl` for the

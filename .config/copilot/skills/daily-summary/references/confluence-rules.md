@@ -1,21 +1,4 @@
----
-name: daily-summary-confluence
-description: Summarize a single Confluence page from its content.
-model: claude-sonnet-4.6
-user-invocable: false
-disable-model-invocation: false
-tools:
-  [
-    "read",
-    "edit",
-    "atlassian/getConfluencePage",
-    "atlassian/getConfluencePageFooterComments",
-  ]
----
-
-# Daily Summary: Confluence Activity Analyzer
-
-## Overview
+# Confluence Analysis Rules
 
 Read a single Confluence page in full and produce a structured summary
 describing the page content and its relevance to the user's work during
@@ -38,27 +21,31 @@ The caller provides these parameters:
    - `cloudId`: the provided `cloud_id`
    - `pageId`: the provided `page_id`
    - `contentFormat`: `markdown`
+
 2. Optionally fetch footer comments using
    `atlassian-getConfluencePageFooterComments` with:
    - `cloudId`: the provided `cloud_id`
    - `pageId`: the provided `page_id`
    - `contentFormat`: `markdown`
+
 3. Determine the activity type by comparing timestamps against the
    target period (`date` to `end_date`):
    - If the page `createdAt` falls within the target period, the user
-     created the page. Activity type: **Created**.
+     created the page. Activity type: Created.
    - If `createdAt` is before the target period but `version.createdAt`
      falls within it, the user updated an existing page. Activity type:
-     **Updated**. Note the version number to gauge the extent of changes.
+     Updated. Note the version number to gauge the extent of changes.
    - If `version.authorId` does not match `atlassian_user_id`, the page
      was last modified by someone else but the user contributed earlier
-     versions. Activity type: **Contributed**.
+     versions. Activity type: Contributed.
+
 4. Read the page content and comments to understand what the page is about.
 5. Determine the content type:
    - Meeting notes: Contains agenda, attendees, action items
    - Documentation: Technical or process documentation
    - Planning: Sprint planning, roadmap, requirements
    - Other: General content
+
 6. Produce the summary in the output format below. Clearly describe
    whether the user created or updated the page. Do not describe an
    update as a creation.
