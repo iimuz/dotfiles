@@ -1,5 +1,10 @@
 ---
-applyTo: ".github/hooks/**,.config/copilot/hooks/**"
+name: hooks
+description: >-
+  Use when creating or modifying GitHub Copilot CLI hook configuration files
+  to enforce policy, security, and timeout rules.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # GitHub Copilot CLI Hooks
@@ -27,8 +32,6 @@ If the fetch fails, follow the overview described below instead.
   `permissionDecision` via stdout.
 
 ## Project Policy
-
-The following rules are project-specific policies.
 
 - Every command object must include `timeoutSec`. Omitting it is not allowed.
 - Most hooks should complete within 5 seconds.
