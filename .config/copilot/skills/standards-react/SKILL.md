@@ -1,5 +1,5 @@
 ---
-name: framework-react
+name: standards-react
 description: >-
   Use when writing or reviewing React components in JSX or TSX files to enforce
   architecture, state, accessibility, and testing standards.

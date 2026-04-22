@@ -1,5 +1,5 @@
 ---
-name: tdd
+name: standards-tdd
 description: >-
   Use when implementing new features or fixing bugs to enforce test-driven
   development red-green-refactor workflow and anti-patterns.

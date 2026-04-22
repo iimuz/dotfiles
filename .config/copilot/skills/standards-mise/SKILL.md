@@ -1,5 +1,5 @@
 ---
-name: mise-tasks
+name: standards-mise
 description: >-
   Use when creating or modifying mise task scripts in .mise/tasks/ to enforce
   naming conventions and configuration rules.

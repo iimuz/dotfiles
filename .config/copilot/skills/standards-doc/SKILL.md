@@ -1,5 +1,5 @@
 ---
-name: doc-standards
+name: standards-doc
 description: >-
   Use when writing or updating documentation, instruction files, or Markdown files
   to enforce syntax, naming, and file registry conventions.
