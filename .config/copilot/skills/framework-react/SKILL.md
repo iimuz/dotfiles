@@ -1,5 +1,10 @@
 ---
-applyTo: "**/*.jsx,**/*.tsx"
+name: framework-react
+description: >-
+  Use when writing or reviewing React components in JSX or TSX files to enforce
+  architecture, state, accessibility, and testing standards.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # React
