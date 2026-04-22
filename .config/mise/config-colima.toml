@@ -1,0 +1,44 @@
+[tools]
+awscli = { version = "2.34.24", symlink_bins = "true" }
+cargo-binstall = "1.17.9"
+"cargo:tree-sitter-cli" = "0.26.8"                      # for neovim
+delta = "0.19.1"
+fzf = "0.70.0"
+gh = "2.89.0"
+"github:vifm/vifm" = "v0.14.3"
+go = "1.26.1"
+jq = "1.8.1"
+lazygit = "0.61.0"
+lua = "5.1.5"                                           # neovim luarocksで要求しているバージョンが5.1
+node = "24.14.1"
+neovim = "0.12.1"
+"npm:@aikidosec/safe-chain" = "1.4.9"
+"npm:neovim" = "5.4.0"                                  # for neovim
+"pipx:pynvim" = "0.6.0"                                 # for neovim
+pnpm = "10.33.0"
+python = "3.14.3"
+rust = "1.94.1"
+shellcheck = "0.11.0"
+shfmt = "3.13.0"
+ripgrep = "15.1.0"
+uv = "0.11.3"
+yq = "4.52.5"
+
+[env]
+ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
+# UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
+
+# fzf で利用する basepath を `/workspaces` に設定
+FFGHQ_MAXDEPTH = 1
+FFGHQ_MINDEPTH = 1
+SOURCE_ROOT = "/workspaces"
+
+[settings]
+activate_aggressive = true
+experimental = true
+
+[settings.npm]
+package_manager = "pnpm"
+
+[settings.pipx]
+uvx = true
