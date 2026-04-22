@@ -1,12 +1,3 @@
----
-name: language-go
-description: >-
-  Use when writing or reviewing Go code to enforce architecture, concurrency,
-  error handling, performance, logging, and testing standards.
-user-invocable: true
-disable-model-invocation: false
----
-
 # Go
 
 ## Official Documentation

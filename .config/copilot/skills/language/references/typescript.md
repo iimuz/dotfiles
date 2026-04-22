@@ -1,12 +1,3 @@
----
-name: language-typescript
-description: >-
-  Use when writing or reviewing TypeScript code to enforce type safety,
-  architecture, error handling, and testing standards.
-user-invocable: true
-disable-model-invocation: false
----
-
 # TypeScript
 
 ## Official Documentation

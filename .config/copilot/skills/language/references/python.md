@@ -1,12 +1,3 @@
----
-name: language-python
-description: >-
-  Use when writing or reviewing Python code to enforce architecture, type safety,
-  error handling, async, security, and testing standards.
-user-invocable: true
-disable-model-invocation: false
----
-
 # Python
 
 ## Official Documentation
