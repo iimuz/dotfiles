@@ -1,5 +1,10 @@
 ---
-applyTo: ".mise/tasks/**"
+name: mise-tasks
+description: >-
+  Use when creating or modifying mise task scripts in .mise/tasks/ to enforce
+  naming conventions and configuration rules.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Mise Tasks
