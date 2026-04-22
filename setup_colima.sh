@@ -103,10 +103,11 @@ if type copilot >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
   create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
   create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
-fi
-# === gpg
-if type gpg >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.conf"
+
+  # Copilot tools
+  if type rtk >/dev/null 2>&1; then
+    create_symlink "$SCRIPT_DIR/.config/rtk/config.toml" "$HOME/.config/rtk/config.toml"
+  fi
 fi
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
