@@ -1,5 +1,10 @@
 ---
-applyTo: "**/*.rs"
+name: language-rust
+description: >-
+  Use when writing or reviewing Rust code to enforce safety, error handling,
+  memory management, concurrency, and testing standards.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Rust
