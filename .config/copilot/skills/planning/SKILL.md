@@ -1,5 +1,10 @@
 ---
-applyTo: "docs/planning.md"
+name: planning
+description: >-
+  Use when creating or updating docs/planning.md to enforce template compliance,
+  lifecycle rules, and content structure.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Planning File
