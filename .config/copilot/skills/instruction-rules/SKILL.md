@@ -1,5 +1,10 @@
 ---
-applyTo: ".github/copilot-instructions.md,.github/instructions/**"
+name: instruction-rules
+description: >-
+  Use when creating or modifying GitHub Copilot instruction files to enforce
+  applyTo frontmatter and direct language policy rules.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Rule Generation and Maintenance Guidelines
