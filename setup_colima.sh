@@ -54,6 +54,7 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # Installが確認できていないツール
 # - eza
 # apt でインストールするとバージョンが古い場合があるので mise でツール類は管理する
+sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
   build-essential \
   rsync \
@@ -66,6 +67,8 @@ sudo apt-get install -y --no-install-recommends \
 sudo apt-get install -y --no-install-recommends libreadline-dev
 # mise から tree sitter cli の cargo build でパッケージが不足するため
 sudo apt-get install -y --no-install-recommends libclang-dev
+# rust で build するときにメモリが大量に必要なので少なくできる構成を追加
+sudo apt-get install -y --no-install-recommends mold
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
@@ -112,6 +115,10 @@ fi
 # === neovim
 if type nvim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
+fi
+# === rust
+if type cargo >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/rust/config.toml" "$HOME/.cargo/config.toml"
 fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
