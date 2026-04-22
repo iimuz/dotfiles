@@ -32,14 +32,6 @@ disable-model-invocation: false
 
 ## File Registry
 
-- Type: Planning
-  - File: `docs/planning.md`
-  - Template: `.config/copilot/skills/planning/references/template.md`
-- Type: ADR
-  - Pattern: `[0000-Index]-[slug].md`
-  - Template: `.config/copilot/skills/adr-manage/references/template.md`
-  - Directory: `docs/adr/`
-  - Example: 0001-init-stack.md
 - Type: Design
   - Pattern: `[topic].md`
   - Template: [references/design.md](references/design.md)
