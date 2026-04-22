@@ -1,5 +1,10 @@
 ---
-applyTo: "**/*.sh"
+name: language-bash
+description: >-
+  Use when writing or reviewing Bash shell scripts to enforce architecture,
+  security, naming, idiom, portability, and testing standards.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Bash
