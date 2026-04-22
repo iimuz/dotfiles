@@ -1,5 +1,5 @@
 ---
-name: planning
+name: standards-planning
 description: >-
   Use when creating or updating docs/planning.md to enforce template compliance,
   lifecycle rules, and content structure.

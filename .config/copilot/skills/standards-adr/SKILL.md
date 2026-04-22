@@ -1,5 +1,5 @@
 ---
-name: adr-manage
+name: standards-adr
 description: >-
   Use when creating, updating, or reviewing ADRs to enforce template compliance
   and lifecycle rules.

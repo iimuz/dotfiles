@@ -1,5 +1,5 @@
 ---
-name: devcontainer
+name: standards-devcontainer
 description: >-
   Use when creating or modifying devcontainer configuration files in .devcontainer/
   to apply project-specific JSONC format policy.
