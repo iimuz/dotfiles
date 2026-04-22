@@ -1,5 +1,10 @@
 ---
-applyTo: ".config/copilot/copilot-instructions.md,.github/copilot-instructions.md,.github/instructions/**/*.md,docs/**/*.md"
+name: doc-standards
+description: >-
+  Use when writing or updating documentation, instruction files, or Markdown files
+  to enforce syntax, naming, and file registry conventions.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Doc Standards
