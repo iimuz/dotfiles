@@ -13,6 +13,7 @@ lua = "5.1.5"                                           # neovim luarocksで要�
 node = "24.14.1"
 neovim = "0.12.1"
 "npm:@aikidosec/safe-chain" = "1.4.9"
+"npm:@github/copilot" = "1.0.27"
 "npm:neovim" = "5.4.0"                                  # for neovim
 "pipx:pynvim" = "0.6.0"                                 # for neovim
 pnpm = "10.33.0"
