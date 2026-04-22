@@ -1,5 +1,10 @@
 ---
-applyTo: "dummy/**"
+name: tdd
+description: >-
+  Use when implementing new features or fixing bugs to enforce test-driven
+  development red-green-refactor workflow and anti-patterns.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # TDD
