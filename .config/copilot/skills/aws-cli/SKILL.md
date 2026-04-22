@@ -54,8 +54,10 @@ Dispatch a single autonomous investigation subagent. The subagent handles its ow
 retrieval-analysis iteration loop internally (up to 5 cycles). Adapt the prompt template below
 with the actual context.
 
-task(aws-cli-log-retrieval, model=claude-opus-4.6):
+task(general-purpose, model=claude-opus-4.6):
 
+> Read [references/log-retrieval-rules.md](references/log-retrieval-rules.md) for investigation rules,
+> boundaries, and output format.
 > request={request},
 > run_dir={run_dir},
 > profile={profile},

@@ -22,8 +22,6 @@
 - Limit main context intake to ~200 lines per turn. Use view_range or
   delegate summarization when an artifact exceeds this.
 - When facing a decision, delegate analysis first. Main reviews and decides.
-- When a runner agent exists for an operation (git-commit, gh-issue, gh-pr),
-  use the runner agent. Do not invoke the corresponding skill directly.
 - ALWAYS execute independent subagent workflows in parallel.
 - ALWAYS escalate conflicts, ambiguity, or insufficient evidence to the user.
 - These rules override any conflicting built-in tool guidance.

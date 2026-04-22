@@ -46,6 +46,9 @@ sub-agent analysis -> consolidate and merge -> save and present.
 
 ## Operations
 
+Derive `refs_dir` from the `Base directory` field in the skill-context header:
+`refs_dir = {skill_base_dir}/references/`
+
 ### Stage 1: Determine Target Date
 
 Resolve the target date from user input. If no date is specified, use today
@@ -192,22 +195,26 @@ Launch all sub-agents in parallel across all source types.
 
 #### 3a: Session Sub-Agents
 
-For each session from Stage 2a, launch a sub-agent (`task()` with
-`agent_type: "daily-summary-session"`) to analyze the session in detail.
+For each session from Stage 2a, launch a `general-purpose` sub-agent (`task()` with
+`agent_type: "general-purpose"`, `model: "claude-sonnet-4.6"`) to analyze the session
+in detail. Include `{refs_dir}/session-rules.md` in the prompt so the sub-agent knows
+the output format and procedure.
 
 Pass each sub-agent:
 
 - `session_path`: from the Stage 2a output
 - `output_filepath`: `{run_dir}/session-{session_id_being_analyzed}.md`
 
-The agent definition at `.config/copilot/agents/daily-summary-session.md`
-specifies the model, tools, and analysis procedure. Each sub-agent writes
-its summary as a markdown file to the specified output path.
+The sub-agent reads `{refs_dir}/session-rules.md` for the analysis procedure and
+output format. Each sub-agent writes its summary as a markdown file to the specified
+output path.
 
 #### 3b: Activity Sub-Agents
 
-For each activity from Stage 2b, launch a sub-agent (`task()` with
-`agent_type: "daily-summary-activity"`) to analyze the issue or PR in full.
+For each activity from Stage 2b, launch a `general-purpose` sub-agent (`task()` with
+`agent_type: "general-purpose"`, `model: "claude-sonnet-4.6"`) to analyze the issue
+or PR in full. Include `{refs_dir}/activity-rules.md` in the prompt so the sub-agent
+knows the output format and procedure.
 
 Retrieve the authenticated GitHub username before launching activity
 sub-agents:
@@ -227,15 +234,17 @@ Pass each sub-agent:
 - `github_user`: Authenticated GitHub username
 - `output_filepath`: `{run_dir}/activity-{type}-{owner}-{repo}-{number}.md`
 
-The agent definition at `.config/copilot/agents/daily-summary-activity.md`
-specifies the model, tools, and analysis procedure. Each sub-agent fetches
-the full issue/PR history, understands the complete context, and produces a
-summary scoped to the user's activity within the target period.
+The sub-agent reads `{refs_dir}/activity-rules.md` for the analysis procedure and
+output format. Each sub-agent fetches the full issue/PR history, understands the
+complete context, and produces a summary scoped to the user's activity within the
+target period.
 
 #### 3c: Jira Sub-Agents
 
-For each Jira issue from Stage 2c, launch a sub-agent (`task()` with
-`agent_type: "daily-summary-jira"`) to analyze the issue in full.
+For each Jira issue from Stage 2c, launch a `general-purpose` sub-agent (`task()` with
+`agent_type: "general-purpose"`, `model: "claude-sonnet-4.6"`) to analyze the issue
+in full. Include `{refs_dir}/jira-rules.md` in the prompt so the sub-agent knows the
+output format and procedure.
 
 Pass each sub-agent:
 
@@ -247,15 +256,16 @@ Pass each sub-agent:
 - `atlassian_user_id`: User account ID (from Stage 2c)
 - `output_filepath`: `{run_dir}/activity-jira-{key}.md`
 
-The agent definition at `.config/copilot/agents/daily-summary-jira.md`
-specifies the model, tools, and analysis procedure. Each sub-agent
-fetches the full issue via Atlassian MCP tools and produces a summary
-scoped to the user's activity within the target period.
+The sub-agent reads `{refs_dir}/jira-rules.md` for the analysis procedure and output
+format. Each sub-agent fetches the full issue via Atlassian MCP tools and produces a
+summary scoped to the user's activity within the target period.
 
 #### 3d: Confluence Sub-Agents
 
-For each Confluence page from Stage 2d, launch a sub-agent (`task()` with
-`agent_type: "daily-summary-confluence"`) to analyze the page content.
+For each Confluence page from Stage 2d, launch a `general-purpose` sub-agent (`task()` with
+`agent_type: "general-purpose"`, `model: "claude-sonnet-4.6"`) to analyze the page content.
+Include `{refs_dir}/confluence-rules.md` in the prompt so the sub-agent knows the output
+format and procedure.
 
 Pass each sub-agent:
 
@@ -268,10 +278,9 @@ Pass each sub-agent:
 - `atlassian_user_id`: User account ID (from Stage 2c)
 - `output_filepath`: `{run_dir}/activity-confluence-{page_id}.md`
 
-The agent definition at `.config/copilot/agents/daily-summary-confluence.md`
-specifies the model, tools, and analysis procedure. Each sub-agent
-fetches the full page content via Atlassian MCP tools and produces a
-summary of the page and its relevance to the user's work.
+The sub-agent reads `{refs_dir}/confluence-rules.md` for the analysis procedure and
+output format. Each sub-agent fetches the full page content via Atlassian MCP tools
+and produces a summary of the page and its relevance to the user's work.
 
 #### Failure Handling
 

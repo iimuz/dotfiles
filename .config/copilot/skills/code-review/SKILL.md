@@ -11,15 +11,17 @@ disable-model-invocation: false
 
 ## Overview
 
-Orchestrator that runs parallel multi-model, multi-aspect code reviews, then performs
+Runs parallel multi-model, multi-aspect code reviews, then performs
 gap analysis, cross-checks, consolidation, and triage into a final prioritized report.
 
 At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
 
 - Intermediate artifacts: `{session_dir}/{timestamp}-code-review/` (referred to as `run_dir`)
 - Final output: `{session_dir}/{timestamp}-code-review-consolidated-review.md`
+- Skill criteria directory: `{skill_base_dir}/references/` (referred to as `refs_dir`)
 
 `session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
+`skill_base_dir` is the `Base directory` value from the skill-context header.
 
 ## Input
 
@@ -42,6 +44,51 @@ The final triage report includes:
 - Severity counts `critical: number`, `high: number`, `medium: number`, `low: number`
 - Cross-check results `cross_checks: { valid: number, invalid: number, uncertain: number }`
 
+## Aspect Review Template
+
+When dispatching an aspect reviewer in Stage 1, pass the following prompt (fill in
+`{aspect}`, `{target}`, `{criteria_path}`, and `{output_filepath}`):
+
+> Read the change target (`target={target}`) and analyze strictly for `{aspect}` issues.
+> Read the criteria from `{criteria_path}` first, then apply them.
+>
+> Rules:
+>
+> - Write findings to a new file at `{output_filepath}` using a file-writing tool call.
+> - Do not include findings in the response text.
+> - Return only: file path and finding count (e.g., "Written to /path/to/file.md (3 findings)").
+> - If there are no findings, still create the file with an empty review body.
+> - Abort if findings drift outside `{aspect}` scope.
+> - Abort if the output file already exists.
+> - Critical findings must include file and line number.
+>
+> Output format:
+>
+> ```markdown
+> ## CRITICAL
+>
+> ### Brief description
+>
+> File: `path/to/file.ext:42`
+>
+> Detailed explanation.
+>
+> **Fix**: How to resolve it.
+>
+> ## HIGH
+>
+> ## MEDIUM
+>
+> ## LOW
+> ```
+
+For the `design-compliance` aspect, add to the Rules section:
+
+> - Abort if `design_info` is missing or empty.
+> - Each finding must cite the relevant design reference point.
+
+And add a `Design Ref:` field after the `File:` line in the output format.
+
 ## Execution Flow
 
 ### Pre-Flight
@@ -58,14 +105,20 @@ Launch parallel subagents for each (model, aspect) pair:
 3 models (claude-opus-4.6, claude-sonnet-4.6, gpt-5.4) x
 4 mandatory aspects (security, quality, performance, best-practices).
 Add design-compliance when design_info is resolved (up to 15 parallel).
-Adapt the prompt template below with the actual aspect, model, target, and run_dir.
 
-task(code-review-{aspect}, model=claude-opus-4.6 / claude-sonnet-4.6 / gpt-5.4):
+For each pair, dispatch:
 
-> target={target},
-> output_filepath={run_dir}/review-{aspect}-{model}.md
+task(general-purpose, model=claude-opus-4.6 / claude-sonnet-4.6 / gpt-5.4):
 
-For design-compliance, add `design_info={resolved_design_info}`.
+> [Aspect Review Template prompt with:
+>
+> > aspect={aspect},
+> > target={target},
+> > criteria_path={refs_dir}/{aspect}-criteria.md,
+> > output_filepath={run_dir}/review-{aspect}-{model}.md]
+
+For design-compliance, include `design_info={resolved_design_info}` in the prompt and
+use `criteria_path={refs_dir}/design-compliance-criteria.md`.
 
 - Output: `{run_dir}/review-{aspect}-{model}.md` (read by Stage 2, 4)
 - Fault: Retry failed model once. Fewer than 2 successes per aspect: abort.
@@ -78,10 +131,10 @@ For design-compliance, add `design_info={resolved_design_info}`.
 ### Stage 2: Gap Analysis
 
 Compare findings across models to identify concerns missed by specific reviewers.
-Adapt the prompt template below with the collected review file paths.
 
-task(code-review-gap-analysis):
+task(general-purpose, model=claude-opus-4.6):
 
+> Read the rules from `{refs_dir}/gap-analysis-rules.md` first, then execute with:
 > review_file_paths={review_file_paths},
 > output_filepath={run_dir}/gap-list.yml
 
@@ -94,11 +147,11 @@ task(code-review-gap-analysis):
 ### Stage 3: Cross-Check (only when gaps_found > 0)
 
 For each gap entry, launch the model named in `missed_by` to verify the concern.
-Group entries by model and aspect into a single invocation. Adapt the prompt template
-below with the actual aspect, concerns, and model.
+Group entries by model and aspect into a single invocation.
 
-task(code-review-cross-check, model={missed_by_model}):
+task(general-purpose, model={missed_by_model}):
 
+> Read the rules from `{refs_dir}/cross-check-rules.md` first, then execute with:
 > aspect={aspect}, concerns={concerns},
 > output_filepath={run_dir}/crosscheck-{aspect}-{model}.md
 
@@ -110,11 +163,11 @@ task(code-review-cross-check, model={missed_by_model}):
 
 ### Stage 4: Consolidation
 
-Merge all artifacts from Stages 1-3 into the consolidated report. Adapt the prompt template
-below with the collected file paths and the intermediate output path.
+Merge all artifacts from Stages 1-3 into the consolidated report.
 
-task(code-review-consolidate):
+task(general-purpose, model=claude-opus-4.6):
 
+> Read the rules from `{refs_dir}/consolidate-rules.md` first, then execute with:
 > review_file_paths={review_file_paths},
 > gap_list_path={run_dir}/gap-list.yml,
 > crosscheck_paths={crosscheck_paths},
@@ -129,11 +182,11 @@ task(code-review-consolidate):
 ### Stage 5: Triage
 
 Classify all findings from the consolidated report into Recommended and Consider
-tiers using source code context. Adapt the prompt template below with the
-consolidated report path, target, and final output path.
+tiers using source code context.
 
-task(code-review-triage):
+task(general-purpose, model=claude-opus-4.6):
 
+> Read the rules from `{refs_dir}/triage-rules.md` first, then execute with:
 > consolidated_report_path={run_dir}/consolidated-review.md,
 > target={target},
 > output_filepath={final_output}
