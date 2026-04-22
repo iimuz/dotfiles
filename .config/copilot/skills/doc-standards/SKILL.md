@@ -34,19 +34,19 @@ disable-model-invocation: false
 
 - Type: Planning
   - File: `docs/planning.md`
-  - Template: `docs/templates/planning.md`
+  - Template: `.config/copilot/skills/planning/references/template.md`
 - Type: ADR
   - Pattern: `[0000-Index]-[slug].md`
-  - Template: `docs/templates/adr.md`
+  - Template: `.config/copilot/skills/adr-manage/references/template.md`
   - Directory: `docs/adr/`
   - Example: 0001-init-stack.md
 - Type: Design
   - Pattern: `[topic].md`
-  - Template: N/A
+  - Template: [references/design.md](references/design.md)
   - Directory: `docs/design/`
   - Example: core-beliefs.md
 - Type: Report
   - Pattern: `[YYYY-MM-DD]-[topic].md`
-  - Template: `docs/templates/report.md`
+  - Template: [references/report.md](references/report.md)
   - Directory: `docs/reports/`
   - Example: 2024-03-20-skill-interface-style.md

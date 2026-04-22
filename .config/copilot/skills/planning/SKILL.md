@@ -11,7 +11,7 @@ disable-model-invocation: false
 
 ## Template Compliance
 
-- Before creating `docs/planning.md`, read `docs/templates/planning.md` and strictly follow its structure.
+- Before creating `docs/planning.md`, read [references/template.md](references/template.md) and strictly follow its structure.
 - Frontmatter has a single optional key `issue` for linking to a GitHub Issue number. No additional keys.
 - Required sections in order: `## Goal`, `## Ref`, `## Steps`, `## Verify`,
   `## Debt`, `## Log`, `## Scratchpad`. Do not remove, rename, or reorder these sections.
