@@ -1,5 +1,5 @@
 ---
-name: custom-agents
+name: copilot-agents
 description: >-
   Use when creating or modifying custom agent files in .config/copilot/agents/
   to enforce sub-agent pattern and tool property rules.

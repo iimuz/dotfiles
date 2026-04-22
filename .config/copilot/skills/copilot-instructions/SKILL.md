@@ -1,5 +1,5 @@
 ---
-name: instruction-rules
+name: copilot-instructions
 description: >-
   Use when creating or modifying GitHub Copilot instruction files to enforce
   applyTo frontmatter and direct language policy rules.

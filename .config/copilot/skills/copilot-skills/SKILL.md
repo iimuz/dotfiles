@@ -1,5 +1,5 @@
 ---
-name: skill-manage
+name: copilot-skills
 description: >-
   Use when creating or modifying skill files in .config/copilot/skills/ to
   enforce specification compliance and project policy rules.
