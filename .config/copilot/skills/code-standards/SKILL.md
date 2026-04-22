@@ -1,5 +1,5 @@
 ---
-name: language
+name: code-standards
 description: >-
   Use when writing or reviewing code in Bash, Go, Python, Rust, or TypeScript
   to enforce language-specific coding standards.
