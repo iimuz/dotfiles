@@ -1,5 +1,10 @@
 ---
-applyTo: ".config/copilot/skills/**"
+name: skill-manage
+description: >-
+  Use when creating or modifying skill files in .config/copilot/skills/ to
+  enforce specification compliance and project policy rules.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Agent Skills Creation and Management Rules
@@ -46,6 +51,7 @@ by an orchestrator:
 
 - Do not wrap reference file content in a code block. The AI reads the file as raw text.
 - Do not use HTML tags (`<details>`, `<summary>`, etc.) in reference files. They are non-functional in CLI environments.
+- When referencing files in `references/`, use relative Markdown link syntax: `[filename](references/filename.md)`.
 
 ### Workflow Skill Authoring
 
@@ -58,5 +64,5 @@ by an orchestrator:
 When creating or modifying skills, refer to existing skills as authoritative examples:
 
 - Single-operation (analysis): `.config/copilot/skills/adr-manage/SKILL.md`
-- Single-operation (utility): `.config/copilot/skills/commit-staged/SKILL.md`
+- Single-operation (utility): `.config/copilot/skills/git-commit/SKILL.md`
 - Workflow orchestrator: `.config/copilot/skills/code-review/SKILL.md`
