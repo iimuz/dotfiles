@@ -1,5 +1,5 @@
 ---
-name: hooks
+name: copilot-hooks
 description: >-
   Use when creating or modifying GitHub Copilot CLI hook configuration files
   to enforce policy, security, and timeout rules.
