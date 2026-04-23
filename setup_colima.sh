@@ -119,7 +119,7 @@ if type nvim >/dev/null 2>&1; then
 fi
 # === rust
 if type cargo >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/rust/config.toml" "$HOME/.cargo/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/cargo/config.toml" "$HOME/.cargo/config.toml"
 fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
