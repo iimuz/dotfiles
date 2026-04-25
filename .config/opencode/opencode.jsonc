@@ -1,0 +1,52 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  // Models
+  "provider": {},
+  "model": "github-copilot/claude-sonnet-4.6",
+  "small_model": "opencode/big-pickle", // タイトル生成などに利用
+  "agent": {
+    // ここに組み込みの subagent の model を指定することでデフォルトのモデルを指定できる
+    // ただし、以下の順で優先されるとのこと
+    // 1. task tool での呼出パラメータ指定
+    // 2. この部分で指定した設定
+    // 3. 親エージェントのモデル継承
+    "build": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    },
+    "explore": {
+      "model": "opencode/minimax-m2.5-free"
+    },
+    "general": {
+      "model": "github-copilot/gpt-5.4"
+    },
+    "plan": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    }
+  },
+  // MCP
+  "mcp": {},
+  // Watch
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**"]
+  },
+  // Permission
+  "permission": {
+    "bash": {
+      "curl *": "deny",
+      "git push*": "ask",
+      "nc *": "deny",
+      "npm remove *": "deny",
+      "npm uninstall *": "deny",
+      "rm *": "ask",
+      "sudo *": "deny",
+      "wget *": "deny"
+    },
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow"
+    }
+  }
+}
