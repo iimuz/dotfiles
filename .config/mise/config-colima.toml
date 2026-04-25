@@ -1,5 +1,5 @@
 [tools]
-awscli = { version = "2.34.24", symlink_bins = "true" }
+awscli = { version = "2.34.29", symlink_bins = "true" }
 bat = "0.26.1"
 cargo-binstall = "1.17.9"
 "cargo:tree-sitter-cli" = "0.26.8"                      # for neovim
@@ -10,7 +10,7 @@ fzf = "0.70.0"
 gh = "2.89.0"
 "github:rtk-ai/rtk" = "v0.36.0"
 "github:vifm/vifm" = "v0.14.3"
-go = "1.26.1"
+go = "1.26.2"
 jq = "1.8.1"
 lazygit = "0.61.0"
 lua = "5.1.5"                                           # neovim luarocksで要求しているバージョンが5.1
@@ -21,12 +21,12 @@ neovim = "0.12.1"
 "npm:neovim" = "5.4.0"                                  # for neovim
 "pipx:pynvim" = "0.6.0"                                 # for neovim
 pnpm = "10.33.0"
-python = "3.14.3"
+python = "3.14.4"
 ripgrep = "15.1.0"
 rust = "1.94.1"
 shellcheck = "0.11.0"
-shfmt = "3.13.0"
-uv = "0.11.3"
+shfmt = "3.13.1"
+uv = "0.11.6"
 yq = "4.52.5"
 
 [env]
