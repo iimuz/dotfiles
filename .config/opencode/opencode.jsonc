@@ -11,7 +11,7 @@
     // 2. この部分で指定した設定
     // 3. 親エージェントのモデル継承
     "build": {
-      // ユーザーインターフェースなので Opus Tier が欲しい
+      // ユーザーインターフェースなので Opus 4.6 Tier が欲しい
       "model": "openrouter/moonshotai/kimi-k2.6"
     },
     "explore": {
@@ -23,7 +23,7 @@
       "model": "openrouter/deepseek/deepseek-v4-pro"
     },
     "plan": {
-      // ユーザーインターフェースかつ Planning なので Opus Tier が欲しい
+      // ユーザーインターフェースかつ Planning なので本当は Opus 4.7 Tier が欲しい
       "model": "openrouter/moonshotai/kimi-k2.6"
     }
   },
@@ -94,7 +94,17 @@
     }
   },
   // MCP
-  "mcp": {},
+  "mcp": {
+    // [context-mode](https://github.com/mksglu/context-mode)
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"]
+    }
+  },
+  "plugin": [
+    // [context-mode](https://github.com/mksglu/context-mode)
+    "context-mode"
+  ],
   // Watch
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]

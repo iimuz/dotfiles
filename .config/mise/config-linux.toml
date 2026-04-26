@@ -16,6 +16,7 @@ neovim = "0.12.1"
 "npm:@aikidosec/safe-chain" = "1.4.9"
 "npm:@bitwarden/cli" = "2026.3.0"
 "npm:@github/copilot" = "1.0.27"
+"npm:context-mode" = "1.0.89"                             # for opencode
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.20"
