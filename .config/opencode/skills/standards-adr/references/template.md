@@ -5,16 +5,19 @@ date: YYYY-MM-DD
 supersedes: []
 ---
 
-# ADR-0000: [Short Title]
+# ADR-0000: Short Title
+
+> Frontmatter keys: only id, status, date, supersedes. No additions.
+> id: zero-padded 4-digit string matching filename index
 
 ## Context
 
-Why we needed to make this decision. Background, constraints, and alternatives considered.
+Why this decision was needed. Background, constraints, alternatives with trade-offs.
 
 ## Decision
 
-What we decided and the rationale.
+What was chosen and the rationale. Be specific.
 
 ## Consequences
 
-What happens as a result. Include positive, negative, and risks.
+Positive outcomes, negative trade-offs, and risks. Be honest about downsides.

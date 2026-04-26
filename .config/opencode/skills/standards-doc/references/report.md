@@ -2,21 +2,16 @@
 
 ## Context
 
-- Date: [YYYY-MM-DD]
-- Scope: [Target system/component]
-- Trigger: [What initiated this investigation/work]
+Date, Scope, Trigger
 
 ## Investigation
 
-- Finding: [Key discovery or observation]
-- Evidence: [Log, metric, or data reference]
+Findings and Evidence
 
 ## Resolution
 
-- Action: [What was done]
-- Result: [Outcome of the action]
+Actions and Results
 
 ## Knowledge
 
-- Lesson: [Reusable insight for future reference]
-- Prevention: [How to avoid recurrence, if applicable]
+Lessons and Prevention

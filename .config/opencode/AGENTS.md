@@ -24,6 +24,8 @@ Delegate all other work to subagents via the Task tool.
   - a concise summary of what requires action (e.g., failure details, lint errors)
 - Small, self-contained work (under 50 lines of output, directly needed for
   the next decision) may be handled inline by the main agent.
+  Exception: lint, test, and build commands must always be delegated to a subagent,
+  regardless of expected output size.
 - Run independent subagent workflows in parallel.
 
 ### Language and Communication

@@ -1,48 +1,58 @@
 ---
 name: git-commit
-description: Conventional Commits-compliant git commit execution logic.
+description: >
+  Create a git commit from current changes.
+  Trigger on commit requests or after completing a code change task.
 ---
 
 # Git Commit
 
 ## Overview
 
-Execute a Conventional Commits 1.0.0-compliant git commit, automatically deriving
-type and message from the current working tree or staged state. If no files are staged,
-stage all changes before committing.
+Analyze the current working tree, derive a Conventional Commits 1.0.0-compliant
+message, and commit. Always execute from the git repository root.
 
-Execute all scripts from the git repository root, not from the skill directory.
+## Process
 
-## Output
+### 1. Stage
 
-- `sha: string`: The commit SHA created by the commit script.
-- `message: string`: The full commit message.
+1. Run `git diff --staged --name-only`.
+2. If nothing staged, selectively stage only files related to the current task.
+3. If still nothing staged, abort: "no changes to commit".
 
-## Operations
+### 2. Analyze
 
-### Prepare Staged Changes
+1. Collect diff: `git --no-pager diff --staged`.
+2. Derive type from [`references/types.md`](references/types.md).
+3. Write description: imperative English, no trailing period, ≤100 chars including type prefix.
+4. Optionally add body with `-` bullet lines.
 
-Run `git diff --staged --name-only` to detect staged files.
+### 3. Commit
 
-- If files are already staged, skip to collecting the diff.
-- If nothing is staged, run `git add -A` to stage all changes.
-- If still nothing is staged after `git add -A`, abort with "no changes to commit".
+Run [`scripts/commit.sh`](scripts/commit.sh) with the following options.
+Do NOT read the script; use it as a black box.
 
-Collect the staged file list with `git diff --staged --name-only` and the full diff with
-`git --no-pager diff --staged`.
+- `--type <string>` (required): Commit type derived from step 2
+- `--description <string>` (required): Commit description derived from step 2
+- `--body <string>` (optional): Body text, may contain newlines
+- `--json` (required): Flag. Enables JSON output (`sha`, `message`) to stdout
 
-### Analyze Diff
+Example:
 
-Derive the commit type from [`references/types.md`](references/types.md) and write a
-natural-language description summarizing what changed and why. The description must be
-imperative English, have no trailing period, and fit within 100 characters including the
-type prefix. Abort if the description is empty or is a file path instead of natural language.
-Optionally produce a body with bullet lines each starting with `-`.
+```bash
+scripts/commit.sh \
+  --type feat \
+  --description "add user authentication endpoint" \
+  --body "- add POST /auth/login route
+- implement JWT token generation
+- add input validation middleware" \
+  --json
+```
 
-### Commit
+Return the JSON output as the final result.
 
-Run [`scripts/commit.sh`](scripts/commit.sh) with `--type`, `--description`, and
-optionally `--body`, plus `--json` for structured output. Abort if the type is not listed
-in [`references/types.md`](references/types.md) or if git commit fails.
+## Constraints
 
-Return the JSON output from commit.sh as the final result.
+- Abort if description is empty or is a file path.
+- Abort if type is not in [`references/types.md`](references/types.md).
+- Abort if git commit fails.

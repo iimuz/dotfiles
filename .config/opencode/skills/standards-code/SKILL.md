@@ -2,15 +2,24 @@
 name: standards-code
 description: >-
   Use when writing or reviewing code in Bash, Go, Python, Rust, or TypeScript
-  to enforce language-specific coding standards.
+  to enforce coding standards.
 ---
 
-# Language Coding Standards
+# Coding Standards
 
-Select the reference for the language in use:
+## Principles
 
-- Bash (`.sh` files): [references/bash.md](references/bash.md)
-- Go (`.go` files): [references/go.md](references/go.md)
-- Python (`.py` files): [references/python.md](references/python.md)
-- Rust (`.rs` files): [references/rust.md](references/rust.md)
-- TypeScript (`.ts`, `.tsx` files): [references/typescript.md](references/typescript.md)
+- Handle errors explicitly. Do not swallow errors silently.
+- Depend on abstractions, not concrete implementations.
+- Validate external input at the boundary. Do not trust unvalidated data beyond that point.
+- Keep public API surface minimal. Do not export internal implementation details.
+- Inject dependencies. Do not rely on global mutable state.
+- Use structured logging. Do not use print statements for operational output.
+
+## Language References
+
+- Bash: [references/bash.md](references/bash.md)
+- Go: [references/go.md](references/go.md)
+- Python: [references/python.md](references/python.md)
+- Rust: [references/rust.md](references/rust.md)
+- TypeScript: [references/typescript.md](references/typescript.md)

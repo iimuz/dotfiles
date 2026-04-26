@@ -1,34 +1,16 @@
----
-issue:
----
-
-# Planning: [Short Name]
+# Planning: Short Name
 
 ## Goal
 
-[One sentence goal]
-
-## Ref
-
-- `path/to/relevant/file`
+One sentence only
 
 ## Steps
+
+Checkbox list. One action per step.
 
 - [ ] Step 1: ...
 - [ ] Step 2: ...
 
-## Verify
-
-[Single verification command or condition]
-
-## Debt
-
-Deferred items discovered during this task. Transfer to GitHub Issues on finalize.
-
 ## Log
 
-Append-only record of decisions and findings during execution.
-
-## Scratchpad
-
-Agent workspace for investigation notes.
+Append-only. Never delete or modify existing entries.

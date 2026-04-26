@@ -1,55 +1,51 @@
 ---
 name: subagent-first
 description: >-
-  Use when delegating tasks to sub-agents or coordinating multi-step workflows.
+  Orchestrate work by delegating to sub-agents. Main agent handles only
+  planning, judgment, and user communication. Always active for multi-step work.
 ---
 
 # Subagent-First
 
-## Principles
+## Overview
 
-- Delegate investigation, decomposition, and execution to sub-agents. Use `read`
-  and `edit` only for the planning file and session files, never for codebase files.
-- Use `ask_user` only when the user alone can answer. If investigation could resolve
-  the ambiguity, dispatch a sub-agent first.
-- Track state via `sql` and `report_intent`.
-- Dispatch independent sub-agents in parallel. Chain dependent tasks sequentially
-  using previous results.
-- When dispatching a sub-agent, always provide:
-  - Exact file paths (not full contents)
+Preserve main agent context by delegating all investigation, analysis,
+and execution to sub-agents. Main agent acts solely as orchestrator:
+planning, judgment, user communication, and state tracking.
+
+## Main Agent Boundaries
+
+- DO: plan, dispatch, judge sub-agent results, communicate with user
+- DO NOT: read or edit codebase files directly (only planning/session files)
+- Use the `question` tool only when the user alone can answer. If investigation
+  could resolve ambiguity, dispatch a sub-agent first.
+
+## Dispatch Rules
+
+- Always provide to each sub-agent:
+  - Exact file paths (not contents)
   - Specific scope: what to do AND what NOT to do
   - Expected output format or signal
-  - Decision authority: whether the sub-agent decides and acts, or only reports facts
-  - Both `agent_type` and `model` on every dispatch
-- When a skill is available and relevant, load it with `skill()`, then delegate
-  execution to sub-agents per the skill's instructions. Sub-agents may also invoke
-  skills directly when their task requires it.
-- If a sub-agent fails, refine the prompt once and retry. If it fails again, report
-  the failure and context to the user via `ask_user`.
+  - Decision authority: decide-and-act, or report-only
+- Dispatch independent sub-agents in parallel; chain dependent tasks sequentially.
+- When a skill is available, load it with the `skill` tool (passing `name` parameter) and delegate per its instructions.
+  Sub-agents may also invoke skills directly.
 
-## Agent Type
+## Model Selection
 
-| Subtask Requirement                               | Agent Type            |
-| :------------------------------------------------ | :-------------------- |
-| Factual lookup needed ONLY for a routing decision | `explore`             |
-| Running builds, tests, lints, or installs         | `task`                |
-| Multi-step implementation requiring code edits    | `general-purpose`     |
-| Reviewing changes without modifying code          | `code-review`         |
-| Work matching a domain-specific custom agent      | use that custom agent |
+- `opencode/big-pickle`: Trivial tasks: status checks, simple formatting, simple file reads
+- `github-copilot/claude-sonnet-4.6`: Default. General implementation, refactoring, analysis, code generation
+- `github-copilot/claude-sonnet-4.6`: Complex reasoning, design decisions, code review
+- `github-copilot/gemini-3.1-pro-preview`: Large-context tasks, cross-file analysis, long summarization
+- `github-copilot/gpt-5.4`: Second opinions, alternative perspectives
 
-Always prefer the narrowest-scoped agent that can complete the subtask.
+Keep the same model within a multi-step subtask.
 
-`explore` returns raw data without judgment. Use ONLY when one fact is needed to
-choose which sub-agent to dispatch next. For analysis, decomposition, or planning,
-use `general-purpose`.
+## State Tracking
 
-## Model
+Track state via the `TodoWrite` tool.
 
-| Model                                                   | Best For                                             |
-| :------------------------------------------------------ | :--------------------------------------------------- |
-| `claude-opus-4.7` (fallback: `opus-4.6` → `sonnet-4.6`) | Default. Nuanced reasoning, review, complex refactor |
-| `claude-sonnet-4.6`                                     | Mechanical ops: git, file writes, template expansion |
-| `claude-haiku-4.5`                                      | Trivial ops: single commands, simple file reads      |
-| `gpt-5.4`                                               | Alternative perspective, second opinions             |
+## Failure Handling
 
-Prefer consistency: keep the same model within a multi-step subtask.
+1. If a sub-agent fails, refine the prompt once and retry.
+2. If it fails again, report the failure and context to the user via the `question` tool.
