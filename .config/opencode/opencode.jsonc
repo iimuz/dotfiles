@@ -1,0 +1,131 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  // Models
+  "model": "deepseek/deepseek-v4-pro",
+  "small_model": "opencode/big-pickle", // タイトル生成などに利用
+  "agent": {
+    // ここに組み込みの subagent の model を指定することでデフォルトのモデルを指定できる
+    // ただし、以下の順で優先されるとのこと
+    // 1. task tool での呼出パラメータ指定
+    // 2. この部分で指定した設定
+    // 3. 親エージェントのモデル継承
+    "build": {
+      // ユーザーインターフェースなので Opus 4.6 Tier が欲しい
+      "model": "openrouter/moonshotai/kimi-k2.6"
+    },
+    "explore": {
+      // 探索 subagent なので Haiku Tier で良い
+      "model": "openrouter/minimax/minimax-m2.7"
+    },
+    "general": {
+      // 作業用 subagent なので Sonnet Tier で良い
+      "model": "openrouter/deepseek/deepseek-v4-pro"
+    },
+    "plan": {
+      // ユーザーインターフェースかつ Planning なので本当は Opus 4.7 Tier が欲しい
+      "model": "openrouter/moonshotai/kimi-k2.6"
+    }
+  },
+  "provider": {
+    "github-copilot": {
+      "whitelist": [
+        "claude-sonnet-4.6",
+        "claude-haiku-4.5",
+        "gemini-3.1-pro-preview",
+        "gpt-5.4"
+      ]
+    },
+    "openrouter": {
+      "whitelist": [
+        // === Tier: Opus 4.7 AAII Score
+        // Claude Opus 4.7: Context: 1M, AAII 57
+        // Input: $5, Output: $25
+        "anthropic/claude-opus-4.7",
+        // GPT-5.5: Context: 1M, AAII: 60
+        // <=272K: Input: $5, Output: $30
+        // >272K: Input: $10, Output: $45
+        "openai/gpt-5.5",
+        // GPT-5.4: Context: 1M, AAII: 57
+        // <=272K: Input: $2.5, Output: $15
+        // >272K: Input: $5, Output: $22.50
+        "openai/gpt-5.4",
+        // === Tier: Opus 4.6 AAII Score
+        // Claude Opus 4.6: Context: 1M, AAII: 53
+        // Input: $5, Output: $25
+        "anthropic/claude-opus-4.6",
+        // MiMo-V2.5-Pro: AAII: 54
+        // <=256K: Input: $1, Output: $3
+        // >256K: Input: $2, Output: $6
+        "xiaomi/mimo-v2.5-pro",
+        // Kimi K2.6: Context: 256 K, AAII: 54
+        // Input: $0.8, Output: $3.5
+        "moonshotai/kimi-k2.6",
+        // === Tier: Sonnet 4.6 AAII Score
+        // Claude Sonnet 4.6: Context: 1M, AAII: 52
+        // Input: $3, Output: $15
+        "anthropic/claude-sonnet-4.6",
+        // DeepSeek V4 Pro: Context: 1M, AAII: 52
+        // Input: $0.43, Output: $0.87
+        "deepseek/deepseek-v4-pro",
+        // MiniMax M2.7: Context: 200K, AAII: 50
+        // Input: $0.3, Output: $1.2
+        "minimax/minimax-m2.7",
+        // GLM 5.1: Context 200K, AAII: 51
+        // Input: $1.05, Output: $3.5
+        "z-ai/glm-5.1",
+        // === Tier: Haiku 4.5 AAII Score
+        // Claude Haiku 4.5: Context: 200K, AAII: 37
+        // Input: $1, Output: $5
+        "anthropic/claude-haiku-4.5"
+      ],
+      "models": {
+        "deepseek/deepseek-v4-pro": {
+          "options": {
+            "provider": {
+              // 以下以外が 3 倍位価格が異なるため固定
+              // paied だが学習データに利用される
+              "order": ["deepseek"],
+              "allow_fallbacks": false
+            }
+          }
+        }
+      }
+    }
+  },
+  // MCP
+  "mcp": {
+    // [context-mode](https://github.com/mksglu/context-mode)
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"]
+    }
+  },
+  "plugin": [
+    // [context-mode](https://github.com/mksglu/context-mode)
+    "context-mode"
+  ],
+  // Watch
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**"]
+  },
+  // Permission
+  "permission": {
+    "bash": {
+      "curl *": "deny",
+      "git push*": "ask",
+      "nc *": "deny",
+      "npm remove *": "deny",
+      "npm uninstall *": "deny",
+      "rm *": "ask",
+      "sudo *": "deny",
+      "wget *": "deny"
+    },
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow"
+    }
+  }
+}

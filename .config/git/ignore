@@ -12,3 +12,6 @@ lefthook-local.yml
 mise.local.toml
 mise-tasks
 mise-tasks/
+
+# === temporary working files
+docs/tmp/
