@@ -8,7 +8,6 @@ eza = "0.23.4"
 fd = "10.4.2"
 fzf = "0.70.0"
 gh = "2.89.0"
-"github:rtk-ai/rtk" = "v0.36.0"
 "github:vifm/vifm" = "v0.14.3"
 go = "1.26.2"
 jq = "1.8.1"
@@ -18,6 +17,7 @@ node = "24.14.1"
 neovim = "0.12.1"
 "npm:@aikidosec/safe-chain" = "1.4.9"
 "npm:@github/copilot" = "1.0.27"
+"npm:context-mode" = "1.0.89"                           # for opencode
 "npm:neovim" = "5.4.0"                                  # for neovim
 "pipx:pynvim" = "0.6.0"                                 # for neovim
 pnpm = "10.33.0"
@@ -32,7 +32,6 @@ yq = "4.52.5"
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
-RTK_TELEMETRY_DISABLED = 1 # RTK のテレメトリを無効化
 
 # fzf で利用する basepath を `/workspaces` に設定
 FFGHQ_MAXDEPTH = 1

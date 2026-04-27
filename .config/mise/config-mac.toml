@@ -9,7 +9,6 @@ eza = "0.23.4"
 fd = "10.4.2"
 fzf = "0.70.0"
 gh = "2.89.0"
-"github:rtk-ai/rtk" = "v0.36.0"
 "github:vifm/vifm" = "v0.14.3"
 go = "1.26.2"
 jq = "1.8.1"
@@ -36,7 +35,6 @@ yq = "4.52.5"
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
-RTK_TELEMETRY_DISABLED = 1 # RTK のテレメトリを無効化
 
 [settings]
 activate_aggressive = true
