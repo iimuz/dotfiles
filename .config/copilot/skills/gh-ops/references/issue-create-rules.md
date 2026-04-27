@@ -1,64 +1,70 @@
 # Issue Create Rules
 
-## Overview
-
 Create a GitHub Issue with a structured body using one of two templates:
-product-backlog (parent issue) or feature (work item). The script validates input,
-builds the body from the selected template, and creates the issue via gh issue create.
+product-backlog (parent issue) or feature (work item).
 
-Execution order: determine type -> compose content -> confirm with user -> create issue.
-Execute the script from the git repository root, not from the skill directory.
+## Procedure
 
-## Input
+Follow these steps in order. Stop on any failure.
 
-- `type: string` (required): Issue type, passed as `--type`. Must be `product-backlog`
-  or `feature`. See Issue Type Reference below.
-- `repo: string` (optional): Target repository, passed as `--repo OWNER/REPO`. Defaults
-  to the current repository.
-- `labels: string` (optional): Comma-separated labels, passed as `--labels`.
-- `assignees: string` (optional): Comma-separated assignees, passed as `--assignees`.
-- `project: string` (optional): Project name, passed as `--project`.
+### Step 1: Determine Type
 
-Content is provided via stdin JSON:
+Select one based on intent:
+
+- `product-backlog` – Parent issue defining a product goal and its scope. Contains
+  overview, details, goal, and notes sections.
+- `feature` – Work item issue linked to a product backlog. Contains related URLs, goal,
+  and details sections.
+
+Ask the user which type to create. Infer from context when intent is clear.
+
+### Step 2: Compose Content
+
+Prepare title and body fields based on the selected template. See Body Templates below.
+
+Provide content as stdin JSON:
 
 ```json
 {
   "title": "string (required)",
-  "overview": "string (product-backlog)",
+  "overview": "string (product-backlog only)",
   "details": "string",
   "goal": "string",
-  "notes": "string (product-backlog)",
-  "related_urls": "string (feature)"
+  "notes": "string (product-backlog only)",
+  "related_urls": "string (feature only)"
 }
 ```
 
-## Issue Type Reference
+### Step 3: Confirm with User
 
-- product-backlog: Parent issue defining a product goal and its scope. Contains
-  overview, details, goal, and notes sections.
-- feature: Work item issue linked to a product backlog. Contains related URLs, goal,
-  and details sections.
+Present the composed issue content. Proceed only after explicit approval.
 
-## Operations
+### Step 4: Create Issue
 
-### Determine Type
+Required flags:
 
-Ask the user which issue type to create (product-backlog or feature). Infer from
-context when the intent is clear.
+- `--type` – Issue type from Step 1
 
-### Compose Content
+Optional flags:
 
-Prepare title and body fields based on the selected template. See Body Templates below.
+- `--repo OWNER/REPO` – Target repository (defaults to current repository)
+- `--labels` – Comma-separated labels
+- `--assignees` – Comma-separated assignees
+- `--project` – Project name
 
-### Confirm with User
+Recommended JSON fields per type:
 
-Present the composed issue content to the user and get explicit approval before
-creating. Do not create without that confirmation.
+- `product-backlog`: `title` (required), `overview`, `details`, `goal`, `notes`
+- `feature`: `title` (required), `related_urls`, `goal`, `details`
 
-### Create Issue
-
-Run `bash scripts/create-issue.sh` with `--type` and optional metadata flags. Pipe
-the composed JSON payload through stdin.
+```bash
+cat <<'EOF' | bash scripts/create-issue.sh --type <type> [optional flags]
+{
+  "title": "...",
+  ...
+}
+EOF
+```
 
 The script validates the JSON, builds the body from the template, and creates the
 issue via `gh issue create`. On success it prints the issue URL to stdout.
@@ -111,7 +117,7 @@ Sections with empty content include only the header.
 
 ## Output
 
-- `url: string`: URL of the created issue returned by `gh issue create`.
+- `url: string`: URL of the created issue printed to stdout by the script.
 - With `--json`: `{ "number": number, "url": string }`.
 
 ## Examples

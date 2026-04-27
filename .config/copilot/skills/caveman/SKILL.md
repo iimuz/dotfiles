@@ -1,9 +1,8 @@
 ---
 name: caveman
 description: >
-  Ultra-compressed communication mode.
-  Use when user says "caveman mode", "talk like caveman", "use caveman", "less tokens",
-  "be brief", or invokes /caveman. Also auto-triggers when token efficiency is requested.
+  Strip all filler, pleasantries, and hedging from responses while keeping full technical substance.
+  Trigger on "caveman", "less tokens", "be brief", or requests for token-efficient output.
 metadata:
   notes: >
     original: <https://github.com/JuliusBrussee/caveman>,

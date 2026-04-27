@@ -1,31 +1,17 @@
-# Design: [Short Name]
+# Design: Short Name
 
-## CONTEXT
+## Context
 
-- Scope: [Feature Name / Domain]
-- Goal: [Primary Objective]
-- Status: Draft
+Scope, Goal, Status
 
-## DATA_MODEL (TypeScript)
+## Data Model
 
-```typescript
-interface Entity {
-  id: string;
-  status: "active";
-}
-```
+TypeScript Interface code block
 
-## LOGIC_FLOW (Mermaid)
+## Logic Flow
 
-```mermaid
-sequenceDiagram
-  participant Client
-  participant API
-  Client->>API: Request
-```
+Mermaid code block
 
-## INTERFACE_CONTRACT
+## Interface Contract
 
-- Endpoint: [Method] [Path]
-  - Input: { field: type }
-  - Output: { result: type }
+Endpoints with Input/Output
