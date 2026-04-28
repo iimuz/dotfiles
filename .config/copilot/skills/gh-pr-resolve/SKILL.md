@@ -1,132 +1,56 @@
 ---
 name: gh-pr-resolve
-description: >-
-  Use when users ask to resolve PR review comments by gathering facts,
-  evaluating fixes, verifying diffs, and committing approved changes.
+description: Use when resolving or addressing PR review comments.
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# Resolve Comments
+# Resolve PR Review Comments
 
-## Overview
+## Purpose
 
-Resolve pull request review comments through a staged workflow: gather facts, evaluate
-what should change, apply approved fixes, verify the result, and report the outcome.
+Provide a method for accurately analyzing pull request review comments.
+Determine whether each comment is actionable and, when it is, describe the
+concrete change needed.
 
-At execution start, generate a `YYYYMMDDHHMMSS` timestamp and derive:
+## Analysis Procedure
 
-- Intermediate artifacts: `{session_dir}/{timestamp}-gh-pr-resolve/` (referred to as `run_dir`)
-- Final output: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
+### 1. Collect inputs
 
-`session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
+- Retrieve all unresolved review comments on the target PR.
+- For each comment, read the referenced file and surrounding code context.
 
-## Workflow
+### 2. Investigate related code
 
-### Stage 1: Gather
+- Search the codebase for locations with the same or similar pattern as the
+  flagged code (e.g. duplicated logic, shared helpers, copy-pasted blocks).
+- Identify callers, callees, and dependents of the code targeted by the comment.
+- Determine whether applying the suggested change would require cascading
+  modifications in related locations.
 
-Extract factual observations from the review comments. Record referenced files, explicit
-requests, and comment context. Never include recommendations, prioritization, or opinions.
+### 3. Assess each comment
 
-task(general-purpose, model=claude-opus-4.6):
+- Understand what the reviewer is requesting.
+- Judge whether the request is valid based on the actual code **and** the
+  related-code investigation from step 2.
+- Classify the comment:
+  - **fix** — the comment points to a real issue and a concrete change exists.
+  - **skip** — the comment is ambiguous, subjective, already addressed, or
+    no clear change can be derived.
+- When in doubt, classify as **skip** (fail-closed).
+- When a better solution than the reviewer's suggestion exists for the same
+  issue, include it as an alternative in the output.
+- Do not add unrelated improvements that the reviewer did not raise.
 
-> Read the review comments and optional context. Extract only factual statements.
-> Write the result to {run_dir}/gather.md.
+## Constraints
 
-- Output: `{run_dir}/gather.md` (read by Stage 2)
-- Fault: Abort if the task fails, the file is missing, or the output contains evaluative language.
+- Always read the actual code before judging. Never assess a comment from its
+  text alone.
+- Always investigate related code. Never limit the analysis to the diff hunks.
+- Preserve the reviewer's intent. Do not reinterpret or extend the scope of a
+  comment.
+- fail-closed: ambiguity → skip.
 
-### Stage 2: Evaluate
+## Output Format
 
-Transform the gather artifact into eval-input, then run council deliberation to produce
-a fix plan. The coordinator must not build eval-input inline; delegate that transformation
-to a sub-agent. Classify ambiguous evaluation results as non-actionable (fail-closed).
-
-task(general-purpose):
-
-> Read {run_dir}/gather.md, strip judgmental or advisory language, and write
-> sanitized input to {run_dir}/eval-input.md.
-
-skill(council):
-
-> Evaluate {run_dir}/eval-input.md. Write council output to {run_dir}/council.json.
-
-Parse the council output into a structured fix plan with item IDs and concrete change
-actions. Compute actionable_count and set skip_decision (true when no actionable items
-exist). Write `{run_dir}/fix-plan.json`.
-
-- Output: `{run_dir}/eval-input.md`, `{run_dir}/council.json`, `{run_dir}/fix-plan.json` (read by Stage 3)
-- Fault: Abort if eval-input or council invocation fails.
-
-### Stage 3: Implement
-
-Execute the fix plan when actionable items exist. Skip when skip_decision is true and
-write skip status instead.
-
-task(general-purpose, model=claude-opus-4.6):
-
-> Implement the changes described in {run_dir}/fix-plan.json.
-
-- Output: `{run_dir}/implement.json` (read by Stage 4)
-- Fault: Continue with recorded failure status if the implementation task fails.
-
-### Stage 4: Verify
-
-Review the implemented changes and record severity counts for the commit gate.
-
-skill(code-review, model=claude-opus-4.6):
-
-> Review unstaged working-tree changes produced by Stage 3.
-
-When Stage 3 was skipped, verify that no unintended unstaged changes exist and mark
-verification as passed-with-skip-context.
-
-- Output: `{run_dir}/verify.json` with `{ critical_count, high_count, medium_count, low_count }` (read by Stage 5)
-- Fault: Continue with verification-unavailable status if code-review fails.
-
-### Stage 5: Commit
-
-Commit the changes only when the severity gate passes: critical_count == 0 and
-high_count == 0. Read verify.json and parse critical_count and high_count strictly.
-
-task(general-purpose, model=claude-sonnet-4.6):
-
-> Stage implementation changes with git add. If no staged changes exist, skip with
-> commit_skip_reason: no_staged_changes. Otherwise invoke skill(git-commit).
-> Write result to {run_dir}/commit.json.
-
-- Output: `{run_dir}/commit.json` (read by Stage 6)
-- Fault: Skip commit when critical_count > 0, high_count > 0, or severity parsing fails.
-- Fault: Continue with commit-failed status if git-commit fails after staging.
-
-### Stage 6: Summarize
-
-Write a final summary covering gather, evaluate, implement, verify, and commit outcomes.
-Report skips, degraded paths, unresolved risks, and any commit_skip_reason explicitly.
-
-- Output: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
-- Fault: Abort if the final summary file cannot be written.
-
-## Session Files
-
-- `{run_dir}/gather.md`
-- `{run_dir}/eval-input.md`
-- `{run_dir}/council.json`
-- `{run_dir}/fix-plan.json`
-- `{run_dir}/implement.json`
-- `{run_dir}/verify.json`
-- `{run_dir}/commit.json`
-- `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
-
-## Output
-
-Final output path: `{session_dir}/{timestamp}-gh-pr-resolve-summary.md`
-
-## Examples
-
-- Happy: review requests a null check and test update, both are actionable, verification
-  is clean, commit succeeds.
-- Failure: review comments are contradictory, evaluation classifies them as non-actionable,
-  implementation and commit are skipped, summary reports the skip reason.
-- Failure: implementation succeeds but verification reports one high issue, commit is
-  skipped with severity_gate_failed, summary reports the blocked commit.
+Use the template defined in [template](references/template.md).
