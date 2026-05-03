@@ -1,10 +1,10 @@
 [tools]
-awscli = { version = "2.34.29", symlink_bins = "true" }
+awscli = { version = "2.34.32", symlink_bins = "true" }
 bat = "0.26.1"
 cargo-binstall = "1.18.1"
 "cargo:tree-sitter-cli" = "0.26.8"                      # for neovim
 colima = "0.10.1"
-delta = "0.19.1"
+delta = "0.19.2"
 eza = "0.23.4"
 fd = "10.4.2"
 fzf = "0.71.0"
@@ -19,7 +19,7 @@ lua = "5.1.5"                                           # neovim luarocksで要�
 node = "24.15.0"
 "npm:@aikidosec/safe-chain" = "1.4.9"
 "npm:@bitwarden/cli" = "2026.3.0"
-"npm:@github/copilot" = "1.0.27"
+"npm:@github/copilot" = "1.0.32"
 "npm:mcp-remote" = "0.1.38"                             # for copilot
 "npm:neovim" = "5.4.0"                                  # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.20"
@@ -30,7 +30,7 @@ ripgrep = "15.1.0"
 rust = "1.95.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.11.6"
+uv = "0.11.7"
 yq = "4.53.2"
 
 [env]
