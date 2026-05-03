@@ -1,22 +1,22 @@
 [tools]
 awscli = { version = "2.34.32", symlink_bins = "true" }
 bat = "0.26.1"
-cargo-binstall = "1.17.9"
+cargo-binstall = "1.18.1"
 "cargo:tree-sitter-cli" = "0.26.8"                      # for neovim
 colima = "0.10.1"
 delta = "0.19.2"
 eza = "0.23.4"
 fd = "10.4.2"
-fzf = "0.70.0"
-gh = "2.89.0"
-"github:rtk-ai/rtk" = "v0.36.0"
+fzf = "0.71.0"
+gh = "2.90.0"
+"github:rtk-ai/rtk" = "v0.37.1"
 "github:vifm/vifm" = "v0.14.3"
 go = "1.26.2"
 jq = "1.8.1"
-lazygit = "v0.60.0"
+lazygit = "v0.61.1"
 lima = "v2.1.1"                                         # colima で必要
 lua = "5.1.5"                                           # neovim luarocksで要求しているバージョンが5.1
-node = "24.14.1"
+node = "24.15.0"
 "npm:@aikidosec/safe-chain" = "1.4.9"
 "npm:@bitwarden/cli" = "2026.3.0"
 "npm:@github/copilot" = "1.0.32"
@@ -27,11 +27,11 @@ node = "24.14.1"
 pnpm = "10.33.0"
 python = "3.14.4"
 ripgrep = "15.1.0"
-rust = "1.94.1"
+rust = "1.95.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
 uv = "0.11.7"
-yq = "4.52.5"
+yq = "4.53.2"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
