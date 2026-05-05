@@ -42,6 +42,22 @@ function set_bashrc() {
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
 }
 
+# Add Claude Code user-scope MCP server if not already configured.
+#
+# Claude Code のユーザーレベル MCP 設定は他の情報がありリポジトリで管理できないので設定で対応する
+function add_claude_mcp() {
+  local -r name=$1
+  local -r command=$2
+
+  if ! claude mcp get "$name" 2>&1 | grep -qF "No MCP server found"; then
+    echo "already exist claude mcp: $name"
+    return 0
+  fi
+
+  echo "add claude mcp: $name"
+  claude mcp add --transport stdio --scope user "$name" "$command"
+}
+
 # === 共通パスの設定
 SCRIPT_DIR=
 SCRIPT_DIR=$(
@@ -81,6 +97,18 @@ if type mise >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
 fi
 
+# === claude
+if type claude >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
+
+  # Setup MCP
+  add_claude_mcp context-mode context-mode
+
+  if type ccstatusline >/dev/null 2>&1; then
+    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
+  fi
+fi
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
@@ -96,15 +124,6 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.gitconfig" "$HOME/.gitconfig"
   create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
-fi
-# === github copilot cli
-if type copilot >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
-  create_symlink "$SCRIPT_DIR/.config/copilot/lsp-config.json" "$HOME/.copilot/lsp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
 fi
 # === OpenCode
 if type opencode >/dev/null 2>&1; then
