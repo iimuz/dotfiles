@@ -1,49 +1,80 @@
 # PR Create Rules
 
-## Overview
+Create a draft pull request with a Conventional Commits-style title and
+standardized body.
 
-Create a draft pull request on GitHub with a Conventional Commits-style title and a
-standardized body, using the shipped shell scripts.
+## Procedure
 
-Execute all scripts from the target git repository root, never from the skill directory.
-Use only the shipped scripts; do not run extra git or gh commands. Title must be natural
-language in imperative mood with no trailing period and no file paths. Title and body
-default to English unless the user explicitly requests another language.
+Follow these steps in order. Stop on any failure.
 
-## Operations
+### Step 1: Check Branch Status
 
-### Check Branch Status
+Run `bash scripts/check-branch-status.sh [--base <branch>]`.
+Inspects uncommitted changes, commit history, and diff statistics.
+Abort if no commits differ from the base branch.
 
-Run `bash scripts/check-branch-status.sh [--base <branch>]` to inspect uncommitted
-changes, commit history, and diff statistics. Abort if the branch has no commits
-differing from the base.
+### Step 2: Determine PR Type
 
-### Create Draft PR
+Select one based on the changes:
 
-Choose type from the PR Type Reference below, write a title and change bullets, then
-run `bash scripts/create-pr.sh` with accepted flags. Pass `--changes` as bullet lines
-starting with `-`. The script validates type and required parameters; abort on
-validation errors.
+- `build` – Build system or external dependency changes
+- `chore` – Maintenance tasks, scripts, config
+- `ci` – CI configuration and scripts
+- `docs` – Documentation changes
+- `feat` – New features
+- `fix` – Bug fixes
+- `i18n` – Internationalization
+- `perf` – Performance improvements
+- `refactor` – Code refactoring
+- `revert` – Revert previous commits
+- `style` – Code style changes (formatting, whitespace)
+- `test` – Test additions or corrections
 
-Accepted flags: `--type`, `--title`, `--changes`, `--related-urls`, `--confirmation`,
-`--review-points`, `--limitations`, `--additional`, `--base`.
+### Step 3: Compose Title
 
-## PR Type Reference
+Format: imperative mood, concise, no trailing period, no file paths.
 
-| Type     | Description                                 |
-| -------- | ------------------------------------------- |
-| build    | Build system or external dependency changes |
-| chore    | Maintenance tasks, scripts, config          |
-| ci       | CI configuration and scripts                |
-| docs     | Documentation changes                       |
-| feat     | New features                                |
-| fix      | Bug fixes                                   |
-| perf     | Performance improvements                    |
-| refactor | Code refactoring                            |
-| revert   | Revert previous commits                     |
-| style    | Code style changes (formatting, whitespace) |
-| test     | Test additions or corrections               |
-| i18n     | Internationalization                        |
+- Good: `"clarify PR draft skill"`, `"resolve token expiration"`
+- Bad: `"clarified the PR draft skill."`, `"update src/auth/token.ts"`
+
+### Step 4: Compose Body Content
+
+Required flags:
+
+- `--type` – PR type from Step 2
+- `--title` – Title from Step 3
+- `--changes` – Bullet lines starting with `-`
+
+Optional flags:
+
+- `--related-urls` – Related issue/PR URLs
+- `--confirmation` – Verification steps performed
+- `--review-points` – Areas needing reviewer attention
+- `--limitations` – Known limitations or follow-up needed
+- `--additional` – Any extra context
+- `--base` – Base branch (default: repo default branch)
+
+### Step 5: Confirm with User
+
+Present the composed title, type, and body content. Proceed only after explicit
+approval.
+
+### Step 6: Create Draft PR
+
+```bash
+bash scripts/create-pr.sh \
+  --type <type> \
+  --title "<title>" \
+  --changes "<bullet lines>" \
+  [--related-urls "<urls>"] \
+  [--confirmation "<results>"] \
+  [--review-points "<points>"] \
+  [--limitations "<limitations>"] \
+  [--additional "<context>"] \
+  [--base <branch>]
+```
+
+The script validates type and required parameters. Abort on validation errors.
 
 ## PR Body Format
 
@@ -73,6 +104,8 @@ Accepted flags: `--type`, `--title`, `--changes`, `--related-urls`, `--confirmat
 
 ## Examples
 
+Minimal:
+
 ```bash
 bash scripts/check-branch-status.sh --base main
 bash scripts/create-pr.sh --type docs --title "clarify PR draft skill" \
@@ -81,6 +114,8 @@ bash scripts/create-pr.sh --type docs --title "clarify PR draft skill" \
 - extract the PR body template" \
   --base main
 ```
+
+Full:
 
 ```bash
 bash scripts/check-branch-status.sh

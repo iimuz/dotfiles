@@ -1,39 +1,68 @@
 # PR Review Rules
 
-## Overview
+Create a pending review on a GitHub PR with inline comments via
+`scripts/create_review.sh`.
 
-Run `scripts/create_review.sh` to create a pending review on a GitHub PR. The
-script accepts repository coordinates, a PR number, and a JSON array of inline
-comments as CLI arguments. It validates inputs, calls the GitHub API via `gh`,
-and prints a JSON result to stdout.
+## Procedure
 
-Invoke only `scripts/create_review.sh`; do not call the GitHub API directly.
-Pass all inputs as CLI arguments; do not use environment variables for review data.
+Follow these steps in order. Stop on any failure.
+
+### Step 1: Compose Comments
+
+Prepare inline comments for the review. Each comment requires:
+
+- `path: string` – File path relative to the repository root
+- `line: number` – Line number to attach the comment to
+- `body: string` – Comment body text
+
+Optional per comment:
+
+- `suggestion: string` – Code suggestion content. Do not include triple backticks;
+  the script wraps it in a GitHub suggestion block automatically.
+- `start_line: number` – Start line for multi-line comments
+- `side: "LEFT" | "RIGHT"` – Diff side
+
 Provide `--comments-json` as a valid JSON array with at least one element.
-Include `path`, `line`, and `body` for every comment object.
-Keep suggestion text free of triple backticks because the script wraps suggestions
-in a fenced suggestion block.
-Treat created reviews as pending drafts; submit them manually via the GitHub UI.
 
-## Input
+### Step 2: Confirm with User
 
-- `--owner` (required): Repository owner.
-- `--repo` (required): Repository name.
-- `--pull-number` (required): PR number.
-- `--comments-json` (required): JSON array of comment objects. Each object requires:
-  - `path: string` — File path relative to the repository root.
-  - `line: number` — Line number to attach the comment to.
-  - `body: string` — Comment body text.
-  - `suggestion: string` (optional) — Code suggestion content. The script wraps it
-    in a GitHub suggestion block.
-  - `start_line: number` (optional) — Start line for multi-line comments.
-  - `side: "LEFT" | "RIGHT"` (optional) — Diff side.
-- `--summary-body` (optional): Review summary body text.
+Present the composed comments and summary. Proceed only after explicit approval.
 
-## Output
+### Step 3: Create Review
+
+Required flags:
+
+- `--owner` – Repository owner
+- `--repo` – Repository name
+- `--pull-number` – PR number
+- `--comments-json` – JSON array of comment objects (at least one element required)
+
+Optional flags:
+
+- `--summary-body` – Review summary body text
+
+```bash
+bash scripts/create_review.sh \
+  --owner "<owner>" \
+  --repo "<repo>" \
+  --pull-number <number> \
+  --comments-json '<json array>' \
+  [--summary-body "<text>"]
+```
 
 On success, stdout contains `{ "id": {number}, "html_url": "{url}" }`.
 On failure, stderr contains an error message and the script exits non-zero.
+
+### Step 4: Do Not Submit the Review
+
+The review is created as a pending draft. Do not submit it via the CLI.
+The user will submit it manually via the GitHub UI when ready.
+
+## Output
+
+On success: `{ "id": {number}, "html_url": "{url}" }`
+
+On failure: error message on stderr, non-zero exit code.
 
 ## Examples
 

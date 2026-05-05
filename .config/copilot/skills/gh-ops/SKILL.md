@@ -1,50 +1,26 @@
 ---
 name: gh-ops
-description: Use for GitHub operations such as creating issues, posting issue comments, creating PRs, and adding PR review comments.
+description: >
+  Use for GitHub operations: creating issues, posting issue comments,
+  creating draft PRs, and adding PR review comments.
 user-invocable: true
 disable-model-invocation: false
 ---
 
 # GitHub Operations
 
-## Overview
+## Global Constraints
 
-Perform GitHub operations: create issues, post issue comments, create draft PRs, and
-add PR review drafts. Execute all scripts from the git repository root.
+- Execute all scripts from the git repository root
+- Use only shipped scripts; do not run extra git or gh commands
+- Do NOT read the script; use it as a black box.
+- Always confirm content with the user before any write operation
+- Default language is English unless user explicitly requests otherwise
+- On script validation error or API failure: show raw error, stop
 
-## Operations
+## Routing
 
-Route to the appropriate operation based on user intent. Read the corresponding
-rules file for the full procedure, script usage, and output format.
-
-### Issue Create
-
-Read [`references/issue-create-rules.md`](references/issue-create-rules.md) for the
-full procedure.
-
-Create a GitHub Issue with a structured body using one of two templates
-(product-backlog or feature). Confirm content with the user before creating.
-
-### Issue Comment
-
-Read [`references/issue-comment-rules.md`](references/issue-comment-rules.md) for the
-full procedure.
-
-Post a structured comment to a GitHub Issue with a visible summary and optional
-collapsible details sections. Confirm content with the user before posting.
-
-### PR Create
-
-Read [`references/pr-create-rules.md`](references/pr-create-rules.md) for the full
-procedure.
-
-Create a draft pull request with a Conventional Commits-style title and standardized
-body. Check branch status first; abort if no differing commits exist.
-
-### PR Review
-
-Read [`references/pr-review-rules.md`](references/pr-review-rules.md) for the full
-procedure.
-
-Create a pending review draft on a GitHub PR with inline comments. Treat created
-reviews as pending drafts; submit them manually via the GitHub UI.
+- Issue Create: [`references/issue-create-rules.md`](references/issue-create-rules.md)
+- Issue Comment: [`references/issue-comment-rules.md`](references/issue-comment-rules.md)
+- PR Create: [`references/pr-create-rules.md`](references/pr-create-rules.md)
+- PR Review: [`references/pr-review-rules.md`](references/pr-review-rules.md)
