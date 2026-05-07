@@ -87,6 +87,8 @@ sudo apt-get install -y --no-install-recommends gnupg pass
 sudo apt-get install -y --no-install-recommends libreadline-dev
 # mise から tree sitter cli の cargo build でパッケージが不足するため
 sudo apt-get install -y --no-install-recommends libclang-dev
+# claude code で sandbox 機能を利用するための前提条件
+sudo apt-get install -y --no-install-recommends bubblewrap socat
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
