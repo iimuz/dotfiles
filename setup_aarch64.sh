@@ -60,17 +60,20 @@ function set_bashrc() {
 # Add Claude Code user-scope MCP server if not already configured.
 #
 # Claude Code のユーザーレベル MCP 設定は他の情報がありリポジトリで管理できないので設定で対応する
+# Usage: add_claude_mcp <name> <cmd> [args...]
 function add_claude_mcp() {
   local -r name=$1
-  local -r command=$2
+  shift
 
-  if ! claude mcp get "$name" 2>&1 | grep -qF "No MCP server found"; then
+  local output
+  output=$(claude mcp get "$name" 2>&1 || true)
+  if ! echo "$output" | grep -qF "No MCP server found"; then
     echo "already exist claude mcp: $name"
     return 0
   fi
 
   echo "add claude mcp: $name"
-  claude mcp add --transport stdio --scope user "$name" "$command"
+  claude mcp add --transport stdio --scope user "$name" -- "$@"
 }
 
 # === 共通パスの設定
@@ -122,7 +125,7 @@ if type claude >/dev/null 2>&1; then
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
 
   # Setup MCP
-  add_claude_mcp context-mode context-mode
+  add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
 
   if type ccstatusline >/dev/null 2>&1; then
     create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"

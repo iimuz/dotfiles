@@ -5,29 +5,9 @@
     "type": "command",
     "command": "ccstatusline"
   },
-  "extraKnownMarketplaces": {
-    "context-mode": {
-      "source": {
-        "source": "github",
-        "repo": "mksglu/context-mode"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "context-mode@context-mode": true
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/home/ubuntu/.claude/hooks/context-mode-cache-heal.mjs\""
-          }
-        ]
-      }
-    ]
-  },
+  "extraKnownMarketplaces": {},
+  "enabledPlugins": {},
+  "hooks": {},
   "permissions": {
     "defaultMode": "auto",
     "allow": [
@@ -60,7 +40,16 @@
       "Read(~/.claude/skills/**)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:npmjs.org)",
-      "WebSearch"
+      "WebSearch",
+      "mcp__context-mode__ctx_batch_execute",
+      "mcp__context-mode__ctx_doctor",
+      "mcp__context-mode__ctx_execute",
+      "mcp__context-mode__ctx_execute_file",
+      "mcp__context-mode__ctx_fetch_and_index",
+      "mcp__context-mode__ctx_index",
+      "mcp__context-mode__ctx_purge",
+      "mcp__context-mode__ctx_search",
+      "mcp__context-mode__ctx_stats"
     ],
     "deny": [
       "Bash(curl * | sh)",
@@ -80,19 +69,15 @@
       "Read(~/.ssh/**)",
       "Read(**/.env)",
       "Read(**/.env.*)",
-      "Read(**/*key*)",
       "Read(**/*secret*)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./*key*)",
       "Read(./*secret*)",
       "Write(**/.env)",
       "Write(**/.env.*)",
-      "Write(**/*key*)",
       "Write(**/*secret*)",
       "Write(./.env)",
       "Write(./.env.*)",
-      "Write(./*key*)",
       "Write(./*secret*)"
     ]
   },
