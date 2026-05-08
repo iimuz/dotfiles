@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "opusplan",
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline"
+  },
+  "extraKnownMarketplaces": {
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "context-mode@context-mode": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/home/ubuntu/.claude/hooks/context-mode-cache-heal.mjs\""
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(cat *)",
+      "Bash(cp *)",
+      "Bash(echo *)",
+      "Bash(find *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh issue view *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Bash(git diff *)",
+      "Bash(git fetch *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git status *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(pwd)",
+      "Bash(touch *)",
+      "Bash(tree *)",
+      "Read(./**)",
+      "Read(~/.claude/skills/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:npmjs.org)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(curl * | sh)",
+      "Bash(curl * | bash)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git rebase *)",
+      "Bash(git reset *)",
+      "Bash(rm -f *)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(wget * | sh)",
+      "Bash(wget * | bash)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.ssh/**)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*key*)",
+      "Read(**/*secret*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./*key*)",
+      "Read(./*secret*)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/*key*)",
+      "Write(**/*secret*)",
+      "Write(./.env)",
+      "Write(./.env.*)",
+      "Write(./*key*)",
+      "Write(./*secret*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "autoAllowBashIfSandboxed": true,
+    "excludedCommands": ["docker *"],
+    "filesystem": {
+      "allowWrite": ["./**", "/tmp/**", "~/.cache/**", "~/.npm/**"],
+      "denyRead": [
+        "./.env",
+        "./.env.*",
+        "~/.aws/**",
+        "~/.config/gh/**",
+        "~/.gnupg/**",
+        "~/.ssh/**"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "claude.ai",
+        "*.claude.com",
+        "github.com",
+        "*.githubusercontent.com",
+        "api.github.com",
+        "objects.githubusercontent.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "crates.io",
+        "*.crates.io",
+        "proxy.golang.org",
+        "sum.golang.org"
+      ]
+    }
+  }
+}

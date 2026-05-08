@@ -19,6 +19,21 @@ function create_symlink() {
   ln -s "$src" "$dst"
 }
 
+# Create hardlink if link does not exist.
+function create_hardlink() {
+  local -r src=$1
+  local -r dst=$2
+
+  if [ -e "$dst" ]; then
+    echo "already exist $dst"
+    return 0
+  fi
+
+  echo "symlink $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  ln "$src" "$dst"
+}
+
 # Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
   local -r filename="$1"
@@ -103,6 +118,8 @@ fi
 if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
   create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
+  # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
+  create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
 
   # Setup MCP
   add_claude_mcp context-mode context-mode
