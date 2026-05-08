@@ -3,7 +3,6 @@ name: gh-ops
 description: >
   Use for GitHub operations: creating issues, posting issue comments,
   creating draft PRs, and adding PR review comments.
-model: sonnet
 ---
 
 # GitHub Operations
