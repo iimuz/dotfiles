@@ -19,6 +19,21 @@ function create_symlink() {
   ln -s "$src" "$dst"
 }
 
+# Create hardlink if link does not exist.
+function create_hardlink() {
+  local -r src=$1
+  local -r dst=$2
+
+  if [ -e "$dst" ]; then
+    echo "already exist $dst"
+    return 0
+  fi
+
+  echo "symlink $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  ln "$src" "$dst"
+}
+
 # Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
   local -r filename="$1"
@@ -40,6 +55,25 @@ function set_bashrc() {
   # Add file path.
   echo "set load setting in $rcfile: $filename"
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
+}
+
+# Add Claude Code user-scope MCP server if not already configured.
+#
+# Claude Code のユーザーレベル MCP 設定は他の情報がありリポジトリで管理できないので設定で対応する
+# Usage: add_claude_mcp <name> <cmd> [args...]
+function add_claude_mcp() {
+  local -r name=$1
+  shift
+
+  local output
+  output=$(claude mcp get "$name" 2>&1 || true)
+  if ! echo "$output" | grep -qF "No MCP server found"; then
+    echo "already exist claude mcp: $name"
+    return 0
+  fi
+
+  echo "add claude mcp: $name"
+  claude mcp add --transport stdio --scope user "$name" -- "$@"
 }
 
 # === 共通パスの設定
@@ -71,6 +105,8 @@ sudo apt-get install -y --no-install-recommends gnupg pass
 sudo apt-get install -y --no-install-recommends libreadline-dev
 # mise から tree sitter cli の cargo build でパッケージが不足するため
 sudo apt-get install -y --no-install-recommends libclang-dev
+# claude code で sandbox 機能を利用するための前提条件
+sudo apt-get install -y --no-install-recommends bubblewrap socat
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
@@ -81,6 +117,20 @@ if type mise >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
 fi
 
+# === claude
+if type claude >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
+  # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
+  create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
+
+  # Setup MCP
+  add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
+
+  if type ccstatusline >/dev/null 2>&1; then
+    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
+  fi
+fi
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
@@ -96,15 +146,6 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.gitconfig" "$HOME/.gitconfig"
   create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
-fi
-# === github copilot cli
-if type copilot >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
-  create_symlink "$SCRIPT_DIR/.config/copilot/lsp-config.json" "$HOME/.copilot/lsp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
 fi
 # === OpenCode
 if type opencode >/dev/null 2>&1; then
