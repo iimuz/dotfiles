@@ -17,7 +17,6 @@ lima = "v2.1.1"                                         # colima で必要
 lua = "5.1.5"                                           # neovim luarocksで要求しているバージョンが5.1
 node = "24.15.0"
 "npm:@aikidosec/safe-chain" = "1.4.9"
-"npm:@bitwarden/cli" = "2026.3.0"
 "npm:@github/copilot" = "1.0.36"
 "npm:mcp-remote" = "0.1.38"                             # for copilot
 "npm:neovim" = "5.4.0"                                  # for neovim
