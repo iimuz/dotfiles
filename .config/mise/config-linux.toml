@@ -36,6 +36,29 @@ ripgrep = "15.1.0"
 uv = "0.11.7"
 yq = "4.53.2"
 
+# pnpm で post install script の実行などを停止しているので binary 作成を手動で実行
+"npm:@tobilu/qmd" = { version = "v2.1.0", postinstall = """
+  local sqlite3_dir
+  sqlite3_dir=$(find "$MISE_TOOL_INSTALL_PATH" -name "binding.gyp" -path "*/better-sqlite3/*" 2>/dev/null | head -1 | xargs -- dirname 2>/dev/null || true)
+
+  if [[ -z "$sqlite3_dir" ]]; then
+    echo "better-sqlite3 not found under $mise_installs_dir"
+    return 1
+  fi
+
+  # ネイティブバイナリが既にビルド済みの場合はスキップ
+  if [[ -d "$sqlite3_dir/build" ]]; then
+    echo "better-sqlite3 native binding already exists, skipping rebuild"
+    return 0
+  fi
+
+  echo "Rebuilding better-sqlite3 native binding in $sqlite3_dir ..."
+  (cd "$sqlite3_dir" && npx install) || {
+    echo "prebuild-install failed"
+    return 1
+  }
+""" }
+
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
