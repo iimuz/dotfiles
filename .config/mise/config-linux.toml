@@ -61,6 +61,8 @@ yq = "4.53.2"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
+# QMD が aarch64 linux 環境で gpu なしのため強制的に cpu 動作とする(不要にビルドが走ったりするため)
+QMD_LLAMA_GPU = "false"
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [settings]

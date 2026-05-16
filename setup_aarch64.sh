@@ -107,6 +107,8 @@ sudo apt-get install -y --no-install-recommends libreadline-dev
 sudo apt-get install -y --no-install-recommends libclang-dev
 # claude code で sandbox 機能を利用するための前提条件
 sudo apt-get install -y --no-install-recommends bubblewrap socat
+# qmd で cpu only の環境で vulkan でビルドしようとして失敗するのでビルドだけ成功させる
+sudo apt-get install -y --no-install-recommends libvulkan-dev glslc vulkan-tools
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
