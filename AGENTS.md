@@ -26,9 +26,10 @@ Run `mise run format` and `mise run lint` after any modifications.
 - `.config/` — Tool configurations organized by tool name (one subdirectory per tool)
 - `.config/mise/` — Platform-specific mise tool configs
   (`config-mac.toml`, `config-linux.toml`, `config-codespaces.toml`, etc.)
+- `.config/claude/` — Claude Code agent definitions, skills, hooks, and config
 - `.config/copilot/` — Copilot agent definitions, skills, hooks, and config
 - `.mise/` — Mise task definitions (shell scripts invoked by `mise run`)
-- `docs/` — Design documents (`docs/design/`) and ADRs
+- `docs/` — Design documents and ADRs
 - `tests/` — Python test suite (primarily tests for hook scripts)
 - `setup_*.sh` / `update_*.sh` — Platform-specific environment setup scripts at root
 

@@ -21,7 +21,7 @@ opencode = "v1.14.31"
 "npm:ccstatusline" = "2.2.12"                             # for claude code
 "npm:ccusage" = "v18.0.11"                                # for claude code
 "npm:@github/copilot" = "1.0.40"
-"npm:context-mode" = "1.0.103"                             # for opencode
+"npm:context-mode" = "1.0.103"                            # for opencode
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.21"
@@ -36,8 +36,33 @@ ripgrep = "15.1.0"
 uv = "0.11.8"
 yq = "4.53.2"
 
+# pnpm で post install script の実行などを停止しているので binary 作成を手動で実行
+"npm:@tobilu/qmd" = { version = "v2.1.0", postinstall = """
+  local sqlite3_dir
+  sqlite3_dir=$(find "$MISE_TOOL_INSTALL_PATH" -name "binding.gyp" -path "*/better-sqlite3/*" 2>/dev/null | head -1 | xargs -- dirname 2>/dev/null || true)
+
+  if [[ -z "$sqlite3_dir" ]]; then
+    echo "better-sqlite3 not found under $mise_installs_dir"
+    return 1
+  fi
+
+  # ネイティブバイナリが既にビルド済みの場合はスキップ
+  if [[ -d "$sqlite3_dir/build" ]]; then
+    echo "better-sqlite3 native binding already exists, skipping rebuild"
+    return 0
+  fi
+
+  echo "Rebuilding better-sqlite3 native binding in $sqlite3_dir ..."
+  (cd "$sqlite3_dir" && npx install) || {
+    echo "prebuild-install failed"
+    return 1
+  }
+""" }
+
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
+# QMD が aarch64 linux 環境で gpu なしのため強制的に cpu 動作とする(不要にビルドが走ったりするため)
+QMD_LLAMA_GPU = "false"
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [settings]

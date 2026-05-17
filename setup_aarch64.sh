@@ -107,6 +107,8 @@ sudo apt-get install -y --no-install-recommends libreadline-dev
 sudo apt-get install -y --no-install-recommends libclang-dev
 # claude code で sandbox 機能を利用するための前提条件
 sudo apt-get install -y --no-install-recommends bubblewrap socat
+# qmd で cpu only の環境で vulkan でビルドしようとして失敗するのでビルドだけ成功させる
+sudo apt-get install -y --no-install-recommends libvulkan-dev glslc vulkan-tools
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
@@ -123,6 +125,7 @@ if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
+  create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
 
   # Setup MCP
   add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
