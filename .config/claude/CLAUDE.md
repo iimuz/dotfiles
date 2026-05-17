@@ -10,24 +10,6 @@
 - Plan before executing complex operations.
 - Match security level to project scope (personal / internal / public).
 
-### Agent Strategy and Parallel Execution
-
-The main agent handles coordination, user interaction, and decisions only.
-Delegate all other work to subagents via the Agent tool.
-
-- Keep the main agent's context minimal. It should contain only the information
-  needed for the next decision — never raw logs or intermediate output.
-- Subagents must write verbose output (test logs, lint results, search results,
-  etc.) to `docs/tmp/` and return only:
-  - success or failure
-  - file path to full output
-  - a concise summary of what requires action (e.g., failure details, lint errors)
-- Small, self-contained work (under 50 lines of output, directly needed for
-  the next decision) may be handled inline by the main agent.
-  Exception: lint, test, and build commands must always be delegated to a subagent,
-  regardless of expected output size.
-- Run independent subagent workflows in parallel.
-
 ### Language and Communication
 
 Regardless of the user's input language, all user-facing output must be in Japanese.
