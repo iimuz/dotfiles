@@ -40,6 +40,7 @@
       "Bash(tree *)",
       "Read(./**)",
       "Read(~/.claude/skills/**)",
+      "Read(**/.config/claude/skills/**)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:npmjs.org)",
       "WebSearch",
