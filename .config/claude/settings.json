@@ -92,7 +92,13 @@
     "autoAllowBashIfSandboxed": true,
     "excludedCommands": ["docker *"],
     "filesystem": {
-      "allowWrite": ["./**", "/tmp/**", "~/.cache/**", "~/.npm/**"],
+      "allowWrite": [
+        "./**",
+        "/tmp/**",
+        "~/.cache/**",
+        "~/.npm/**",
+        "~/.safe-chain/certs/ca-key.pem"
+      ],
       "denyRead": [
         "./.env",
         "./.env.*",

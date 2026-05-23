@@ -23,7 +23,13 @@
   "filesystem": {
     "denyRead": ["~/.ssh"],
     "allowRead": ["/tmp/"],
-    "allowWrite": [".", "/tmp/", "/tmp/claude/", "~/.claude/context-mode/"],
+    "allowWrite": [
+      ".",
+      "/tmp/",
+      "/tmp/claude/",
+      "~/.claude/context-mode/",
+      "~/.safe-chain/certs/ca-key.pem"
+    ],
     "denyWrite": []
   },
   "ignoreViolations": {
