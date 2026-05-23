@@ -1,7 +1,7 @@
 [tools]
 aws-vault = "7.2.0"
 awscli = { version = "2.34.41", symlink_bins = "true" }
-cargo-binstall = "1.18.1"
+cargo-binstall = "1.19.1"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
 claude = "2.1.128"
 delta = "0.19.2"
