@@ -16,9 +16,9 @@ local M = {}
 -- 1. `vim.json.decode` でテーブルに変換して返す
 local function readBackLinkFrontMater(select_query)
 	local filename = vim.fn.expand("%:t:r")
-	local command = 'rg --json --max-count=1 "\\[.*\\]\\('
+	local command = 'rg --json --max-count=1 "\\[.*\\]\\(([^)]*/)?'
 		.. filename
-		.. '\\)" "." |'
+		.. '(\\.[^)]+)?\\)" "." |'
 		.. [[jq -cr 'select(.type == "match")  | .data.path.text' |
   sort |
   uniq |
