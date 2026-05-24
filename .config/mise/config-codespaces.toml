@@ -1,5 +1,5 @@
 [tools]
-cargo-binstall = "1.18.1"
+cargo-binstall = "1.19.1"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
 go = "1.26.3"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
