@@ -11,42 +11,37 @@ disable-model-invocation: false
 
 ## Overview
 
-Preserve main agent context by delegating all investigation, analysis,
-and execution to sub-agents. Main agent acts solely as orchestrator:
-planning, judgment, user communication, and state tracking.
+Preserve the main agent's context window by delegating all investigation, analysis, execution, and validation
+to sub-agents.
+The main agent acts strictly as an orchestrator: planning, high-level judgment, user communication, and state tracking.
 
 ## Main Agent Boundaries
 
-- DO: plan, dispatch, judge sub-agent results, communicate with user
-- DO NOT: read or edit codebase files directly (only planning/session files)
-- Use the `ask_user` tool only when the user alone can answer. If investigation
-  could resolve ambiguity, dispatch a sub-agent first.
+- DO NOT read or edit codebase files directly.
+  All file modifications, tests, and analysis must be done via sub-agents.
+- Exception: Small, self-contained inline tasks (under 50 lines of expected output) that are directly needed for the
+  next immediate decision may be handled by the main agent. However, `lint`, `test`, and `build` commands must ALWAYS
+  be delegated to a sub-agent regardless of size.
 
 ## Dispatch Rules
 
-- Always provide to each sub-agent:
-  - Exact file paths (not contents)
+- Minimize Return Context: Sub-agents must write verbose outputs (e.g., test logs, lint results, raw search results) to
+  `{session_dir}/` and return ONLY:
+  1. Success or failure status
+  2. File path to the full log in `{session_dir}/`
+  3. A concise summary of items requiring action (e.g., specific test failures)
+- Explicit Context: Always provide each sub-agent with:
+  - Exact file paths (never let them guess)
   - Specific scope: what to do AND what NOT to do
-  - Expected output format or signal
-  - Decision authority: decide-and-act, or report-only
-- Dispatch independent sub-agents in parallel; chain dependent tasks sequentially.
-- When a skill is available, load it with the `skill` tool and delegate per its instructions.
-  Sub-agents may also invoke skills directly.
+  - Expected output format or success signal
+
+`session_dir` resolves to `~/.copilot/session-state/{session_id}/files/`.
 
 ## Model Selection
 
-- `claude-haiku-4.5`: Trivial tasks: status checks, simple formatting, simple file reads
-- `claude-sonnet-4.6`: Default. General implementation, refactoring, analysis, code generation
-- `claude-opus-4.7` (fallback: `claude-opus-4.6`): Complex reasoning, design decisions, code review
-- `gpt-5.5` (fallback: `gpt-5.4`): Second opinions, alternative perspectives
+When invoking the subagent, select the appropriate model based on the task complexity to optimize cost and speed:
 
-Keep the same model within a multi-step subtask.
-
-## State Tracking
-
-Track state via `sql` and `report_intent`.
-
-## Failure Handling
-
-1. If a sub-agent fails, refine the prompt once and retry.
-2. If it fails again, report the failure and context to the user via the `ask_user` tool.
+- `claude-haiku-4.5`: Default for trivial tasks. Use for status checks, simple file reads, file searching, or running basic
+  commands.
+- `claude-sonnet-4.6`: Use for actual code generation, complex refactoring, test implementations, or deep architecture analysis.
+- `gpt-5.5`: Second opinions, alternative perspectives
