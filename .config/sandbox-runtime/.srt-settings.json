@@ -26,7 +26,7 @@
     "allowWrite": [
       ".",
       "/tmp/",
-      "/tmp/claude/",
+      "~/.cache/",
       "~/.claude/context-mode/",
       "~/.safe-chain/certs/ca-key.pem"
     ],
