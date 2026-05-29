@@ -9,7 +9,9 @@ description: >
 
 ## Global Constraints
 
-- Execute all scripts from the git repository root
+- SKILL_DIR is the absolute path of the directory containing this SKILL.md;
+  derive it from the path at which Claude Code loaded this file
+- Execute all scripts using absolute paths: `bash "${SKILL_DIR}/scripts/<name>"`
 - Use only shipped scripts; do not run extra git or gh commands
 - Do NOT read the script; use it as a black box.
 - Always confirm content with the user before any write operation

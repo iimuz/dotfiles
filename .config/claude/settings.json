@@ -41,6 +41,8 @@
       "Read(./**)",
       "Read(~/.claude/skills/**)",
       "Read(**/.config/claude/skills/**)",
+      "Bash(**/.config/claude/skills/*/scripts/*.sh)",
+      "Bash(~/.claude/skills/*/scripts/*.sh)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:npmjs.org)",
       "WebSearch",
@@ -97,6 +99,7 @@
         "/tmp/**",
         "~/.cache/**",
         "~/.npm/**",
+        "~/.local/state/mise/trusted-configs/**",
         "~/.safe-chain/certs/ca-key.pem"
       ],
       "denyRead": [

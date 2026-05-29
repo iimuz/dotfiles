@@ -14,6 +14,10 @@ context: fork
 Analyze the current working tree, derive a Conventional Commits 1.0.0-compliant
 message, and commit. Always execute from the git repository root.
 
+SKILL_DIR is the absolute path of the directory containing this SKILL.md.
+Derive it from the path at which Claude Code loaded this file.
+Use it for all script references.
+
 ## Process
 
 ### 1. Stage
@@ -31,7 +35,7 @@ message, and commit. Always execute from the git repository root.
 
 ### 3. Commit
 
-Run [`scripts/commit.sh`](scripts/commit.sh) with the following options.
+Run `bash "${SKILL_DIR}/scripts/commit.sh"` with the following options.
 Do NOT read the script; use it as a black box.
 
 - `--type <string>` (required): Commit type derived from step 2
@@ -42,7 +46,7 @@ Do NOT read the script; use it as a black box.
 Example:
 
 ```bash
-scripts/commit.sh \
+bash "${SKILL_DIR}/scripts/commit.sh" \
   --type feat \
   --description "add user authentication endpoint" \
   --body "- add POST /auth/login route
