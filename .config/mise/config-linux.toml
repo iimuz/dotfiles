@@ -1,9 +1,9 @@
 [tools]
 aws-vault = "7.2.0"
-awscli = { version = "2.34.45", symlink_bins = "true" }
+awscli = { version = "2.34.48", symlink_bins = "true" }
 cargo-binstall = "1.19.1"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
-claude = "2.1.138"
+claude = "2.1.143"
 delta = "0.19.2"
 fzf = "0.72.0"
 gemini-cli = "0.42.0"
@@ -16,24 +16,24 @@ lua = "5.1.5"                                             # neovim luarocksで�
 node = "24.15.0"
 neovim = "0.12.2"
 opencode = "v1.15.3"
-"npm:@aikidosec/safe-chain" = "1.5.2"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.50"
-"npm:ccstatusline" = "2.2.12"                             # for claude code
+"npm:@aikidosec/safe-chain" = "1.5.3"
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.51"
+"npm:ccstatusline" = "2.2.18"                             # for claude code
 "npm:ccusage" = "v18.0.11"                                # for claude code
-"npm:@github/copilot" = "1.0.44"
-"npm:context-mode" = "1.0.111"                            # for opencode
+"npm:@github/copilot" = "1.0.48"
+"npm:context-mode" = "1.0.135"                            # for opencode
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
-"pipx:awslabs.aws-documentation-mcp-server" = "1.1.23"
+"pipx:awslabs.aws-documentation-mcp-server" = "1.1.24"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
 pnpm = "11.1.2"
-python = "3.14.4"
+python = "3.14.5"
 rust = "1.95.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
 ripgrep = "15.1.0"
-uv = "0.11.12"
+uv = "0.11.14"
 yq = "4.53.2"
 
 # pnpm で post install script の実行などを停止しているので binary 作成を手動で実行

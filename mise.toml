@@ -7,7 +7,7 @@ shellcheck = "0.11.0"
 "npm:prettier" = "3.8.3"
 "npm:markdownlint-cli2" = "0.22.1"
 lefthook = "2.1.6"
-uv = "0.11.12"
+uv = "0.11.14"
 
 [env]
 _.file = ".env"
