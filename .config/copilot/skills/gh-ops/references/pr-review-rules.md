@@ -42,7 +42,7 @@ Optional flags:
 - `--summary-body` – Review summary body text
 
 ```bash
-bash scripts/create_review.sh \
+bash "${SKILL_DIR}/scripts/create_review.sh" \
   --owner "<owner>" \
   --repo "<repo>" \
   --pull-number <number> \
@@ -67,7 +67,7 @@ On failure: error message on stderr, non-zero exit code.
 ## Examples
 
 ```bash
-bash scripts/create_review.sh \
+bash "${SKILL_DIR}/scripts/create_review.sh" \
   --owner "myorg" \
   --repo "myrepo" \
   --pull-number 42 \

@@ -58,7 +58,7 @@ Recommended JSON fields per type:
 - `feature`: `title` (required), `related_urls`, `goal`, `details`
 
 ```bash
-cat <<'EOF' | bash scripts/create-issue.sh --type <type> [optional flags]
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type <type> [optional flags]
 {
   "title": "...",
   ...
@@ -123,7 +123,7 @@ Sections with empty content include only the header.
 ## Examples
 
 ```bash
-cat <<'EOF' | bash scripts/create-issue.sh --type product-backlog --labels "backlog"
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type product-backlog --labels "backlog"
 {
   "title": "User authentication system",
   "overview": "Implement user authentication to support login and registration flows.",
@@ -135,7 +135,7 @@ EOF
 ```
 
 ```bash
-cat <<'EOF' | bash scripts/create-issue.sh --type feature --repo "owner/repo" --labels "feature" --assignees "@me"
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type feature --repo "owner/repo" --labels "feature" --assignees "@me"
 {
   "title": "Implement login endpoint",
   "related_urls": "- parent: #42",

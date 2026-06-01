@@ -41,7 +41,7 @@ Required flags:
 - `--issue NUMBER` – Target issue number
 
 ```bash
-cat <<'EOF' | bash scripts/post-comment.sh --repo "OWNER/REPO" --issue NUMBER
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "OWNER/REPO" --issue NUMBER
 {
   "summary": "...",
   "details": [...]
@@ -63,7 +63,7 @@ If the body exceeds 65536 characters, shorten the details before retrying.
 ### Multi-Details
 
 ```bash
-cat <<'EOF' | bash scripts/post-comment.sh --repo "owner/repo" --issue 42
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "owner/repo" --issue 42
 {
   "summary": "## Investigation Results\n\nRoot cause identified. Creating a fix PR.",
   "details": [
@@ -83,7 +83,7 @@ EOF
 ### Summary-Only
 
 ```bash
-cat <<'EOF' | bash scripts/post-comment.sh --repo "owner/repo" --issue 42
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "owner/repo" --issue 42
 {
   "summary": "## Completion Report\n\nAll checks passed successfully."
 }
