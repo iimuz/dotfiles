@@ -24,7 +24,12 @@ Identify the planning file from the user's prompt (default: `docs/planning.md`).
 Read the file if it exists.
 
 - File does not exist → Generate Mode
-- File exists → Annotate Mode
+- File exists, and any of the following apply → Review Revision Mode:
+  - User states that review results have been added to a planning file
+  - Planning file contains `PLAN_REVIEW:` annotations
+  - Plan changes are explicitly required due to post-implementation review
+  - Todo list restructuring or task re-opening is required
+- File exists, otherwise → Annotate Mode
 
 ### Generate Mode
 
@@ -45,6 +50,18 @@ Read the file if it exists.
 3. Process each annotation: update the relevant section accordingly.
 4. Remove resolved annotation text after incorporating it.
 
+### Review Revision Mode
+
+1. Read the planning file in full.
+2. Identify all `PLAN_REVIEW:` annotations and inline annotations.
+3. Determine the intent of each annotation.
+4. Update the relevant sections of the planning file:
+   - approach, modified files, code snippets, trade-offs, risks
+   - todo list and task completion status
+5. Re-open (uncheck) any completed tasks that require rework due to the review.
+6. Remove processed annotations after incorporating them.
+7. Append a summary of the review-driven updates to `## Log`.
+
 ## Planning File Format
 
 - Use `references/template.md` as a starting point; add sections freely.
@@ -56,3 +73,6 @@ Read the file if it exists.
 
 - Do NOT write or edit any implementation files.
 - Do not implement any part of the plan.
+- When review-driven design changes conflict with existing completed tasks, update the
+  planning file first and re-open affected tasks; do not leave the plan inconsistent.
+- `PLAN_REVIEW:` annotations must not be left in the file after processing.
