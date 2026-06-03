@@ -8,11 +8,6 @@
 
 ## Background / Decisions
 
-## Execution Style
-
-- Style: TDD / Staged / Hybrid
-- Reason:
-
 ## Contracts / Interfaces
 
 ## Verification Strategy
