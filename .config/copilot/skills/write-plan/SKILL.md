@@ -69,6 +69,35 @@ Read the file if it exists.
 - The planning file is ephemeral. GitHub Issues are the permanent record.
 - Never delete the planning file without explicit user instruction.
 
+### Plan Quality Rules
+
+A plan must be useful both as a design note and as an implementation guide.
+
+Keep background and design decisions concise but sufficient.
+Make the execution plan concrete enough that executing plan does not need to invent missing design.
+
+Before writing the execution plan, choose an execution style:
+
+- TDD: for behavior-heavy and testable changes.
+- Staged: for infra/config/schema/generated/mechanical changes.
+- Hybrid: for changes that contain both setup work and behavior-heavy logic.
+
+Do not force TDD. Choose based on complexity, risk, and testability.
+
+The execution plan must be ordered by safe build-and-verify sequence, not only by architecture layers.
+Avoid generic layer-only plans such as DB → gateway → usecase → controller → tests.
+
+For each non-trivial task, include:
+
+- target files
+- concrete change
+- expected behavior or contract
+- test or verification method
+- completion criteria
+
+Do not put all tests only at the end as a generic phase.
+Attach tests or verification to the relevant tasks or phases where practical.
+
 ## Constraints
 
 - Do NOT write or edit any implementation files.
