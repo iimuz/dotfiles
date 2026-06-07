@@ -1,9 +1,9 @@
 [tools]
 aws-vault = "7.2.0"
-awscli = { version = "2.34.48", symlink_bins = "true" }
+awscli = { version = "2.34.53", symlink_bins = "true" }
 cargo-binstall = "1.19.1"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
-claude = "2.1.143"
+claude = "2.1.150"
 delta = "0.19.2"
 fzf = "0.72.0"
 gemini-cli = "0.42.0"
@@ -15,13 +15,13 @@ lazygit = "0.61.1"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
 node = "24.15.0"
 neovim = "0.12.2"
-opencode = "v1.15.3"
+opencode = "v1.15.10"
 "npm:@aikidosec/safe-chain" = "1.5.3"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.51"
-"npm:ccstatusline" = "2.2.18"                             # for claude code
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.52"
+"npm:ccstatusline" = "2.2.19"                             # for claude code
 "npm:ccusage" = "v18.0.11"                                # for claude code
-"npm:@github/copilot" = "1.0.48"
-"npm:context-mode" = "1.0.135"                            # for opencode
+"npm:@github/copilot" = "1.0.52"
+"npm:context-mode" = "1.0.146"                            # for opencode
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.24"
@@ -33,7 +33,7 @@ rust = "1.95.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
 ripgrep = "15.1.0"
-uv = "0.11.14"
+uv = "0.11.16"
 yq = "4.53.2"
 
 # pnpm で post install script の実行などを停止しているので binary 作成を手動で実行
