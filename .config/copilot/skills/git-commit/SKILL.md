@@ -14,13 +14,23 @@ disable-model-invocation: false
 Analyze the current working tree, derive a Conventional Commits 1.0.0-compliant
 message, and commit. Always execute from the git repository root.
 
+SKILL_DIR is the absolute path of the directory containing this SKILL.md.
+Derive it from the path at which Claude Code loaded this file.
+Use it for all script references.
+
 ## Process
 
 ### 1. Stage
 
-1. Run `git diff --staged --name-only`.
-2. If nothing staged, selectively stage only files related to the current task.
-3. If still nothing staged, abort: "no changes to commit".
+1. Run `git diff --staged --name-only` to check staged files.
+2. If nothing staged:
+   a. Run `git diff --name-only` to list unstaged tracked changes.
+   b. Run `git ls-files --others --exclude-standard` to list untracked files.
+   c. Using the conversation context (what task was just completed),
+   file paths, and diff content, identify task-related files.
+   d. Stage only the identified task-related files with `git add <file>...`.
+3. If still nothing staged, abort with an informative message that lists
+   the unstaged files found in step 2 (if any).
 
 ### 2. Analyze
 
@@ -31,7 +41,7 @@ message, and commit. Always execute from the git repository root.
 
 ### 3. Commit
 
-Run [`scripts/commit.sh`](scripts/commit.sh) with the following options.
+Run `bash "${SKILL_DIR}/scripts/commit.sh"` with the following options.
 Do NOT read the script; use it as a black box.
 
 - `--type <string>` (required): Commit type derived from step 2
@@ -42,7 +52,7 @@ Do NOT read the script; use it as a black box.
 Example:
 
 ```bash
-scripts/commit.sh \
+bash "${SKILL_DIR}/scripts/commit.sh" \
   --type feat \
   --description "add user authentication endpoint" \
   --body "- add POST /auth/login route

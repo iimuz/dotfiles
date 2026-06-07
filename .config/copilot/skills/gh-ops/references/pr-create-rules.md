@@ -9,7 +9,7 @@ Follow these steps in order. Stop on any failure.
 
 ### Step 1: Check Branch Status
 
-Run `bash scripts/check-branch-status.sh [--base <branch>]`.
+Run `bash "${SKILL_DIR}/scripts/check-branch-status.sh" [--base <branch>]`.
 Inspects uncommitted changes, commit history, and diff statistics.
 Abort if no commits differ from the base branch.
 
@@ -62,7 +62,7 @@ approval.
 ### Step 6: Create Draft PR
 
 ```bash
-bash scripts/create-pr.sh \
+bash "${SKILL_DIR}/scripts/create-pr.sh" \
   --type <type> \
   --title "<title>" \
   --changes "<bullet lines>" \
@@ -107,8 +107,8 @@ The script validates type and required parameters. Abort on validation errors.
 Minimal:
 
 ```bash
-bash scripts/check-branch-status.sh --base main
-bash scripts/create-pr.sh --type docs --title "clarify PR draft skill" \
+bash "${SKILL_DIR}/scripts/check-branch-status.sh" --base main
+bash "${SKILL_DIR}/scripts/create-pr.sh" --type docs --title "clarify PR draft skill" \
   --changes "- rewrite the skill overview
 - extract the type reference
 - extract the PR body template" \
@@ -118,8 +118,8 @@ bash scripts/create-pr.sh --type docs --title "clarify PR draft skill" \
 Full:
 
 ```bash
-bash scripts/check-branch-status.sh
-bash scripts/create-pr.sh --type fix --title "resolve token expiration" \
+bash "${SKILL_DIR}/scripts/check-branch-status.sh"
+bash "${SKILL_DIR}/scripts/create-pr.sh" --type fix --title "resolve token expiration" \
   --changes "- update token refresh logic
 - add proper error handling for expired tokens" \
   --confirmation "- tested token refresh flow" \
