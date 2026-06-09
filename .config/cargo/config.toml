@@ -1,2 +1,6 @@
 [target.aarch64-unknown-linux-gnu]
 rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+
+[build]
+# Memory 不足で失敗することがあるので環境で制限
+jobs = 4
