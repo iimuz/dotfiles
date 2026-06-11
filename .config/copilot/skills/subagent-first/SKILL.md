@@ -39,9 +39,9 @@ The main agent acts strictly as an orchestrator: planning, high-level judgment, 
 
 ## Model Selection
 
-When invoking the subagent, select the appropriate model based on the task complexity to optimize cost and speed:
+When invoking a sub-agent, choose the cheapest model that is sufficient for the task:
 
-- `claude-haiku-4.5`: Default for trivial tasks. Use for status checks, simple file reads, file searching, or running basic
-  commands.
-- `claude-sonnet-4.6`: Use for actual code generation, complex refactoring, test implementations, or deep architecture analysis.
-- `gpt-5.5`: Second opinions, alternative perspectives
+- `claude-haiku-4.5`: Default for trivial work: status checks, simple reads/searches, basic commands, or short summaries.
+- `gpt-5.3-codex`: Default for coding work: codebase inspection, targeted edits, debugging, test-fix loops, and medium-to-complex implementation.
+- `claude-sonnet-4.6`: Use for deep refactoring, architecture analysis, complex test design, or decisions requiring broad engineering judgment.
+- `gpt-5.4`: Use for second opinions, alternative perspectives, or review of another model's plan/output.
