@@ -17,6 +17,7 @@ lua = "5.1.5"                                           # neovim luarocksで要�
 neovim = "0.12.2"
 node = "24.16.0"
 "npm:@aikidosec/safe-chain" = "1.5.3"
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.52"
 "npm:@github/copilot" = "1.0.52"
 "npm:ccstatusline" = "2.2.19"                           # for claude code
 "npm:ccusage" = "20.0.4"                                # for claude code

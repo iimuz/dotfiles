@@ -104,7 +104,20 @@ sudo apt-get install -y --no-install-recommends libclang-dev
 # rust で build するときにメモリが大量に必要なので少なくできる構成を追加
 sudo apt-get install -y --no-install-recommends mold
 # claude code で sandbox 機能を利用するための前提条件
-sudo apt-get install -y --no-install-recommends bubblewrap socat
+sudo apt-get install -y --no-install-recommends apparmor apparmor-utils bubblewrap socat ripgrep iproute2
+
+if [ ! -e "/etc/apparmor.d/bwrap" ]; then
+  sudo tee /etc/apparmor.d/bwrap >/dev/null <<'EOF'
+abi <abi/4.0>,
+include <tunables/global>
+
+profile bwrap /usr/bin/bwrap flags=(unconfined) {
+  userns,
+  include if exists <local/bwrap>
+}
+EOF
+  sudo apparmor_parser -r /etc/apparmor.d/bwrap
+fi
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
