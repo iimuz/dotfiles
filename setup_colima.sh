@@ -4,6 +4,21 @@
 set -eu
 set -o pipefail
 
+# Create hardlink if link does not exist.
+function create_hardlink() {
+  local -r src=$1
+  local -r dst=$2
+
+  if [ -e "$dst" ]; then
+    echo "already exist $dst"
+    return 0
+  fi
+
+  echo "symlink $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  ln "$src" "$dst"
+}
+
 # Create symlink if link does not exist.
 function create_symlink() {
   local -r src=$1
@@ -42,6 +57,25 @@ function set_bashrc() {
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
 }
 
+# Add Claude Code user-scope MCP server if not already configured.
+#
+# Claude Code のユーザーレベル MCP 設定は他の情報がありリポジトリで管理できないので設定で対応する
+# Usage: add_claude_mcp <name> <cmd> [args...]
+function add_claude_mcp() {
+  local -r name=$1
+  shift
+
+  local output
+  output=$(claude mcp get "$name" 2>&1 || true)
+  if ! echo "$output" | grep -qF "No MCP server found"; then
+    echo "already exist claude mcp: $name"
+    return 0
+  fi
+
+  echo "add claude mcp: $name"
+  claude mcp add --transport stdio --scope user "$name" -- "$@"
+}
+
 # === 共通パスの設定
 SCRIPT_DIR=
 SCRIPT_DIR=$(
@@ -69,6 +103,8 @@ sudo apt-get install -y --no-install-recommends libreadline-dev
 sudo apt-get install -y --no-install-recommends libclang-dev
 # rust で build するときにメモリが大量に必要なので少なくできる構成を追加
 sudo apt-get install -y --no-install-recommends mold
+# claude code で sandbox 機能を利用するための前提条件
+sudo apt-get install -y --no-install-recommends bubblewrap socat
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"
@@ -79,6 +115,21 @@ if type mise >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/mise/config-colima.toml" "$HOME/.config/mise/config.toml"
 fi
 
+# === claude
+if type claude >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
+  # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
+  create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
+  create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
+
+  # Setup MCP
+  add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
+
+  if type ccstatusline >/dev/null 2>&1; then
+    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
+  fi
+fi
 # === docker
 if ! type docker >/dev/null 2>&1; then
   curl -fsSL https://get.docker.com | sudo sh
