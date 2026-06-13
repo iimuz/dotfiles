@@ -1,15 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "model": "opusplan",
-  "statusLine": {
-    "type": "command",
-    "command": "ccstatusline"
-  },
-  "extraKnownMarketplaces": {},
-  "enabledPlugins": {},
-  "hooks": {},
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(cat *)",
       "Bash(cp *)",
@@ -75,24 +66,52 @@
       "Read(~/.ssh/**)",
       "Read(**/.env)",
       "Read(**/.env.*)",
-      "Read(**/*secret*)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./*secret*)",
       "Write(**/.env)",
       "Write(**/.env.*)",
-      "Write(**/*secret*)",
       "Write(./.env)",
-      "Write(./.env.*)",
-      "Write(./*secret*)"
-    ]
+      "Write(./.env.*)"
+    ],
+    "defaultMode": "auto"
   },
+  "model": "opusplan",
+  "hooks": {},
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline"
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
-    "allowUnsandboxedCommands": false,
     "autoAllowBashIfSandboxed": true,
-    "excludedCommands": ["docker *"],
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "claude.ai",
+        "*.claude.com",
+        "github.com",
+        "*.githubusercontent.com",
+        "api.github.com",
+        "objects.githubusercontent.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "crates.io",
+        "*.crates.io",
+        "proxy.golang.org",
+        "sum.golang.org"
+      ]
+    },
     "filesystem": {
       "allowWrite": [
         "./**",
@@ -111,23 +130,8 @@
         "~/.ssh/**"
       ]
     },
-    "network": {
-      "allowedDomains": [
-        "api.anthropic.com",
-        "claude.ai",
-        "*.claude.com",
-        "github.com",
-        "*.githubusercontent.com",
-        "api.github.com",
-        "objects.githubusercontent.com",
-        "registry.npmjs.org",
-        "pypi.org",
-        "files.pythonhosted.org",
-        "crates.io",
-        "*.crates.io",
-        "proxy.golang.org",
-        "sum.golang.org"
-      ]
-    }
-  }
+    "excludedCommands": ["docker *"]
+  },
+  "theme": "dark",
+  "skipAutoPermissionPrompt": true
 }

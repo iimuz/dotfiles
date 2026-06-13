@@ -1,42 +1,70 @@
 ---
 name: subagent-first
 description: >-
-  Orchestrate work by delegating to sub-agents. Main agent handles only
-  planning, judgment, and user communication.
+  Route work through bounded subagents. Use when tasks require codebase investigation,
+  code changes, tests, lint, build, or multi-step validation.
 ---
 
 # Subagent-First
 
 ## Overview
 
-Preserve the main agent's context window by delegating all investigation, analysis, execution, and validation
-to sub-agents.
-The main agent acts strictly as an orchestrator: planning, high-level judgment, user communication, and state tracking.
+Main agent = orchestrator only.
+It plans, routes, reviews concise results, and decides next step.
+It does not read implementation files, implement, run tests, lint, or build.
+It may read planning and design artifacts (plan files, ADR, `docs/`) directly for routing context.
 
-## Main Agent Boundaries
+## Non-negotiable rules
 
-- DO NOT read or edit codebase files directly.
-  All file modifications, tests, and analysis must be done via sub-agents.
-- Exception: Small, self-contained inline tasks (under 50 lines of expected output) that are directly needed for the
-  next immediate decision may be handled by the main agent. However, `lint`, `test`, and `build` commands must ALWAYS
-  be delegated to a sub-agent regardless of size.
+1. Do not delegate discovery + implementation + validation in one subagent.
+2. One subagent = one phase, one scope, one success signal.
 
-## Dispatch & Execution Rules
+## Phases
 
-- Minimize Return Context: Sub-agents must write verbose outputs (e.g., test logs, lint results, raw search results) to
-  `docs/tmp/` and return ONLY:
-  1. Success or failure status
-  2. File path to the full log in `docs/tmp/`
-  3. A concise summary of items requiring action (e.g., specific test failures)
-- Explicit Context: Always provide each sub-agent with:
-  - Exact file paths (never let them guess)
-  - Specific scope: what to do AND what NOT to do
-  - Expected output format or success signal
+Use separate subagents for these phases:
 
-## Model Selection
+- discovery: find files, root cause, options. No edits.
+- implementation: edit only explicitly named files.
+- test: add or update focused tests only.
+- validation: run requested tests/lint/build only.
+- review: inspect final diff and risks. No edits unless asked.
 
-When invoking the subagent, select the appropriate model based on the task complexity to optimize cost and speed:
+## Dispatch contract
 
-- `haiku`: Default for trivial tasks. Use for status checks, simple file reads, file searching, or running basic
-  commands.
-- `sonnet`: Use for actual code generation, complex refactoring, test implementations, or deep architecture analysis.
+Every subagent prompt must include:
+
+- phase
+- goal
+- allowed files/dirs
+- forbidden files/dirs
+- edits allowed: yes/no
+- success signal
+- return format
+
+## Return format
+
+Subagents return only:
+
+```yaml
+status: success | failure | blocked
+summary:
+files_changed:
+log_path:
+next_action:
+```
+
+Verbose output goes to `docs/tmp/`.
+
+## Routing loop
+
+After each subagent result, main agent must choose exactly one:
+
+- dispatch next bounded subagent
+- split scope
+- ask user
+- stop and report
+
+## Model
+
+- haiku: discovery, validation, simple reads, running basic commands
+- sonnet: implementation, root-cause analysis, review
