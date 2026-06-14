@@ -108,6 +108,7 @@
         "files.pythonhosted.org",
         "crates.io",
         "*.crates.io",
+        "malware-list.aikido.dev",
         "proxy.golang.org",
         "sum.golang.org"
       ]
@@ -119,7 +120,8 @@
         "~/.cache/**",
         "~/.npm/**",
         "~/.local/state/mise/trusted-configs/**",
-        "~/.safe-chain/certs/ca-key.pem"
+        "~/.local/share/pnpm/**",
+        "~/.safe-chain/**"
       ],
       "denyRead": [
         "./.env",
