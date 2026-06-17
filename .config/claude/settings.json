@@ -89,6 +89,9 @@
     "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {},
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
