@@ -21,18 +21,16 @@
         "type": "separator"
       },
       {
-        "id": "5",
-        "type": "tokens-cached",
-        "color": "magenta"
+        "id": "7f8b388a-95f5-415f-99c2-dc4cf917e385",
+        "type": "session-usage"
       },
       {
         "id": "6",
         "type": "separator"
       },
       {
-        "id": "7",
-        "type": "tokens-input",
-        "color": "yellow"
+        "id": "46dc7a1c-bd72-47bc-8d1e-b493c94a5f55",
+        "type": "reset-timer"
       },
       {
         "id": "f1f100e7-6501-407e-a1c4-a062d7bb0551",
@@ -40,39 +38,8 @@
         "character": "|"
       },
       {
-        "id": "bfd00687-8d53-428a-8d22-1292e57e2d4d",
-        "type": "tokens-output"
-      }
-    ],
-    [
-      {
-        "id": "46dc7a1c-bd72-47bc-8d1e-b493c94a5f55",
-        "type": "reset-timer"
-      },
-      {
-        "id": "2b8cc0f2-5d02-4e05-b232-d6665a00f800",
-        "type": "separator"
-      },
-      {
-        "id": "7f8b388a-95f5-415f-99c2-dc4cf917e385",
-        "type": "session-usage"
-      },
-      {
-        "id": "33d95f7b-b964-4661-b416-cb1510ad91f6",
-        "type": "separator"
-      },
-      {
         "id": "c622b636-70bf-41c4-aa6a-fa0dbda9cdab",
         "type": "weekly-usage"
-      }
-    ],
-    [
-      {
-        "id": "c6ae2719-144a-439f-923a-2bbea6e9a418",
-        "type": "custom-command",
-        "commandPath": "ccusage statusline",
-        "timeout": 5000,
-        "preserveColors": true
       }
     ]
   ],
@@ -84,15 +51,12 @@
   "minimalistMode": false,
   "powerline": {
     "enabled": false,
-    "separators": [
-      ""
-    ],
-    "separatorInvertBackground": [
-      false
-    ],
+    "separators": [""],
+    "separatorInvertBackground": [false],
     "startCaps": [],
     "endCaps": [],
     "autoAlign": false,
     "continueThemeAcrossLines": false
   }
 }
+
