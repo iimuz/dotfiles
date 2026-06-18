@@ -119,7 +119,7 @@
         "~/.cache/**",
         "~/.npm/**",
         "~/.local/state/mise/trusted-configs/**",
-        "~/.safe-chain/certs/ca-key.pem"
+        "~/.safe-chain/certs/**"
       ],
       "denyRead": [
         "./.env",
