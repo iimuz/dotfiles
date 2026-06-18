@@ -1,5 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(cat *)",
@@ -60,7 +63,6 @@
       "Bash(sudo *)",
       "Bash(wget * | sh)",
       "Bash(wget * | bash)",
-      "Read(~/.aws/**)",
       "Read(~/.config/gh/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.ssh/**)",
@@ -86,11 +88,16 @@
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "deploy-on-aws@agent-plugins-for-aws": false
   },
-  "extraKnownMarketplaces": {},
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  "extraKnownMarketplaces": {
+    "agent-plugins-for-aws": {
+      "source": {
+        "source": "github",
+        "repo": "awslabs/agent-plugins"
+      }
+    }
   },
   "sandbox": {
     "enabled": true,
@@ -113,13 +120,15 @@
         "*.crates.io",
         "malware-list.aikido.dev",
         "proxy.golang.org",
-        "sum.golang.org"
+        "sum.golang.org",
+        "*.amazonaws.com"
       ]
     },
     "filesystem": {
       "allowWrite": [
         "./**",
         "/tmp/**",
+        "~/.aws/**",
         "~/.cache/**",
         "~/.npm/**",
         "~/.local/state/mise/trusted-configs/**",
@@ -129,7 +138,6 @@
       "denyRead": [
         "./.env",
         "./.env.*",
-        "~/.aws/**",
         "~/.config/gh/**",
         "~/.gnupg/**",
         "~/.ssh/**"
