@@ -1,15 +1,27 @@
-# Planning: Short Name
+# Plan: {title}
 
 ## Goal
 
-One sentence only
+## Scope
 
-## Steps
+## Non-goals
 
-Checkbox list. One action per step.
+## Background / Decisions
 
-- [ ] Step 1: ...
-- [ ] Step 2: ...
+## Contracts / Interfaces
+
+## Verification Strategy
+
+## Execution Plan
+
+- [ ] {TASK-ID}: {task title}
+  - Files:
+  - Change:
+  - Expected behavior:
+  - Verify:
+  - Done when:
+
+## Risks / Notes
 
 ## Log
 

@@ -13,7 +13,8 @@
       "*.anthropic.com",
       "opencode.ai",
       "*.opencode.ai",
-      "*.jina.ai"
+      "*.jina.ai",
+      "*.amazonaws.com"
     ],
     "deniedDomains": [],
     "allowUnixSockets": ["/var/run/docker.sock"],
@@ -26,6 +27,7 @@
     "allowWrite": [
       ".",
       "/tmp/",
+      "~/.aws/",
       "~/.cache/",
       "~/.claude/context-mode/",
       "~/.local/state/mise/trusted-configs/",
