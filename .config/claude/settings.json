@@ -134,6 +134,7 @@
         "~/.local/state/mise/trusted-configs/**",
         "~/.local/share/pnpm/**",
         "~/.safe-chain/**"
+        "~/.safe-chain/certs/**"
       ],
       "denyRead": [
         "./.env",
