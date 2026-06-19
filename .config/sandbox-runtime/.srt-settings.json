@@ -23,14 +23,16 @@
   },
   "filesystem": {
     "denyRead": ["~/.ssh"],
-    "allowRead": ["/tmp/"],
+    "allowRead": ["/tmp"],
     "allowWrite": [
       ".",
-      "/tmp/",
+      "/private/tmp",
+      "/tmp",
+      "/var/folders",
       "~/.aws/",
-      "~/.cache/",
-      "~/.claude/context-mode/",
-      "~/.local/state/mise/trusted-configs/",
+      "~/.cache",
+      "~/.claude/context-mode",
+      "~/.local/state/mise/trusted-configs",
       "~/.safe-chain/certs/ca-key.pem"
     ],
     "denyWrite": []
