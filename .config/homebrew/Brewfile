@@ -9,7 +9,7 @@ mas "RunCat", id: 1429033973
 # cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
-# cask "slack"
+cask "slack"
 mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
 # === desktop management
