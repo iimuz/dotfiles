@@ -77,7 +77,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opusplan",
+  "model": "opus",
   "hooks": {},
   "statusLine": {
     "type": "command",
@@ -89,7 +89,7 @@
     "gopls-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "deploy-on-aws@agent-plugins-for-aws": false
+    "deploy-on-aws@agent-plugins-for-aws": true
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
@@ -128,12 +128,14 @@
       "allowWrite": [
         "./**",
         "/tmp/**",
+        "/tmp/private/**",
+        "/var/folders/**",
         "~/.aws/**",
         "~/.cache/**",
         "~/.npm/**",
         "~/.local/state/mise/trusted-configs/**",
         "~/.local/share/pnpm/**",
-        "~/.safe-chain/**"
+        "~/.safe-chain/**",
         "~/.safe-chain/certs/**"
       ],
       "denyRead": [
