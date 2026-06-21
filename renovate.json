@@ -4,6 +4,9 @@
   "ignorePresets": ["security:minimumReleaseAgeNpm"],
   "dependencyDashboard": false,
   "minimumReleaseAge": "14 days",
+  "statusCheckNames": {
+    "minimumReleaseAge": null
+  },
   "prHourlyLimit": 5,
   "prConcurrentLimit": 10,
   "labels": ["dependencies"],
