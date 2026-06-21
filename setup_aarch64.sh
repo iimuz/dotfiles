@@ -130,6 +130,16 @@ if type claude >/dev/null 2>&1; then
   # Setup MCP
   add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
 
+  # Setup Plugins
+  claude plugins install --scope user gopls-lsp
+  claude plugins install --scope user lua-lsp
+  claude plugins install --scope user pyright-lsp
+  claude plugins install --scope user rust-analyzer-lsp
+  claude plugins install --scope user typescript-lsp
+
+  claude plugin marketplace add "awslabs/agent-plugins"
+  claude plugin install "deploy-on-aws@agent-plugins-for-aws"
+
   if type ccstatusline >/dev/null 2>&1; then
     create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
   fi
