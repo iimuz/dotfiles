@@ -27,7 +27,7 @@ mouse-hide-while-typing = true
 quick-terminal-position = "left"
 quick-terminal-screen = "main"
 quick-terminal-animation-duration = 0
-keybind = global:cmd+backquote=toggle_quick_terminal
+# keybind = global:cmd+backquote=toggle_quick_terminal
 
 # key bind は一旦全て消して必要なもののみ設定
 # keybind = clear

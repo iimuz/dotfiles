@@ -138,13 +138,7 @@
         "~/.safe-chain/**",
         "~/.safe-chain/certs/**"
       ],
-      "denyRead": [
-        "./.env",
-        "./.env.*",
-        "~/.config/gh/**",
-        "~/.gnupg/**",
-        "~/.ssh/**"
-      ]
+      "denyRead": ["./.env", "./.env.*", "~/.gnupg/**", "~/.ssh/**"]
     },
     "excludedCommands": ["docker *"]
   },
