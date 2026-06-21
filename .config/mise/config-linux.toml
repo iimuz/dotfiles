@@ -17,7 +17,6 @@ node = "24.16.0"
 neovim = "0.12.2"
 opencode = "v1.16.2"
 "npm:@aikidosec/safe-chain" = "1.5.7"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.52"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.54"
 "npm:ccstatusline" = "2.2.19"                             # for claude code
 "npm:ccusage" = "20.0.6"                                  # for claude code
