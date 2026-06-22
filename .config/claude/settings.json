@@ -63,7 +63,6 @@
       "Bash(sudo *)",
       "Bash(wget * | sh)",
       "Bash(wget * | bash)",
-      "Read(~/.config/gh/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.ssh/**)",
       "Read(**/.env)",
@@ -89,7 +88,7 @@
     "gopls-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "deploy-on-aws@agent-plugins-for-aws": true
+    "deploy-on-aws@agent-plugins-for-aws": false
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
@@ -121,7 +120,9 @@
         "malware-list.aikido.dev",
         "proxy.golang.org",
         "sum.golang.org",
-        "*.amazonaws.com"
+        "*.amazonaws.com",
+        "aws.amazon.com",
+        "docs.aws.amazon.com"
       ]
     },
     "filesystem": {
@@ -140,8 +141,9 @@
       ],
       "denyRead": ["./.env", "./.env.*", "~/.gnupg/**", "~/.ssh/**"]
     },
-    "excludedCommands": ["docker *"]
+    "excludedCommands": ["docker *", "gh *"]
   },
   "theme": "dark",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "effortLevel": "xhigh"
 }

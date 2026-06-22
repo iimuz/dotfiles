@@ -14,7 +14,9 @@
       "opencode.ai",
       "*.opencode.ai",
       "*.jina.ai",
-      "*.amazonaws.com"
+      "*.amazonaws.com",
+      "aws.amazon.com",
+      "docs.aws.amazon.com"
     ],
     "deniedDomains": [],
     "allowUnixSockets": ["/var/run/docker.sock"],
