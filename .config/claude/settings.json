@@ -99,10 +99,11 @@
     }
   },
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
+    "enableWeakerNetworkIsolation": true,
     "network": {
       "allowedDomains": [
         "api.anthropic.com",
@@ -123,7 +124,8 @@
         "*.amazonaws.com",
         "aws.amazon.com",
         "docs.aws.amazon.com"
-      ]
+      ],
+      "allowLocalBinding": true
     },
     "filesystem": {
       "allowWrite": [
@@ -137,7 +139,8 @@
         "~/.local/state/mise/trusted-configs/**",
         "~/.local/share/pnpm/**",
         "~/.safe-chain/**",
-        "~/.safe-chain/certs/**"
+        "~/.safe-chain/certs/**",
+        "~/src/**"
       ],
       "denyRead": ["./.env", "./.env.*", "~/.gnupg/**", "~/.ssh/**"]
     },

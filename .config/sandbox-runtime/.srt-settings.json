@@ -1,19 +1,21 @@
 {
   "network": {
     "allowedDomains": [
+      "api.anthropic.com",
+      "claude.ai",
+      "*.claude.com",
       "github.com",
-      "*.github.com",
-      "githubusercontent.com",
       "*.githubusercontent.com",
-      "npmjs.com",
-      "*.npmjs.com",
-      "openai.com",
-      "*.openai.com",
-      "anthropic.com",
-      "*.anthropic.com",
-      "opencode.ai",
-      "*.opencode.ai",
-      "*.jina.ai",
+      "api.github.com",
+      "objects.githubusercontent.com",
+      "registry.npmjs.org",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "crates.io",
+      "*.crates.io",
+      "malware-list.aikido.dev",
+      "proxy.golang.org",
+      "sum.golang.org",
       "*.amazonaws.com",
       "aws.amazon.com",
       "docs.aws.amazon.com"
@@ -34,8 +36,11 @@
       "~/.aws/",
       "~/.cache",
       "~/.claude/context-mode",
+      "~/.local/share/pnpm",
       "~/.local/state/mise/trusted-configs",
-      "~/.safe-chain/certs/ca-key.pem"
+      "~/.npm",
+      "~/.safe-chain/certs",
+      "~/src"
     ],
     "denyWrite": []
   },
