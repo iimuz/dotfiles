@@ -130,6 +130,7 @@ if type claude >/dev/null 2>&1; then
   claude plugins install --scope user pyright-lsp
   claude plugins install --scope user rust-analyzer-lsp
   claude plugins install --scope user typescript-lsp
+  claude plugins install --scope user superpowers@claude-plugins-official
 
   claude plugin marketplace add "awslabs/agent-plugins"
   claude plugin install "deploy-on-aws@agent-plugins-for-aws"
