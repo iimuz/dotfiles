@@ -119,6 +119,7 @@ if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
+  create_symlink "$SCRIPT_DIR/.config/claude/hooks" "$HOME/.claude/hooks"
   create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
 
   # Setup MCP

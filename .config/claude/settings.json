@@ -77,7 +77,30 @@
     "defaultMode": "auto"
   },
   "model": "opus",
-  "hooks": {},
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/notify.sh\" notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/notify.sh\" stop"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "ccstatusline"
@@ -88,7 +111,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "deploy-on-aws@agent-plugins-for-aws": false
+    "deploy-on-aws@agent-plugins-for-aws": false,
+    "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
@@ -103,7 +127,6 @@
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
-    "enableWeakerNetworkIsolation": true,
     "network": {
       "allowedDomains": [
         "api.anthropic.com",
@@ -144,9 +167,10 @@
       ],
       "denyRead": ["./.env", "./.env.*", "~/.gnupg/**", "~/.ssh/**"]
     },
+    "enableWeakerNetworkIsolation": true,
     "excludedCommands": ["docker *", "gh *"]
   },
+  "effortLevel": "xhigh",
   "theme": "dark",
-  "skipAutoPermissionPrompt": true,
-  "effortLevel": "xhigh"
+  "skipAutoPermissionPrompt": true
 }
