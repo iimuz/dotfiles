@@ -46,6 +46,7 @@ cask "claude"
 brew "bash"
 
 # === programming tools
+cask "android-studio"
 brew "mise"
 # cask "visual-studio-code"
 
