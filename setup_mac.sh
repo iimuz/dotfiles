@@ -135,6 +135,7 @@ if type claude >/dev/null 2>&1; then
 
   claude plugin marketplace add "awslabs/agent-plugins"
   claude plugin install "deploy-on-aws@agent-plugins-for-aws"
+  claude plugin disable "deploy-on-aws@agent-plugins-for-aws"
 
   if type ccstatusline >/dev/null 2>&1; then
     create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
