@@ -22,16 +22,28 @@ Ask the user which type to create. Infer from context when intent is clear.
 
 Prepare title and body fields based on the selected template. See Body Templates below.
 
-Provide content as stdin JSON:
+Provide content as stdin JSON for the selected type.
+
+product-backlog:
 
 ```json
 {
   "title": "string (required)",
-  "overview": "string (product-backlog only)",
+  "overview": "string (required)",
+  "goal": "string (required)",
   "details": "string",
-  "goal": "string",
-  "notes": "string (product-backlog only)",
-  "related_urls": "string (feature only)"
+  "notes": "string"
+}
+```
+
+feature:
+
+```json
+{
+  "title": "string (required)",
+  "goal": "string (required)",
+  "details": "string (required)",
+  "related_urls": "string"
 }
 ```
 
@@ -41,10 +53,6 @@ Present the composed issue content. Proceed only after explicit approval.
 
 ### Step 4: Create Issue
 
-Required flags:
-
-- `--type` – Issue type from Step 1
-
 Optional flags:
 
 - `--repo OWNER/REPO` – Target repository (defaults to current repository)
@@ -52,13 +60,26 @@ Optional flags:
 - `--assignees` – Comma-separated assignees
 - `--project` – Project name
 
-Recommended JSON fields per type:
+JSON fields per type (required fields are validated by each script):
 
-- `product-backlog`: `title` (required), `overview`, `details`, `goal`, `notes`
-- `feature`: `title` (required), `related_urls`, `goal`, `details`
+- `product-backlog`: required `title`, `overview`, `goal`; optional `details`, `notes`
+- `feature`: required `title`, `goal`, `details`; optional `related_urls`
+
+product-backlog:
 
 ```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type <type> [optional flags]
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-product-backlog.sh" [--repo OWNER/REPO] [--dry-run]
+{
+  "title": "...",
+  ...
+}
+EOF
+```
+
+feature:
+
+```bash
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-feature.sh" [--repo OWNER/REPO] [--dry-run]
 {
   "title": "...",
   ...
@@ -123,24 +144,24 @@ Sections with empty content include only the header.
 ## Examples
 
 ```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type product-backlog --labels "backlog"
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-product-backlog.sh" --labels "backlog"
 {
   "title": "User authentication system",
   "overview": "Implement user authentication to support login and registration flows.",
-  "details": "Use OAuth 2.0 with JWT tokens for session management.",
   "goal": "Users can sign up, log in, and maintain authenticated sessions.",
+  "details": "Use OAuth 2.0 with JWT tokens for session management.",
   "notes": "Consider rate limiting for login endpoints."
 }
 EOF
 ```
 
 ```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue.sh" --type feature --repo "owner/repo" --labels "feature" --assignees "@me"
+cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-feature.sh" --repo "owner/repo" --labels "feature" --assignees "@me"
 {
   "title": "Implement login endpoint",
-  "related_urls": "- parent: #42",
   "goal": "POST /api/login returns a valid JWT token for correct credentials.",
-  "details": "Validate email and password against the user store. Return 401 for invalid credentials."
+  "details": "Validate email and password against the user store. Return 401 for invalid credentials.",
+  "related_urls": "- parent: #42"
 }
 EOF
 ```

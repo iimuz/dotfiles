@@ -16,7 +16,7 @@ usage_error() {
     return 1
   fi
 
-  local -r allowed_params='--type TYPE [--repo OWNER/REPO] [--labels L1,L2] [--assignees A1,A2] [--project NAME] [--json] [--dry-run]'
+  local -r allowed_params='[--repo OWNER/REPO] [--labels L1,L2] [--assignees A1,A2] [--project NAME] [--json] [--dry-run]'
 
   print_error "Error: $1"
   print_error "Allowed parameters: $allowed_params"
@@ -55,11 +55,9 @@ else
 end
 | {
     title: (.title | require_non_empty_string("title")),
-    overview: (.overview | optional_string("overview")),
-    details: (.details | optional_string("details")),
-    goal: (.goal | optional_string("goal")),
-    notes: (.notes | optional_string("notes")),
-    related_urls: (.related_urls | optional_string("related_urls"))
+    related_urls: (.related_urls | optional_string("related_urls")),
+    goal: (.goal | require_non_empty_string("goal")),
+    details: (.details | require_non_empty_string("details"))
   }
 JQ
   )"
@@ -91,13 +89,12 @@ JQ
 }
 
 build_body() {
-  if [[ $# -ne 2 ]]; then
-    printf '%s\n' 'Error: build_body expects exactly 2 arguments' >&2
+  if [[ $# -ne 1 ]]; then
+    printf '%s\n' 'Error: build_body expects exactly 1 argument' >&2
     return 1
   fi
 
   local -r validated_json="$1"
-  local -r issue_type="$2"
   local -r body_filter="$(
     cat <<'JQ'
 def section(header; content):
@@ -107,26 +104,15 @@ def section(header; content):
     "## " + header
   end;
 
-if $type == "product-backlog" then
-  [
-    section("Overview"; .overview),
-    section("Details"; .details),
-    section("Goal"; .goal),
-    section("Notes"; .notes)
-  ] | join("\n\n")
-elif $type == "feature" then
-  [
-    section("Related URLs"; .related_urls),
-    section("Goal"; .goal),
-    section("Details"; .details)
-  ] | join("\n\n")
-else
-  "unknown type: " + $type | halt_error(1)
-end
+[
+  section("Related URLs"; .related_urls),
+  section("Goal"; .goal),
+  section("Details"; .details)
+] | join("\n\n")
 JQ
   )"
 
-  printf '%s' "$validated_json" | jq -r --arg type "$issue_type" "$body_filter"
+  printf '%s' "$validated_json" | jq -r "$body_filter"
 }
 
 check_dependencies() {
@@ -143,7 +129,6 @@ check_dependencies() {
 main() {
   check_dependencies
 
-  local issue_type=""
   local repo=""
   local labels=""
   local assignees=""
@@ -153,11 +138,6 @@ main() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --type)
-        [[ $# -ge 2 ]] || usage_error '--type requires a value'
-        issue_type="$2"
-        shift 2
-        ;;
       --repo)
         [[ $# -ge 2 ]] || usage_error '--repo requires a value'
         repo="$2"
@@ -192,9 +172,6 @@ main() {
     esac
   done
 
-  [[ -n "$issue_type" ]] || usage_error '--type is required'
-  [[ "$issue_type" == "product-backlog" || "$issue_type" == "feature" ]] ||
-    usage_error '--type must be product-backlog or feature'
   if [[ -n "$repo" ]]; then
     [[ "$repo" =~ ^[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+$ ]] ||
       usage_error '--repo must be in OWNER/REPO format'
@@ -210,11 +187,11 @@ main() {
   title="$(printf '%s' "$validated_json" | jq -r '.title')"
 
   local body
-  body="$(build_body "$validated_json" "$issue_type")"
+  body="$(build_body "$validated_json")"
 
   if [[ "$dry_run" == true ]]; then
     printf '%s\n' '=== Preview (dry-run) ==='
-    printf '%s\n' "Type: $issue_type"
+    printf '%s\n' 'Type: feature'
     printf '%s\n' "Title: $title"
     [[ -n "$repo" ]] && printf '%s\n' "Repo: $repo"
     [[ -n "$labels" ]] && printf '%s\n' "Labels: $labels"
