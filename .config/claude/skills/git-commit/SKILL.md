@@ -4,7 +4,6 @@ description: >
   Create a git commit from current changes.
   Trigger on commit requests or after completing a code change task.
 model: haiku
-context: fork
 ---
 
 # Git Commit

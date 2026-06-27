@@ -63,7 +63,6 @@
       "Bash(sudo *)",
       "Bash(wget * | sh)",
       "Bash(wget * | bash)",
-      "Read(~/.config/gh/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.ssh/**)",
       "Read(**/.env)",
@@ -78,7 +77,30 @@
     "defaultMode": "auto"
   },
   "model": "opus",
-  "hooks": {},
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/notify.sh\" notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/notify.sh\" stop"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "ccstatusline"
@@ -89,7 +111,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "deploy-on-aws@agent-plugins-for-aws": true
+    "deploy-on-aws@agent-plugins-for-aws": false,
+    "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
@@ -100,7 +123,7 @@
     }
   },
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
@@ -121,8 +144,11 @@
         "malware-list.aikido.dev",
         "proxy.golang.org",
         "sum.golang.org",
-        "*.amazonaws.com"
-      ]
+        "*.amazonaws.com",
+        "aws.amazon.com",
+        "docs.aws.amazon.com"
+      ],
+      "allowLocalBinding": true
     },
     "filesystem": {
       "allowWrite": [
@@ -136,12 +162,15 @@
         "~/.local/state/mise/trusted-configs/**",
         "~/.local/share/pnpm/**",
         "~/.safe-chain/**",
-        "~/.safe-chain/certs/**"
+        "~/.safe-chain/certs/**",
+        "~/src/**"
       ],
       "denyRead": ["./.env", "./.env.*", "~/.gnupg/**", "~/.ssh/**"]
     },
-    "excludedCommands": ["docker *"]
+    "enableWeakerNetworkIsolation": true,
+    "excludedCommands": ["docker *", "gh *"]
   },
+  "effortLevel": "xhigh",
   "theme": "dark",
   "skipAutoPermissionPrompt": true
 }
