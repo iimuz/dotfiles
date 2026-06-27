@@ -1,13 +1,13 @@
 [tools]
 aws-vault = "7.2.0"
-awscli = { version = "2.34.63", symlink_bins = "true" }
-cargo-binstall = "1.19.1"
+awscli = { version = "2.35.4", symlink_bins = "true" }
+cargo-binstall = "1.20.0"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
 claude = "2.1.168"
 delta = "0.19.2"
 fzf = "0.73.1"
-gemini-cli = "0.45.2"
-gh = "2.93.0"
+gemini-cli = "0.46.0"
+gh = "2.94.0"
 "github:vifm/vifm" = "v0.14.4"
 go = "1.26.4"
 jq = "1.8.1"
@@ -15,7 +15,7 @@ lazygit = "0.62.2"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
 node = "24.16.0"
 neovim = "0.12.2"
-opencode = "v1.16.2"
+opencode = "v1.17.4"
 "npm:@aikidosec/safe-chain" = "1.5.7"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.54"
 "npm:ccstatusline" = "2.2.19"                             # for claude code
@@ -27,7 +27,7 @@ opencode = "v1.16.2"
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.24"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
-pnpm = "11.5.2"
+pnpm = "11.6.0"
 python = "3.14.5"
 rust = "1.96.0"
 shellcheck = "0.11.0"
