@@ -9,7 +9,7 @@ ALLOWED_TYPES=(build chore ci docs feat fix perf refactor revert style test i18n
 TYPE=""
 DESCRIPTION=""
 BODY=""
-JSON_OUTPUT=false
+JSON_OUTPUT=true
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -26,13 +26,13 @@ while [[ $# -gt 0 ]]; do
       BODY="$2"
       shift 2
       ;;
-    --json)
-      JSON_OUTPUT=true
+    --no-json)
+      JSON_OUTPUT=false
       shift
       ;;
     *)
       echo "Error: Unknown parameter '$1'" >&2
-      echo "Allowed parameters: --type, --description, --body, --json" >&2
+      echo "Allowed parameters: --type, --description, --body, --no-json" >&2
       exit 1
       ;;
   esac
@@ -88,7 +88,7 @@ fi
 # Execute git commit (redirect summary to stderr so only JSON goes to stdout)
 git commit -m "$COMMIT_MSG" >&2
 
-# Output JSON if requested
+# Output JSON by default (suppressed with --no-json)
 if [[ "$JSON_OUTPUT" == true ]]; then
   SHA="$(git rev-parse HEAD)"
   ESCAPED_MSG="${COMMIT_MSG//\\/\\\\}"
