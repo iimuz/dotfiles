@@ -33,6 +33,9 @@ else
   BASE_BRANCH="$REMOTE_HEAD_BRANCH"
 fi
 
+# Use origin/<base> so comparisons work in git worktrees that have no local base branch.
+BASE_REF="origin/${BASE_BRANCH}"
+
 echo "=== Repository Information ==="
 echo "Current branch: $CURRENT_BRANCH"
 if [[ -z "$BASE_BRANCH_ARG" ]]; then
@@ -50,9 +53,9 @@ echo "=== Uncommitted changes ==="
 git status --short
 
 echo
-echo "=== Commit history (comparing with base: $BASE_BRANCH) ==="
-git log "$BASE_BRANCH..HEAD" --oneline || echo "No commits ahead of $BASE_BRANCH"
+echo "=== Commit history (comparing with base: $BASE_REF) ==="
+git log "$BASE_REF..HEAD" --oneline || echo "No commits ahead of $BASE_REF"
 
 echo
 echo "=== Diff statistics (from merge base with base branch) ==="
-git diff "$BASE_BRANCH...HEAD" --stat || echo "No differences from $BASE_BRANCH"
+git diff "$BASE_REF...HEAD" --stat || echo "No differences from $BASE_REF"
