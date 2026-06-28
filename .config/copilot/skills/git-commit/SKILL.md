@@ -47,7 +47,8 @@ Do NOT read the script; use it as a black box.
 - `--type <string>` (required): Commit type derived from step 2
 - `--description <string>` (required): Commit description derived from step 2
 - `--body <string>` (optional): Body text, may contain newlines
-- `--json` (required): Flag. Enables JSON output (`sha`, `message`) to stdout
+- `--no-json` (optional): Flag. Disables JSON output to stdout (for human/interactive use).
+- `--json` (optional): Flag. Accepted for backward compatibility. JSON output (`sha`, `message`) is on by default.
 
 Example:
 
@@ -57,8 +58,7 @@ bash "${SKILL_DIR}/scripts/commit.sh" \
   --description "add user authentication endpoint" \
   --body "- add POST /auth/login route
 - implement JWT token generation
-- add input validation middleware" \
-  --json
+- add input validation middleware"
 ```
 
 Return the JSON output as the final result.
