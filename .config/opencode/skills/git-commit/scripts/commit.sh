@@ -26,17 +26,13 @@ while [[ $# -gt 0 ]]; do
       BODY="$2"
       shift 2
       ;;
-    --json)
-      JSON_OUTPUT=true
-      shift
-      ;;
     --no-json)
       JSON_OUTPUT=false
       shift
       ;;
     *)
       echo "Error: Unknown parameter '$1'" >&2
-      echo "Allowed parameters: --type, --description, --body, --json, --no-json" >&2
+      echo "Allowed parameters: --type, --description, --body, --no-json" >&2
       exit 1
       ;;
   esac

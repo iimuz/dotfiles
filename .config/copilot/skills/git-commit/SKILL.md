@@ -47,8 +47,7 @@ Do NOT read the script; use it as a black box.
 - `--type <string>` (required): Commit type derived from step 2
 - `--description <string>` (required): Commit description derived from step 2
 - `--body <string>` (optional): Body text, may contain newlines
-- `--no-json` (optional): Flag. Disables JSON output to stdout (for human/interactive use).
-- `--json` (optional): Flag. Accepted for backward compatibility. JSON output (`sha`, `message`) is on by default.
+- `--no-json` (optional): Flag. Disables JSON output. JSON output (`sha`, `message`) is on by default.
 
 Example:
 
