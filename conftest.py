@@ -33,3 +33,9 @@ _load_module(
     _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "create_review.py",
 )
 _gh_ops.create_review = sys.modules["gh_ops.create_review"]
+
+_load_module(
+    "gh_ops.append_review",
+    _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "append_review.py",
+)
+_gh_ops.append_review = sys.modules["gh_ops.append_review"]
