@@ -125,7 +125,7 @@ def main() -> None:
         # Construct API comment object
         api_comment = {"path": path, "body": body, "line": parsed_line, "side": side}
 
-        if start_line:
+        if start_line is not None:
             try:
                 api_comment["start_line"] = int(start_line)
             except (TypeError, ValueError):
