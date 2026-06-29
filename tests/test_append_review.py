@@ -61,6 +61,19 @@ def test_appends_to_existing_pending_review(monkeypatch, capsys):
     assert len(calls) == 2  # find query + one mutation
 
 
+def test_thread_variables_omits_start_fields_when_absent():
+    comment_no_start = {"path": "a.py", "body": "x", "line": 5, "side": "RIGHT"}
+    result = append_review.thread_variables("REV1", comment_no_start)
+    assert set(result.keys()) == {"reviewId", "path", "body", "line", "side"}
+    assert "startLine" not in result
+    assert "startSide" not in result
+
+    comment_with_start = {"path": "a.py", "body": "x", "line": 5, "side": "RIGHT", "start_line": 2}
+    result_start = append_review.thread_variables("REV1", comment_with_start)
+    assert result_start["startLine"] == 2
+    assert result_start["startSide"] == "RIGHT"
+
+
 def test_errors_when_no_pending_review(monkeypatch, capsys):
     responses = [_find_response([])]
     calls = _patch_run(monkeypatch, responses)

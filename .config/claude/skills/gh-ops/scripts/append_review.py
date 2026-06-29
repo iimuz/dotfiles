@@ -118,7 +118,7 @@ def build_comments(comments_json: str) -> list[dict[str, Any]]:
                 detail=f"Comment at index {index} has non-integer line: {line}",
             )
         normalized: dict[str, Any] = {"path": path, "body": body, "line": parsed_line, "side": side}
-        if start_line:
+        if start_line is not None:
             try:
                 normalized["start_line"] = int(start_line)
             except (TypeError, ValueError):
@@ -133,15 +133,17 @@ def build_comments(comments_json: str) -> list[dict[str, Any]]:
 def thread_variables(review_id: str, comment: dict[str, Any]) -> dict[str, Any]:
     start_line = comment.get("start_line")
     side = comment["side"]
-    return {
+    variables: dict[str, Any] = {
         "reviewId": review_id,
         "path": comment["path"],
         "body": comment["body"],
         "line": comment["line"],
         "side": side,
-        "startLine": start_line,
-        "startSide": side if start_line is not None else None,
     }
+    if start_line is not None:
+        variables["startLine"] = int(start_line)
+        variables["startSide"] = side
+    return variables
 
 
 def main() -> None:
