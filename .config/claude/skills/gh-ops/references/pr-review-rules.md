@@ -3,6 +3,17 @@
 Create a pending review on a GitHub PR with inline comments via
 `scripts/create_review.sh`.
 
+## Choosing the Script
+
+- New review (no pending review on the PR): use `scripts/create_review.sh`.
+- A pending review already exists: use `scripts/append_review.sh` to add
+  comments to it.
+
+`create_review.sh` detects an existing pending review and aborts with
+`{"error": "pending_review_exists", "review_id": <id>}` instead of failing
+with a raw API error. When you see this, switch to `append_review.sh`, or
+submit/discard the existing review first.
+
 ## Procedure
 
 Follow these steps in order. Stop on any failure.
@@ -52,6 +63,23 @@ bash "${SKILL_DIR}/scripts/create_review.sh" \
 
 On success, stdout contains `{ "id": {number}, "html_url": "{url}" }`.
 On failure, stderr contains an error message and the script exits non-zero.
+
+If the script reports `pending_review_exists`, do not retry `create_review.sh`.
+Append the comments with `scripts/append_review.sh` instead:
+
+```bash
+bash "${SKILL_DIR}/scripts/append_review.sh" \
+  --owner "<owner>" \
+  --repo "<repo>" \
+  --pull-number <number> \
+  --comments-json '<json array>'
+```
+
+On success, stdout contains
+`{ "review_id": "<id>", "added": <count>, "thread_ids": [ ... ] }`.
+`append_review.sh` takes the same comment objects as `create_review.sh` but
+has no `--summary-body` flag. If no pending review exists it reports
+`{"error": "no_pending_review"}`; use `create_review.sh` in that case.
 
 ### Step 4: Do Not Submit the Review
 
