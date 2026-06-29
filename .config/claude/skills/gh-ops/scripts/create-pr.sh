@@ -144,6 +144,15 @@ if [[ -n "$ADDITIONAL" ]]; then
 ${ADDITIONAL}"
 fi
 
+# Verify the current branch has been pushed to origin
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if ! git rev-parse --verify --quiet "refs/remotes/origin/${CURRENT_BRANCH}" >/dev/null 2>&1; then
+  echo "Error: current branch '${CURRENT_BRANCH}' has not been pushed to origin." >&2
+  echo "Push it first, then re-run this command:" >&2
+  echo "  git push -u origin ${CURRENT_BRANCH}" >&2
+  exit 1
+fi
+
 # Execute gh pr create
 if [[ -n "$BASE" ]]; then
   gh pr create --draft --base "$BASE" --title "$PR_TITLE" --body "$PR_BODY"
