@@ -32,6 +32,33 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
     sys.exit(exit_code)
 
 
+def fetch_pending_review(owner: str, repo: str, pull_number: int) -> dict[str, Any] | None:
+    endpoint = f"repos/{owner}/{repo}/pulls/{pull_number}/reviews"
+    result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
+    if result.returncode != 0:
+        emit_error(
+            "gh_api_failed",
+            detail="Failed to list reviews via gh api",
+            gh_exit_code=result.returncode,
+            http_status=extract_http_status(result.stderr),
+            stderr=result.stderr.strip(),
+        )
+    try:
+        reviews = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        emit_error(
+            "invalid_api_response",
+            detail=f"Failed to parse reviews response as JSON: {error}",
+            stdout=result.stdout.strip(),
+        )
+    if not isinstance(reviews, list):
+        emit_error("invalid_api_response", detail="Reviews response is not a list")
+    for review in reviews:
+        if isinstance(review, dict) and review.get("state") == "PENDING":
+            return review
+    return None
+
+
 def main() -> None:
     """
     Parses arguments, constructs a JSON payload, and calls the GitHub API
@@ -98,7 +125,7 @@ def main() -> None:
         # Construct API comment object
         api_comment = {"path": path, "body": body, "line": parsed_line, "side": side}
 
-        if start_line:
+        if start_line is not None:
             try:
                 api_comment["start_line"] = int(start_line)
             except (TypeError, ValueError):
@@ -108,6 +135,17 @@ def main() -> None:
                 )
 
         api_comments.append(api_comment)
+
+    existing = fetch_pending_review(args.owner, args.repo, args.pull_number)
+    if existing is not None:
+        emit_error(
+            "pending_review_exists",
+            detail=(
+                "A pending review already exists. Use append_review.sh to add "
+                "comments to it, or submit/discard the existing review first."
+            ),
+            review_id=existing.get("id"),
+        )
 
     # Construct payload for GitHub API
     payload = {"body": args.summary_body, "comments": api_comments}

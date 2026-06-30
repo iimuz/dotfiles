@@ -24,3 +24,5 @@ description: >
 - Issue Comment: [`references/issue-comment-rules.md`](references/issue-comment-rules.md)
 - PR Create: [`references/pr-create-rules.md`](references/pr-create-rules.md)
 - PR Review: [`references/pr-review-rules.md`](references/pr-review-rules.md)
+  (new review via `create_review.sh`; append to an existing pending review via
+  `append_review.sh`)
