@@ -1,0 +1,6 @@
+{
+  "name": "six-hats",
+  "version": "0.1.0",
+  "description": "Six Thinking Hats agent-team: a Blue Hat orchestrator skill plus five content-hat subagents for structured multi-perspective analysis",
+  "author": { "name": "iimuz" }
+}

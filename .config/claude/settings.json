@@ -113,7 +113,8 @@
     "pyright-lsp@claude-plugins-official": true,
     "deploy-on-aws@agent-plugins-for-aws": false,
     "superpowers@claude-plugins-official": true,
-    "sample@iimuz-dotfiles": true
+    "sample@iimuz-dotfiles": true,
+    "six-hats@iimuz-dotfiles": true
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
