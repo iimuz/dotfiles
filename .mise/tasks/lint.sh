@@ -14,11 +14,20 @@ if [ $# -gt 0 ]; then
   done
 else
   sh_files=()
-  while IFS= read -r file; do sh_files+=("$file"); done < <(git ls-files '*.sh')
+  while IFS= read -r file; do sh_files+=("$file"); done < <(
+    git ls-files '*.sh'
+    git ls-files --others --exclude-standard '*.sh'
+  )
   md_files=()
-  while IFS= read -r file; do md_files+=("$file"); done < <(git ls-files '*.md')
+  while IFS= read -r file; do md_files+=("$file"); done < <(
+    git ls-files '*.md'
+    git ls-files --others --exclude-standard '*.md'
+  )
   py_files=()
-  while IFS= read -r file; do py_files+=("$file"); done < <(git ls-files '*.py')
+  while IFS= read -r file; do py_files+=("$file"); done < <(
+    git ls-files '*.py'
+    git ls-files --others --exclude-standard '*.py'
+  )
 fi
 
 if [ ${#sh_files[@]} -gt 0 ]; then shellcheck --severity=error -- "${sh_files[@]}"; fi
