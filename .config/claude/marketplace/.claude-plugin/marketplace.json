@@ -1,0 +1,12 @@
+{
+  "name": "iimuz-dotfiles",
+  "owner": { "name": "iimuz" },
+  "description": "iimuz personal local plugin marketplace",
+  "plugins": [
+    {
+      "name": "sample",
+      "source": "./plugins/sample",
+      "description": "Sample plugin to verify local marketplace wiring"
+    }
+  ]
+}
