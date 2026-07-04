@@ -3,14 +3,14 @@ cargo-binstall = "1.20.0"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
 go = "1.26.4"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
-node = "24.16.0"
+node = "24.17.0"
 "npm:@aikidosec/safe-chain" = "1.5.7"
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.24"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
-pnpm = "11.6.0"
+pnpm = "11.8.0"
 python = "3.14.6"
 rust = "1.96.0"
 shellcheck = "0.11.0"
