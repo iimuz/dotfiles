@@ -139,6 +139,7 @@ if type claude >/dev/null 2>&1; then
 
   create_symlink "$SCRIPT_DIR/.config/claude/marketplace" "$HOME/.claude/marketplace"
   claude plugin marketplace add "$HOME/.claude/marketplace"
+  claude plugin install "six-hats@iimuz-dotfiles"
 
   if type ccstatusline >/dev/null 2>&1; then
     create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
