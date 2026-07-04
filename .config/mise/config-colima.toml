@@ -1,9 +1,9 @@
 [tools]
-awscli = { version = "2.35.4", symlink_bins = "true" }
+awscli = { version = "2.35.9", symlink_bins = "true" }
 bat = "0.26.1"
 cargo-binstall = "1.20.0"
 "cargo:tree-sitter-cli" = "0.26.8"                     # for neovim
-claude = "2.1.177"
+claude = "2.1.183"
 delta = "0.19.2"
 eza = "0.23.4"
 fd = "10.4.2"
@@ -11,16 +11,16 @@ fzf = "0.73.1"
 gh = "2.94.0"
 "github:vifm/vifm" = "v0.14.4"
 go = "1.26.4"
-jq = "1.8.1"
+jq = "1.8.2"
 lazygit = "0.62.2"
 lua = "5.1.5"                                          # neovim luarocksで要求しているバージョンが5.1
 neovim = "0.12.3"
 node = "24.16.0"
-"npm:@aikidosec/safe-chain" = "1.5.7"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.54"         # for claude code
-"npm:@github/copilot" = "1.0.61"
-"npm:ccstatusline" = "2.2.19"                          # for claude code
-"npm:ccusage" = "20.0.11"                              # for claude code
+"npm:@aikidosec/safe-chain" = "1.5.8"
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.56"         # for claude code
+"npm:@github/copilot" = "1.0.63"
+"npm:ccstatusline" = "2.2.22"                          # for claude code
+"npm:ccusage" = "20.0.14"                              # for claude code
 "npm:context-mode" = "1.0.162"                         # for claude code
 "npm:neovim" = "5.4.0"                                 # for neovim
 "pipx:pynvim" = "0.6.0"                                # for neovim
@@ -30,7 +30,7 @@ ripgrep = "15.1.0"
 rust = "1.96.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.11.21"
+uv = "0.11.23"
 yq = "4.53.3"
 
 [env]
