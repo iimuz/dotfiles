@@ -1,0 +1,6 @@
+{
+  "name": "sample",
+  "version": "0.1.0",
+  "description": "Sample plugin bundling a skill and an agent for wiring verification",
+  "author": { "name": "iimuz" }
+}

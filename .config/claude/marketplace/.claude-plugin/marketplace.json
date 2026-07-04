@@ -1,0 +1,22 @@
+{
+  "name": "iimuz-dotfiles",
+  "owner": { "name": "iimuz" },
+  "description": "iimuz personal local plugin marketplace",
+  "plugins": [
+    {
+      "name": "sample",
+      "source": "./plugins/sample",
+      "description": "Sample plugin to verify local marketplace wiring"
+    },
+    {
+      "name": "six-hats",
+      "source": "./plugins/six-hats",
+      "description": "Six Thinking Hats agent-team for structured multi-perspective analysis"
+    },
+    {
+      "name": "scamper",
+      "source": "./plugins/scamper",
+      "description": "SCAMPER agent-team for systematic ideation and improvement of an existing product, service, or process"
+    }
+  ]
+}
