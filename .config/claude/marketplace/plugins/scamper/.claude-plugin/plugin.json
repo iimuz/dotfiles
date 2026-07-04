@@ -1,0 +1,6 @@
+{
+  "name": "scamper",
+  "version": "0.1.0",
+  "description": "SCAMPER agent-team: an orchestrator skill plus seven lens subagents for systematic, divergent idea generation over an existing target",
+  "author": { "name": "iimuz" }
+}

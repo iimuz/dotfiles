@@ -12,6 +12,11 @@
       "name": "six-hats",
       "source": "./plugins/six-hats",
       "description": "Six Thinking Hats agent-team for structured multi-perspective analysis"
+    },
+    {
+      "name": "scamper",
+      "source": "./plugins/scamper",
+      "description": "SCAMPER agent-team for systematic ideation and improvement of an existing product, service, or process"
     }
   ]
 }
