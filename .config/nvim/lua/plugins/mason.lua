@@ -48,6 +48,7 @@ return {
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
 					"gopls", -- Go lang LSP
+					"kotlin_lsp", -- Kotlin LSP (JetBrains kotlin-lsp)
 					"kulala-fmt", -- HTTP formatter and linter
 					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
