@@ -36,6 +36,7 @@ local parsers = {
 	"jsdoc",
 	"json",
 	"jsonc",
+	"kotlin",
 	"lua",
 	"make",
 	"markdown",
