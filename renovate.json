@@ -62,6 +62,20 @@
       "matchUpdateTypes": ["patch", "pin", "digest"],
       "groupName": "github actions (patch)",
       "automerge": true
+    },
+    {
+      "description": "Node.js major-line updates are decided manually",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Python minor releases (e.g. 3.14 -> 3.15) are treated as major-line updates and decided manually",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["python"],
+      "matchUpdateTypes": ["minor"],
+      "enabled": false
     }
   ]
 }
