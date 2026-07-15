@@ -76,6 +76,33 @@ return {
 					["mason-nvim-dap"] = false,
 				},
 			})
+
+			-- kulala-fmtが導入・更新された直後に、内部で利用するkulala-coreバイナリを
+			-- バックグラウンドで事前取得しておく。
+			-- conform.nvimの初回フォーマットはタイムアウトが短く、
+			-- kulala-core初回取得（63MBのダウンロード）が間に合わないため。
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "MasonToolsUpdateCompleted",
+				callback = function(args)
+					-- kulala-fmtが今回インストール・更新された場合のみ事前取得する
+					if type(args.data) ~= "table" or not vim.tbl_contains(args.data, "kulala-fmt") then
+						return
+					end
+					local bin = vim.fn.stdpath("data") .. "/mason/bin/kulala-fmt"
+					if vim.fn.executable(bin) ~= 1 then
+						return
+					end
+					-- kulala-coreの初回ダウンロードを発生させるための使い捨てファイル
+					local tmp = vim.fn.tempname() .. ".http"
+					if vim.fn.writefile({ "GET https://example.com" }, tmp) ~= 0 then
+						return
+					end
+					-- conformのフォーマットタイムアウト外でバックグラウンド実行する（best-effort）
+					vim.system({ bin, "check", "--quiet", tmp }, {}, function()
+						os.remove(tmp)
+					end)
+				end,
+			})
 		end,
 	},
 }
