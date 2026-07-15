@@ -3,7 +3,7 @@
 # === application management
 brew "mas"
 # cask "appcleaner"
-mas "RunCat", id: 1429033973
+mas "RunCatNeo", id: 6757801838
 
 # === communication tools
 # cask "brave-browser"
