@@ -54,12 +54,7 @@ Optional flags:
 - `--additional` – Any extra context
 - `--base` – Base branch (default: repo default branch)
 
-### Step 5: Confirm with User
-
-Present the composed title, type, and body content. Proceed only after explicit
-approval.
-
-### Step 6: Create Draft PR
+### Step 5: Create Draft PR
 
 ```bash
 bash "${SKILL_DIR}/scripts/create-pr.sh" \

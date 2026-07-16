@@ -35,11 +35,7 @@ Optional per comment:
 
 Provide `--comments-json` as a valid JSON array with at least one element.
 
-### Step 2: Confirm with User
-
-Present the composed comments and summary. Proceed only after explicit approval.
-
-### Step 3: Create Review
+### Step 2: Create Review
 
 Required flags:
 
@@ -81,10 +77,10 @@ On success, stdout contains
 has no `--summary-body` flag. If no pending review exists it reports
 `{"error": "no_pending_review"}`; use `create_review.sh` in that case.
 
-### Step 4: Do Not Submit the Review
+### Step 3: Do Not Submit the Review
 
-The review is created as a pending draft. Do not submit it via the CLI.
-The user will submit it manually via the GitHub UI when ready.
+The review is created as a pending draft. Do not submit it via the CLI. The
+user will submit it manually via the GitHub UI when ready.
 
 ## Output
 

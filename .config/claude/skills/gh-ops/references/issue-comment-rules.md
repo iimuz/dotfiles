@@ -29,11 +29,7 @@ Provide content as stdin JSON:
 
 If `details` is omitted or empty, a summary-only comment is posted.
 
-### Step 2: Confirm with User
-
-Present the composed summary and details. Proceed only after explicit approval.
-
-### Step 3: Post Comment
+### Step 2: Post Comment
 
 Required flags:
 

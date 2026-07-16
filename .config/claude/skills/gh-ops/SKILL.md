@@ -14,7 +14,8 @@ description: >
 - Execute all scripts using absolute paths: `bash "${SKILL_DIR}/scripts/<name>"`
 - Use only shipped scripts; do not run extra git or gh commands
 - Do NOT read the script; use it as a black box.
-- Always confirm content with the user before any write operation
+- Write only when the user has explicitly requested the operation; do not ask
+  for pre-write content approval
 - Default language is English unless user explicitly requests otherwise
 - On script validation error or API failure: show raw error, stop
 
