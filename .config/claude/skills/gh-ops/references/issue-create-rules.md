@@ -47,11 +47,7 @@ feature:
 }
 ```
 
-### Step 3: Confirm with User
-
-Present the composed issue content. Proceed only after explicit approval.
-
-### Step 4: Create Issue
+### Step 3: Create Issue
 
 Optional flags:
 
