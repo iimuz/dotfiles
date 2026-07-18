@@ -17,7 +17,7 @@ mise run setup # install all tools
 
 - Lint: `mise run lint`
 - Format: `mise run format`
-- Test: `mise run test`
+- Test: `mise run test` (runs pytest, then bats)
 
 Run `mise run format` and `mise run lint` after any modifications.
 
@@ -33,7 +33,9 @@ Run `mise run format` and `mise run lint` after any modifications.
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `.mise/`: Mise task definitions (shell scripts invoked by `mise run`)
 - `docs/`: Design documents and ADRs
-- `tests/`: Python test suite (primarily tests for hook scripts)
+- `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
+- `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats
+  (shell helper functions in `lib/`); both run via `mise run test`
 - `lefthook.yml`: Pre-commit hook definition (runs format → lint + test automatically)
 - `setup_*.sh` / `update_*.sh`: Platform-specific environment setup scripts at root
 
@@ -43,6 +45,7 @@ Platform-specific setup scripts follow the `setup_*.sh` pattern; update scripts 
 
 ## CI
 
-The CI workflow (`.github/workflows/ci.yml`) only runs `mise run lint`.
+The CI workflow (`.github/workflows/ci.yml`) runs `mise run lint` and `mise run test`
+as parallel jobs.
 Platform-specific mise configs are loaded only via symlinks created by `setup_*.sh` scripts,
 so they are not present in the CI environment.
