@@ -4,10 +4,10 @@
 shfmt = "3.13.1"
 shellcheck = "0.11.0"
 "cargo:taplo-cli" = "0.10.0"
-"npm:prettier" = "3.9.1"
+"npm:prettier" = "3.9.4"
 "npm:markdownlint-cli2" = "0.23.0"
 lefthook = "2.1.9"
-uv = "0.11.25"
+uv = "0.11.26"
 
 [env]
 _.file = ".env"
