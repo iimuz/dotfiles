@@ -11,5 +11,5 @@ pre-commit:
             glob: "**/*.{sh,md,py}"
             run: mise run lint -- {staged_files}
           - name: test
-            glob: "**/*.py"
+            glob: "**/*.{py,bats,sh}"
             run: mise run test
