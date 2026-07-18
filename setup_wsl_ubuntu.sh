@@ -4,21 +4,6 @@
 set -eu
 set -o pipefail
 
-# Create symlink if link does not exist.
-function create_symlink() {
-  local -r src=$1
-  local -r dst=$2
-
-  if [ -e "$dst" ]; then
-    echo "already exist $dst"
-    return 0
-  fi
-
-  echo "symlink $src to $dst"
-  mkdir -p "$(dirname "$dst")"
-  ln -s "$src" "$dst"
-}
-
 # Install lazygit
 # see: <https://github.com/jesseduffield/lazygit?tab=readme-ov-file#installation>
 # ubuntu25.10以降は単純にaptでインストール可能になる。
@@ -50,29 +35,6 @@ function _install_yq() {
   sudo install yq -D -t /usr/local/bin/
 }
 
-# Add loading file in .bashrc or .zshrc.
-function set_bashrc() {
-  local -r filename="$1"
-
-  if [[ "$SHELL" == *zsh* ]]; then
-    # zshを利用しているので設定ファイルが異なる
-    local -r rcfile="$HOME/.zshrc"
-  else
-    # bashを想定している
-    local -r rcfile="$HOME/.bashrc"
-  fi
-
-  # if setting exits in rc file, do nothing.
-  if grep -qF -- "$filename" "$rcfile" >/dev/null 2>&1; then
-    echo "already setting in $rcfile: $filename"
-    return 0
-  fi
-
-  # Add file path.
-  echo "set load setting in $rcfile: $filename"
-  echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
-}
-
 # === 共通パスの設定
 SCRIPT_DIR=
 SCRIPT_DIR=$(
@@ -81,6 +43,9 @@ SCRIPT_DIR=$(
 )
 readonly SCRIPT_DIR
 readonly CONFIG_PATH=$SCRIPT_DIR/.config
+
+# Load shared helper functions
+. "$SCRIPT_DIR/lib/setup-common.sh"
 
 # Installが確認できていないツール
 # - eza
