@@ -45,11 +45,6 @@ This is the highest-priority rule.
 - Code is readable and maintainable.
 - User requirements are met exactly — no more, no less.
 
-### Task Completion Protocol
-
-Call the `question` tool at the end of every response.
-A task is complete only when the user explicitly confirms it.
-
 ## Style and Preferences
 
 - Do not use emojis in code, comments, or documentation.
