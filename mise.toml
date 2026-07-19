@@ -12,3 +12,116 @@ uv = "0.11.26"
 
 [env]
 _.file = ".env"
+
+[tasks."format:sh"]
+description = "shfmt でシェルスクリプトを整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.sh')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+shfmt -w -i 2 -ci -- "$@"
+'''
+
+[tasks."format:toml"]
+description = "taplo で TOML を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.toml')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+taplo format "$@"
+'''
+
+[tasks."format:md"]
+description = "prettier で Markdown を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.md')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+prettier --write "$@"
+'''
+
+[tasks."format:py"]
+description = "ruff で Python を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.py')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+uv run ruff format -- "$@"
+'''
+
+[tasks.format]
+description = "全ファイルを整形"
+depends = ["format:sh", "format:toml", "format:md", "format:py"]
+
+[tasks."lint:sh"]
+description = "shellcheck でシェルスクリプトを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.sh'; git ls-files --others --exclude-standard '*.sh')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+shellcheck --severity=error -- "$@"
+'''
+
+[tasks."lint:md"]
+description = "markdownlint-cli2 で Markdown を検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.md'; git ls-files --others --exclude-standard '*.md')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+markdownlint-cli2 "$@"
+'''
+
+[tasks."lint:py"]
+description = "ruff で Python を検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+if [ -n "$usage_files" ]; then
+  eval "set -- $usage_files"
+else
+  set -- $(git ls-files '*.py'; git ls-files --others --exclude-standard '*.py')
+fi
+if [ "$#" -eq 0 ]; then exit 0; fi
+uv run ruff check -- "$@"
+'''
+
+[tasks.lint]
+description = "全ファイルを検査"
+depends = ["lint:sh", "lint:md", "lint:py"]
