@@ -31,7 +31,9 @@ Run `mise run format` and `mise run lint` after any modifications.
   - `.config/copilot/`: Copilot agent definitions, skills, hooks, and config
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
-- `.mise/`: Mise task definitions (shell scripts invoked by `mise run`)
+- `.mise/`: File-based mise task scripts that need real args or non-trivial logic
+  (e.g. `setup`, `test`); simpler tasks like format/lint are defined inline in
+  `mise.toml` `[tasks]`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats
