@@ -57,6 +57,8 @@ uv run ruff format -- "$@"
 description = "全ファイルを整形"
 depends = ["format:sh", "format:toml", "format:md", "format:py"]
 
+# shellcheck はフォルダや glob 指定を受け付けず、対象ファイルを明示的に渡す必要がある。
+# そのため他タスクのようにツール自身の探索へ任せられず、git ls-files で一覧を生成している。
 [tasks."lint:sh"]
 description = "shellcheck でシェルスクリプトを検査"
 usage = '''
