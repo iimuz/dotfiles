@@ -13,6 +13,15 @@ uv = "0.11.26"
 [env]
 _.file = ".env"
 
+[tasks.setup]
+description = "lefthook の git hook をインストール"
+run = '''
+# git worktree においては、ルートリポジトリ側で lefthook が設定されていればいいのでスキップ
+if [ -d ".git" ]; then
+  lefthook install
+fi
+'''
+
 [tasks."format:sh"]
 description = "shfmt でシェルスクリプトを整形"
 usage = '''
@@ -94,3 +103,15 @@ uv run ruff check -- "$@"
 [tasks.lint]
 description = "全ファイルを検査"
 depends = ["lint:sh", "lint:md", "lint:py"]
+
+[tasks."test:py"]
+description = "pytest で Python テストを実行"
+run = "uv run pytest"
+
+[tasks."test:sh"]
+description = "bats でシェルテストを実行"
+run = "bats tests/"
+
+[tasks.test]
+description = "全テストを実行"
+depends = ["test:py", "test:sh"]
