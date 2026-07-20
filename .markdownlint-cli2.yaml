@@ -5,3 +5,7 @@ config:
     tables: false
   MD024:
     siblings_only: true
+
+gitignore: true
+ignores:
+  - "docs/tmp/"

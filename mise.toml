@@ -19,13 +19,8 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.sh')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
-shfmt -w -i 2 -ci -- "$@"
+eval "set -- ${usage_files:-'./'}"
+shfmt -w -i 2 -ci "$@"
 '''
 
 [tasks."format:toml"]
@@ -34,12 +29,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.toml')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+eval "set -- ${usage_files:-'**/*.toml'}"
 taplo format "$@"
 '''
 
@@ -49,12 +39,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.md')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+eval "set -- ${usage_files:-'**/*.md'}"
 prettier --write "$@"
 '''
 
@@ -64,12 +49,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.py')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+eval "set -- ${usage_files:-.}"
 uv run ruff format -- "$@"
 '''
 
@@ -83,12 +63,9 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.sh'; git ls-files --others --exclude-standard '*.sh')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+files=${usage_files:-$(git ls-files -co --exclude-standard '*.sh' | tr '\n' ' ')}
+if [ -z "$files" ]; then exit 0; fi
+eval "set -- $files"
 shellcheck --severity=error -- "$@"
 '''
 
@@ -98,12 +75,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.md'; git ls-files --others --exclude-standard '*.md')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+eval "set -- ${usage_files:-'**/*.md'}"
 markdownlint-cli2 "$@"
 '''
 
@@ -113,12 +85,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-if [ -n "$usage_files" ]; then
-  eval "set -- $usage_files"
-else
-  set -- $(git ls-files '*.py'; git ls-files --others --exclude-standard '*.py')
-fi
-if [ "$#" -eq 0 ]; then exit 0; fi
+eval "set -- ${usage_files:-.}"
 uv run ruff check -- "$@"
 '''
 
