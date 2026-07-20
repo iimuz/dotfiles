@@ -12,3 +12,85 @@ uv = "0.11.26"
 
 [env]
 _.file = ".env"
+
+[tasks."format:sh"]
+description = "shfmt でシェルスクリプトを整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'./'}"
+shfmt -w -i 2 -ci "$@"
+'''
+
+[tasks."format:toml"]
+description = "taplo で TOML を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'**/*.toml'}"
+taplo format "$@"
+'''
+
+[tasks."format:md"]
+description = "prettier で Markdown を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'**/*.md'}"
+prettier --write "$@"
+'''
+
+[tasks."format:py"]
+description = "ruff で Python を整形"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-.}"
+uv run ruff format -- "$@"
+'''
+
+[tasks.format]
+description = "全ファイルを整形"
+depends = ["format:sh", "format:toml", "format:md", "format:py"]
+
+# shellcheck はフォルダや glob 指定を受け付けず、対象ファイルを明示的に渡す必要がある。
+# そのため他タスクのようにツール自身の探索へ任せられず、git ls-files で一覧を生成している。
+[tasks."lint:sh"]
+description = "shellcheck でシェルスクリプトを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+files=${usage_files:-$(git ls-files -co --exclude-standard '*.sh' | tr '\n' ' ')}
+if [ -z "$files" ]; then exit 0; fi
+eval "set -- $files"
+shellcheck --severity=error -- "$@"
+'''
+
+[tasks."lint:md"]
+description = "markdownlint-cli2 で Markdown を検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'**/*.md'}"
+markdownlint-cli2 "$@"
+'''
+
+[tasks."lint:py"]
+description = "ruff で Python を検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-.}"
+uv run ruff check -- "$@"
+'''
+
+[tasks.lint]
+description = "全ファイルを検査"
+depends = ["lint:sh", "lint:md", "lint:py"]
