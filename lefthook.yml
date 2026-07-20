@@ -1,22 +1,27 @@
 pre-commit:
   jobs:
-    - name: format-sh
-      glob: "**/*.sh"
-      stage_fixed: true
-      run: mise run format:sh -- {staged_files}
-    - name: format-toml
-      glob: "**/*.toml"
-      stage_fixed: true
-      run: mise run format:toml -- {staged_files}
-    - name: format-md
-      glob: "**/*.md"
-      stage_fixed: true
-      run: mise run format:md -- {staged_files}
-    - name: format-py
-      glob: "**/*.py"
-      stage_fixed: true
-      run: mise run format:py -- {staged_files}
-    - group:
+    - name: format
+      group:
+        parallel: true
+        jobs:
+          - name: format-sh
+            glob: "**/*.sh"
+            stage_fixed: true
+            run: mise run format:sh -- {staged_files}
+          - name: format-toml
+            glob: "**/*.toml"
+            stage_fixed: true
+            run: mise run format:toml -- {staged_files}
+          - name: format-md
+            glob: "**/*.md"
+            stage_fixed: true
+            run: mise run format:md -- {staged_files}
+          - name: format-py
+            glob: "**/*.py"
+            stage_fixed: true
+            run: mise run format:py -- {staged_files}
+    - name: lint
+      group:
         parallel: true
         jobs:
           - name: lint-sh
