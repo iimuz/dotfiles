@@ -14,96 +14,76 @@ uv = "0.11.26"
 _.file = ".env"
 
 [tasks."format:sh"]
-description = "shfmt でシェルスクリプトを整形"
+description = "shfmt でシェルスクリプトを整形（--check で崩れを検査）"
 usage = '''
 arg "[files]" var=#true
+flag "--check"
 '''
 run = '''
 eval "set -- ${usage_files:-'./'}"
-shfmt -w -i 2 -ci "$@"
+if [ -n "${usage_check:-}" ]; then
+  shfmt -d -i 2 -ci "$@"
+else
+  shfmt -w -i 2 -ci "$@"
+fi
 '''
 
 [tasks."format:toml"]
-description = "taplo で TOML を整形"
+description = "taplo で TOML を整形（--check で崩れを検査）"
 usage = '''
 arg "[files]" var=#true
+flag "--check"
 '''
 run = '''
 eval "set -- ${usage_files:-'**/*.toml'}"
-taplo format "$@"
+if [ -n "${usage_check:-}" ]; then
+  taplo format --check "$@"
+else
+  taplo format "$@"
+fi
 '''
 
 [tasks."format:md"]
-description = "prettier で Markdown を整形"
+description = "prettier で Markdown を整形（--check で崩れを検査）"
 usage = '''
 arg "[files]" var=#true
+flag "--check"
 '''
 run = '''
 eval "set -- ${usage_files:-'**/*.md'}"
-prettier --write "$@"
+if [ -n "${usage_check:-}" ]; then
+  prettier --check "$@"
+else
+  prettier --write "$@"
+fi
 '''
 
 [tasks."format:py"]
-description = "ruff で Python を整形"
+description = "ruff で Python を整形（--check で崩れを検査）"
 usage = '''
 arg "[files]" var=#true
+flag "--check"
 '''
 run = '''
 eval "set -- ${usage_files:-.}"
-uv run ruff format -- "$@"
+if [ -n "${usage_check:-}" ]; then
+  uv run ruff format --check -- "$@"
+else
+  uv run ruff format -- "$@"
+fi
 '''
 
 [tasks.format]
 description = "全ファイルを整形"
 depends = ["format:sh", "format:toml", "format:md", "format:py"]
 
-[tasks."format:check:sh"]
-description = "shfmt でシェルスクリプトの整形崩れを検査"
-usage = '''
-arg "[files]" var=#true
-'''
-run = '''
-eval "set -- ${usage_files:-'./'}"
-shfmt -d -i 2 -ci "$@"
-'''
-
-[tasks."format:check:toml"]
-description = "taplo で TOML の整形崩れを検査"
-usage = '''
-arg "[files]" var=#true
-'''
-run = '''
-eval "set -- ${usage_files:-'**/*.toml'}"
-taplo format --check "$@"
-'''
-
-[tasks."format:check:md"]
-description = "prettier で Markdown の整形崩れを検査"
-usage = '''
-arg "[files]" var=#true
-'''
-run = '''
-eval "set -- ${usage_files:-'**/*.md'}"
-prettier --check "$@"
-'''
-
-[tasks."format:check:py"]
-description = "ruff で Python の整形崩れを検査"
-usage = '''
-arg "[files]" var=#true
-'''
-run = '''
-eval "set -- ${usage_files:-.}"
-uv run ruff format --check -- "$@"
-'''
-
 [tasks."format:check"]
 description = "全ファイルの整形崩れを検査"
 depends = [
-  "format:check:sh",
-  "format:check:toml",
-  "format:check:md",
-  "format:check:py",
+  "format:sh --check",
+  "format:toml --check",
+  "format:md --check",
+  "format:py --check",
 ]
 
 # shellcheck はフォルダや glob 指定を受け付けず、対象ファイルを明示的に渡す必要がある。
