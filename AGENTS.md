@@ -47,7 +47,7 @@ Platform-specific setup scripts follow the `setup_*.sh` pattern; update scripts 
 
 ## CI
 
-The CI workflow (`.github/workflows/ci.yml`) runs `mise run lint` and `mise run test`
-as parallel jobs.
+The CI workflow (`.github/workflows/ci.yml`) runs `mise run lint`, `mise run test`, and
+`mise run format:check` as parallel jobs.
 Platform-specific mise configs are loaded only via symlinks created by `setup_*.sh` scripts,
 so they are not present in the CI environment.
