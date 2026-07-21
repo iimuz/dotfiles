@@ -57,6 +57,55 @@ uv run ruff format -- "$@"
 description = "全ファイルを整形"
 depends = ["format:sh", "format:toml", "format:md", "format:py"]
 
+[tasks."format:check:sh"]
+description = "shfmt でシェルスクリプトの整形崩れを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'./'}"
+shfmt -d -i 2 -ci "$@"
+'''
+
+[tasks."format:check:toml"]
+description = "taplo で TOML の整形崩れを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'**/*.toml'}"
+taplo format --check "$@"
+'''
+
+[tasks."format:check:md"]
+description = "prettier で Markdown の整形崩れを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-'**/*.md'}"
+prettier --check "$@"
+'''
+
+[tasks."format:check:py"]
+description = "ruff で Python の整形崩れを検査"
+usage = '''
+arg "[files]" var=#true
+'''
+run = '''
+eval "set -- ${usage_files:-.}"
+uv run ruff format --check -- "$@"
+'''
+
+[tasks."format:check"]
+description = "全ファイルの整形崩れを検査"
+depends = [
+  "format:check:sh",
+  "format:check:toml",
+  "format:check:md",
+  "format:check:py",
+]
+
 # shellcheck はフォルダや glob 指定を受け付けず、対象ファイルを明示的に渡す必要がある。
 # そのため他タスクのようにツール自身の探索へ任せられず、git ls-files で一覧を生成している。
 [tasks."lint:sh"]
