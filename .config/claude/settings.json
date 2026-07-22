@@ -103,7 +103,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "ccstatusline"
+    "command": "if [ -x \"$HOME/.claude/runcat-statusline.py\" ]; then \"$HOME/.claude/runcat-statusline.py\"; else ccstatusline; fi"
   },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
