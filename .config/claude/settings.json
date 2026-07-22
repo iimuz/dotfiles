@@ -113,8 +113,9 @@
     "pyright-lsp@claude-plugins-official": true,
     "deploy-on-aws@agent-plugins-for-aws": false,
     "superpowers@claude-plugins-official": true,
-    "sample@iimuz-dotfiles": true,
-    "six-hats@iimuz-dotfiles": true
+    "sample@iimuz-dotfiles": false,
+    "six-hats@iimuz-dotfiles": false,
+    "scamper@iimuz-dotfiles": false
   },
   "extraKnownMarketplaces": {
     "agent-plugins-for-aws": {
@@ -173,6 +174,8 @@
     "excludedCommands": ["docker *", "gh *"]
   },
   "effortLevel": "xhigh",
+  "advisorModel": "fable",
   "theme": "dark",
+  "teammateMode": "auto",
   "skipAutoPermissionPrompt": true
 }
