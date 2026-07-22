@@ -274,10 +274,10 @@ def main(argv: list[str]) -> None:
     except OSError:
         raw = ""
     payload = parse_payload(raw)
-    five, seven = extract_percentages(payload)
-    maybe_spawn_refresh(now)
-    cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
-    with contextlib.suppress(OSError):
+    with contextlib.suppress(Exception):
+        five, seven = extract_percentages(payload)
+        maybe_spawn_refresh(now)
+        cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
         atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
     relay_ccstatusline(raw, payload)
 
