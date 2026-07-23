@@ -27,7 +27,11 @@ Run `mise run format` and `mise run lint` after any modifications.
   - `.config/mise/`: Platform-specific mise tool configs; each `setup_*.sh` symlinks the
     matching `config-{platform}.toml` to `~/.config/mise/config.toml`
   - `.config/claude/`: Claude Code user settings managed as dotfiles (CLAUDE.md, skills/,
-    settings.json); distinct from `.claude/` (runtime directory used by the Claude Code process)
+    settings.json, runcat-statusline.py); distinct from `.claude/` (runtime directory used by
+    the Claude Code process). `runcat-statusline.py` is the statusLine command: it relays
+    ccstatusline for the terminal and writes a RunCat Neo custom-metrics snapshot
+    (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the current-month ccusage cost).
+    Register that file in RunCat Neo (Settings -> Metrics -> Custom Metrics; macOS only).
   - `.config/copilot/`: Copilot agent definitions, skills, hooks, and config
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
