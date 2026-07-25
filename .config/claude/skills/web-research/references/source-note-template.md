@@ -6,7 +6,7 @@
 - 取得日: {YYYY-MM-DD}
 - 公開日: {YYYY-MM-DD。不明な場合は「不明」}
 - ソース種別: {一次資料 | 二次資料 | ブログ | フォーラム | 取得失敗}
-- 取得方法: {ctx_fetch_and_index | WebFetch}
+- 取得方法: {ctx_fetch_and_index + ctx_search | WebFetch}
 
 ## Summary
 
