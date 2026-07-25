@@ -47,6 +47,12 @@ setup() {
 
 # --- create_hardlink ---
 
+# Reads a file's inode number. Portable across GNU stat (Linux, `-c`) and
+# BSD stat (macOS, `-f`).
+get_inode() {
+  stat -c %i "$1" 2>/dev/null || stat -f %i "$1"
+}
+
 @test "create_hardlink: creates a hard link from src to dst" {
   local src="$BATS_TEST_TMPDIR/src_file"
   local dst="$BATS_TEST_TMPDIR/dst_link"
@@ -58,8 +64,8 @@ setup() {
   [ ! -L "$dst" ]
   # Hard link shares inode
   local src_inode dst_inode
-  src_inode=$(stat -c %i "$src")
-  dst_inode=$(stat -c %i "$dst")
+  src_inode=$(get_inode "$src")
+  dst_inode=$(get_inode "$dst")
   [ "$src_inode" = "$dst_inode" ]
 }
 
@@ -72,8 +78,8 @@ setup() {
   [ "$status" -eq 0 ]
   [ -e "$dst" ]
   local src_inode dst_inode
-  src_inode=$(stat -c %i "$src")
-  dst_inode=$(stat -c %i "$dst")
+  src_inode=$(get_inode "$src")
+  dst_inode=$(get_inode "$dst")
   [ "$src_inode" = "$dst_inode" ]
 }
 
@@ -83,14 +89,14 @@ setup() {
   echo "content" >"$src"
   echo "existing" >"$dst"
   local original_inode
-  original_inode=$(stat -c %i "$dst")
+  original_inode=$(get_inode "$dst")
 
   run create_hardlink "$src" "$dst"
   [ "$status" -eq 0 ]
   [[ "$output" == *"already exist"* ]]
   # dst unchanged: same inode, same content
   local dst_inode
-  dst_inode=$(stat -c %i "$dst")
+  dst_inode=$(get_inode "$dst")
   [ "$dst_inode" = "$original_inode" ]
   [ "$(cat "$dst")" = "existing" ]
 }

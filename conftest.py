@@ -39,3 +39,8 @@ _load_module(
     _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "append_review.py",
 )
 _gh_ops.append_review = sys.modules["gh_ops.append_review"]
+
+_load_module(
+    "config.claude.runcat_statusline",
+    _PROJECT_ROOT / ".config" / "claude" / "runcat-statusline.py",
+)

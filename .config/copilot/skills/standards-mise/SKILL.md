@@ -1,9 +1,9 @@
 ---
 name: standards-mise
 description: >-
-  Use when creating or modifying mise tasks (file-based scripts in
-  .mise/tasks/ or inline tasks in mise.toml) to enforce naming conventions
-  and pick the right task pattern.
+  Use when creating or modifying mise tasks (inline tasks in mise.toml or
+  script-backed tasks in scripts/) to enforce naming conventions and pick
+  the right task pattern.
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -30,20 +30,22 @@ documentation, these rules take precedence.
 Two ways to define a task exist in this repo; pick based on what the task
 needs.
 
-- **File-based** (`.mise/tasks/`): use when the task needs real shell
-  positional args (`$@`), bash-only features, or non-trivial logic.
-  Examples: `setup`, `test`.
-- **Inline** (`mise.toml` `[tasks]`): use for simple, single-purpose tasks.
-  Examples: the per-tool `format:*` / `lint:*` tasks and the `format` /
-  `lint` umbrella tasks that `depends` on them.
+- **Inline** (`mise.toml` `[tasks]`): the default. Use for simple,
+  single-purpose tasks. Examples: `setup`, the per-tool `format:*` /
+  `lint:*` / `test:*` tasks, and the `format` / `lint` / `test` umbrella
+  tasks that `depends` on them.
+- **Script-backed** (`scripts/`): use when the task needs bash-only
+  features or non-trivial logic. Place the script in `scripts/` and
+  reference it from an inline task's `run`. No current task needs this.
 
 ### Naming Convention
 
-- File-based tasks: always include a file extension (`.sh` for shell
-  scripts). mise uses the filename without extension as the task name.
-  Example: `setup.sh` becomes task `setup`.
 - Inline tasks: the `[tasks]` table key is the task name, e.g.
   `[tasks."format:sh"]` becomes task `format:sh`.
+- Sub-tasks use a target-language suffix (`format:py` / `lint:sh` /
+  `test:py`); umbrella tasks aggregate them via `depends`.
+- Script-backed tasks: name the script after the task with a file
+  extension, e.g. `scripts/setup.sh` referenced by `[tasks.setup]`.
 
 ### Inline Task Arguments
 

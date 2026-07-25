@@ -11,7 +11,7 @@
 
 - Setup Scripts: `setup_*.sh`, `update_*.sh`
 - Configurations: `.config/`
-- Mise Settings: `.mise/`
+- Mise Settings: `mise.toml`
 - Documents: `docs/`
   - Design: `docs/design/`
   - Planning: `docs/planning.md`
