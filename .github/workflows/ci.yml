@@ -43,3 +43,12 @@ jobs:
 
       - name: Run Format Check
         run: mise run format:check
+
+  status-check:
+    if: always()
+    needs: [lint, test, format]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs passed
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
