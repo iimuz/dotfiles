@@ -3,6 +3,7 @@
   "extends": ["config:best-practices", "helpers:pinGitHubActionDigests"],
   "ignorePresets": ["security:minimumReleaseAgeNpm"],
   "dependencyDashboard": false,
+  "platformAutomerge": true,
   "minimumReleaseAge": "14 days",
   "statusCheckNames": {
     "minimumReleaseAge": null
@@ -32,10 +33,11 @@
       "groupName": "mise tools (major)"
     },
     {
-      "description": "Group all mise minor updates into a single PR",
+      "description": "Group and automerge all mise minor updates",
       "matchManagers": ["mise"],
       "matchUpdateTypes": ["minor"],
-      "groupName": "mise tools (minor)"
+      "groupName": "mise tools (minor)",
+      "automerge": true
     },
     {
       "description": "Group and automerge all mise patch updates",
@@ -51,10 +53,11 @@
       "groupName": "github actions (major)"
     },
     {
-      "description": "Group all GitHub Actions minor updates into a single PR",
+      "description": "Group and automerge all GitHub Actions minor updates",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor"],
-      "groupName": "github actions (minor)"
+      "groupName": "github actions (minor)",
+      "automerge": true
     },
     {
       "description": "Group and automerge all GitHub Actions patch updates",
