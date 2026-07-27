@@ -28,7 +28,7 @@ auto-merge 有効化とブランチ保護はファイル管理できないリポ
 - `renovate.json` で非メジャー(patch/minor)を automerge 対象とし、major は手動マージ
   とする。Node.js major・Python minor(=major 相当)は従来通り手動とする。
 - CI に集約ジョブ `status-check` を追加し、`lint` / `test` / `format` が全て成功した
-  ときのみ成功する(`if: always()` と `needs` の結果検査で判定)。master のブランチ保護
+  ときのみ成功する(`if: !cancelled()` と `needs` の結果検査で判定)。master のブランチ保護
   では、この `status-check` のみを必須ステータスチェックとして要求する。PR を必須
   (承認数 0)とし、管理者もバイパス不可とする。
 

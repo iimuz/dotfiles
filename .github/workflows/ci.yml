@@ -45,7 +45,7 @@ jobs:
         run: mise run format:check
 
   status-check:
-    if: always()
+    if: ${{ !cancelled() }}
     needs: [lint, test, format]
     runs-on: ubuntu-latest
     steps:
