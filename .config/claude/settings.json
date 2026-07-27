@@ -69,10 +69,10 @@
       "Read(**/.env.*)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Write(**/.env)",
-      "Write(**/.env.*)",
-      "Write(./.env)",
-      "Write(./.env.*)"
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(./.env)",
+      "Edit(./.env.*)"
     ],
     "defaultMode": "auto"
   },
