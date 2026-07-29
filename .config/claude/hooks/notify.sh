@@ -7,6 +7,12 @@ set -u
 # Run only on macOS with osascript available; otherwise do nothing.
 command -v osascript >/dev/null 2>&1 || exit 0
 
+# Inside cmux, the cmux claude wrapper auto-injects notification hooks;
+# skip osascript to avoid duplicate notifications.
+if [ -n "${CMUX_SURFACE_ID:-}" ]; then
+  exit 0
+fi
+
 event="${1:-}"
 case "$event" in
   notification)
