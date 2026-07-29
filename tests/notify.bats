@@ -17,14 +17,14 @@ STUB
   PATH="$stub_bin:$PATH"
 }
 
-@test "notify.sh: skips osascript inside cmux (CMUX_SURFACE_ID set)" {
-  run env -u TMUX -u TMUX_PANE CMUX_SURFACE_ID="test-surface" "$NOTIFY_SH" notification
+@test "notify.sh: skips osascript inside cmux (CMUX_CLAUDE_HOOK_CMUX_BIN set)" {
+  run env -u TMUX -u TMUX_PANE CMUX_CLAUDE_HOOK_CMUX_BIN="/fake/cmux/bin" "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ ! -f "$ARGS_LOG" ]
 }
 
-@test "notify.sh: calls osascript outside cmux (CMUX_SURFACE_ID unset)" {
-  run env -u TMUX -u TMUX_PANE -u CMUX_SURFACE_ID "$NOTIFY_SH" notification
+@test "notify.sh: calls osascript outside cmux (CMUX_CLAUDE_HOOK_CMUX_BIN unset)" {
+  run env -u TMUX -u TMUX_PANE -u CMUX_CLAUDE_HOOK_CMUX_BIN "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ -f "$ARGS_LOG" ]
   grep -qF "display notification" "$ARGS_LOG"
