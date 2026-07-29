@@ -57,6 +57,7 @@ cask "obs"
 
 # === terminal
 brew "cmake"
+cask "cmux"
 brew "gcc"
 cask "ghostty"
 # brew "luarocks"  # for lazy.nvim plugin -> おそらく lua 導入で不要になっているはず
