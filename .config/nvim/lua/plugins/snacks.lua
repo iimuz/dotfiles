@@ -20,7 +20,7 @@ end
 
 -- 選択しているファイルのfilenameをカーソル位置に挿入する
 -- zettelkastenのリンク記法 `[タイトル](ファイル名.md)` に合わせて拡張子付きで挿入する
-local function insert_filename(picker, _)
+local function insert_filename_with_ext(picker, _)
 	local item = picker:current()
 	local filepath = item.file or item.path or item.filename
 	local filename = vim.fn.fnamemodify(filepath, ":t")
@@ -70,12 +70,12 @@ return {
 				grep_word = { hidden = true },
 			},
 			actions = {
-				insert_filename = insert_filename,
+				insert_filename_with_ext = insert_filename_with_ext,
 			},
 			win = {
 				input = {
 					keys = {
-						["<C-f>"] = { "insert_filename", mode = { "n", "i" } },
+						["<C-f>"] = { "insert_filename_with_ext", mode = { "n", "i" } },
 					},
 				},
 			},
