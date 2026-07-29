@@ -19,7 +19,6 @@ local function find_files_in_current_folder()
 end
 
 -- 選択しているファイルのfilenameをカーソル位置に挿入する
--- zettelkastenのリンク記法 `[タイトル](ファイル名.md)` に合わせて拡張子付きで挿入する
 local function insert_filename_with_ext(picker, _)
 	local item = picker:current()
 	local filepath = item.file or item.path or item.filename
