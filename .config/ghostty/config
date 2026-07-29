@@ -2,7 +2,7 @@
 theme = ayu
 font-family = HackGen Console NF
 font-thicken
-font-size = 18
+font-size = 16
 
 # 日本語での文字化け対策とのこと。発生したら試す。
 # see: <https://zenn.dev/massa/articles/ghostty-usage>
