@@ -1,6 +1,6 @@
 """Tests for the RunCat Neo statusLine wrapper (pure logic)."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from config.claude.statusline import (
     build_output,
@@ -8,6 +8,7 @@ from config.claude.statusline import (
     cost_from_cache,
     extract_percentages,
     format_cost,
+    format_reset_datetime,
     format_reset_delta,
     parse_month_cost,
 )
@@ -115,6 +116,25 @@ class TestCostFromCache:
     def test_bad_timestamp(self) -> None:
         cache = {"costUsd": 12.34, "updatedAt": "nonsense"}
         assert cost_from_cache(cache, NOW, 600) == (12.34, False)
+
+
+class TestFormatResetDatetime:
+    def test_utc(self) -> None:
+        ts = datetime(2026, 8, 3, 5, 0, tzinfo=timezone.utc).timestamp()
+        assert format_reset_datetime(ts, timezone.utc) == "08/03 05:00"
+
+    def test_timezone_conversion(self) -> None:
+        ts = datetime(2026, 8, 2, 20, 0, tzinfo=timezone.utc).timestamp()
+        jst = timezone(timedelta(hours=9))
+        assert format_reset_datetime(ts, jst) == "08/03 05:00"
+
+    def test_int_epoch_seconds(self) -> None:
+        assert format_reset_datetime(0, timezone.utc) == "01/01 00:00"
+
+    def test_invalid_inputs(self) -> None:
+        assert format_reset_datetime(None, timezone.utc) is None
+        assert format_reset_datetime(True, timezone.utc) is None
+        assert format_reset_datetime("1700000000", timezone.utc) is None
 
 
 def test_format_reset_delta_minutes():

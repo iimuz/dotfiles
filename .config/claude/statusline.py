@@ -30,7 +30,7 @@ import shutil
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, tzinfo
 from pathlib import Path
 
 TITLE = "Claude Code"
@@ -101,6 +101,17 @@ def format_reset_delta(seconds: object) -> str | None:
     if hours > 0:
         return f"{hours}h{minutes}m"
     return f"{minutes}m"
+
+
+def format_reset_datetime(resets_at: object, tz: tzinfo | None = None) -> str | None:
+    """Format an epoch-seconds reset time as ``MM/DD HH:MM`` in tz (local when None)."""
+    if isinstance(resets_at, bool) or not isinstance(resets_at, (int, float)):
+        return None
+    try:
+        dt = datetime.fromtimestamp(resets_at, tz=timezone.utc).astimezone(tz)
+    except (OverflowError, OSError, ValueError):
+        return None
+    return dt.strftime("%m/%d %H:%M")
 
 
 def _is_number(value: object) -> bool:
