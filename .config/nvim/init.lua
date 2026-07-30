@@ -6,7 +6,6 @@ require("lazy-init") -- plugin managerとしてlazy.nvimを設定
 require("auto-lastmod").setup() -- front matterのlatmod自動修正
 require("clipboard").setup() -- Clipboardへのコピーコマンド
 require("file").setup() -- File関連のコマンド
-require("front-matter-searcher").setup() -- front matterを検索するコマンド
 require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
 require("quickfix").setup() -- quickfixとlocation listのコマンド

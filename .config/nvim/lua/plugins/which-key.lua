@@ -29,7 +29,6 @@ return {
 			{ "<Leader>C", group = "Conform" },
 			{ "<Leader>d", group = "Diffview" },
 			{ "<Leader>f", group = "File" },
-			{ "<Leader>F", group = "FrontMatterSearcher" },
 			{ "<Leader>g", group = "GitSigns" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
 			{ "<Leader>k", group = "Kulala" },
