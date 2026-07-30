@@ -3,7 +3,7 @@
 import shutil
 from datetime import datetime, timezone
 
-from config.claude.runcat_statusline import (
+from config.claude.statusline import (
     TITLE,
     build_output,
     cost_from_cache,
