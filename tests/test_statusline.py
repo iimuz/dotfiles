@@ -1,10 +1,8 @@
 """Tests for the RunCat Neo statusLine wrapper (pure logic)."""
 
-import shutil
 from datetime import datetime, timezone
 
 from config.claude.statusline import (
-    TITLE,
     build_output,
     build_statusline,
     cost_from_cache,
@@ -12,7 +10,6 @@ from config.claude.statusline import (
     format_cost,
     format_reset_delta,
     parse_month_cost,
-    relay_ccstatusline,
 )
 
 NOW = datetime(2026, 7, 22, 0, 0, 0, tzinfo=timezone.utc)
@@ -118,18 +115,6 @@ class TestCostFromCache:
     def test_bad_timestamp(self) -> None:
         cache = {"costUsd": 12.34, "updatedAt": "nonsense"}
         assert cost_from_cache(cache, NOW, 600) == (12.34, False)
-
-
-class TestRelayCcstatuslineFallback:
-    def test_prints_model_name_when_ccstatusline_absent(self, monkeypatch, capsys) -> None:
-        monkeypatch.setattr(shutil, "which", lambda _name: None)
-        relay_ccstatusline("", {"model": {"display_name": "Opus 4.8"}})
-        assert capsys.readouterr().out.strip() == "Opus 4.8"
-
-    def test_falls_back_to_title_when_no_model(self, monkeypatch, capsys) -> None:
-        monkeypatch.setattr(shutil, "which", lambda _name: None)
-        relay_ccstatusline("", {})
-        assert capsys.readouterr().out.strip() == TITLE
 
 
 def test_format_reset_delta_minutes():
