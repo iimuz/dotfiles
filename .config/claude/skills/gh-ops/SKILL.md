@@ -18,6 +18,11 @@ description: >
   for pre-write content approval
 - Default language is English unless user explicitly requests otherwise
 - On script validation error or API failure: show raw error, stop
+- When referencing issues or PRs in body text, write links as `#{number}`;
+  do not use raw URLs
+- When referencing another repository's issue or PR, use the
+  `{owner}/{repository}#{number}` format
+- Use Mermaid for diagrams in body text
 
 ## Routing
 
