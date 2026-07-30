@@ -51,7 +51,7 @@ if type claude >/dev/null 2>&1; then
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
   create_symlink "$SCRIPT_DIR/.config/claude/hooks" "$HOME/.claude/hooks"
-  create_symlink "$SCRIPT_DIR/.config/claude/runcat-statusline.py" "$HOME/.claude/runcat-statusline.py"
+  create_symlink "$SCRIPT_DIR/.config/claude/statusline.py" "$HOME/.claude/statusline.py"
   create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
 
   # Setup MCP
@@ -73,10 +73,6 @@ if type claude >/dev/null 2>&1; then
   claude plugin marketplace add "$HOME/.claude/marketplace"
   claude plugin install "six-hats@iimuz-dotfiles"
   claude plugin install "scamper@iimuz-dotfiles"
-
-  if type ccstatusline >/dev/null 2>&1; then
-    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
-  fi
 fi
 # === gh
 if type gh >/dev/null 2>&1; then

@@ -4,10 +4,10 @@
 Invoked by Claude Code as its ``statusLine.command``. On each turn it:
 
 1. reads the statusLine JSON payload from stdin,
-2. writes a RunCat Neo custom-metrics snapshot to ``~/.claude/runcat-usage.json``
-   (5h / 7d rate-limit usage and the current-month API-cost estimate),
-3. relays the existing ``ccstatusline`` output to stdout so the terminal status
-   line is unchanged.
+2. on macOS, writes a RunCat Neo custom-metrics snapshot to
+   ``~/.claude/runcat-usage.json`` (5h / 7d rate-limit usage and the
+   current-month API-cost estimate),
+3. renders the terminal status line itself and prints it to stdout.
 
 The monthly cost comes from ``ccusage`` and is refreshed lazily in a detached
 background process (TTL-cached) so the status line never blocks.
@@ -37,6 +37,10 @@ TITLE = "Claude Code"
 SYMBOL = "staroflife"
 COST_TTL_SECONDS = 600
 LOCK_MAX_AGE_SECONDS = 120
+
+ANSI_CYAN = "\x1b[36m"
+ANSI_BRIGHT_BLACK = "\x1b[90m"
+ANSI_RESET = "\x1b[0m"
 
 CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude"))
 OUT_FILE = Path(os.environ.get("RUNCAT_OUT_FILE") or (CLAUDE_DIR / "runcat-usage.json"))
@@ -80,6 +84,64 @@ def format_cost(cost: float | None) -> str | None:
     if cost is None:
         return None
     return f"${cost:.2f}"
+
+
+def format_reset_delta(seconds: object) -> str | None:
+    """Format a positive remaining-seconds value as 34m / 1h23m / 2d4h."""
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+        return None
+    total = int(seconds)
+    if total <= 0:
+        return None
+    days, rem = divmod(total, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes = rem // 60
+    if days > 0:
+        return f"{days}d{hours}h"
+    if hours > 0:
+        return f"{hours}h{minutes}m"
+    return f"{minutes}m"
+
+
+def _is_number(value: object) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _rate_limit_segment(label: str, window: object, now: float) -> str | None:
+    if not isinstance(window, dict):
+        return None
+    pct = window.get("used_percentage")
+    if not _is_number(pct):
+        return None
+    text = f"{label}: {round(pct)}%"
+    resets_at = window.get("resets_at")
+    if _is_number(resets_at):
+        delta = format_reset_delta(resets_at - now)
+        if delta:
+            text = f"{text} ({delta})"
+    return text
+
+
+def build_statusline(payload: dict, now: float) -> str:
+    """Render the terminal status line from the statusLine stdin payload."""
+    segments = []
+    model = payload.get("model")
+    name = model.get("display_name") if isinstance(model, dict) else None
+    if isinstance(name, str) and name:
+        segments.append(f"{ANSI_CYAN}{name}{ANSI_RESET}")
+    context = payload.get("context_window")
+    ctx_pct = context.get("used_percentage") if isinstance(context, dict) else None
+    if _is_number(ctx_pct):
+        segments.append(f"{ANSI_BRIGHT_BLACK}Ctx: {round(ctx_pct)}%{ANSI_RESET}")
+    limits = payload.get("rate_limits")
+    if isinstance(limits, dict):
+        for label, key in (("5h", "five_hour"), ("7d", "seven_day")):
+            segment = _rate_limit_segment(label, limits.get(key), now)
+            if segment:
+                segments.append(segment)
+    if not segments:
+        return TITLE
+    return " | ".join(segments)
 
 
 def build_output(
@@ -242,28 +304,6 @@ def refresh_cost(now: datetime) -> None:
             COST_LOCK_FILE.unlink()
 
 
-def relay_ccstatusline(raw: str, payload: dict) -> None:
-    """Relay ccstatusline output; fall back to the model name if unavailable."""
-    exe = shutil.which("ccstatusline")
-    if exe:
-        try:
-            result = subprocess.run(
-                [exe],
-                input=raw,
-                capture_output=True,
-                text=True,
-                timeout=10,
-                check=False,
-            )
-            if result.returncode == 0 and result.stdout:
-                sys.stdout.write(result.stdout)
-                return
-        except (OSError, subprocess.SubprocessError):
-            pass
-    model = (payload.get("model") or {}).get("display_name") or TITLE
-    print(model)
-
-
 def main(argv: list[str]) -> None:
     now = datetime.now(timezone.utc)
     if "--refresh-cost" in argv:
@@ -274,12 +314,17 @@ def main(argv: list[str]) -> None:
     except OSError:
         raw = ""
     payload = parse_payload(raw)
-    with contextlib.suppress(Exception):
-        five, seven = extract_percentages(payload)
-        maybe_spawn_refresh(now)
-        cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
-        atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
-    relay_ccstatusline(raw, payload)
+    if sys.platform == "darwin":
+        with contextlib.suppress(Exception):
+            five, seven = extract_percentages(payload)
+            maybe_spawn_refresh(now)
+            cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
+            atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
+    try:
+        line = build_statusline(payload, time.time())
+    except Exception:
+        line = TITLE
+    print(line)
 
 
 if __name__ == "__main__":

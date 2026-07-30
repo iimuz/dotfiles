@@ -65,6 +65,7 @@ if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
+  create_symlink "$SCRIPT_DIR/.config/claude/statusline.py" "$HOME/.claude/statusline.py"
   create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
 
   # Setup MCP
@@ -79,10 +80,6 @@ if type claude >/dev/null 2>&1; then
 
   claude plugin marketplace add "awslabs/agent-plugins"
   claude plugin install "deploy-on-aws@agent-plugins-for-aws"
-
-  if type ccstatusline >/dev/null 2>&1; then
-    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
-  fi
 fi
 # === docker
 if ! type docker >/dev/null 2>&1; then

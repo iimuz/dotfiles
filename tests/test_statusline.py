@@ -1,16 +1,15 @@
 """Tests for the RunCat Neo statusLine wrapper (pure logic)."""
 
-import shutil
 from datetime import datetime, timezone
 
-from config.claude.runcat_statusline import (
-    TITLE,
+from config.claude.statusline import (
     build_output,
+    build_statusline,
     cost_from_cache,
     extract_percentages,
     format_cost,
+    format_reset_delta,
     parse_month_cost,
-    relay_ccstatusline,
 )
 
 NOW = datetime(2026, 7, 22, 0, 0, 0, tzinfo=timezone.utc)
@@ -118,13 +117,67 @@ class TestCostFromCache:
         assert cost_from_cache(cache, NOW, 600) == (12.34, False)
 
 
-class TestRelayCcstatuslineFallback:
-    def test_prints_model_name_when_ccstatusline_absent(self, monkeypatch, capsys) -> None:
-        monkeypatch.setattr(shutil, "which", lambda _name: None)
-        relay_ccstatusline("", {"model": {"display_name": "Opus 4.8"}})
-        assert capsys.readouterr().out.strip() == "Opus 4.8"
+def test_format_reset_delta_minutes():
+    assert format_reset_delta(34 * 60) == "34m"
 
-    def test_falls_back_to_title_when_no_model(self, monkeypatch, capsys) -> None:
-        monkeypatch.setattr(shutil, "which", lambda _name: None)
-        relay_ccstatusline("", {})
-        assert capsys.readouterr().out.strip() == TITLE
+
+def test_format_reset_delta_hours_minutes():
+    assert format_reset_delta(1 * 3600 + 23 * 60) == "1h23m"
+
+
+def test_format_reset_delta_days_hours():
+    assert format_reset_delta(2 * 86400 + 4 * 3600) == "2d4h"
+
+
+def test_format_reset_delta_zero_minutes():
+    assert format_reset_delta(30) == "0m"
+
+
+def test_format_reset_delta_invalid():
+    assert format_reset_delta(0) is None
+    assert format_reset_delta(-5) is None
+    assert format_reset_delta(True) is None
+    assert format_reset_delta("60") is None
+    assert format_reset_delta(None) is None
+
+
+NOW_STATUSLINE = 1_700_000_000.0
+
+FULL_PAYLOAD = {
+    "model": {"display_name": "Opus 4.8"},
+    "context_window": {"used_percentage": 34.2},
+    "rate_limits": {
+        "five_hour": {"used_percentage": 42.0, "resets_at": NOW_STATUSLINE + 4980},
+        "seven_day": {"used_percentage": 61.0, "resets_at": NOW_STATUSLINE + 2 * 86400 + 4 * 3600},
+    },
+}
+
+
+def test_build_statusline_full():
+    assert build_statusline(FULL_PAYLOAD, NOW_STATUSLINE) == (
+        "\x1b[36mOpus 4.8\x1b[0m | \x1b[90mCtx: 34%\x1b[0m | 5h: 42% (1h23m) | 7d: 61% (2d4h)"
+    )
+
+
+def test_build_statusline_without_rate_limits():
+    payload = {
+        "model": {"display_name": "Opus 4.8"},
+        "context_window": {"used_percentage": 34.2},
+    }
+    assert build_statusline(payload, NOW_STATUSLINE) == (
+        "\x1b[36mOpus 4.8\x1b[0m | \x1b[90mCtx: 34%\x1b[0m"
+    )
+
+
+def test_build_statusline_rate_limit_without_reset():
+    payload = {"rate_limits": {"five_hour": {"used_percentage": 42.0}}}
+    assert build_statusline(payload, NOW_STATUSLINE) == "5h: 42%"
+
+
+def test_build_statusline_empty_payload():
+    assert build_statusline({}, NOW_STATUSLINE) == "Claude Code"
+
+
+def test_build_statusline_rejects_bool_percentage():
+    payload = {"context_window": {"used_percentage": True}}
+    assert build_statusline(payload, NOW_STATUSLINE) == "Claude Code"
