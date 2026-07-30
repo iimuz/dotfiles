@@ -173,7 +173,7 @@
     "enableWeakerNetworkIsolation": true,
     "excludedCommands": ["docker *", "gh *"]
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "advisorModel": "fable",
   "theme": "dark",
   "teammateMode": "auto",
