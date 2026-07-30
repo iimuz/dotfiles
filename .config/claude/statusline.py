@@ -71,10 +71,21 @@ def extract_percentages(payload: dict) -> tuple[float | None, float | None]:
     return _as_float(five), _as_float(seven)
 
 
-def _metric_row(title: str, pct: float) -> dict:
+def extract_resets_at(payload: dict) -> tuple[float | None, float | None]:
+    """Return (five_hour, seven_day) resets_at epoch-second floats, or None if absent."""
+    rate_limits = payload.get("rate_limits") or {}
+    five = (rate_limits.get("five_hour") or {}).get("resets_at")
+    seven = (rate_limits.get("seven_day") or {}).get("resets_at")
+    return _as_float(five), _as_float(seven)
+
+
+def _metric_row(title: str, pct: float, suffix: str | None = None) -> dict:
+    formatted = f"{pct:.1f}%"
+    if suffix:
+        formatted = f"{formatted} ({suffix})"
     return {
         "title": title,
-        "formattedValue": f"{pct:.1f}%",
+        "formattedValue": formatted,
         "normalizedValue": round(_clamp01(pct / 100.0), 4),
     }
 
@@ -160,13 +171,18 @@ def build_output(
     seven: float | None,
     cost: float | None,
     now: datetime,
+    five_resets_at: object = None,
+    seven_resets_at: object = None,
 ) -> dict:
-    """Build the RunCat Neo custom-metrics dict from the three signals."""
+    """Build the RunCat Neo custom-metrics dict from the usage signals."""
     metrics: list[dict] = []
     if five is not None:
-        metrics.append(_metric_row("5h", five))
+        suffix = None
+        if _is_number(five_resets_at):
+            suffix = format_reset_delta(five_resets_at - now.timestamp())
+        metrics.append(_metric_row("5h", five, suffix))
     if seven is not None:
-        metrics.append(_metric_row("7d", seven))
+        metrics.append(_metric_row("7d", seven, format_reset_datetime(seven_resets_at)))
     cost_text = format_cost(cost)
     if cost_text is not None:
         metrics.append({"title": "Cost", "formattedValue": cost_text})
@@ -328,9 +344,13 @@ def main(argv: list[str]) -> None:
     if sys.platform == "darwin":
         with contextlib.suppress(Exception):
             five, seven = extract_percentages(payload)
+            five_resets_at, seven_resets_at = extract_resets_at(payload)
             maybe_spawn_refresh(now)
             cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
-            atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
+            atomic_write_json(
+                OUT_FILE,
+                build_output(five, seven, cost, now, five_resets_at, seven_resets_at),
+            )
     try:
         line = build_statusline(payload, time.time())
     except Exception:
