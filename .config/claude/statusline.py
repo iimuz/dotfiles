@@ -38,6 +38,10 @@ SYMBOL = "staroflife"
 COST_TTL_SECONDS = 600
 LOCK_MAX_AGE_SECONDS = 120
 
+ANSI_CYAN = "\x1b[36m"
+ANSI_BRIGHT_BLACK = "\x1b[90m"
+ANSI_RESET = "\x1b[0m"
+
 CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude"))
 OUT_FILE = Path(os.environ.get("RUNCAT_OUT_FILE") or (CLAUDE_DIR / "runcat-usage.json"))
 COST_CACHE_FILE = CLAUDE_DIR / "runcat-cost-cache.json"
@@ -97,6 +101,47 @@ def format_reset_delta(seconds: object) -> str | None:
     if hours > 0:
         return f"{hours}h{minutes}m"
     return f"{minutes}m"
+
+
+def _is_number(value: object) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _rate_limit_segment(label: str, window: object, now: float) -> str | None:
+    if not isinstance(window, dict):
+        return None
+    pct = window.get("used_percentage")
+    if not _is_number(pct):
+        return None
+    text = f"{label}: {round(pct)}%"
+    resets_at = window.get("resets_at")
+    if _is_number(resets_at):
+        delta = format_reset_delta(resets_at - now)
+        if delta:
+            text = f"{text} ({delta})"
+    return text
+
+
+def build_statusline(payload: dict, now: float) -> str:
+    """Render the terminal status line from the statusLine stdin payload."""
+    segments = []
+    model = payload.get("model")
+    name = model.get("display_name") if isinstance(model, dict) else None
+    if isinstance(name, str) and name:
+        segments.append(f"{ANSI_CYAN}{name}{ANSI_RESET}")
+    context = payload.get("context_window")
+    ctx_pct = context.get("used_percentage") if isinstance(context, dict) else None
+    if _is_number(ctx_pct):
+        segments.append(f"{ANSI_BRIGHT_BLACK}Ctx: {round(ctx_pct)}%{ANSI_RESET}")
+    limits = payload.get("rate_limits")
+    if isinstance(limits, dict):
+        for label, key in (("5h", "five_hour"), ("7d", "seven_day")):
+            segment = _rate_limit_segment(label, limits.get(key), now)
+            if segment:
+                segments.append(segment)
+    if not segments:
+        return TITLE
+    return " | ".join(segments)
 
 
 def build_output(

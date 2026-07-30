@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from config.claude.statusline import (
     TITLE,
     build_output,
+    build_statusline,
     cost_from_cache,
     extract_percentages,
     format_cost,
@@ -153,3 +154,45 @@ def test_format_reset_delta_invalid():
     assert format_reset_delta(True) is None
     assert format_reset_delta("60") is None
     assert format_reset_delta(None) is None
+
+
+NOW_STATUSLINE = 1_700_000_000.0
+
+FULL_PAYLOAD = {
+    "model": {"display_name": "Opus 4.8"},
+    "context_window": {"used_percentage": 34.2},
+    "rate_limits": {
+        "five_hour": {"used_percentage": 42.0, "resets_at": NOW_STATUSLINE + 4980},
+        "seven_day": {"used_percentage": 61.0, "resets_at": NOW_STATUSLINE + 2 * 86400 + 4 * 3600},
+    },
+}
+
+
+def test_build_statusline_full():
+    assert build_statusline(FULL_PAYLOAD, NOW_STATUSLINE) == (
+        "\x1b[36mOpus 4.8\x1b[0m | \x1b[90mCtx: 34%\x1b[0m | 5h: 42% (1h23m) | 7d: 61% (2d4h)"
+    )
+
+
+def test_build_statusline_without_rate_limits():
+    payload = {
+        "model": {"display_name": "Opus 4.8"},
+        "context_window": {"used_percentage": 34.2},
+    }
+    assert build_statusline(payload, NOW_STATUSLINE) == (
+        "\x1b[36mOpus 4.8\x1b[0m | \x1b[90mCtx: 34%\x1b[0m"
+    )
+
+
+def test_build_statusline_rate_limit_without_reset():
+    payload = {"rate_limits": {"five_hour": {"used_percentage": 42.0}}}
+    assert build_statusline(payload, NOW_STATUSLINE) == "5h: 42%"
+
+
+def test_build_statusline_empty_payload():
+    assert build_statusline({}, NOW_STATUSLINE) == "Claude Code"
+
+
+def test_build_statusline_rejects_bool_percentage():
+    payload = {"context_window": {"used_percentage": True}}
+    assert build_statusline(payload, NOW_STATUSLINE) == "Claude Code"
