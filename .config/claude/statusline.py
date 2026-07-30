@@ -4,10 +4,10 @@
 Invoked by Claude Code as its ``statusLine.command``. On each turn it:
 
 1. reads the statusLine JSON payload from stdin,
-2. writes a RunCat Neo custom-metrics snapshot to ``~/.claude/runcat-usage.json``
-   (5h / 7d rate-limit usage and the current-month API-cost estimate),
-3. relays the existing ``ccstatusline`` output to stdout so the terminal status
-   line is unchanged.
+2. on macOS, writes a RunCat Neo custom-metrics snapshot to
+   ``~/.claude/runcat-usage.json`` (5h / 7d rate-limit usage and the
+   current-month API-cost estimate),
+3. renders the terminal status line itself and prints it to stdout.
 
 The monthly cost comes from ``ccusage`` and is refreshed lazily in a detached
 background process (TTL-cached) so the status line never blocks.
@@ -304,28 +304,6 @@ def refresh_cost(now: datetime) -> None:
             COST_LOCK_FILE.unlink()
 
 
-def relay_ccstatusline(raw: str, payload: dict) -> None:
-    """Relay ccstatusline output; fall back to the model name if unavailable."""
-    exe = shutil.which("ccstatusline")
-    if exe:
-        try:
-            result = subprocess.run(
-                [exe],
-                input=raw,
-                capture_output=True,
-                text=True,
-                timeout=10,
-                check=False,
-            )
-            if result.returncode == 0 and result.stdout:
-                sys.stdout.write(result.stdout)
-                return
-        except (OSError, subprocess.SubprocessError):
-            pass
-    model = (payload.get("model") or {}).get("display_name") or TITLE
-    print(model)
-
-
 def main(argv: list[str]) -> None:
     now = datetime.now(timezone.utc)
     if "--refresh-cost" in argv:
@@ -336,12 +314,17 @@ def main(argv: list[str]) -> None:
     except OSError:
         raw = ""
     payload = parse_payload(raw)
-    with contextlib.suppress(Exception):
-        five, seven = extract_percentages(payload)
-        maybe_spawn_refresh(now)
-        cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
-        atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
-    relay_ccstatusline(raw, payload)
+    if sys.platform == "darwin":
+        with contextlib.suppress(Exception):
+            five, seven = extract_percentages(payload)
+            maybe_spawn_refresh(now)
+            cost, _ = cost_from_cache(read_json_file(COST_CACHE_FILE), now, COST_TTL_SECONDS)
+            atomic_write_json(OUT_FILE, build_output(five, seven, cost, now))
+    try:
+        line = build_statusline(payload, time.time())
+    except Exception:
+        line = TITLE
+    print(line)
 
 
 if __name__ == "__main__":
