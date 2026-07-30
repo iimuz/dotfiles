@@ -8,3 +8,7 @@ temp/
 
 docs/planning.md
 __pycache__/
+
+# superpowers work-in-progress artifacts (posted to PR comments, not committed)
+.superpowers/
+docs/superpowers/
