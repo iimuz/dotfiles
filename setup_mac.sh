@@ -73,10 +73,6 @@ if type claude >/dev/null 2>&1; then
   claude plugin marketplace add "$HOME/.claude/marketplace"
   claude plugin install "six-hats@iimuz-dotfiles"
   claude plugin install "scamper@iimuz-dotfiles"
-
-  if type ccstatusline >/dev/null 2>&1; then
-    create_symlink "$SCRIPT_DIR/.config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
-  fi
 fi
 # === gh
 if type gh >/dev/null 2>&1; then
