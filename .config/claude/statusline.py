@@ -82,6 +82,23 @@ def format_cost(cost: float | None) -> str | None:
     return f"${cost:.2f}"
 
 
+def format_reset_delta(seconds: object) -> str | None:
+    """Format a positive remaining-seconds value as 34m / 1h23m / 2d4h."""
+    if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+        return None
+    total = int(seconds)
+    if total <= 0:
+        return None
+    days, rem = divmod(total, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes = rem // 60
+    if days > 0:
+        return f"{days}d{hours}h"
+    if hours > 0:
+        return f"{hours}h{minutes}m"
+    return f"{minutes}m"
+
+
 def build_output(
     five: float | None,
     seven: float | None,

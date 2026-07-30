@@ -9,6 +9,7 @@ from config.claude.statusline import (
     cost_from_cache,
     extract_percentages,
     format_cost,
+    format_reset_delta,
     parse_month_cost,
     relay_ccstatusline,
 )
@@ -128,3 +129,27 @@ class TestRelayCcstatuslineFallback:
         monkeypatch.setattr(shutil, "which", lambda _name: None)
         relay_ccstatusline("", {})
         assert capsys.readouterr().out.strip() == TITLE
+
+
+def test_format_reset_delta_minutes():
+    assert format_reset_delta(34 * 60) == "34m"
+
+
+def test_format_reset_delta_hours_minutes():
+    assert format_reset_delta(1 * 3600 + 23 * 60) == "1h23m"
+
+
+def test_format_reset_delta_days_hours():
+    assert format_reset_delta(2 * 86400 + 4 * 3600) == "2d4h"
+
+
+def test_format_reset_delta_zero_minutes():
+    assert format_reset_delta(30) == "0m"
+
+
+def test_format_reset_delta_invalid():
+    assert format_reset_delta(0) is None
+    assert format_reset_delta(-5) is None
+    assert format_reset_delta(True) is None
+    assert format_reset_delta("60") is None
+    assert format_reset_delta(None) is None
