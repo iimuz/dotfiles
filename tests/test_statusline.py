@@ -1,13 +1,15 @@
 """Tests for the RunCat Neo statusLine wrapper (pure logic)."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from config.claude.statusline import (
     build_output,
     build_statusline,
     cost_from_cache,
     extract_percentages,
+    extract_resets_at,
     format_cost,
+    format_reset_datetime,
     format_reset_delta,
     parse_month_cost,
 )
@@ -78,6 +80,62 @@ class TestBuildOutput:
         assert out["metrics"][1]["normalizedValue"] == 0.0
 
 
+FIVE_RESETS_AT = NOW.timestamp() + 1 * 3600 + 23 * 60
+SEVEN_RESETS_AT = datetime(2026, 7, 25, 3, 30, tzinfo=timezone.utc).timestamp()
+
+
+class TestBuildOutputResets:
+    def test_five_hour_includes_remaining_time(self) -> None:
+        out = build_output(42.0, None, None, NOW, five_resets_at=FIVE_RESETS_AT)
+        assert out["metrics"][0]["formattedValue"] == "42.0% (1h23m)"
+
+    def test_seven_day_includes_reset_datetime(self) -> None:
+        out = build_output(None, 63.0, None, NOW, seven_resets_at=SEVEN_RESETS_AT)
+        expected = (
+            datetime.fromtimestamp(SEVEN_RESETS_AT, tz=timezone.utc)
+            .astimezone()
+            .strftime("%m/%d %H:%M")
+        )
+        assert out["metrics"][0]["formattedValue"] == f"63.0% ({expected})"
+
+    def test_falls_back_without_resets_at(self) -> None:
+        out = build_output(16.4, 1.0, None, NOW)
+        assert out["metrics"][0]["formattedValue"] == "16.4%"
+        assert out["metrics"][1]["formattedValue"] == "1.0%"
+
+    def test_falls_back_on_unparseable_resets_at(self) -> None:
+        out = build_output(16.4, 1.0, None, NOW, five_resets_at="soon", seven_resets_at=True)
+        assert out["metrics"][0]["formattedValue"] == "16.4%"
+        assert out["metrics"][1]["formattedValue"] == "1.0%"
+
+    def test_five_hour_falls_back_on_past_resets_at(self) -> None:
+        out = build_output(42.0, None, None, NOW, five_resets_at=NOW.timestamp() - 60)
+        assert out["metrics"][0]["formattedValue"] == "42.0%"
+
+    def test_normalized_and_bar_unchanged(self) -> None:
+        out = build_output(42.0, None, None, NOW, five_resets_at=FIVE_RESETS_AT)
+        assert out["metrics"][0]["normalizedValue"] == 0.42
+        assert out["metricsBarValue"] == "42.0%"
+
+
+class TestExtractResetsAt:
+    def test_reads_both(self) -> None:
+        payload = {
+            "rate_limits": {
+                "five_hour": {"resets_at": 1_700_000_000},
+                "seven_day": {"resets_at": 1_700_400_000.5},
+            }
+        }
+        assert extract_resets_at(payload) == (1_700_000_000.0, 1_700_400_000.5)
+
+    def test_missing(self) -> None:
+        assert extract_resets_at({}) == (None, None)
+
+    def test_bool_is_ignored(self) -> None:
+        payload = {"rate_limits": {"five_hour": {"resets_at": True}}}
+        assert extract_resets_at(payload) == (None, None)
+
+
 class TestParseMonthCost:
     def _data(self) -> dict:
         return {
@@ -115,6 +173,25 @@ class TestCostFromCache:
     def test_bad_timestamp(self) -> None:
         cache = {"costUsd": 12.34, "updatedAt": "nonsense"}
         assert cost_from_cache(cache, NOW, 600) == (12.34, False)
+
+
+class TestFormatResetDatetime:
+    def test_utc(self) -> None:
+        ts = datetime(2026, 8, 3, 5, 0, tzinfo=timezone.utc).timestamp()
+        assert format_reset_datetime(ts, timezone.utc) == "08/03 05:00"
+
+    def test_timezone_conversion(self) -> None:
+        ts = datetime(2026, 8, 2, 20, 0, tzinfo=timezone.utc).timestamp()
+        jst = timezone(timedelta(hours=9))
+        assert format_reset_datetime(ts, jst) == "08/03 05:00"
+
+    def test_int_epoch_seconds(self) -> None:
+        assert format_reset_datetime(0, timezone.utc) == "01/01 00:00"
+
+    def test_invalid_inputs(self) -> None:
+        assert format_reset_datetime(None, timezone.utc) is None
+        assert format_reset_datetime(True, timezone.utc) is None
+        assert format_reset_datetime("1700000000", timezone.utc) is None
 
 
 def test_format_reset_delta_minutes():
