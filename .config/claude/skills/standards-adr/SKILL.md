@@ -17,8 +17,8 @@ description: >-
 ## Create
 
 1. Search existing ADRs in `docs/adr/` (titles and content) for the same or an
-   overlapping decision. If one exists, update or supersede it instead of
-   creating a duplicate.
+   overlapping decision. If one exists, update it or ask the user to
+   supersede it instead of creating a duplicate.
 2. Find the highest ID in `docs/adr/`, increment by one.
 3. Name: `NNNN-slug.md`
 4. Copy [references/template.md](references/template.md) and fill in content.
@@ -44,6 +44,6 @@ Status is the only permitted edit to an Accepted ADR.
 
 ## Writing Style
 
-- Write English headings and Japanese body text.
+- Write section headings in English; write the ADR title and body text in Japanese.
 - Describe considered options and their trade-offs inside the Context section.
   Do not add a separate options section.
