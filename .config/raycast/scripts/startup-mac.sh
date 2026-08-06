@@ -22,6 +22,6 @@ mise cache clean -y
 mise exec -- gh extension upgrade --all
 
 # Open tools
-open -a "Cisco Secure Client"
-open -a "ghostty"
-open -a "Microsoft Edge"
+# open -a "Cisco Secure Client"
+# open -a "ghostty"
+# open -a "Microsoft Edge"
