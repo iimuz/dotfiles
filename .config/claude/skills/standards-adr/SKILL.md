@@ -16,9 +16,12 @@ description: >-
 
 ## Create
 
-1. Find the highest ID in `docs/adr/`, increment by one.
-2. Name: `NNNN-slug.md`
-3. Copy [references/template.md](references/template.md) and fill in content.
+1. Search existing ADRs in `docs/adr/` (titles and content) for the same or an
+   overlapping decision. If one exists, update or supersede it instead of
+   creating a duplicate.
+2. Find the highest ID in `docs/adr/`, increment by one.
+3. Name: `NNNN-slug.md`
+4. Copy [references/template.md](references/template.md) and fill in content.
 
 ## Update Status
 
@@ -33,3 +36,14 @@ On supersede: Create a new ADR with old ID in `supersedes`. Set old ADR to `Supe
 On deprecate: Set old ADR to `Deprecated`.
 
 Status is the only permitted edit to an Accepted ADR.
+
+## Cross-Repository References
+
+- Same repository: refer to ADRs as `ADR-NNNN`.
+- Other repositories: refer to ADRs as `owner/repo#ADR-NNNN`.
+
+## Writing Style
+
+- Write English headings and Japanese body text.
+- Describe considered options and their trade-offs inside the Context section.
+  Do not add a separate options section.
