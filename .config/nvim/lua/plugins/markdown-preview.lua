@@ -12,29 +12,32 @@ local last_opened_url = nil
 -- cmux の内蔵ブラウザでプレビュー URL を開く。
 -- 同一 workspace 内に既存のプレビュータブがあれば navigate で差し替え、
 -- なければ新規タブを開く (cmux browser open はフォーカスを奪わない)。
+-- cmux CLI に tree サブコマンドは無いため、JSON-RPC の system.tree を使う (issue #320)。
 local function open_in_cmux(url)
     if url == last_opened_url then
         return
     end
     local cmux_bin = vim.env.CMUX_BUNDLED_CLI_PATH or "cmux"
     local ok, err = pcall(function()
-        local tree_result = vim.system(
-            { cmux_bin, "tree", "--json", "--workspace", vim.env.CMUX_WORKSPACE_ID },
-            { text = true }
-        ):wait()
+        local tree_result = vim.system({ cmux_bin, "rpc", "system.tree" }, { text = true }):wait()
         assert(tree_result.code == 0, tree_result.stderr)
         local tree = vim.json.decode(tree_result.stdout)
         local preview_ref = nil
+        -- rpc には workspace フィルタが無いため、CMUX_WORKSPACE_ID で絞り込む。
+        -- instance_mode = "multi" のため、絞らないと他 workspace のプレビュータブを奪う。
+        local workspace_id = vim.env.CMUX_WORKSPACE_ID
         for _, win in ipairs(tree.windows or {}) do
             for _, workspace in ipairs(win.workspaces or {}) do
-                for _, pane in ipairs(workspace.panes or {}) do
-                    for _, surface in ipairs(pane.surfaces or {}) do
-                        if
-                            surface.type == "browser"
-                            and type(surface.url) == "string"
-                            and surface.url:match("^http://127%.0%.0%.1:%d+/%?t=")
-                        then
-                            preview_ref = surface.ref
+                if workspace_id == nil or workspace.id == workspace_id then
+                    for _, pane in ipairs(workspace.panes or {}) do
+                        for _, surface in ipairs(pane.surfaces or {}) do
+                            if
+                                surface.type == "browser"
+                                and type(surface.url) == "string"
+                                and surface.url:match("^http://127%.0%.0%.1:%d+/%?t=")
+                            then
+                                preview_ref = surface.ref
+                            end
                         end
                     end
                 end
