@@ -10,9 +10,10 @@ local in_cmux = vim.env.CMUX_SURFACE_ID ~= nil
 local last_opened_url = nil
 
 -- cmux の内蔵ブラウザでプレビュー URL を開く。
--- 同一 workspace 内に既存のプレビュータブがあれば navigate で差し替え、
--- なければ新規タブを開く (cmux browser open はフォーカスを奪わない)。
--- cmux CLI に tree サブコマンドは無いため、JSON-RPC の system.tree を使う (issue #320)。
+-- cmux CLI に tree サブコマンドは無いため、JSON-RPC の system.tree で
+-- 同一 workspace 内の既存プレビュータブを探す (issue #320)。
+-- 見つかれば rpc browser.navigate で差し替え、無ければ rpc browser.tab.new で新規タブを開く。
+-- cmux rpc browser.tab.new がフォーカスを奪うかどうかは未確認 (live 検証未実施)。
 local function open_in_cmux(url)
     if url == last_opened_url then
         return
@@ -57,6 +58,12 @@ local function open_in_cmux(url)
         end
         local open_result = vim.system(cmd, { text = true }):wait()
         assert(open_result.code == 0, open_result.stderr)
+        -- cmux rpc が JSON-RPC エラーでも exit code 0 を返す場合に備えた防御的チェック。
+        -- 実際のエラー応答の JSON 形状は live 未検証のため、成功応答 (24 行目の system.tree
+        -- 相当) には無いはずの error キーを持つ場合のみ失敗とみなす best-effort な判定にとどめる。
+        local decoded = vim.json.decode(open_result.stdout)
+        local rpc_error = type(decoded) == "table" and decoded.error or nil
+        assert(rpc_error == nil, vim.inspect(rpc_error))
     end)
     if not ok then
         vim.notify("MarkdownPreview: cmux open failed: " .. tostring(err), vim.log.levels.WARN)
