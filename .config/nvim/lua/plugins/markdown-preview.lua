@@ -31,10 +31,14 @@ local function open_in_cmux(url)
                 if workspace_id == nil or workspace.id == workspace_id then
                     for _, pane in ipairs(workspace.panes or {}) do
                         for _, surface in ipairs(pane.surfaces or {}) do
+                            -- cmux の内蔵ブラウザは 127.0.0.1 を localhost に正規化して報告するため両対応する
                             if
                                 surface.type == "browser"
                                 and type(surface.url) == "string"
-                                and surface.url:match("^http://127%.0%.0%.1:%d+/%?t=")
+                                and (
+                                    surface.url:match("^http://127%.0%.0%.1:%d+/%?t=")
+                                    or surface.url:match("^http://localhost:%d+/%?t=")
+                                )
                             then
                                 preview_ref = surface.ref
                             end
@@ -43,11 +47,13 @@ local function open_in_cmux(url)
                 end
             end
         end
+        -- cmux browser open/navigate の CLI 形式は ref を第一引数に取れないため rpc 形式を使う (issue #320)
+        -- browser.tab.new は workspace_id を渡さないと呼び出し元と無関係な workspace に開かれるため必須で渡す
         local cmd
         if preview_ref then
-            cmd = { cmux_bin, "browser", preview_ref, "navigate", url }
+            cmd = { cmux_bin, "rpc", "browser.navigate", vim.json.encode({ surface_id = preview_ref, url = url }) }
         else
-            cmd = { cmux_bin, "browser", "open", url }
+            cmd = { cmux_bin, "rpc", "browser.tab.new", vim.json.encode({ url = url, workspace_id = workspace_id }) }
         end
         local open_result = vim.system(cmd, { text = true }):wait()
         assert(open_result.code == 0, open_result.stderr)
