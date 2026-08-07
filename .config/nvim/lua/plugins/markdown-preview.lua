@@ -10,10 +10,9 @@ local in_cmux = vim.env.CMUX_SURFACE_ID ~= nil
 local last_opened_url = nil
 
 -- cmux の内蔵ブラウザでプレビュー URL を開く。
--- cmux CLI に tree サブコマンドは無いため、JSON-RPC の system.tree で
--- 同一 workspace 内の既存プレビュータブを探す (issue #320)。
+-- cmux CLI の tree サブコマンドは `cmux ssh` で接続した先では利用できないため、JSON-RPC の system.tree で
+-- 同一 workspace 内の既存プレビュータブを探す (issue#320)。
 -- 見つかれば rpc browser.navigate で差し替え、無ければ rpc browser.tab.new で新規タブを開く。
--- cmux rpc browser.tab.new がフォーカスを奪うかどうかは未確認 (live 検証未実施)。
 local function open_in_cmux(url)
     if url == last_opened_url then
         return
