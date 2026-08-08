@@ -1,9 +1,9 @@
 [tools]
-awscli = { version = "2.36.2", symlink_bins = "true" }
+awscli = { version = "2.36.8", symlink_bins = "true" }
 bat = "0.26.1"
-cargo-binstall = "1.21.0"
+cargo-binstall = "1.21.1"
 "cargo:tree-sitter-cli" = "0.26.8"                     # for neovim
-claude = "2.1.214"
+claude = "2.1.220"
 delta = "0.19.2"
 eza = "0.23.5"
 fd = "10.4.2"
@@ -17,9 +17,9 @@ lua = "5.1.5"                                          # neovim luarocksで要�
 neovim = "0.12.4"
 node = "24.18.0"
 "npm:@aikidosec/safe-chain" = "1.5.13"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.66"         # for claude code
-"npm:@github/copilot" = "1.0.71"
-"npm:ccusage" = "20.0.17"                              # for claude code
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.67"         # for claude code
+"npm:@github/copilot" = "1.0.75"
+"npm:ccusage" = "20.0.18"                              # for claude code
 "npm:context-mode" = "1.0.169"                         # for claude code
 "npm:neovim" = "5.4.0"                                 # for neovim
 "pipx:pynvim" = "0.6.0"                                # for neovim
@@ -29,7 +29,7 @@ ripgrep = "15.2.0"
 rust = "1.97.1"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.11.29"
+uv = "0.11.32"
 yq = "4.53.3"
 
 [env]

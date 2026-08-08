@@ -1,5 +1,5 @@
 [tools]
-cargo-binstall = "1.21.0"
+cargo-binstall = "1.21.1"
 "cargo:tree-sitter-cli" = "0.26.8"                        # for neovim
 go = "1.26.5"
 lua = "5.1.5"                                             # neovim luarocksで要求しているバージョンが5.1
@@ -7,7 +7,7 @@ node = "24.18.0"
 "npm:@aikidosec/safe-chain" = "1.5.13"
 "npm:mcp-remote" = "0.1.38"                               # for copilot
 "npm:neovim" = "5.4.0"                                    # for neovim
-"pipx:awslabs.aws-documentation-mcp-server" = "1.1.26"
+"pipx:awslabs.aws-documentation-mcp-server" = "1.1.27"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0"                                   # for neovim
 pnpm = "11.15.0"
@@ -15,7 +15,7 @@ python = "3.14.6"
 rust = "1.97.1"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.11.29"
+uv = "0.11.32"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
