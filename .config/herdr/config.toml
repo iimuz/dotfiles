@@ -1,0 +1,9 @@
+onboarding = false
+
+[theme]
+name = "tokyo-night"
+
+[keys]
+prefix = "ctrl+g"
+split_horizontal = "prefix+s"
+settings = "prefix+shift+s"
