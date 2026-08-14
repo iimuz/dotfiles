@@ -6,6 +6,9 @@
 -- cmux のターミナル内かどうか (notify.sh と同じく CMUX_SURFACE_ID で判定)
 local in_cmux = vim.env.CMUX_SURFACE_ID ~= nil
 
+-- herdr のターミナル内かどうか (herdr は HERDR_ENV=1 を設定する)
+local in_herdr = vim.env.HERDR_ENV ~= nil
+
 -- BufEnter の follow で start() が再実行されても cmux コマンドを連打しないための直前 URL キャッシュ
 local last_opened_url = nil
 
@@ -71,6 +74,33 @@ local function open_in_cmux(url)
     last_opened_url = url
 end
 
+-- herdr の browser plugin (official.browser) でプレビュー URL を開く。
+-- open-localhost action は呼ぶたびに新しい view を作るため、
+-- cmux と同じく last_opened_url で同一 URL の連打を防ぐ (BufEnter follow 対策)。
+-- action は完了まで数秒ブロックするのでコールバック形式で非同期に呼ぶ。
+local function open_in_herdr(url)
+    if url == last_opened_url then
+        return
+    end
+    last_opened_url = url
+    vim.system(
+        { "herdr", "plugin", "action", "invoke", "open-localhost" },
+        { text = true, env = { HERDR_PLUGIN_CLICKED_URL = url } },
+        function(result)
+            if result.code ~= 0 then
+                -- 失敗時はキャッシュを戻して再実行で開き直せるようにする
+                last_opened_url = nil
+                vim.schedule(function()
+                    vim.notify(
+                        "MarkdownPreview: herdr open failed: " .. (result.stderr or ""),
+                        vim.log.levels.WARN
+                    )
+                end)
+            end
+        end
+    )
+end
+
 return {
     "selimacerbas/markdown-preview.nvim",
     lazy = true,
@@ -88,6 +118,11 @@ return {
             opts.instance_mode = "multi"
             opts.open_browser = false
             opts.hooks = { on_start = open_in_cmux }
+        elseif in_herdr then
+            -- herdr 内でも同様に既定のブラウザ起動を止め、browser plugin で開く
+            opts.instance_mode = "multi"
+            opts.open_browser = false
+            opts.hooks = { on_start = open_in_herdr }
         end
         require("markdown_preview").setup(opts)
         vim.api.nvim_create_autocmd("BufEnter", {
