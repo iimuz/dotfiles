@@ -20,3 +20,7 @@ if type mise >/dev/null 2>&1; then
   mise prune -y
   mise cache clean -y
 fi
+
+if type herdr >/dev/null 2>&1; then
+  herdr plugin install ogulcancelik/herdr-browser --yes
+fi
