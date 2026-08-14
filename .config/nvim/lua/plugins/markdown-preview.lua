@@ -83,7 +83,10 @@ local function open_in_herdr(url)
         return
     end
     last_opened_url = url
-    vim.system(
+    -- herdr バイナリが PATH に無い場合 vim.system は callback を介さず error() で spawn 自体を失敗させるため、
+    -- last_opened_url を戻し損ねないよう pcall で包む (open_in_cmux と同じ対策)
+    local ok, err = pcall(
+        vim.system,
         { "herdr", "plugin", "action", "invoke", "open-localhost" },
         { text = true, env = { HERDR_PLUGIN_CLICKED_URL = url } },
         function(result)
@@ -99,6 +102,12 @@ local function open_in_herdr(url)
             end
         end
     )
+    if not ok then
+        last_opened_url = nil
+        vim.schedule(function()
+            vim.notify("MarkdownPreview: herdr open failed: " .. tostring(err), vim.log.levels.WARN)
+        end)
+    end
 end
 
 return {
