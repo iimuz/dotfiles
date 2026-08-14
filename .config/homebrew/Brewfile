@@ -60,6 +60,7 @@ brew "cmake"
 cask "cmux"
 brew "gcc"
 cask "ghostty"
+brew "herdr"
 # brew "luarocks"  # for lazy.nvim plugin -> おそらく lua 導入で不要になっているはず
 brew "neovim"  # neovim
 brew "pkg-config"
