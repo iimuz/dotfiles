@@ -139,6 +139,10 @@ local function open_in_herdr(url)
     last_opened_url = url
     -- pane の環境変数には HERDR_BIN_PATH が入っているとは限らないため exepath で解決する
     local herdr_bin = vim.fn.exepath("herdr")
+    -- herdr サーバー経由なら herdr がこの env をセットするが、bun 直接実行では欠けるため plugin が
+    -- ユーザー設定 (browser.json) を読めず silently デフォルト (split) にフォールバックする。
+    -- plugin_root の兄弟ディレクトリである config ディレクトリを明示して渡す。
+    local plugin_config_dir = vim.fs.dirname(vim.fs.dirname(plugin_root)) .. "/config/official.browser"
     -- bun バイナリが PATH に無い場合 vim.system は callback を介さず error() で spawn 自体を失敗させるため、
     -- last_opened_url を戻し損ねないよう pcall で包む (open_in_cmux と同じ対策)
     local ok, err = pcall(
@@ -147,7 +151,11 @@ local function open_in_herdr(url)
         {
             text = true,
             cwd = plugin_root,
-            env = { HERDR_PLUGIN_CLICKED_URL = url, HERDR_BIN_PATH = herdr_bin },
+            env = {
+                HERDR_PLUGIN_CLICKED_URL = url,
+                HERDR_BIN_PATH = herdr_bin,
+                HERDR_PLUGIN_CONFIG_DIR = plugin_config_dir,
+            },
         },
         function(result)
             if result.code ~= 0 then
