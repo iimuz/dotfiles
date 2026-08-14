@@ -105,6 +105,7 @@ fi
 # === herdr
 if type herdr >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+  herdr plugin install ogulcancelik/herdr-browser --yes
 fi
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
