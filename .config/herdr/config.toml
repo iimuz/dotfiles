@@ -1,5 +1,8 @@
 onboarding = false
 
+[experimental]
+kitty_graphics = true
+
 [theme]
 name = "tokyo-night"
 
@@ -7,3 +10,21 @@ name = "tokyo-night"
 prefix = "ctrl+g"
 split_horizontal = "prefix+s"
 settings = "prefix+shift+s"
+
+[[keys.command]]
+key = "prefix+shift+b"
+type = "shell"
+command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus'
+description = "open browser in right split"
+
+[[keys.command]]
+key = "prefix+ctrl+b"
+type = "shell"
+command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement tab --focus'
+description = "open browser in new tab"
+
+[[keys.command]]
+key = "prefix+alt+b"
+type = "shell"
+command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement overlay --focus'
+description = "open browser overlay"
