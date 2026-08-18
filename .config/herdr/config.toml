@@ -28,3 +28,6 @@ key = "prefix+alt+b"
 type = "shell"
 command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement overlay --focus'
 description = "open browser overlay"
+
+[ui]
+agent_panel_sort = "spaces"

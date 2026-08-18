@@ -6,8 +6,15 @@
 -- cmux のターミナル内かどうか (notify.sh と同じく CMUX_SURFACE_ID で判定)
 local in_cmux = vim.env.CMUX_SURFACE_ID ~= nil
 
+-- herdr のターミナル内かどうか (herdr は HERDR_ENV=1 を設定する)
+local in_herdr = vim.env.HERDR_ENV ~= nil
+
 -- BufEnter の follow で start() が再実行されても cmux コマンドを連打しないための直前 URL キャッシュ
 local last_opened_url = nil
+
+-- herdr の official.browser プラグインの plugin_root (バージョン付きディレクトリ名) キャッシュ。
+-- アップデートで変わり得るが、1 セッション中は変わらない前提で一度解決したら使い回す。
+local herdr_plugin_root = nil
 
 -- cmux の内蔵ブラウザでプレビュー URL を開く。
 -- cmux CLI の tree サブコマンドは `cmux ssh` で接続した先では利用できないため、JSON-RPC の system.tree で
@@ -71,6 +78,106 @@ local function open_in_cmux(url)
     last_opened_url = url
 end
 
+-- herdr の official.browser プラグインの plugin_root (バージョン付きディレクトリ) を解決する。
+-- `herdr plugin action invoke` は fire-and-forget な RPC クライアントで、herdr サーバーが
+-- リクエストを受理した瞬間に exit 0 を返してしまう。実際の action は herdr サーバー側プロセスが
+-- spawn するため、invoke した CLI クライアントの環境変数 (HERDR_PLUGIN_CLICKED_URL) を引き継げず、
+-- サーバー側で "HERDR_PLUGIN_CLICKED_URL is required" として失敗する (それでも CLI 自体は exit 0
+-- を返すため nvim 側の失敗通知が発火しない)。そのため plugin 本体の action script (bun) を
+-- plugin_root から直接実行する必要があり、その置き場所である plugin_root をここで動的に解決する。
+local function resolve_herdr_plugin_root()
+    if herdr_plugin_root then
+        return herdr_plugin_root
+    end
+    -- herdr バイナリが PATH に無い場合 vim.system は error() で spawn 自体を失敗させるため pcall で包む
+    -- (open_in_cmux / open_in_herdr と同じ対策)。spawn さえ成功すれば :wait() は pcall の外で安全に呼べる。
+    local ok, job_or_err = pcall(
+        vim.system,
+        { "herdr", "plugin", "list", "--plugin", "official.browser", "--json" },
+        { text = true }
+    )
+    if not ok then
+        return nil, tostring(job_or_err)
+    end
+    local result = job_or_err:wait()
+    if result.code ~= 0 then
+        return nil, result.stderr
+    end
+    -- herdr が壊れた JSON を返しても nvim を落とさないよう pcall で包む
+    local decode_ok, decoded = pcall(vim.json.decode, result.stdout)
+    if not decode_ok then
+        return nil, "failed to decode herdr plugin list JSON: " .. tostring(decoded)
+    end
+    -- herdr の応答は {"id":..., "result": {"plugins": [...]}} という envelope 付きなので result 経由で辿る
+    local plugins = decoded and decoded.result and decoded.result.plugins
+    local plugin_root = plugins and plugins[1] and plugins[1].plugin_root
+    if not plugin_root then
+        return nil, "herdr plugin list did not return plugins[1].plugin_root"
+    end
+    herdr_plugin_root = plugin_root
+    return herdr_plugin_root
+end
+
+-- herdr の browser plugin (official.browser) でプレビュー URL を開く。
+-- 上記の理由により `herdr plugin action invoke` は使わず、action script (bun) を直接叩く。
+-- open-localhost action は呼ぶたびに新しい view を作るため、
+-- cmux と同じく last_opened_url で同一 URL の連打を防ぐ (BufEnter follow 対策)。
+-- action は完了まで数秒ブロックするのでコールバック形式で非同期に呼ぶ。
+local function open_in_herdr(url)
+    if url == last_opened_url then
+        return
+    end
+    local plugin_root, resolve_err = resolve_herdr_plugin_root()
+    if not plugin_root then
+        -- 解決失敗時は last_opened_url をセットせず、次回呼び出しで再解決を試みられるようにする
+        vim.notify(
+            "MarkdownPreview: herdr plugin_root resolution failed: " .. tostring(resolve_err),
+            vim.log.levels.WARN
+        )
+        return
+    end
+    last_opened_url = url
+    -- pane の環境変数には HERDR_BIN_PATH が入っているとは限らないため exepath で解決する
+    local herdr_bin = vim.fn.exepath("herdr")
+    -- herdr サーバー経由なら herdr がこの env をセットするが、bun 直接実行では欠けるため plugin が
+    -- ユーザー設定 (browser.json) を読めず silently デフォルト (split) にフォールバックする。
+    -- plugin_root の兄弟ディレクトリである config ディレクトリを明示して渡す。
+    local plugin_config_dir = vim.fs.dirname(vim.fs.dirname(plugin_root)) .. "/config/official.browser"
+    -- bun バイナリが PATH に無い場合 vim.system は callback を介さず error() で spawn 自体を失敗させるため、
+    -- last_opened_url を戻し損ねないよう pcall で包む (open_in_cmux と同じ対策)
+    local ok, err = pcall(
+        vim.system,
+        { "bun", "run", plugin_root .. "/src/actions/open-localhost.ts" },
+        {
+            text = true,
+            cwd = plugin_root,
+            env = {
+                HERDR_PLUGIN_CLICKED_URL = url,
+                HERDR_BIN_PATH = herdr_bin,
+                HERDR_PLUGIN_CONFIG_DIR = plugin_config_dir,
+            },
+        },
+        function(result)
+            if result.code ~= 0 then
+                -- 失敗時はキャッシュを戻して再実行で開き直せるようにする
+                last_opened_url = nil
+                vim.schedule(function()
+                    vim.notify(
+                        "MarkdownPreview: herdr open failed: " .. (result.stderr or ""),
+                        vim.log.levels.WARN
+                    )
+                end)
+            end
+        end
+    )
+    if not ok then
+        last_opened_url = nil
+        vim.schedule(function()
+            vim.notify("MarkdownPreview: herdr open failed: " .. tostring(err), vim.log.levels.WARN)
+        end)
+    end
+end
+
 return {
     "selimacerbas/markdown-preview.nvim",
     lazy = true,
@@ -88,6 +195,11 @@ return {
             opts.instance_mode = "multi"
             opts.open_browser = false
             opts.hooks = { on_start = open_in_cmux }
+        elseif in_herdr then
+            -- herdr 内でも同様に既定のブラウザ起動を止め、browser plugin で開く
+            opts.instance_mode = "multi"
+            opts.open_browser = false
+            opts.hooks = { on_start = open_in_herdr }
         end
         require("markdown_preview").setup(opts)
         vim.api.nvim_create_autocmd("BufEnter", {
