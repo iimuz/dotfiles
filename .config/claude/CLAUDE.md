@@ -39,6 +39,20 @@ This is the highest-priority rule.
 - Tolerate duplication until the 3rd occurrence, then consider abstracting
   (Rule of Three).
 
+## Code Comments and Docs
+
+Judge comments by placement, not usefulness. A comment may only state
+a non-obvious WHY: hidden constraints, reasons for a workaround, or
+behavior that would surprise the reader.
+
+- Do not narrate WHAT the code does or restate the diff/conversation.
+- Do not write change history or migration narratives in comments;
+  that belongs in the commit message or PR description.
+- Do not reference task/issue IDs in comments.
+- Keep specification documents (README, design docs) as a snapshot of
+  the current spec; do not accumulate change history, issue references,
+  or migration notes there.
+
 ## Prohibitions
 
 - Do not apply unnecessary design patterns (Factory, Strategy, etc.).
