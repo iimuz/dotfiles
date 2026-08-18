@@ -1,0 +1,8 @@
+# mise のツール設定は Renovate がバージョン文字列だけを書き換えるため、
+# コメントの縦揃え (align_comments) があると行長の変化で整形崩れが発生する。
+# 該当ファイルのみ揃えを無効化し、コメント前スペースを1個に固定する。
+[[rule]]
+include = [".config/mise/config-*.toml"]
+
+[rule.formatting]
+align_comments = false
