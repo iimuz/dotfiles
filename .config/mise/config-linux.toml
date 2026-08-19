@@ -1,7 +1,6 @@
 [tools]
 aws-vault = "7.2.0"
 awscli = { version = "2.36.14", symlink_bins = "true" }
-bun = "1.3.14" # for herdr-browser plugin
 cargo-binstall = "1.21.1"
 "cargo:tree-sitter-cli" = "0.26.8" # for neovim
 claude = "2.1.220"
