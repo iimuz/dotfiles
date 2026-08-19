@@ -19,6 +19,13 @@ if [ -n "${CMUX_CLAUDE_HOOK_CMUX_BIN:-}" ]; then
   exit 0
 fi
 
+# herdr injects HERDR_ENV=1 into every managed pane and surfaces agent state
+# (working/blocked/done) through its own toast notifications, so skip
+# osascript inside herdr to avoid duplicate notifications.
+if [ "${HERDR_ENV:-}" = "1" ]; then
+  exit 0
+fi
+
 event="${1:-}"
 case "$event" in
   notification)

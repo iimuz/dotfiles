@@ -31,3 +31,9 @@ description = "open browser overlay"
 
 [ui]
 agent_panel_sort = "spaces"
+
+[ui.toast]
+# Deliver notifications through the outer terminal (escape sequence) so they
+# reach the local desktop both on local mac and over ssh. Ghostty forwards
+# them to the OS notification center (desktop-notifications is on by default).
+delivery = "terminal"
