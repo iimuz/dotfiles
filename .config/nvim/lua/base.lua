@@ -75,17 +75,22 @@ if vim.fn.has("wsl") == 1 then
 		},
 		cache_enabled = 1,
 	}
-elseif vim.fn.has("linux") == 1 then
-	-- Linux (Docker含む) でOSC 52を使用
+elseif vim.fn.has("linux") == 1 and vim.env.TMUX == nil then
+	-- herdrや素のSSH端末はOSC 52の読み取り問い合わせに応答しないため、
+	-- paste側は端末に問い合わせず自分のレジスタをそのまま返す
+	local osc52 = require("vim.ui.clipboard.osc52")
+	local function paste()
+		return { vim.fn.getreg('"', 1, true), vim.fn.getregtype('"') }
+	end
 	vim.g.clipboard = {
 		name = "OSC 52",
 		copy = {
-			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+			["+"] = osc52.copy("+"),
+			["*"] = osc52.copy("*"),
 		},
 		paste = {
-			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+			["+"] = paste,
+			["*"] = paste,
 		},
 	}
 end
