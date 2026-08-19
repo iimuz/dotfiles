@@ -22,6 +22,7 @@ local function open_in_browser(url)
             "MarkdownPreview: cannot open browser (" .. tostring(err) .. "); URL copied: " .. url,
             vim.log.levels.WARN
         )
+        last_opened_url = url
         return
     end
     last_opened_url = url
