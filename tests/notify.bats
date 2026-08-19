@@ -18,7 +18,7 @@ STUB
 }
 
 @test "notify.sh: skips osascript inside cmux (CMUX_CLAUDE_HOOK_CMUX_BIN set)" {
-  run env -u TMUX -u TMUX_PANE CMUX_CLAUDE_HOOK_CMUX_BIN="/fake/cmux/bin" "$NOTIFY_SH" notification
+  run env -u TMUX -u TMUX_PANE -u HERDR_ENV CMUX_CLAUDE_HOOK_CMUX_BIN="/fake/cmux/bin" "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ ! -f "$ARGS_LOG" ]
 }
