@@ -1,5 +1,5 @@
 [tools]
-"aqua:LuaLS/lua-language-server" = "3.18.2"
+"aqua:LuaLS/lua-language-server" = "3.19.0"
 bats = "latest"
 "npm:bash-language-server" = "5.6.0"
 shfmt = "3.13.1"
