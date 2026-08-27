@@ -99,16 +99,28 @@ function main() {
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
   readonly SCRIPT_DIR
 
+  local -r SWIFT_SRC="$SCRIPT_DIR/toggle-microphone.swift"
+  local -r BIN="${XDG_CACHE_HOME:-$HOME/.cache}/raycast-scripts/toggle-microphone"
+
+  if [ ! -x "$BIN" ] || [ "$SWIFT_SRC" -nt "$BIN" ]; then
+    mkdir -p "$(dirname "$BIN")"
+    if ! swiftc -O -o "$BIN.tmp.$$" "$SWIFT_SRC"; then
+      rm -f "$BIN.tmp.$$"
+      exit 1
+    fi
+    mv -f "$BIN.tmp.$$" "$BIN"
+  fi
+
   if [ -f "$STATE_FILE" ]; then
     # ハンディON中 → 終了する
     # osascript -e 'tell application "System Events" to keystroke " " using {shift down, option down}'
     /Applications/Handy.app/Contents/MacOS/handy --toggle-post-process
-    swift "$SCRIPT_DIR/toggle-microphone.swift" mute >/dev/null
+    "$BIN" mute >/dev/null
     rm "$STATE_FILE"
     log_info "🔇 音声入力を終了"
   else
     # ハンディOFF → 開始する
-    swift "$SCRIPT_DIR/toggle-microphone.swift" unmute >/dev/null
+    "$BIN" unmute >/dev/null
     sleep 0.3
     # osascript -e 'tell application "System Events" to keystroke " " using {shift down, option down}'
     /Applications/Handy.app/Contents/MacOS/handy --toggle-post-process
