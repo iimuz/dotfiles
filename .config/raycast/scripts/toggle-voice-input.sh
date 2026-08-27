@@ -95,16 +95,20 @@ function main() {
     esac
   done
 
+  local SCRIPT_DIR
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
+  readonly SCRIPT_DIR
+
   if [ -f "$STATE_FILE" ]; then
     # ハンディON中 → 終了する
     # osascript -e 'tell application "System Events" to keystroke " " using {shift down, option down}'
     /Applications/Handy.app/Contents/MacOS/handy --toggle-post-process
-    osascript -e "set volume input volume 0"
+    swift "$SCRIPT_DIR/toggle-microphone.swift" mute >/dev/null
     rm "$STATE_FILE"
     log_info "🔇 音声入力を終了"
   else
     # ハンディOFF → 開始する
-    osascript -e "set volume input volume 50"
+    swift "$SCRIPT_DIR/toggle-microphone.swift" unmute >/dev/null
     sleep 0.3
     # osascript -e 'tell application "System Events" to keystroke " " using {shift down, option down}'
     /Applications/Handy.app/Contents/MacOS/handy --toggle-post-process

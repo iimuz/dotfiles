@@ -4,6 +4,19 @@
 import CoreAudio
 import Foundation
 
+var desiredValue: UInt32?
+switch CommandLine.arguments.dropFirst().first {
+case .none:
+    desiredValue = nil
+case "mute":
+    desiredValue = 1
+case "unmute":
+    desiredValue = 0
+default:
+    print("Error: usage: toggle-microphone.swift [mute|unmute]")
+    exit(1)
+}
+
 var deviceID = AudioDeviceID(0)
 var size = UInt32(MemoryLayout<AudioDeviceID>.size)
 var defaultAddr = AudioObjectPropertyAddress(
@@ -34,7 +47,7 @@ guard AudioObjectGetPropertyData(deviceID, &muteAddr, 0, nil, &muteSize, &muted)
     exit(1)
 }
 
-var newValue: UInt32 = muted == 0 ? 1 : 0
+var newValue: UInt32 = desiredValue ?? (muted == 0 ? 1 : 0)
 guard AudioObjectSetPropertyData(deviceID, &muteAddr, 0, nil, muteSize, &newValue) == noErr else {
     print("Error: failed to set mute state")
     exit(1)
