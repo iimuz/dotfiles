@@ -12,6 +12,8 @@
 set -E -e -u -o pipefail
 
 readonly STATE_FILE="/tmp/handy_voice_state"
+readonly LOCK_DIR="/tmp/handy_voice_state.lock"
+LOCK_ACQUIRED=false
 
 SCRIPT_NAME=$(basename "${0}")
 readonly SCRIPT_NAME
@@ -52,8 +54,30 @@ function err() {
   exit 1
 }
 
+function acquire_lock() {
+  if mkdir "$LOCK_DIR" 2>/dev/null; then
+    LOCK_ACQUIRED=true
+    return 0
+  fi
+
+  # Raycast の silent モードでは stderr が見えないため、強制終了などで
+  # 残ったロックを放置するとホットキーが無反応になり続ける。
+  # スクリプトの実行は数秒で終わるので、1 分以上古いロックは残骸とみなす。
+  if [ -n "$(find "$LOCK_DIR" -maxdepth 0 -mmin +1 2>/dev/null)" ]; then
+    rmdir "$LOCK_DIR" 2>/dev/null || true
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      LOCK_ACQUIRED=true
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
 function cleanup() {
-  echo "no cleanup actions needed currently" >/dev/null
+  if [ "$LOCK_ACQUIRED" = true ]; then
+    rmdir "$LOCK_DIR" 2>/dev/null || true
+  fi
 }
 
 trap 'err ${LINENO} "$BASH_COMMAND"' ERR
@@ -94,6 +118,11 @@ function main() {
         ;;
     esac
   done
+
+  if ! acquire_lock; then
+    log_info "already running; ignored"
+    exit 0
+  fi
 
   local SCRIPT_DIR
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
