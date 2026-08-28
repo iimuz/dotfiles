@@ -11,6 +11,12 @@ settings = "prefix+shift+s"
 [ui]
 agent_panel_sort = "spaces"
 
+[ui.sidebar.agents]
+rows = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"]]
+
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"]]
+
 [ui.toast]
 # Deliver notifications through the outer terminal (escape sequence) so they
 # reach the local desktop both on local mac and over ssh. Ghostty forwards
