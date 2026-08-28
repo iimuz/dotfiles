@@ -9,13 +9,18 @@
 # @raycast.icon 🤖
 # @raycast.packageName System
 
-# 現在の入力ボリュームを取得
-current_volume=$(osascript -e "input volume of (get volume settings)")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
 
-if [ "$current_volume" -eq 0 ]; then
-  osascript -e "set volume input volume 50"
-  echo "Unmute"
-else
-  osascript -e "set volume input volume 0"
-  echo "Mute"
+SWIFT_SRC="$SCRIPT_DIR/toggle-microphone.swift"
+BIN="${XDG_CACHE_HOME:-$HOME/.cache}/raycast-scripts/toggle-microphone"
+
+if [ ! -x "$BIN" ] || [ "$SWIFT_SRC" -nt "$BIN" ]; then
+  mkdir -p "$(dirname "$BIN")"
+  if ! swiftc -O -o "$BIN.tmp.$$" "$SWIFT_SRC"; then
+    rm -f "$BIN.tmp.$$"
+    exit 1
+  fi
+  mv -f "$BIN.tmp.$$" "$BIN"
 fi
+
+"$BIN" "$@"
