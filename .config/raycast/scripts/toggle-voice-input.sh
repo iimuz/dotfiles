@@ -88,14 +88,14 @@ function usage() {
   cat <<EOF
 Usage: ${SCRIPT_NAME} [OPTIONS]
 
-Starts a background audio recording.
+Toggles Handy voice input and microphone mute.
 
 OPTIONS:
   -h, --help      Show this help message
   -v, --verbose   Enable verbose output
 
 EXAMPLE:
-  # Start recording
+  # Toggle voice input
   $ ${SCRIPT_NAME}
 EOF
 }
@@ -128,7 +128,7 @@ function main() {
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
   readonly SCRIPT_DIR
 
-  local -r SWIFT_SRC="$SCRIPT_DIR/toggle-microphone.swift"
+  local -r SWIFT_SRC="$SCRIPT_DIR/lib/toggle-microphone.swift"
   local -r BIN="${XDG_CACHE_HOME:-$HOME/.cache}/raycast-scripts/toggle-microphone"
 
   if [ ! -x "$BIN" ] || [ "$SWIFT_SRC" -nt "$BIN" ]; then

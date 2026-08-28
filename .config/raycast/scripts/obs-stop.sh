@@ -19,7 +19,6 @@ SCRIPT_DIR=
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
 readonly SCRIPT_DIR
 
-SCRIPT_PATH="$SCRIPT_DIR/obs-stop.py"
+SCRIPT_PATH="$SCRIPT_DIR/lib/obs-stop.py"
 
-source ~/.zshrc
-uv run "$SCRIPT_PATH" "$@"
+/opt/homebrew/bin/mise exec -- uv run "$SCRIPT_PATH" "$@"
