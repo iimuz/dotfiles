@@ -7,13 +7,23 @@ metadata:
   author: tobi
   version: "2.2.0"
   notes: |
-    qmd 2.5.3 の `qmd skill show`(bundled 2.2.0)の出力をベースに、日本語運用の節と
-    scripts/check_gpu.sh を追加している。qmd 更新時は同コマンドの出力と差分を取って更新する。
+    ベースは qmd 2.5.3 の `qmd skill show`(bundled 2.2.0)出力。ローカル追加は
+    日本語運用の節、scripts/check_gpu.sh、references/mcp-setup.md(今回の修正で追加)。
+    bundled 側を更新して取り込む際は、先に `mise run format` を通してからこのファイルと
+    差分を取ること。コミット済みのこのファイルは markdown format 済みなので、素の
+    `qmd skill show` 出力とそのまま比較すると整形差分だけがノイズとして出る。
     日本語運用の根拠: 内蔵 query expansion は CJK クエリを英語化して劣化する報告がある
     (tobi/qmd#454)。既定 embedding の embeddinggemma-300M は日本語カバレッジが限定的。
-    Retrieve sources 節の `multi-get` 例は実機の qmd 2.5.3 で動作確認して修正済み
-    (`#docid` のカンマ区切り指定はファイル未検出になる)。次回更新で bundled 側の例を
-    無条件に採用しないこと。
+
+    bundled 原文からの意図的な差分(節ごと):
+    - Typical loop 節: `multi-get "#docid,#docid"` を動作する `qmd://` カンマ区切りパス形式に
+      置き換えた(実機の qmd 2.5.3 では multi-get の docid カンマ指定が解決に失敗するため)。
+    - Retrieve sources 節: 同じ `multi-get "#docid,#docid"` 置き換えを適用。brace-glob 例
+      (`concepts/{a.md,b.md}` 形式)は実機で動作確認済みで、bundled 原文のまま維持している
+      (差分ではない。存在しないメンバーは黙ってスキップされるだけで壊れていない)。
+    - MCP setup 節: `references/mcp-setup.md` を bundled パッケージからコピーし、
+      `mise run format` を通して追加した(`qmd skill show` のテキスト出力自体には含まれないが、
+      本文が元々参照していた実在の同梱ファイル。内容は format による整形以外は無編集)。
 allowed-tools: Bash(qmd:*), mcp__qmd__*
 ---
 
@@ -111,6 +121,7 @@ Search results include docids like `#abc123` and `qmd://...` paths. Fetch them:
 qmd get "#abc123"
 qmd get qmd://concepts/ai-before-headcount.md
 qmd multi-get 'qmd://concepts/ai-before-headcount.md,qmd://concepts/data-informed-not-metric-driven.md' --format md
+qmd multi-get 'concepts/{ai-before-headcount.md,data-informed-not-metric-driven.md}' --format md
 qmd multi-get 'sources/podcast-2025-*.md' -l 80
 ```
 
