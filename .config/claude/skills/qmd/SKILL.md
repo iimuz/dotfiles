@@ -11,6 +11,9 @@ metadata:
     scripts/check_gpu.sh を追加している。qmd 更新時は同コマンドの出力と差分を取って更新する。
     日本語運用の根拠: 内蔵 query expansion は CJK クエリを英語化して劣化する報告がある
     (tobi/qmd#454)。既定 embedding の embeddinggemma-300M は日本語カバレッジが限定的。
+    Retrieve sources 節の `multi-get` 例は実機の qmd 2.5.3 で動作確認して修正済み
+    (`#docid` のカンマ区切り指定はファイル未検出になる)。次回更新で bundled 側の例を
+    無条件に採用しないこと。
 allowed-tools: Bash(qmd:*), mcp__qmd__*
 ---
 
@@ -107,8 +110,7 @@ Search results include docids like `#abc123` and `qmd://...` paths. Fetch them:
 ```bash
 qmd get "#abc123"
 qmd get qmd://concepts/ai-before-headcount.md
-qmd multi-get "#abc123,#def432" --format md
-qmd multi-get 'concepts/{ai-before-headcount.md,data-informed-not-metric-driven.md}' --format md
+qmd multi-get 'qmd://concepts/ai-before-headcount.md,qmd://concepts/data-informed-not-metric-driven.md' --format md
 qmd multi-get 'sources/podcast-2025-*.md' -l 80
 ```
 
