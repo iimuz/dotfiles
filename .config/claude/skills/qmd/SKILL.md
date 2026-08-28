@@ -1,127 +1,299 @@
 ---
 name: qmd
-description: Search markdown knowledge bases, notes, and documentation using QMD. Use when users ask to search notes, find documents, or look up information.
+description: Search local markdown knowledge bases, notes, docs, and wikis with QMD. Use when users ask to find notes, retrieve documents, inspect a wiki, answer from indexed markdown, or set up QMD access.
 license: MIT
-allowed-tools: Bash(qmd:*), mcp__qmd__*
-compatibility: Requires qmd CLI or MCP server.
+compatibility: Requires qmd CLI or MCP server. Install via `npm install -g @tobilu/qmd`.
 metadata:
   author: tobi
-  version: "2.0.0"
+  version: "2.2.0"
   notes: |
-    `qmd skill show` で表示される文言で CLI に関するものと、 `qmd -h` で出力される内容を元に修正している。
+    ベースは qmd 2.5.3 の `qmd skill show`(bundled 2.2.0)出力。ローカル追加は
+    日本語運用の節、scripts/check_gpu.sh。
+    bundled 側を更新して取り込む際は、先に `mise run format` を通してからこのファイルと
+    差分を取ること。コミット済みのこのファイルは markdown format 済みなので、素の
+    `qmd skill show` 出力とそのまま比較すると整形差分だけがノイズとして出る。
+    取り込み方針: CLI 経由の検索・取得に関係しない内容(MCP サーバーのセットアップ手順、
+    MCP ツール専用の使い方など)は bundled 側に含まれていても取り込まない。
+    日本語運用の根拠: 内蔵 query expansion は CJK クエリを英語化して劣化する報告がある
+    (tobi/qmd#454)。既定 embedding の embeddinggemma-300M は日本語カバレッジが限定的。
+
+    bundled 原文からの意図的な差分(節ごと):
+    - Typical loop 節: `multi-get "#docid,#docid"` を動作する `qmd://` カンマ区切りパス形式に
+      置き換えた(実機の qmd 2.5.3 では multi-get の docid カンマ指定が解決に失敗するため)。
+    - Retrieve sources 節: 同じ `multi-get "#docid,#docid"` 置き換えを適用。brace-glob 例
+      (`concepts/{a.md,b.md}` 形式)は実機で動作確認済みで、bundled 原文のまま維持している
+      (差分ではない。存在しないメンバーは黙ってスキップされるだけで壊れていない)。
+    - MCP Tool: `query` 節、MCP setup 節: 上記の取り込み方針により削除した
+      (CLI 経由の検索に関係しない MCP 統合手順のため)。次回更新でも取り込まないこと。
+allowed-tools: Bash(qmd:*), mcp__qmd__*
 ---
 
-# QMD - Quick Markdown Search
+# QMD - Query Markdown Documents
 
-Local search engine for markdown content.
+## How search works
 
-## Status
+QMD searches local markdown collections: notes, docs, wikis, transcripts, and
+project knowledge bases. Use it before web search when the answer may already be
+in indexed local files.
 
-`qmd status`
+The workflow is always:
 
-If no GPU is available (running on CPU), use only the `qmd search` command.
-Avoid `qmd query` and `qmd vsearch` — they will be very slow without GPU acceleration.
+1. Search for candidate documents.
+2. Retrieve the full source with `qmd get` or `qmd multi-get`.
+3. Answer from retrieved text, citing paths or docids.
 
-## Query
+Do not answer from snippets alone when the user needs facts, decisions, quotes,
+or nuance. Snippets are only leads.
 
-QMD queries are either a single expand query (no prefix) or a multi-line
-document where every line is typed with lex:, vec:, or hyde:. This grammar
-matches the docs in docs/SYNTAX.md and is enforced in the CLI.
+Typical loop:
 
-### Grammar
-
-- query: `expand_query | query_document ;`
-- expand_query: `text | explicit_expand ;`
-- explicit_expand: `"expand:" text ;`
-- query_document: `[ intent_line ] { typed_line } ;`
-- intent_line: `"intent:" text newline ;`
-- typed_line: `type ":" text newline ;`
-- type: `"lex" | "vec" | "hyde" ;`
-- text: `quoted_phrase | plain_text ;`
-- quoted_phrase: `'"' { character } '"' ;`
-- plain_text: `{ character } ;`
-- newline: `"\n" ;`
-
-#### Query Types
-
-| Type   | Method | Input                                       |
-| ------ | ------ | ------------------------------------------- |
-| `lex`  | BM25   | Keywords — exact terms, names, code         |
-| `vec`  | Vector | Question — natural language                 |
-| `hyde` | Vector | Answer — hypothetical result (50-100 words) |
-
-### Examples
-
-```sh
-qmd query "how does auth work"                      # single-line → implicit expand
-qmd query $'lex: CAP theorem\nvec: consistency'     # typed query document
-qmd query $'lex: "exact matches" sports -baseball'  # phrase + negation lex search
-qmd query $'hyde: Hypothetical answer text'         # hyde-only document
-qmd query $'expand: question'     # Explicit expand
-qmd query --json --explain "q"    # Show score traces (RRF + rerank blend)
-qmd search "keywords"             # BM25 only (no LLM)
-qmd get "#abc123"                 # By docid
-qmd multi-get "journals/2026-*.md" -l 40  # Batch pull snippets by glob
-qmd multi-get notes/foo.md,notes/bar.md   # Comma-separated list, preserves order
+```bash
+qmd search "merchant reality support interviews" -n 5
+# leads: #abc123 concepts/customer-proximity.md; #def432 sources/merchant-call.md
+qmd multi-get 'qmd://concepts/customer-proximity.md,qmd://sources/merchant-call.md' --format md
 ```
 
-### Constraints
+**Default to structured `qmd query` with `intent:`, `lex:`, `vec:`, and `hyde:`
+fields that you write yourself.** You are a better query expander than the
+built-in model: you know the user's actual goal, the domain vocabulary, and the
+nearby-but-wrong concepts to avoid. Do not just paste the user's words into
+`qmd query "..."` and hope the expansion model guesses right — supply the
+`intent:` and craft the lexical and semantic terms deliberately (see
+[Pick the right search mode](#pick-the-right-search-mode)).
 
-- Standalone expand queries cannot mix with typed lines.
-- Query documents allow only lex:, vec:, or hyde: prefixes.
-- Each typed line must be single-line text with balanced quotes.
+When reporting what you retrieved, a compact note is enough; do not paste whole
+files unless needed:
 
-### Search options
-
-```sh
--n <num>                   - Max results (default 5, or 20 for --files/--json)
---all                      - Return all matches (pair with --min-score)
---min-score <num>          - Minimum similarity score
---full                     - Output full document instead of snippet
--C, --candidate-limit <n>  - Max candidates to rerank (default 40, lower = faster)
---no-rerank                - Skip LLM reranking (use RRF scores only, much faster on CPU)
---line-numbers             - Include line numbers in output
---explain                  - Include retrieval score traces (query --json/CLI)
---files | --json | --csv | --md | --xml  - Output format
--c, --collection <name>    - Filter by one or more collections
+```text
+Retrieved:
+- #abc123 concepts/customer-proximity.md
+- #def432 sources/merchant-call.md
 ```
 
-### Embed/query options
+## Pick the right search mode
 
-```sh
---chunk-strategy <auto|regex> - Chunking mode (default: regex; auto uses AST for code files)
+Use **BM25 lexical search** when you know exact words, titles, names, code
+symbols, or rare phrases:
+
+```bash
+qmd search "cockpit OKR Goodhart" -n 10
+qmd search '"AI Before Headcount"' -c concepts -n 5
 ```
 
-### Multi-get options
+Use **`qmd query` with structured fields** when the user describes an idea
+indirectly, uses different wording than the source, or needs conceptual recall.
+**This is the default mode — write the fields yourself rather than leaning on
+query expansion.** Combine exact anchors with semantic recall:
 
-```sh
--l <num>                   - Maximum lines per file
---max-bytes <num>          - Skip files larger than N bytes (default 10240)
---json/--csv/--md/--xml/--files - Same formats as search
+```bash
+qmd query $'intent: Find the concept note about metrics as instruments without letting OKRs replace judgment.\nlex: cockpit instruments OKR Goodhart metrics judgment\nvec: data informed not metric driven product judgment\nhyde: A concept note says metrics are useful like cockpit instruments, but leaders should remain data-informed rather than metric-driven because OKRs and dashboards can Goodhart product judgment.'
 ```
 
-## Writing Good Queries
+Structured query fields (you author each one — do not delegate this to the
+expansion model):
 
-### lex (keyword)
+- `intent:` states what you are trying to find **and what to avoid**. Always
+  supply this. It steers ranking away from nearby-but-wrong concepts.
+- `lex:` exact terms, aliases, titles, code symbols, and rare words you expect
+  in the source. This is your own keyword expansion.
+- `vec:` paraphrases the idea in natural language, in source-like wording.
+- `hyde:` describes the document or answer that would satisfy the request.
 
-- 2-5 terms, no filler words
-- Exact phrase: `"connection pool"` (quoted)
-- Exclude terms: `performance -sports` (minus prefix)
-- Code identifiers work: `handleError async`
+You do not need all four every time, but you should almost always write at least
+`intent:` plus one of `lex:`/`vec:`. A bare `qmd query "the user's sentence"`
+throws away the context only you have and relies on the built-in expander to
+reconstruct it — prefer the structured form.
 
-### vec (semantic)
+If you genuinely have nothing to expand (a single rare token, a verbatim phrase),
+that is a job for `qmd search`, not bare `qmd query`:
 
-- Full natural language question
-- Be specific: `"how does the rate limiter handle burst traffic"`
-- Include context: `"in the payment service, how are refunds processed"`
+```bash
+qmd query --format json --explain $'intent: ...\nlex: ...\nvec: ...'  # inspect ranking
+```
 
-### hyde (hypothetical document)
+If `qmd query` is slow or model/GPU setup fails, fall back to `qmd search` with
+better lexical terms.
 
-- Write 50-100 words of what the _answer_ looks like
-- Use the vocabulary you expect in the result
+## Retrieve sources
 
-### expand (auto-expand)
+Search results include docids like `#abc123` and `qmd://...` paths. Fetch them:
 
-- Use a single-line query (implicit) or `expand: question` on its own line
-- Lets the local LLM generate lex/vec/hyde variations
-- Do not mix `expand:` with other typed lines — it's either a standalone expand query or a full query document
+```bash
+qmd get "#abc123"
+qmd get qmd://concepts/ai-before-headcount.md
+qmd multi-get 'qmd://concepts/ai-before-headcount.md,qmd://concepts/data-informed-not-metric-driven.md' --format md
+qmd multi-get 'concepts/{ai-before-headcount.md,data-informed-not-metric-driven.md}' --format md
+qmd multi-get 'sources/podcast-2025-*.md' -l 80
+```
+
+Use `multi-get` when comparing several hits or gathering context across pages.
+
+### Output is line-numbered and carries the docid — cite both
+
+`get` and `multi-get` are **line-numbered by default** and always print the
+document's `#docid` and `qmd://` path. So `get` output looks like:
+
+```text
+qmd://concepts/note.md  #abc123
+---
+
+1: # Metrics as instruments
+2:
+3: Treat dashboards like cockpit instruments...
+```
+
+Cite the docid and exact line numbers in your answer, and use the numbers to ask
+for the next slice. Pass `--no-line-numbers` only when you need raw content to
+copy verbatim (e.g. reproducing a code block).
+
+When you need to open or edit the underlying file (e.g. hand a path to `Read`,
+`Edit`, or an editor), add `--full-path`. It replaces the `qmd://` URL + docid
+header with the document's on-disk path, falling back to the canonical header if
+the file no longer exists on disk:
+
+```text
+$ qmd get "#abc123" --full-path
+/Users/you/notes/concepts/note.md
+---
+
+1: # Metrics as instruments
+```
+
+`--full-path` works the same way on `qmd search` and `qmd query`: result paths
+become the file's on-disk path — `./`-prefixed relative path when the file is
+inside `$PWD`, absolute realpath otherwise — and the per-result `#docid` is
+dropped because the path is the identifier. The leading `./` is intentional so
+the output is unambiguously a filesystem path and cannot be mistaken for a bare
+collection-relative string. Default search/query output still uses `qmd://`
+URIs; only opt into `--full-path` when you specifically need a path you can hand
+to a non-QMD tool.
+
+### Read line ranges with the `:from:count` suffix — never pipe through `sed`/`head`/`tail`
+
+`qmd get` slices files itself. Use the suffix or flags; do **not** shell out to
+`sed -n`, `head`, `tail`, or `awk` to pull a line range. Piping defeats docid
+resolution, virtual-path lookups, line numbering, and the header, and it is
+slower and more error-prone.
+
+The most compact form is a `:from:count` suffix right on the path or docid —
+prefer it:
+
+```bash
+qmd get "#abc123:120:40"                  # 40 lines starting at line 120
+qmd get qmd://concepts/note.md:200:60     # lines 200–259
+qmd get "#abc123:120"                      # from line 120 to end of file
+qmd get "#abc123" --from 120 -l 40         # equivalent, using flags
+```
+
+Suffix and flags:
+
+- `<path>:<from>:<count>` — start at line `<from>`, read `<count>` lines. **Best
+  for reading around a search hit.**
+- `<path>:<from>` — start at `<from>`, read to end of file.
+- `--from <line>` / `-l <lines>` — flag equivalents. Explicit flags override the
+  suffix, so `... :5:2 -l 1` reads 1 line.
+- `--no-line-numbers` — drop the `N:` prefixes (line numbers are on by default).
+
+Wrong: `qmd get "#abc123" | sed -n '120,160p'`
+Right: `qmd get "#abc123:120:40"`
+
+Search results include a `:line` anchor on each hit — feed it straight into
+`qmd get path:line:<n>` to read a window around the match (line numbers in the
+output will start at `line`).
+
+## Discover what is indexed
+
+```bash
+qmd collection list
+qmd ls
+qmd status
+```
+
+Add collection filters when broad searches drift into the wrong corpus:
+
+```bash
+qmd search "headcount autonomous agents" -c concepts -n 10
+qmd query "merchant support product reality" -c concepts -c sources -n 10
+```
+
+Omit `-c` to search everything.
+
+## Query craft
+
+Good QMD searches mix three things:
+
+1. **Title/alias anchors:** exact page titles, named entities, phrases.
+2. **Semantic paraphrase:** how a human would describe the idea.
+3. **Negative space:** enough intent to avoid nearby-but-wrong concepts.
+
+Examples:
+
+```bash
+# Exact-ish title lookup
+qmd search '"arm the rebels" merchants tools big companies' -c concepts
+
+# Semantic concept lookup
+qmd query $'intent: Find the customer proximity concept, not generic customer delight.\nlex: support pseudonymous merchant customer interviews\nvec: founder stays close to merchant reality through support and product use'
+
+# Source lookup
+qmd search "six-week cadence WhatsApp merchant relationships Shawn Ryan" -c sources -n 10
+```
+
+## Setup and maintenance
+
+Only mutate indexes when the user asked for setup or maintenance. Searching and
+retrieving are safe; collection/index mutation is not a casual first step.
+
+```bash
+npm install -g @tobilu/qmd
+qmd collection add ~/notes --name notes
+qmd update
+qmd embed
+```
+
+Health and diagnostics:
+
+```bash
+qmd doctor
+qmd status
+qmd pull
+```
+
+`qmd doctor` checks config, model cache, device/GPU setup, vector fingerprints,
+and common environment overrides. If a model-backed command fails, run it before
+changing configuration.
+
+## Pitfalls
+
+- **Do not stop at snippets.** Fetch documents before making claims.
+- **Do not slice files with `sed`/`head`/`tail`.** Use the `path:from:count`
+  suffix (e.g. `qmd get "#abc123:120:40"`) or `--from`/`-l`. Output is already
+  line-numbered; piping breaks docid resolution, the header, and virtual paths.
+- **Do not lean on query expansion.** Write `intent:`/`lex:`/`vec:`/`hyde:`
+  yourself. A bare `qmd query "user sentence"` discards the context only you
+  have. You expand the query; the model just ranks.
+- **Do not overuse semantic search.** If you know exact titles or terms, BM25 is
+  faster and often better.
+- **Do not mutate indexes casually.** `qmd collection add`, `qmd update`, and
+  `qmd embed` change local state and can be expensive.
+- **Model-backed commands can be environment-sensitive.** If `qmd query`,
+  `qmd vsearch`, or reranking fails because local models/GPU are unavailable,
+  use `qmd search` and stronger lexical/structured terms.
+- **Ambiguous user wording needs intent.** Add `intent:` rather than hoping query
+  expansion guesses the right domain.
+- **Collection names matter.** Search `concepts` for synthesized wiki pages,
+  `sources` for transcripts/raw source pages, and docs collections for code or
+  project documentation.
+
+## 日本語コーパスでの指針
+
+- `qmd search`(BM25)と `lex:` / `vec:` の typed query を主軸にする。
+- 暗黙 expand(`qmd query "<文>"`)を日本語で使わない。
+- `qmd vsearch` 単独の結果を信用しない。
+- 表記揺れ(漢字・カタカナ・英語)は別クエリとして複数回引く。
+- パス取得は `--files --full-path` を使う(qmd:// URI の変換が不要になる)。
+
+## GPU 判定
+
+- この skill の `scripts/check_gpu.sh` を実行する。出力は `gpu` または `cpu` の 1 語。
+- `cpu` の場合は `qmd search` のみを使うか、`--no-rerank` を付ける。
