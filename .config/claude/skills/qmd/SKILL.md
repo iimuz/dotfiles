@@ -39,7 +39,7 @@ Typical loop:
 ```bash
 qmd search "merchant reality support interviews" -n 5
 # leads: #abc123 concepts/customer-proximity.md; #def432 sources/merchant-call.md
-qmd multi-get "#abc123,#def432" --format md
+qmd multi-get 'qmd://concepts/customer-proximity.md,qmd://sources/merchant-call.md' --format md
 ```
 
 **Default to structured `qmd query` with `intent:`, `lex:`, `vec:`, and `hyde:`
