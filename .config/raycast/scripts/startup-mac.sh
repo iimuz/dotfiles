@@ -11,10 +11,12 @@
 
 set -Eeuo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
+
 # brew
 brew update
 brew upgrade
-brew bundle --file ../../homebrew/Brewfile cleanup --force
+brew bundle cleanup --force --file="$SCRIPT_DIR/../../homebrew/Brewfile"
 
 # update mise
 mise prune -y
