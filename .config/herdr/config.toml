@@ -14,6 +14,7 @@ subtext0 = "#C8C8C8"
 text = "#E6E6E6"
 
 [keys]
+focus_agent = "prefix+alt+1..9"
 prefix = "ctrl+g"
 split_horizontal = "prefix+s"
 settings = "prefix+shift+s"
