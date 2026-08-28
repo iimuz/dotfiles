@@ -88,14 +88,14 @@ function usage() {
   cat <<EOF
 Usage: ${SCRIPT_NAME} [OPTIONS]
 
-Starts a background audio recording.
+Toggles Handy voice input and microphone mute.
 
 OPTIONS:
   -h, --help      Show this help message
   -v, --verbose   Enable verbose output
 
 EXAMPLE:
-  # Start recording
+  # Toggle voice input
   $ ${SCRIPT_NAME}
 EOF
 }
