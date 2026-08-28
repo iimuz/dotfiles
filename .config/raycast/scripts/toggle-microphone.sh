@@ -11,7 +11,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
 
-SWIFT_SRC="$SCRIPT_DIR/toggle-microphone.swift"
+SWIFT_SRC="$SCRIPT_DIR/lib/toggle-microphone.swift"
 BIN="${XDG_CACHE_HOME:-$HOME/.cache}/raycast-scripts/toggle-microphone"
 
 if [ ! -x "$BIN" ] || [ "$SWIFT_SRC" -nt "$BIN" ]; then
