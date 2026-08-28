@@ -14,8 +14,6 @@ exec > >(tee -a "$LOG_FILE")
 exec 2> >(tee -a "$LOG_FILE" >&2)
 echo "=== $(date '+%Y-%m-%d %H:%M:%S') ==="
 
-source ~/.zshrc
-
 SCRIPT_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 readonly SCRIPT_DIR
 
@@ -25,4 +23,4 @@ if [ ! -f "$SCRIPT_PATH" ]; then
   exit 1
 fi
 
-uv run "$SCRIPT_PATH" "$@"
+/opt/homebrew/bin/mise exec -- uv run "$SCRIPT_PATH" "$@"

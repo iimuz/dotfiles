@@ -21,5 +21,4 @@ readonly SCRIPT_DIR
 
 SCRIPT_PATH="$SCRIPT_DIR/lib/obs-stop.py"
 
-source ~/.zshrc
-uv run "$SCRIPT_PATH" "$@"
+/opt/homebrew/bin/mise exec -- uv run "$SCRIPT_PATH" "$@"
