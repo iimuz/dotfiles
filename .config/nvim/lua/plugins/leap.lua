@@ -7,6 +7,9 @@
 
 return {
 	url = "https://codeberg.org/andyg/leap.nvim",
+	-- 最新版は vim.iter():count() (Neovim 0.13 以降の API) を利用しており、
+	-- 0.12 では移動時に実行時エラーとなるため、導入直前の commit に固定する。
+	commit = "a5e9dfb25a1cf058811665859db1afc813897ec4",
 	-- Do not set lazy loading via your fancy plugin manager
 	-- see: <https://github.com/ggandor/leap.nvim?tab=readme-ov-file#installation>
 	lazy = false,
