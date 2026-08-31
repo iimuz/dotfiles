@@ -23,6 +23,7 @@ opencode = "v1.18.18"
 "npm:context-mode" = "1.0.169" # for opencode
 "npm:mcp-remote" = "0.1.38" # for copilot
 "npm:neovim" = "5.4.0" # for neovim
+"npm:@tobilu/qmd" = "2.8.3" # 日本語 FTS には 2.5.3 以降が必要 (2.5.3-2.8.3 間の中間版は CJK 再構築にバグあり)
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.30"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0" # for neovim
@@ -35,28 +36,6 @@ ripgrep = "15.2.0"
 uv = "0.12.5"
 yq = "4.53.3"
 
-# pnpm で post install script の実行などを停止しているので binary 作成を手動で実行
-"npm:@tobilu/qmd" = { version = "2.5.3", postinstall = """
-  local sqlite3_dir
-  sqlite3_dir=$(find "$MISE_TOOL_INSTALL_PATH" -name "binding.gyp" -path "*/better-sqlite3/*" 2>/dev/null | head -1 | xargs -- dirname 2>/dev/null || true)
-
-  if [[ -z "$sqlite3_dir" ]]; then
-    echo "better-sqlite3 not found under $mise_installs_dir"
-    return 1
-  fi
-
-  # ネイティブバイナリが既にビルド済みの場合はスキップ
-  if [[ -d "$sqlite3_dir/build" ]]; then
-    echo "better-sqlite3 native binding already exists, skipping rebuild"
-    return 0
-  fi
-
-  echo "Rebuilding better-sqlite3 native binding in $sqlite3_dir ..."
-  (cd "$sqlite3_dir" && npx install) || {
-    echo "prebuild-install failed"
-    return 1
-  }
-""" }
 herdr = "0.8.0"
 
 [env]
