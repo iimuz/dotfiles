@@ -25,9 +25,15 @@ description: >-
 
 ### ブラウザ
 
-macOS では `--browser chrome` を付けて Homebrew の Google Chrome を使う。
-headless の user agent を弾くサイトを回避できる。Linux には Chrome がないので
-`--browser` を指定せず chromium を使う。
+macOS では `--browser chrome --headed` で Homebrew の Google Chrome を可視
+ウィンドウで使う。`--browser chrome` だけではヘッドレス実行のままで UA に
+`HeadlessChrome` が残り、headless を弾くサイトでは 403 になる。`--headed` を
+併用して初めて UA から `HeadlessChrome` が外れ、403 を回避できる。
+
+Linux には Chrome がなく、ディスプレイもないため `--headed` は使えない。
+`--browser` を指定せず chromium をヘッドレスで使うが、headless を弾くサイトは
+同じ理由で 403 になりうる。回避策は未検証。そのようなサイトに当たったら
+`--config` でのカスタム UA 上書きなど別の手段を調査する。
 
 ### プロファイル
 
