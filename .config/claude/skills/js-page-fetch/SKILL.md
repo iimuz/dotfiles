@@ -52,3 +52,14 @@ context-mode の `ctx_execute_file` で解析する。生データをコンテ�
 
 locale で表示が変わる SPA は `browser.contextOptions.locale` を指定する。
 `accept-language` ヘッダだけでは切り替わらないことがある。
+
+### 運用
+
+`--global` で入れたスキルの古さを CLI は警告しない。`renovate.json` は mise の
+minor 更新を自動マージするため、`@playwright/cli` の 0.x 系バージョンアップも
+気づかないうちに適用される。バージョンが上がったら `setup_mac.sh`
+(Linux は `setup_aarch64.sh` または `update_aarch64.sh`) を再実行してスキルを
+追従させる。
+
+Linux の setup では playwright 管理の chromium を新規に導入するため、
+数百 MB のダウンロードが発生する。

@@ -174,7 +174,7 @@ def test_json_files_parse(json_file: str) -> None:
 
 
 def test_generated_skill_is_ignored() -> None:
-    """playwright-cli の同梱スキルは生成物なので git 管理下に入らない。"""
+    """The bundled playwright-cli skill is generated and must stay untracked."""
     target = ".config/claude/skills/playwright-cli/"
     result = subprocess.run(
         ["git", "check-ignore", "-q", target],
