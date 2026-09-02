@@ -166,3 +166,20 @@ def test_json_files_parse(json_file: str) -> None:
         msg = f"{json_file}: none of UTF-8/UTF-8-sig/UTF-16 could decode the file"
         raise AssertionError(msg)
     json.loads(text)
+
+
+# ---------------------------------------------------------------------------
+# 4. Generated skill directories
+# ---------------------------------------------------------------------------
+
+
+def test_generated_skill_is_ignored() -> None:
+    """playwright-cli の同梱スキルは生成物なので git 管理下に入らない。"""
+    target = ".config/claude/skills/playwright-cli/"
+    result = subprocess.run(
+        ["git", "check-ignore", "-q", target],
+        cwd=_REPO_ROOT,
+    )
+    assert result.returncode == 0, (
+        f"{target} is not gitignored; the generated skill would be committed"
+    )
