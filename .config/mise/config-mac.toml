@@ -25,6 +25,7 @@ node = "24.19.0"
 "npm:context-mode" = "1.0.169" # for claude code
 "npm:mcp-remote" = "0.1.38" # for copilot
 "npm:neovim" = "5.4.0" # for neovim
+"npm:@playwright/cli" = "0.1.19" # for claude code
 "pipx:awslabs.aws-documentation-mcp-server" = "1.1.30"
 "pipx:pynvim" = "0.6.0" # for neovim
 pnpm = "11.22.0"
