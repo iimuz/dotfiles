@@ -74,6 +74,14 @@ if type claude >/dev/null 2>&1; then
   claude plugin marketplace add "awslabs/agent-plugins"
   claude plugin install "deploy-on-aws@agent-plugins-for-aws"
   claude plugin disable "deploy-on-aws@agent-plugins-for-aws"
+
+  # Setup playwright-cli skills
+  # 同梱スキルは CLI のバージョンに連動するため、リポジトリで管理せず毎回生成する
+  if type playwright-cli >/dev/null 2>&1; then
+    playwright-cli install --skills --global
+    # Linux には Google Chrome がないので playwright 管理の chromium を使う
+    playwright-cli install-browser chromium --with-deps
+  fi
 fi
 # === docker
 if ! type docker >/dev/null 2>&1; then
