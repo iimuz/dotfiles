@@ -20,3 +20,8 @@ if type mise >/dev/null 2>&1; then
   mise prune -y
   mise cache clean -y
 fi
+
+if type claude >/dev/null 2>&1 && type playwright-cli >/dev/null 2>&1; then
+  playwright-cli install --skills --global
+  playwright-cli install-browser chromium --with-deps
+fi

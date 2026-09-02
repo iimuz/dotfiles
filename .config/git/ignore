@@ -13,6 +13,9 @@ mise.local.toml
 mise-tasks
 mise-tasks/
 
+# === playwright-cli
+.playwright-cli/
+
 # === temporary working files
 docs/tmp/
 

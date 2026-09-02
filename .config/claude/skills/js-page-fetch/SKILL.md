@@ -1,0 +1,65 @@
+---
+name: js-page-fetch
+description: >-
+  Decide how to fetch a page whose content needs JavaScript rendering. Use when
+  WebFetch or ctx_fetch_and_index returns an empty shell or a skeleton without
+  the content, or when a site rejects a headless user agent with 403.
+---
+
+# JS 描画ページの取得
+
+素の HTTP fetch で内容が取れないページは `playwright-cli` で取得する。
+コマンドの使い方は同梱スキル `playwright-cli` にある。ここには、そのスキルが答えない
+この環境固有の判断だけを書く。
+
+## いつ使うか
+
+- `WebFetch` や `ctx_fetch_and_index` が空のシェルや骨組みだけを返した。
+- 目的の内容がアコーディオンやタブの内側にあり、初期 DOM に存在しない。
+- サイトが headless の user agent を 403 で弾いた。
+
+同梱スキルは browser automation とテスト作成を前提に書かれているため、この用途では
+起動しない。上記に当てはまるときは「情報が公開されていない」と結論づける前に試す。
+
+## この環境での決めごと
+
+### ブラウザ
+
+macOS では `--browser chrome --headed` で Homebrew の Google Chrome を可視
+ウィンドウで使う。`--browser chrome` だけではヘッドレス実行のままで UA に
+`HeadlessChrome` が残り、headless を弾くサイトでは 403 になる。`--headed` を
+併用して初めて UA から `HeadlessChrome` が外れ、403 を回避できる。
+
+Linux には Chrome がなく、ディスプレイもないため `--headed` は使えない。
+`--browser` を指定せず chromium をヘッドレスで使うが、headless を弾くサイトは
+同じ理由で 403 になりうる。回避策は未検証。そのようなサイトに当たったら
+`--config` でのカスタム UA 上書きなど別の手段を調査する。
+
+### プロファイル
+
+`--persistent`、`--profile`、`attach --cdp=chrome` は使わない。既定の一時プロファイル
+だけを使い、ユーザーの Chrome プロファイルには触れない。ログインが必要なページは
+このスキルの対象外とする。
+
+### 取り出し方
+
+DOM を掻き集める前に `requests` と `response-body` でページが叩いている JSON
+エンドポイントを探す。表形式のデータは、レンダリング結果より元の JSON のほうが
+速く確実に取れる。
+
+出力が大きいときは設定ファイルで `outputMode` を `file` にしてファイルに落とし、
+context-mode の `ctx_execute_file` で解析する。生データをコンテキストに載せない。
+
+locale で表示が変わる SPA は `browser.contextOptions.locale` を指定する。
+`accept-language` ヘッダだけでは切り替わらないことがある。
+
+### 運用
+
+`--global` で入れたスキルの古さを CLI は警告しない。`renovate.json` は mise の
+minor 更新を自動マージするため、`@playwright/cli` の 0.x 系バージョンアップも
+気づかないうちに適用される。バージョンが上がったら `setup_mac.sh`
+(Linux は `setup_aarch64.sh` または `update_aarch64.sh`) を再実行してスキルを
+追従させる。
+
+Linux の setup では playwright 管理の chromium を新規に導入するため、
+数百 MB のダウンロードが発生する。
