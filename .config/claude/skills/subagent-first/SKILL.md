@@ -64,8 +64,8 @@ status: success | failure | blocked
 summary: # a few lines
 evidence: # file:line plus a short excerpt; only what supports the conclusion
 confirmed: # verified facts (required for read-only subagents)
-hypotheses: # ideas not yet verified
-rejected: # hypotheses ruled out, with the reason
+hypotheses: # ideas not yet verified (required for read-only subagents)
+rejected: # hypotheses ruled out, with the reason (required for read-only subagents)
 unverified: # checks that could not be run
 files_changed: # edit-allowed subagents only
 next_action:
