@@ -26,6 +26,13 @@ if [ "${HERDR_ENV:-}" = "1" ]; then
   exit 0
 fi
 
+# Claude Desktop runs claude-code with CLAUDE_CODE_ENTRYPOINT=claude-desktop and
+# surfaces session state through its own notifications, so skip osascript there
+# to avoid duplicate notifications.
+if [ "${CLAUDE_CODE_ENTRYPOINT:-}" = "claude-desktop" ]; then
+  exit 0
+fi
+
 event="${1:-}"
 case "$event" in
   notification)
