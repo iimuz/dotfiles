@@ -1,16 +1,16 @@
 [tools]
-awscli = { version = "2.36.24", symlink_bins = "true" }
+awscli = { version = "2.36.29", symlink_bins = "true" }
 bat = "0.26.1"
-cargo-binstall = "1.21.1"
+cargo-binstall = "1.22.0"
 "cargo:tree-sitter-cli" = "0.26.12" # for neovim
-claude = "2.1.233"
+claude = "2.1.240"
 delta = "0.19.2"
 eza = "0.23.5"
 fd = "10.4.2"
-fzf = "0.74.2"
-gh = "2.97.0"
+fzf = "0.74.3"
+gh = "2.98.0"
 "github:vifm/vifm" = "v0.14.4"
-go = "1.26.6"
+go = "1.27.0"
 jq = "1.8.2"
 lazygit = "0.64.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
@@ -26,11 +26,11 @@ node = "24.19.0"
 pnpm = "11.22.0"
 python = "3.14.7"
 ripgrep = "15.2.0"
-rust = "1.97.1"
+rust = "1.98.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
 uv = "0.12.5"
-yq = "4.53.3"
+yq = "4.53.6"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
