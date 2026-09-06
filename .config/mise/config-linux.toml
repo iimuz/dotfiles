@@ -10,6 +10,7 @@ gemini-cli = "0.55.1"
 gh = "2.97.0"
 "github:vifm/vifm" = "v0.14.4"
 go = "1.26.6"
+herdr = "0.8.2"
 jq = "1.8.2"
 lazygit = "0.64.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
@@ -36,8 +37,6 @@ shfmt = "3.13.1"
 ripgrep = "15.2.0"
 uv = "0.12.5"
 yq = "4.53.3"
-
-herdr = "0.8.0"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
