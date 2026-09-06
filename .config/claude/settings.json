@@ -63,16 +63,17 @@
       "Bash(sudo *)",
       "Bash(wget * | sh)",
       "Bash(wget * | bash)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Read(~/.config/gh/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.ssh/**)",
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(./.env)",
-      "Read(./.env.*)",
-      "Edit(**/.env)",
-      "Edit(**/.env.*)",
-      "Edit(./.env)",
-      "Edit(./.env.*)"
+      "Read(./.env.*)"
     ],
     "defaultMode": "auto"
   },
@@ -113,7 +114,6 @@
     "pyright-lsp@claude-plugins-official": true,
     "deploy-on-aws@agent-plugins-for-aws": false,
     "superpowers@claude-plugins-official": true,
-    "sample@iimuz-dotfiles": false,
     "six-hats@iimuz-dotfiles": false,
     "scamper@iimuz-dotfiles": false,
     "swift-lsp@claude-plugins-official": true
