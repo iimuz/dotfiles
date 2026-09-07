@@ -1,8 +1,8 @@
 ---
 name: git-commit
-description: >
-  Create a git commit from current changes.
-  Trigger on commit requests or after completing a code change task.
+description: >-
+  Use when asked to commit, and after completing each task of a plan or each
+  self-contained code change, before starting the next one.
 model: haiku
 ---
 

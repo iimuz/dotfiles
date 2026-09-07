@@ -1,9 +1,9 @@
 ---
 name: subagent-first
 description: >-
-  Dispatch contract for subagents. Use when investigating or changing code across
-  multiple files, or whenever dispatching a subagent, regardless of which workflow
-  asked for it.
+  Use when starting any task that investigates or changes code (an issue request,
+  a feature, a bug fix), before exploring the codebase yourself, and whenever
+  dispatching a subagent, regardless of which workflow asked for it.
 ---
 
 # Subagent-First
