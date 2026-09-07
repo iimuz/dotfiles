@@ -52,3 +52,7 @@ context-mode の `ctx_execute_file` で解析する。生データをコンテ�
 
 locale で表示が変わる SPA は `browser.contextOptions.locale` を指定する。
 `accept-language` ヘッダだけでは切り替わらないことがある。
+
+本文抽出ツールは記事本文だけを残すため、料金表のような UI コンポーネントを落とす。
+実測では 588KB のページが 623B まで縮んだ。ページ全体の構造やレイアウトが要るときは
+本文抽出を使わず、`snapshot` でページ構造を、`requests` でエンドポイントを取る。
