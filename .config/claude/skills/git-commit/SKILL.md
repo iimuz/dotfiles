@@ -3,7 +3,6 @@ name: git-commit
 description: >-
   Use when asked to commit, and after completing each task of a plan or each
   self-contained code change, before starting the next one.
-model: haiku
 ---
 
 # Git Commit
