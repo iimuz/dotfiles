@@ -1,9 +1,10 @@
 ---
 name: context-mode
 description: >-
-  Use before running any shell command, reading a file for analysis, searching the
-  codebase, or fetching a URL while the context-mode MCP server (ctx_ tools) is
-  connected. Also use on "ctx" commands such as ctx stats or ctx doctor.
+  Use when running any shell command, reading a file for analysis, searching the
+  codebase, fetching a URL, or analyzing or transforming data, while the context-mode
+  MCP server (ctx_ tools) is connected. Also use on "ctx" commands such as ctx stats
+  or ctx doctor.
 metadata:
   notes: <https://github.com/mksglu/context-mode/blob/main/configs/opencode/AGENTS.md>
 ---
