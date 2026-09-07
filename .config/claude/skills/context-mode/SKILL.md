@@ -1,8 +1,10 @@
 ---
 name: context-mode
-description: >
-  Route shell, file reads, HTTP, and data analysis through context-mode MCP tools (ctx_ prefix)
-  to protect the context window. Activate when context-mode is connected or on "ctx" commands.
+description: >-
+  Use when running any shell command, reading a file for analysis, searching the
+  codebase, fetching a URL, or analyzing or transforming data, while the context-mode
+  MCP server (ctx_ tools) is connected. Also use on "ctx" commands such as ctx stats
+  or ctx doctor.
 metadata:
   notes: <https://github.com/mksglu/context-mode/blob/main/configs/opencode/AGENTS.md>
 ---
