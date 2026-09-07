@@ -76,6 +76,16 @@ replace it.
 Do not return raw output (grep results, command logs). If it must be kept, write it to the
 temporary directory the harness provides and return only the path.
 
+## Waiting for a dispatch
+
+After dispatching, end the turn. The harness re-invokes the session when the subagent
+completes, so a wait needs no polling and no wakeup.
+
+Dynamic `/loop` (invoked without an interval) breaks this: it requires a `ScheduleWakeup`
+before every turn ends, which turns each wait into a short-interval poll. Do not
+orchestrate subagents under it. If it is already running, tell the user to stop the loop
+or restart it with an explicit interval.
+
 ## Verification before completion
 
 Before declaring work done, the main agent confirms:
