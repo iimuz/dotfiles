@@ -39,10 +39,38 @@ return {
 		"EdenEast/nightfox.nvim",
 		lazy = false,
 		enabled = false,
+		priority = 1000,
 		config = function()
 			vim.opt.termguicolors = true
 			vim.opt.background = "dark"
-			vim.cmd([[ colorscheme nightfox ]])
+			vim.cmd([[ colorscheme carbonfox ]])
+		end,
+	},
+	-- cyberdream
+	-- see: <https://github.com/scottmckendry/cyberdream.nvim>
+	{
+		"scottmckendry/cyberdream.nvim",
+		lazy = false,
+		enabled = true,
+		priority = 1000,
+		config = function()
+			require("cyberdream").setup({})
+			vim.cmd([[ colorscheme cyberdream ]])
+		end,
+	},
+	-- gruvbox
+	-- see: <https://github.com/ellisonleao/gruvbox.nvim>
+	{
+		"ellisonleao/gruvbox.nvim",
+		lazy = false,
+		enabled = false,
+		priority = 1000,
+		config = function()
+			require("gruvbox").setup({
+				contrast = "hard",
+			})
+			vim.opt.background = "dark"
+			vim.cmd([[ colorscheme gruvbox ]])
 		end,
 	},
 	{
@@ -55,10 +83,40 @@ return {
 			vim.cmd([[ colorscheme github_dark ]])
 		end,
 	},
+	-- everforest
+	-- see: <https://github.com/neanias/everforest-nvim>
+	{
+		"neanias/everforest-nvim",
+		lazy = false,
+		enabled = false,
+		priority = 1000,
+		config = function()
+			vim.opt.termguicolors = true
+			vim.opt.background = "dark"
+			require("everforest").setup({
+				background = "hard",
+			})
+			vim.cmd([[ colorscheme everforest ]])
+		end,
+	},
+	-- kanagawa
+	-- see: <https://github.com/rebelot/kanagawa.nvim>
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		enabled = false,
+		priority = 1000,
+		config = function()
+			require("kanagawa").setup({
+				theme = "dragon",
+			})
+			vim.cmd([[ colorscheme kanagawa-wave ]])
+		end,
+	},
 	{
 		"folke/tokyonight.nvim",
 		lazy = false,
-		enabled = true,
+		enabled = false,
 		priority = 1000,
 		config = function()
 			require("tokyonight").setup({
@@ -105,10 +163,13 @@ return {
 				end,
 			})
 
-			vim.api.nvim_create_autocmd("VimEnter", { once = true, callback = function()
-				focused = true
-				vim.schedule(apply_focused_profile)
-			end })
+			vim.api.nvim_create_autocmd("VimEnter", {
+				once = true,
+				callback = function()
+					focused = true
+					vim.schedule(apply_focused_profile)
+				end,
+			})
 
 			-- re-apply current profile after colorscheme reload so focus state is not lost;
 			-- also force winbar re-evaluation because nvim_set_hl alone does not trigger it
