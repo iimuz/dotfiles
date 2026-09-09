@@ -1,9 +1,10 @@
 ---
 name: context-mode
 description: >-
-  シェルコマンドの実行、解析目的のファイル読み込み、コードベースの検索、URL の取得、
-  データの解析や変換を行うときに使う。context-mode MCP サーバー (ctx_ ツール) が接続
-  されている場合に適用する。ctx stats や ctx doctor といった "ctx" コマンドにも使う。
+  シェルコマンドの実行、ファイル読み込み、URL の取得、検索、データの解析や変換を行うときに、
+  経路を通常のツールと context-mode の ctx_ ツールのどちらにするか判断するために使う。
+  context-mode が接続されている場合に適用する。ctx stats や ctx doctor といった "ctx"
+  コマンドにも使う。
 metadata:
   verified-with: context-mode 1.0.169
   notes: >-

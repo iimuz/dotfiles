@@ -1,16 +1,16 @@
 ---
 name: context-mode
-description: >
-  コンテキストウィンドウを守るため、シェル、ファイル読み込み、HTTP、データ解析を context-mode
-  MCP ツール (ctx_ 接頭辞) に流す。context-mode が接続されているとき、または "ctx" コマンドの
-  ときに適用する。
+description: >-
+  シェルコマンドの実行、ファイル読み込み、URL の取得、検索、データの解析や変換を行うときに、
+  経路を通常のツールと context-mode の ctx_ ツールのどちらにするか判断するために使う。
+  context-mode が接続されている場合に適用する。ctx stats や ctx doctor といった "ctx"
+  コマンドにも使う。
 metadata:
   verified-with: context-mode 1.0.169
   notes: >-
     各ツールの役割と使いどころは、インストール済みサーバーが供給する MCP ツール説明文が担う。
     説明文は常にサーバーと同じ版なので古くならない。したがってこのファイルには、説明文が扱わない
     判断だけを書き、upstream の routing 規則やパターン集は同梱物を参照して写し取らない。
-    サーバーのバージョンは .config/mise/config-*.toml の npm:context-mode で固定している。
 ---
 
 # context-mode のローカル運用方針
