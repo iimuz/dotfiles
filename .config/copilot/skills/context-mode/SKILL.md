@@ -6,13 +6,17 @@ description: >
   ときに適用する。
 metadata:
   verified-with: context-mode 1.0.169
+  notes: >-
+    各ツールの役割と使いどころは、インストール済みサーバーが供給する MCP ツール説明文が担う。
+    説明文は常にサーバーと同じ版なので古くならない。したがってこのファイルには、説明文が扱わない
+    判断だけを書き、upstream の routing 規則やパターン集は同梱物を参照して写し取らない。
+    サーバーのバージョンは .config/mise/config-*.toml の npm:context-mode で固定している。
 ---
 
 # context-mode のローカル運用方針
 
-個々の `ctx_*` ツールが何をするか、どんなときに使うかは、MCP ツールの説明文に書かれている。説明文は
-インストール済みのサーバーが供給するため古くならない。このファイルには、説明文が触れない内容だけを
-書く。すなわち、この環境でツールを使うコストと、この環境固有の事実である。
+個々の `ctx_*` ツールが何をするか、どんなときに使うかは、MCP ツールの説明文に従う。この方針は、
+説明文が扱わない判断だけを定める。
 
 ## コスト構造 — Bash か sandbox かを最初に決める
 
@@ -42,26 +46,18 @@ metadata:
 - ツールはホストごとに接頭辞の付いた名前で登録される。Claude Code では
   `mcp__context-mode__ctx_execute` になる。upstream の文書では `ctx_execute` と裸の名前で
   書かれている。
-- サーバーのバージョンは `.config/mise/config-*.toml` の `npm:context-mode` で固定している。
 
 ## ctx コマンド
 
-| コマンド      | 動作                                                                       |
-| ------------- | -------------------------------------------------------------------------- |
-| `ctx stats`   | `ctx_stats` を呼び、出力をそのまま全文表示する                             |
-| `ctx doctor`  | `ctx_doctor` を呼び、返されたシェルコマンドを実行し、チェックリストで示す  |
-| `ctx upgrade` | `ctx_upgrade` を呼び、返されたシェルコマンドを実行し、チェックリストで示す |
-| `ctx insight` | `ctx_insight` を呼ぶ。ブラウザでホスト側のダッシュボードが開く             |
-| `ctx purge`   | `ctx_purge` を confirm: true で呼ぶ。knowledge base を消去する             |
+`ctx stats`、`ctx doctor`、`ctx upgrade`、`ctx insight`、`ctx purge` と入力されたら、同名の
+`ctx_*` ツールを呼ぶ指示として扱う。呼び方と結果の扱いは各ツールの説明文に従う。`ctx stats` だけは
+例外で、返された出力を要約せずそのまま全文表示する。
 
-knowledge base とセッション統計は /clear と /compact をまたいで保持される。作り直すときは
-`ctx purge` を使う。
+knowledge base とセッション統計は /clear と /compact をまたいで保持される。
 
-## upstream の文書
+## upstream の参照先
 
-インストール済みのパッケージには、upstream 自身の routing 規則とパターン集が同梱されている。詳細な
-例が必要になったときは、それを読む。このファイルに写し取らない。場所は次の手順で解決する。`find` は
-`-maxdepth` を他の条件より前に置く必要がある。
+詳細な例が必要になったときは、次の場所にある upstream の文書を読む。
 
 ```bash
 P=$(find "$(mise where npm:context-mode)" -maxdepth 4 -type l -name context-mode \
