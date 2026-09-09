@@ -1,64 +1,67 @@
 ---
 name: context-mode
 description: >
-  Route shell, file reads, HTTP, and data analysis through context-mode MCP tools (ctx_ prefix)
-  to protect the context window. Activate when context-mode is connected or on "ctx" commands.
+  コンテキストウィンドウを守るため、シェル、ファイル読み込み、HTTP、データ解析を context-mode
+  MCP ツール (ctx_ 接頭辞) に流す。context-mode が接続されているとき、または "ctx" コマンドの
+  ときに適用する。
 metadata:
   verified-with: context-mode 1.0.169
 ---
 
-# context-mode — local routing policy
+# context-mode のローカル運用方針
 
-The `ctx_*` MCP tool descriptions already state what each tool does and when to reach for it.
-They are supplied by the installed server, so they never go stale. This file holds only what
-they leave out: what using them costs here, and the facts of this setup.
+個々の `ctx_*` ツールが何をするか、どんなときに使うかは、MCP ツールの説明文に書かれている。説明文は
+インストール済みのサーバーが供給するため古くならない。このファイルには、説明文が触れない内容だけを
+書く。すなわち、この環境でツールを使うコストと、この環境固有の事実である。
 
-## Cost model — decide Bash vs sandbox first
+## コスト構造 — Bash か sandbox かを最初に決める
 
-`ctx_execute` and `ctx_execute_file` echo the submitted script back as a fenced code block ahead
-of stdout. A script is therefore paid for twice: once as the generated tool call, and again as
-the echoed result, which stays in context for the rest of the session.
+`ctx_execute` と `ctx_execute_file` は、投入したスクリプトを stdout の前にコードブロックとして
+そのまま返す。つまりスクリプトには 2 回分のコストがかかる。1 回目はツール呼び出しを生成するとき、
+2 回目はエコーされた結果としてであり、後者はセッションが終わるまでコンテキストに残り続ける。
 
-- Short output (under ~20 lines: `git status`, `ls`, `wc -l`, a version flag) belongs in plain
-  Bash. Wrapping it in `ctx_execute` costs more than it saves.
-- When an existing CLI already yields a compact answer (`gh --jq`, `jq`, `grep -c`,
-  `sort | uniq -c`), run that command. Do not re-implement it as a script.
-- Reserve sandbox scripts for substantial work: transforming data on disk, analyzing many files,
-  aggregating output whose size cannot be predicted.
-- Write the script once, with `try/catch` and null handling, and print only the answer. A short
-  script resent in trial and error is the most expensive pattern available.
+- 出力が 20 行未満で収まるもの (`git status`、`ls`、`wc -l`、バージョン表示など) は Bash で実行
+  する。`ctx_execute` で包むと、節約できる分より余計にかかる。
+- 既製の CLI で簡潔な答えが得られる場合 (`gh --jq`、`jq`、`grep -c`、`sort | uniq -c` など) は、
+  そのコマンドを実行する。スクリプトとして書き直さない。
+- sandbox のスクリプトはまとまった処理に限定する。ディスク上のデータ変換、多数のファイルの解析、
+  出力量が事前に読めない集計などである。
+- スクリプトは一度で書き切る。`try/catch` と null 処理を入れ、答えだけを出力する。短いスクリプトを
+  試行錯誤で何度も投げ直すのが、最も割高な使い方である。
 
-Language choice: `javascript` for HTTP and JSON, `python` for CSV and statistics, `shell` for
-pipes over native tools.
+言語は、HTTP と JSON なら `javascript`、CSV と統計なら `python`、ネイティブツールのパイプなら
+`shell` を選ぶ。
 
-## This setup
+## この環境の前提
 
-- No context-mode routing hooks are installed. Nothing intercepts `curl`, `wget`, `WebFetch`, or
-  oversized Bash output, so route them by choice: web content through `ctx_fetch_and_index` then
-  `ctx_search`, unpredictable output through the sandbox.
-- Nothing is injected into subagent prompts either. A subagent that should route through
-  context-mode has to be told so in its prompt.
-- Tools are registered as `mcp__context-mode__ctx_execute` and so on. Upstream documents write
-  them bare as `ctx_execute`.
-- The server version is pinned as `npm:context-mode` in `.config/mise/config-*.toml`.
+- context-mode の routing hook は導入していない。`curl`、`wget`、`WebFetch`、巨大な Bash 出力は
+  何も遮断されない。したがって経路は自分の判断で選ぶ。Web の内容は `ctx_fetch_and_index` と
+  `ctx_search` を通し、出力量が読めない処理は sandbox を通す。
+- subagent のプロンプトにも何も注入されない。context-mode を経由させたい subagent には、その
+  プロンプトの中で明示的に指示する。
+- ツールはホストごとに接頭辞の付いた名前で登録される。Claude Code では
+  `mcp__context-mode__ctx_execute` になる。upstream の文書では `ctx_execute` と裸の名前で
+  書かれている。
+- サーバーのバージョンは `.config/mise/config-*.toml` の `npm:context-mode` で固定している。
 
-## ctx commands
+## ctx コマンド
 
-| Command       | Action                                                                     |
+| コマンド      | 動作                                                                       |
 | ------------- | -------------------------------------------------------------------------- |
-| `ctx stats`   | Call `ctx_stats`, display full output verbatim                             |
-| `ctx doctor`  | Call `ctx_doctor`, run the returned shell command, display as a checklist  |
-| `ctx upgrade` | Call `ctx_upgrade`, run the returned shell command, display as a checklist |
-| `ctx insight` | Call `ctx_insight`, which opens the hosted dashboard in the browser        |
-| `ctx purge`   | Call `ctx_purge` with confirm: true. It wipes the knowledge base           |
+| `ctx stats`   | `ctx_stats` を呼び、出力をそのまま全文表示する                             |
+| `ctx doctor`  | `ctx_doctor` を呼び、返されたシェルコマンドを実行し、チェックリストで示す  |
+| `ctx upgrade` | `ctx_upgrade` を呼び、返されたシェルコマンドを実行し、チェックリストで示す |
+| `ctx insight` | `ctx_insight` を呼ぶ。ブラウザでホスト側のダッシュボードが開く             |
+| `ctx purge`   | `ctx_purge` を confirm: true で呼ぶ。knowledge base を消去する             |
 
-The knowledge base and session stats survive /clear and /compact. Use `ctx purge` to start fresh.
+knowledge base とセッション統計は /clear と /compact をまたいで保持される。作り直すときは
+`ctx purge` を使う。
 
-## Upstream documents
+## upstream の文書
 
-The installed package ships its own routing rules and pattern references. Read them when a
-detailed example is needed, rather than copying them into this file. Resolve the location as
-follows; `-maxdepth` must come before the other `find` predicates.
+インストール済みのパッケージには、upstream 自身の routing 規則とパターン集が同梱されている。詳細な
+例が必要になったときは、それを読む。このファイルに写し取らない。場所は次の手順で解決する。`find` は
+`-maxdepth` を他の条件より前に置く必要がある。
 
 ```bash
 P=$(find "$(mise where npm:context-mode)" -maxdepth 4 -type l -name context-mode \
@@ -66,7 +69,7 @@ P=$(find "$(mise where npm:context-mode)" -maxdepth 4 -type l -name context-mode
 R=$(readlink -f "$P")
 ```
 
-- `$R/configs/claude-code/CLAUDE.md` — upstream routing rules for Claude Code.
-- `$R/skills/context-mode/SKILL.md` — upstream skill. Its default is the opposite of the cost
-  model above: it routes every command through the sandbox. Prefer this file's policy.
-- `$R/skills/context-mode/references/` — anti-patterns and per-language patterns.
+- `$R/configs/claude-code/CLAUDE.md` — Claude Code 向けの upstream の routing 規則。
+- `$R/skills/context-mode/SKILL.md` — upstream のスキル。既定の方針が上記のコスト構造と逆で、
+  すべてのコマンドを sandbox 経由にする。このファイルの方針を優先する。
+- `$R/skills/context-mode/references/` — アンチパターンと言語別のパターン集。
