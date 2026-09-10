@@ -179,6 +179,7 @@
     "enableWeakerNetworkIsolation": true,
     "excludedCommands": ["docker *", "gh *"]
   },
+  "feedbackDrafts": "off",
   "effortLevel": "high",
   "awaySummaryEnabled": false,
   "theme": "dark",
