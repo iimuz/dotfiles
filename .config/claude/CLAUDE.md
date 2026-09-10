@@ -58,6 +58,5 @@ behavior that would surprise the reader.
 - Do not apply unnecessary design patterns (Factory, Strategy, etc.).
 - Do not create premature abstractions or interfaces.
 - Do not over-engineer for rare edge cases.
-- Do not add Co-authored-by trailers to git commit messages.
 - Do not write to GitHub Issues or Pull Requests (comments, labels, assignments)
   unless the user explicitly instructs it.
