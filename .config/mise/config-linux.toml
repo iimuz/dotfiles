@@ -1,12 +1,12 @@
 [tools]
 aws-vault = "7.2.0"
 awscli = { version = "2.36.29", symlink_bins = "true" }
-cargo-binstall = "1.21.1"
+cargo-binstall = "1.22.0"
 "cargo:tree-sitter-cli" = "0.26.12" # for neovim
 claude = "2.1.258"
 delta = "0.19.2"
 fzf = "0.74.3"
-gemini-cli = "0.56.0"
+gemini-cli = "0.57.0"
 gh = "2.98.0"
 "github:vifm/vifm" = "v0.14.4"
 go = "1.27.0"
@@ -14,7 +14,7 @@ herdr = "0.8.2"
 jq = "1.8.2"
 lazygit = "0.64.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
-node = "24.19.0"
+node = "24.20.0"
 neovim = "0.12.4"
 opencode = "v1.18.21"
 "npm:@aikidosec/safe-chain" = "1.5.15"
@@ -22,18 +22,18 @@ opencode = "v1.18.21"
 "npm:ccusage" = "20.0.20" # for claude code
 "npm:@github/copilot" = "1.0.80"
 "npm:context-mode" = "1.0.169" # for opencode
-"npm:mcp-remote" = "0.1.43" # for copilot
+"npm:mcp-remote" = "0.8.2" # for copilot
 "npm:neovim" = "5.4.0" # for neovim
 "npm:@playwright/cli" = "0.1.19" # for claude code
 "npm:@tobilu/qmd" = "2.8.3" # 日本語 FTS には 2.5.3 以降が必要 (2.5.3-2.8.3 間の中間版は CJK 再構築にバグあり)
-"pipx:awslabs.aws-documentation-mcp-server" = "1.1.30"
+"pipx:awslabs.aws-documentation-mcp-server" = "1.2.0"
 "pipx:markitdown-mcp" = { version = "0.0.1a4", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0" # for neovim
-pnpm = "11.22.0"
+pnpm = "11.25.0"
 python = "3.14.7"
 rust = "1.98.0"
 shellcheck = "0.11.0"
-shfmt = "3.13.1"
+shfmt = "3.14.0"
 ripgrep = "15.2.0"
 uv = "0.12.5"
 yq = "4.53.6"
