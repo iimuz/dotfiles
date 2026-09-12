@@ -1,8 +1,8 @@
 [tools]
 aws-vault = "7.2.0"
-awscli = { version = "2.36.29", symlink_bins = "true" }
+awscli = { version = "2.36.34", symlink_bins = "true" }
 cargo-binstall = "1.21.1"
-"cargo:tree-sitter-cli" = "0.26.12" # for neovim
+"cargo:tree-sitter-cli" = "0.26.13" # for neovim
 claude = "2.1.258"
 delta = "0.19.2"
 fzf = "0.74.3"
@@ -15,12 +15,12 @@ jq = "1.8.2"
 lazygit = "0.64.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.19.0"
-neovim = "0.12.4"
-opencode = "v1.18.21"
+neovim = "0.12.5"
+opencode = "v1.18.25"
 "npm:@aikidosec/safe-chain" = "1.5.15"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.73"
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.74"
 "npm:ccusage" = "20.0.20" # for claude code
-"npm:@github/copilot" = "1.0.80"
+"npm:@github/copilot" = "1.0.81"
 "npm:context-mode" = "1.0.169" # for opencode
 "npm:mcp-remote" = "0.1.43" # for copilot
 "npm:neovim" = "5.4.0" # for neovim
@@ -35,7 +35,7 @@ rust = "1.98.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
 ripgrep = "15.2.0"
-uv = "0.12.5"
+uv = "0.12.7"
 yq = "4.53.6"
 
 [env]

@@ -1,6 +1,6 @@
 [tools]
 cargo-binstall = "1.22.0"
-"cargo:tree-sitter-cli" = "0.26.12" # for neovim
+"cargo:tree-sitter-cli" = "0.26.13" # for neovim
 go = "1.27.0"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.19.0"
@@ -15,7 +15,7 @@ python = "3.14.7"
 rust = "1.98.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.12.5"
+uv = "0.12.7"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
