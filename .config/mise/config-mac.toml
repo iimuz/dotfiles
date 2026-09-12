@@ -1,8 +1,8 @@
 [tools]
-awscli = { version = "2.36.29", symlink_bins = "true" }
+awscli = { version = "2.36.34", symlink_bins = "true" }
 bat = "0.26.1"
 cargo-binstall = "1.22.0"
-"cargo:tree-sitter-cli" = "0.26.12" # for neovim
+"cargo:tree-sitter-cli" = "0.26.13" # for neovim
 claude = "2.1.258"
 colima = "0.10.3"
 delta = "0.19.2"
@@ -18,8 +18,8 @@ lima = "v2.2.0" # colima で必要
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.19.0"
 "npm:@aikidosec/safe-chain" = "1.5.15"
-"npm:@anthropic-ai/sandbox-runtime" = "0.0.73" # for claude code
-"npm:@github/copilot" = "1.0.80"
+"npm:@anthropic-ai/sandbox-runtime" = "0.0.74" # for claude code
+"npm:@github/copilot" = "1.0.81"
 "npm:@playwright/cli" = "0.1.19" # for claude code
 "npm:@tobilu/qmd" = "2.8.3" # 日本語 FTS には 2.5.3 以降が必要 (2.5.3-2.8.3 間の中間版は CJK 再構築にバグあり)
 "npm:ccusage" = "20.0.20" # for claude code
@@ -34,7 +34,7 @@ ripgrep = "15.2.0"
 rust = "1.98.0"
 shellcheck = "0.11.0"
 shfmt = "3.13.1"
-uv = "0.12.5"
+uv = "0.12.7"
 yq = "4.53.6"
 
 [env]
