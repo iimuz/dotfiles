@@ -79,7 +79,7 @@ if ! type dprint >/dev/null 2>&1; then curl -fsSL https://dprint.dev/install.sh 
 # === gh
 # see: <https://github.com/cli/cli/blob/trunk/docs/install_linux.md>
 if ! type gh >/dev/null 2>&1; then
-  (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y))
+  (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y) )
   sudo mkdir -p -m 755 /etc/apt/keyrings
   keyring_tmp=$(mktemp)
   wget -nv -O"$keyring_tmp" https://cli.github.com/packages/githubcli-archive-keyring.gpg
