@@ -1,0 +1,51 @@
+---
+name: mermaid-diagram-types
+description: >-
+  描く内容に合った Mermaid の図種を選ぶ。Mermaid の図を書く、直す、
+  読み直すときに使う。
+---
+
+# mermaid-diagram-types
+
+## 目的
+
+毎回 `flowchart` に流れるのをやめ、描く内容の種類から図種を決める。
+
+## 内容の種類から図種へ
+
+- 手順、依存、構成: `flowchart`。ノードは 15 個までに抑える。線がまたぐ境界を
+  示したいときだけ `subgraph` を足す
+- 構成要素と、そのグループ分け、つなぎ方: `architecture-beta`。アイコンは組み込みの
+  5 つだけを使う
+- やり取りの順序、呼び出しの往復: `sequenceDiagram`
+- 状態の遷移: `stateDiagram-v2`
+- 2 軸上の位置づけ、他との相対関係: `quadrantChart`
+- 積層、盤面、配置そのものが情報になる格子: `block`。どの列にあるか、何列ぶんを
+  占めるかが意味を持つときに使う
+- 集合の重なり: `venn-beta`
+- 原因の分解: `ishikawa-beta`
+- 時系列上の変化: `timeline`
+- マインドマップ: markmap スキルに従う。Mermaid の `mindmap` は線が太く配置も雑で
+  見づらいため使わない
+- AWS の構成図: aws-mermaid スキルに従う
+- 入れ子や対応を並べるだけ: 図にしない。箇条書きで書く
+
+`quadrantChart`、`block`、`architecture-beta`、`venn-beta`、`ishikawa-beta`、
+`timeline` を書く前に `references/patterns.md` を読む。それ以外の図種はそこに
+載せていない。
+
+## 壊れやすい箇所
+
+- ノードラベルは常にダブルクォートで囲む。`A[foo (bar)]` は構文エラーになり、
+  `A["foo (bar)"]` はならない。波括弧を含むラベルも同じ
+- 小文字の `end` をノード ID に使わない。`flowchart` が壊れる
+- `---` の直後に小文字の `o` や `x` で始まるノード ID を置かない。矢印が黙って
+  丸や罰の形に変わる。ID の先頭を大文字にするか、ノード名を変える
+- 図種の開始キーワードは `references/patterns.md` からそのまま写す。`-beta` が
+  付くかどうかは図種ごとに違い、勘で書くと構文エラーになる
+
+## どれも当てはまらないとき
+
+上の一覧に合う図種がなければ、`info` だけを含む Mermaid のコードフェンスを開いて
+描画側が動かしている版を確かめ、その図種が使えることを確認したうえで、上の一覧に
+足す。
