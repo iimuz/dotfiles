@@ -10,7 +10,7 @@ gemini-cli = "0.58.0"
 gh = "2.100.0"
 "github:vifm/vifm" = "v0.14.4"
 go = "1.27.1"
-herdr = "0.8.2"
+herdr = "0.9.0"
 jq = "1.8.2"
 lazygit = "0.65.0"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
@@ -47,9 +47,8 @@ QMD_LLAMA_GPU = "false"
 [settings]
 activate_aggressive = true
 experimental = true
-
-[settings.npm]
-package_manager = "pnpm"
+# サプライチェーン対策として公開直後のバージョンは採用しない
+minimum_release_age = "3d"
 
 [settings.pipx]
 uvx = true

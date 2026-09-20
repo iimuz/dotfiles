@@ -44,9 +44,8 @@ ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/l
 [settings]
 activate_aggressive = true
 experimental = true
-
-[settings.npm]
-package_manager = "pnpm"
+# サプライチェーン対策として公開直後のバージョンは採用しない
+minimum_release_age = "3d"
 
 [settings.pipx]
 uvx = true
