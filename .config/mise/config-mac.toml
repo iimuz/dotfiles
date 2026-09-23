@@ -3,7 +3,7 @@ awscli = { version = "2.36.40", symlink_bins = "true" }
 bat = "0.26.1"
 cargo-binstall = "1.23.0"
 "cargo:tree-sitter-cli" = "0.27.0" # for neovim
-claude = "2.1.266"
+claude = "2.1.280"
 colima = "0.10.3"
 delta = "0.19.2"
 eza = "0.23.5"
