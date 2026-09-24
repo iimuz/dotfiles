@@ -24,6 +24,13 @@ description: >-
   占めるかが意味を持つときに使う
 - 集合の重なり: `venn-beta`
 - 原因の分解: `ishikawa-beta`
+- 因果のループ、要素が輪になって互いを強める、または打ち消す関係: `flowchart` に次の
+  約束事を載せる。Mermaid に専用の図種はない
+  - 符号は辺ラベルに `+` と `-` で書く
+  - 強化ループは実線、平衡ループは破線 `-.->` にし、輪ごとに `linkStyle` で色を分ける
+  - 遅れは辺に書けない。効く辺だけ `@{ shape: delay }` のノードを挟む
+  - 円形には配置できない。輪であることは図の後の補足で書く。円形の見た目が要るなら
+    その図は Mermaid の外に置く
 - 時系列上の変化: `timeline`
 - マインドマップ: markmap スキルに従う。Mermaid の `mindmap` は線が太く配置も雑で
   見づらいため使わない
@@ -31,8 +38,8 @@ description: >-
 - 入れ子や対応を並べるだけ: 図にしない。箇条書きで書く
 
 `quadrantChart`、`block`、`architecture-beta`、`venn-beta`、`ishikawa-beta`、
-`timeline` を書く前に `references/patterns.md` を読む。それ以外の図種はそこに
-載せていない。
+`timeline`、因果のループを書く前に `references/patterns.md` を読む。それ以外の図種は
+そこに載せていない。
 
 ## 壊れやすい箇所
 
