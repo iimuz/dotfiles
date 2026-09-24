@@ -1,7 +1,8 @@
 # Mermaid のパターン
 
 書き方が自明でない図種の最小テンプレート。開始キーワードはそのまま写す。
-`flowchart`、`sequenceDiagram`、`stateDiagram-v2` はここには載せていない。
+素の `flowchart`、`sequenceDiagram`、`stateDiagram-v2` はここには載せていない。
+`flowchart` は因果のループを描くときの約束事だけを載せる。
 
 ## quadrantChart
 
@@ -102,4 +103,26 @@ timeline
     2002 : LinkedIn
     2004 : Facebook
          : Google
+```
+
+## 因果のループ（flowchart）
+
+専用の図種はないので `flowchart` に約束事を載せる。符号は辺ラベルの `+` と `-`。
+強化ループは実線、平衡ループは破線 `-.->` にし、`linkStyle` で輪ごとに色を付ける。
+遅れは `@{ shape: delay }` のノードを辺の途中に挟み、符号はそのノードに入る側の辺に書く。
+`linkStyle` の番号は辺を宣言した順に 0 から数える。遅れのノードを挟むと辺が 1 本増え、
+後ろの番号がずれるので、番号は図を書き終えてから振る。
+複数の輪が同じ辺を通るときは、その辺に色を付けず既定のままにする。
+輪の名前と、どの要素を通るかは図の後の補足に書く。
+
+```mermaid
+flowchart LR
+  A["利用"] -->|+| B["蓄積"]
+  B -->|+| C["品質"]
+  C -->|+| A
+  B -.->|+| D["整理の手間"]
+  D -.->|-| W@{ shape: delay, label: "遅れ" }
+  W -.-> B
+  linkStyle 0,1,2 stroke:#c33
+  linkStyle 3,4,5 stroke:#36c
 ```
