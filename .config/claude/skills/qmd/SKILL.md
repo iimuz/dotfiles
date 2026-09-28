@@ -6,25 +6,6 @@ compatibility: Requires qmd CLI or MCP server. Install via `npm install -g @tobi
 metadata:
   author: tobi
   version: "2.2.0"
-  notes: |
-    ベースは qmd 2.5.3 の `qmd skill show`(bundled 2.2.0)出力。ローカル追加は
-    日本語運用の節、scripts/check_gpu.sh。
-    bundled 側を更新して取り込む際は、先に `mise run format` を通してからこのファイルと
-    差分を取ること。コミット済みのこのファイルは markdown format 済みなので、素の
-    `qmd skill show` 出力とそのまま比較すると整形差分だけがノイズとして出る。
-    取り込み方針: CLI 経由の検索・取得に関係しない内容(MCP サーバーのセットアップ手順、
-    MCP ツール専用の使い方など)は bundled 側に含まれていても取り込まない。
-    日本語運用の根拠: 内蔵 query expansion は CJK クエリを英語化して劣化する報告がある
-    (tobi/qmd#454)。既定 embedding の embeddinggemma-300M は日本語カバレッジが限定的。
-
-    bundled 原文からの意図的な差分(節ごと):
-    - Typical loop 節: `multi-get "#docid,#docid"` を動作する `qmd://` カンマ区切りパス形式に
-      置き換えた(実機の qmd 2.5.3 では multi-get の docid カンマ指定が解決に失敗するため)。
-    - Retrieve sources 節: 同じ `multi-get "#docid,#docid"` 置き換えを適用。brace-glob 例
-      (`concepts/{a.md,b.md}` 形式)は実機で動作確認済みで、bundled 原文のまま維持している
-      (差分ではない。存在しないメンバーは黙ってスキップされるだけで壊れていない)。
-    - MCP Tool: `query` 節、MCP setup 節: 上記の取り込み方針により削除した
-      (CLI 経由の検索に関係しない MCP 統合手順のため)。次回更新でも取り込まないこと。
 allowed-tools: Bash(qmd:*), mcp__qmd__*
 ---
 
@@ -286,6 +267,8 @@ changing configuration.
   project documentation.
 
 ## 日本語コーパスでの指針
+
+内蔵 query expansion は CJK クエリを英語化して精度が落ち、既定 embedding の embeddinggemma-300M も日本語カバレッジが限定的なため、次のとおり使う。
 
 - `qmd search`(BM25)と `lex:` / `vec:` の typed query を主軸にする。
 - 暗黙 expand(`qmd query "<文>"`)を日本語で使わない。
