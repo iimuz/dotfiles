@@ -46,7 +46,6 @@ block
 線が出る辺と入る辺を `L`、`R`、`T`、`B` で指定する。アイコンは組み込みの `cloud`、
 `database`、`disk`、`internet`、`server` だけにする。それ以外を書くと描画側で
 アイコンパックの登録が必要になり、GitHub などでは出ない。`-beta` は必須。
-AWS の構成図は aws-mermaid スキルに従う。
 
 ```mermaid
 architecture-beta
