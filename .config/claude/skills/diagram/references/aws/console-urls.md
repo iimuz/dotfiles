@@ -1,13 +1,12 @@
-# AWS management console URL patterns
+# AWS マネジメントコンソールの URL の形
 
-URL templates for `click nodeID href "URL" _blank` annotations.
-Only attach these when the user has explicitly asked for clickable navigation.
+`click nodeID href "URL" _blank` に入れる URL のテンプレート。
 
-Placeholders:
+プレースホルダー:
 
-- `[ACCOUNT]` — 12-digit AWS account ID
-- `[REGION]` — region (e.g. `ap-northeast-1`)
-- `[ARN]` / `[ID]` / `[CLUSTER]` / `[SERVICE]` / `[BUCKET]` — per-service identifiers
+- `[ACCOUNT]`: 12 桁の AWS アカウント ID
+- `[REGION]`: リージョン (例: `ap-northeast-1`)
+- `[ARN]`、`[ID]`、`[CLUSTER]`、`[SERVICE]`、`[BUCKET]`: サービスごとの識別子
 
 ## ELB / ALB
 
@@ -15,7 +14,7 @@ Placeholders:
 https://[ACCOUNT].[REGION].console.aws.amazon.com/ec2/home?region=[REGION]#LoadBalancer:loadBalancerArn=[ARN]
 ```
 
-Using the `<DNSName>` as the node ID lets the presenter build URLs directly.
+ノード ID に `<DNSName>` を使うと、そこから直接 URL を組み立てられる。
 
 ## EC2
 
@@ -29,7 +28,7 @@ https://[ACCOUNT].[REGION].console.aws.amazon.com/ec2/home?region=[REGION]#Insta
 https://[ACCOUNT].[REGION].console.aws.amazon.com/ecs/v2/clusters/[CLUSTER]/services/[SERVICE]/health?region=[REGION]
 ```
 
-Node ID format `<ClusterName>/<ServiceName>` lines up with the AWS CLI output.
+ノード ID の形 `<ClusterName>/<ServiceName>` は AWS CLI の出力と揃う。
 
 ## RDS / Aurora
 
@@ -49,7 +48,7 @@ https://[ACCOUNT].[REGION].console.aws.amazon.com/s3/buckets/[BUCKET]?region=[RE
 https://[ACCOUNT].[REGION].console.aws.amazon.com/cloudfront/v4/home?region=us-east-1#/distributions/[DISTRIBUTION_ID]
 ```
 
-CloudFront is global, but the console URL is fixed to `region=us-east-1`.
+CloudFront はグローバルだが、コンソールの URL は `region=us-east-1` に固定される。
 
 ## API Gateway
 
@@ -75,9 +74,9 @@ https://[ACCOUNT].[REGION].console.aws.amazon.com/dynamodbv2/home?region=[REGION
 https://[ACCOUNT].[REGION].console.aws.amazon.com/kms/home?region=[REGION]#/kms/keys/[KEY_ID]
 ```
 
-## Harvesting identifiers via the AWS CLI
+## AWS CLI で識別子を集める
 
-When building clickable diagrams at scale, bulk-extract identifiers with the CLI first.
+click 付きの図をまとめて作るときは、先に CLI で識別子を一括で取り出す。
 
 ```bash
 AWS_REGION="ap-northeast-1"
@@ -101,11 +100,10 @@ aws ec2 describe-instances \
 aws s3 ls | awk '{print $3}'
 ```
 
-## Caveats
+## 注意
 
-- The `[ACCOUNT].[REGION].console.aws.amazon.com` host prefix is the IAM Identity Center / SSO
-  style. The bare `<region>.console.aws.amazon.com` form also works but switches account context
-  implicitly, so prefer the explicit form.
-- Clicks assume the user is already signed in to AWS; if not, the SSO login screen will intercept.
-- ARNs embedded in URLs may need URL encoding (`:` and `/`) depending on the renderer / browser.
-- GitHub README cannot follow `click` links — see the note in SKILL.md.
+- `[ACCOUNT].[REGION].console.aws.amazon.com` というホストの前置きは IAM Identity Center (SSO) の形。
+  素の `<region>.console.aws.amazon.com` でも動くが、アカウントが暗黙に切り替わるので、明示する形を使う
+- click は AWS にサインイン済みであることを前提にする。サインインしていなければ SSO のログイン画面が挟まる
+- URL に埋め込む ARN は、描画側やブラウザによっては `:` と `/` の URL エンコードが要る
+- GitHub の README では click のリンクをたどれない
