@@ -176,7 +176,3 @@ class authorizer diff
 %% To highlight a whole subgraph, use `style`:
 style tenant-dev fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px
 ```
-
-See `docs/reports/2026-06-17-mspf-dev-plan.md` ("全体アーキテクチャ案" section) for a worked
-three-stage comparison (before / Option A / Option B) that uses identical node IDs across the
-diagrams with diff classes on the changed nodes.
