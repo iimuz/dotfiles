@@ -15,8 +15,31 @@
      「ステータスの更新」の supersede に従い 2 へ進む。しないなら終える
 2. docs/adr/ の最大 ID に 1 を足す
 3. ファイル名は `NNNN-slug.md` にする
-4. [adr-template.md](adr-template.md) を写して埋める。frontmatter のキーは id、status、
-   date、supersedes だけにする。id はファイル名と同じ 4 桁ゼロ埋めの文字列にする
+4. 次のテンプレートを写して埋める。frontmatter のキーは id、status、date、supersedes だけにする。
+   id はファイル名と同じ 4 桁ゼロ埋めの文字列にする
+
+   ```markdown
+   ---
+   id: "0000"
+   status: Proposed
+   date: YYYY-MM-DD
+   supersedes: []
+   ---
+
+   # ADR-0000: 短いタイトル
+
+   ## Context
+
+   決定が必要になった背景、制約、検討した案とその得失。
+
+   ## Decision
+
+   選んだものとその理由。
+
+   ## Consequences
+
+   良い結果、悪い結果、リスク。
+   ```
 
 ## ステータスの更新
 

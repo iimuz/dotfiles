@@ -25,10 +25,8 @@ description: >-
 
 ### ブラウザ
 
-macOS では `--browser chrome --headed` で Homebrew の Google Chrome を可視
-ウィンドウで使う。`--browser chrome` だけではヘッドレス実行のままで UA に
-`HeadlessChrome` が残り、headless を弾くサイトでは 403 になる。`--headed` を
-併用して初めて UA から `HeadlessChrome` が外れ、403 を回避できる。
+macOS では `--browser chrome --headed` を使う。`--headed` を付けないと UA に `HeadlessChrome` が残り、
+headless を弾くサイトで 403 になる。
 
 Linux には Chrome がなく、ディスプレイもないため `--headed` は使えない。
 `--browser` を指定せず chromium をヘッドレスで使うが、headless を弾くサイトは
@@ -47,12 +45,10 @@ DOM を掻き集める前に `requests` と `response-body` でページが叩�
 エンドポイントを探す。表形式のデータは、レンダリング結果より元の JSON のほうが
 速く確実に取れる。
 
-出力が大きいときは設定ファイルで `outputMode` を `file` にしてファイルに落とし、
-context-mode の `ctx_execute_file` で解析する。生データをコンテキストに載せない。
+出力が大きいときは設定ファイルで `outputMode` を `file` にしてファイルに落とす。
 
 locale で表示が変わる SPA は `browser.contextOptions.locale` を指定する。
 `accept-language` ヘッダだけでは切り替わらないことがある。
 
-本文抽出ツールは記事本文だけを残すため、料金表のような UI コンポーネントを落とす。
-実測では 588KB のページが 623B まで縮んだ。ページ全体の構造やレイアウトが要るときは
-本文抽出を使わず、`snapshot` でページ構造を、`requests` でエンドポイントを取る。
+本文抽出ツールは記事本文だけを残すため、料金表のような UI コンポーネントを落とす。ページ全体の構造や
+レイアウトが要るときは本文抽出を使わず、`snapshot` でページ構造を、`requests` でエンドポイントを取る。

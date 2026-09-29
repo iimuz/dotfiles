@@ -14,8 +14,6 @@
 https://[ACCOUNT].[REGION].console.aws.amazon.com/ec2/home?region=[REGION]#LoadBalancer:loadBalancerArn=[ARN]
 ```
 
-ノード ID に `<DNSName>` を使うと、そこから直接 URL を組み立てられる。
-
 ## EC2
 
 ```text
@@ -27,8 +25,6 @@ https://[ACCOUNT].[REGION].console.aws.amazon.com/ec2/home?region=[REGION]#Insta
 ```text
 https://[ACCOUNT].[REGION].console.aws.amazon.com/ecs/v2/clusters/[CLUSTER]/services/[SERVICE]/health?region=[REGION]
 ```
-
-ノード ID の形 `<ClusterName>/<ServiceName>` は AWS CLI の出力と揃う。
 
 ## RDS / Aurora
 
@@ -79,22 +75,20 @@ https://[ACCOUNT].[REGION].console.aws.amazon.com/kms/home?region=[REGION]#/kms/
 click 付きの図をまとめて作るときは、先に CLI で識別子を一括で取り出す。
 
 ```bash
-AWS_REGION="ap-northeast-1"
-
 # All resources (ARN + Name tag)
 aws resourcegroupstaggingapi get-resources \
   --query "ResourceTagMappingList[].[ResourceARN,Tags[?Key=='Name']|[0].Value]" \
-  --output text --region $AWS_REGION
+  --output text --region [REGION]
 
 # ELB
 aws elbv2 describe-load-balancers \
   --query "LoadBalancers[].[VpcId,DNSName,LoadBalancerName,LoadBalancerArn]" \
-  --output text --region $AWS_REGION
+  --output text --region [REGION]
 
 # EC2
 aws ec2 describe-instances \
   --query "Reservations[].Instances[].[VpcId,InstanceId,Tags[?Key=='Name']|[0].Value]" \
-  --output text --region $AWS_REGION
+  --output text --region [REGION]
 
 # S3 buckets
 aws s3 ls | awk '{print $3}'

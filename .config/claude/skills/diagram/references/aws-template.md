@@ -162,13 +162,26 @@ config:
 ---
 flowchart LR
 
-%% Reuse the same node IDs as the Option A diagram; only add or change diff parts.
-authorizer@{img: "https://api.iconify.design/logos/aws-lambda.svg", label: "Lambda Authorizer", pos: "b", w: 60, h: 60, constraint: "on"}
-%% ... rest of the node definitions match Option A ...
+browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "Browser", pos: "b", w: 60, h: 60, constraint: "on"}
 
-%% Diff highlight
+subgraph aws["AWS account"]
+  alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "ALB", pos: "b", w: 60, h: 60, constraint: "on"}
+  ecs@{img: "https://api.iconify.design/logos/aws-ecs.svg", label: "ECS Fargate", pos: "b", w: 60, h: 60, constraint: "on"}
+  subgraph batch["Batch"]
+    ec2@{img: "https://api.iconify.design/logos/aws-ec2.svg", label: "EC2 worker", pos: "b", w: 60, h: 60, constraint: "on"}
+  end
+end
+
+browser ----|"HTTPS"| alb
+alb --- ecs
+ecs --- ec2
+
+classDef default fill:#fff
+style aws fill:#fff,color:#345,stroke:#345
+
+%% A changed node: classDef diff + class
 classDef diff fill:#fff8c4,stroke:#a80,stroke-width:2px
-class authorizer diff
-%% To highlight a whole subgraph, use `style`:
-style tenant-dev fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px
+class ecs diff
+%% A whole added subgraph: style
+style batch fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px
 ```

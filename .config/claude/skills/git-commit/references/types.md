@@ -1,29 +1,23 @@
-# Commit Type Reference
+# コミットの type
 
-Valid types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `build`, `perf`,
-`style`, `revert`, `i18n`.
+- `feat`: 新しい機能
+- `fix`: 不具合の修正
+- `docs`: 文書の変更
+- `refactor`: 振る舞いを変えないコードの整理
+- `test`: テストの追加や修正
+- `chore`: 保守作業、script、設定の変更
+- `ci`: CI の設定と script の変更
+- `build`: ビルドの仕組みや外部依存の変更
+- `perf`: 性能の改善
+- `style`: 書式や空白など、意味を変えないコードの見た目の変更
+- `revert`: 以前のコミットの取り消し
+- `i18n`: 国際化
 
-- `feat`: New features
-- `fix`: Bug fixes
-- `docs`: Documentation changes
-- `refactor`: Code refactoring
-- `test`: Test additions or corrections
-- `chore`: Maintenance tasks, scripts, config
-- `ci`: CI configuration and scripts
-- `build`: Build system or external dependency changes
-- `perf`: Performance improvements
-- `style`: Code style changes (formatting, whitespace)
-- `revert`: Revert previous commits
-- `i18n`: Internationalization
+## 選ぶときの優先順位
 
-## Selection Priority
+複数の type が当てはまるときは、上から順に見て最初に当てはまるものを選ぶ。
 
-When multiple types could apply, use this priority (highest first):
-
-1. Whitespace or formatting only -> `style`
-2. Only test files changed -> `test`
-3. Only documentation files changed -> `docs`
-4. Otherwise -> analyze the diff and pick the most specific type above.
-
-Choose exactly one type. Reject any type not listed. Abort with `invalid commit type`
-on mismatch.
+1. 空白や書式だけの変更: `style`
+2. テストのファイルだけの変更: `test`
+3. 文書のファイルだけの変更: `docs`
+4. それ以外: diff を読み、上の一覧からいちばん具体的な type を選ぶ

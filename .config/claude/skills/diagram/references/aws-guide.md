@@ -10,7 +10,7 @@ Mermaid v11.3.0 以降の image-node 拡張 (`nodeID@{img,label,pos,w,h,constrai
 
 ## 使わない場面
 
-- draw.io の XML が欲しいとき。`deploy-on-aws:aws-architecture-diagram` に任せる
+- draw.io の XML が欲しいとき
 - ASCII の図で足りるとき
 
 ## 手順
@@ -23,25 +23,13 @@ Mermaid v11.3.0 以降の image-node 拡張 (`nodeID@{img,label,pos,w,h,constrai
 6. コンソールへの click 行は、ユーザーが求めたときだけ足す
 7. 図を ` ```mermaid ` のコードフェンスで囲む
 
-## 既定値
-
-| 項目                          | 既定値                                    |
-| ----------------------------- | ----------------------------------------- |
-| 向き                          | `flowchart LR` (外部から内部へ、左から右) |
-| テーマ                        | `neutral`                                 |
-| `nodeSpacing` / `rankSpacing` | 10 / 30                                   |
-| アイコンの大きさ              | `w: 60, h: 60`                            |
-| ラベルの位置                  | `pos: "b"` (アイコンの下)                 |
-| レイアウトの制約              | `constraint: "on"`                        |
-
 ## レイアウト
 
+- 向き、テーマ、間隔、アイコンの大きさ、ラベルの位置、レイアウトの制約の既定値と、見えない subgraph や
+  見えない辺による配置の補助は、[aws-template.md](aws-template.md) のテンプレートに従う
 - `subgraph` の入れ子は 2 から 3 段までにする (例: AWS アカウント、リージョン、VPC)。それより深くしない
 - 複数リージョンの図では、リージョンごとに subgraph を分ける
   (`subgraph use1["us-east-1"]`、`subgraph apne1["ap-northeast-1"]`)
-- 同じ列にノードを揃えるには、ラベルが空の見えない subgraph (`subgraph g-foo[" "]`) で囲み、
-  `classDef group fill:none,stroke:none` と `class g-foo group` で枠を消す
-- subgraph 同士の縦の並びを決めるには、見えない辺 `~~~` でつなぐ (例: `g-cdn ~~~ vpc ~~~ g-aux`)
 
 ## ラベル
 

@@ -32,8 +32,7 @@ Delegate when:
 - The target files are unknown and need broad exploration.
 - The change spans multiple files.
 - Independent pieces of work can run in parallel.
-- A command would flood the main context with output. Prefer sandbox execution when
-  available; otherwise use a read-only subagent.
+- A command would flood the main context with output. Use a read-only subagent.
 
 ## Dispatch contract
 

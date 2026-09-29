@@ -17,7 +17,7 @@
   (`YYYY-MM-DD-{topic}.md`)
 - docs/tmp/: 使い捨てのスクリプトと出力。コミットしない
 - .claude/rules/: ファイル拡張子やファイル名 prefix のように、ディレクトリ単位で
-  表せないスコープ条件が要るルールだけ。paths frontmatter を必ず付ける。
+  表せないスコープ条件が要るルールだけ。paths frontmatter を付ける。
   paths の無いファイルは起動時に無条件でロードされる
 - .claude/skills/: 3 ステップ以上の手順。SKILL.md は概要と目次にし、詳細は
   references/ へ 1 段だけ下げる。SKILL.md は 500 行以下
