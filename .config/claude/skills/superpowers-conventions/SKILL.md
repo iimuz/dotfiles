@@ -1,62 +1,52 @@
 ---
 name: superpowers-conventions
 description: >-
-  Use when running any superpowers skill (brainstorming, writing-plans,
-  subagent-driven-development, executing-plans), when handling the design and plan
-  files those skills produce, or when creating a PR for work that used them.
+  superpowers の skill (brainstorming、writing-plans、subagent-driven-development、
+  executing-plans) を動かすとき、それらが作る design と plan のファイルを保存する、扱うとき、
+  それらを使った作業の PR を作るときに使う。
 ---
 
-# Superpowers Conventions
+# superpowers-conventions
 
-## Overview
+## 目的
 
-Personal rules layered on top of the superpowers workflow. superpowers owns the
-order of work. This skill defines when the user approves its files, that they are
-never committed, and how they are recorded on GitHub.
+作業の順序は superpowers に従う。この skill は、superpowers が作る design と plan のファイルについて、
+保存先、ユーザーの承認を待つ時点、コミットしないこと、GitHub への記録の仕方を決める。
 
-## File location
+## 保存先
 
-Follow save-conventions. It is the single source for where design and plan files go.
+| ファイル | 保存先                                                |
+| -------- | ----------------------------------------------------- |
+| design   | `docs/superpowers/specs/YYYY-MM-DD-{topic}-design.md` |
+| plan     | `docs/superpowers/plans/YYYY-MM-DD-{topic}.md`        |
 
-## Approval gates
+- `YYYY-MM-DD` は今日の日付、`{topic}` は作業の主題を kebab-case にしたもの。両方を必ず入れる
+- リポジトリの文書規約が作業途中の成果物の置き場所を別に定めていても、design と plan はそこに移さず
+  上の表に従う
 
-- After writing the design file, stop and ask the user to review it. Do not start
-  writing-plans until they approve.
-- After writing the plan file, stop and ask the user to review it. Do not start
-  implementation until they approve.
-- Approval is given on the file, not on a chat summary. Present the path and wait.
+## 承認
 
-## Do not commit
+- design のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで writing-plans を始めない
+- plan のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで実装を始めない
+- 承認はチャットの要約ではなくファイルに対して受ける。パスを示して待つ
 
-Files under `docs/superpowers/` and `.superpowers/` are never committed. They are
-gitignored in repositories that follow save-conventions; where they are not, leave
-them unstaged.
+## コミットしない
 
-## Recording as comments
+`docs/superpowers/` と `.superpowers/` の下のファイルはコミットしない。gitignore されていない
+リポジトリでは、`git add -A` のような一括の stage でも含めない。
 
-When the user has asked for design and plan files to be recorded on GitHub as part of this
-workflow, post them as comments with gh-ops at these points. gh-ops and CLAUDE.md still require
-the user's explicit instruction before any write; this section only defines the timing and
-content once that instruction is in place.
+## GitHub への記録
 
-- Design, task started from an issue: post to the issue after the plan is approved
-  and before implementation starts.
-- Design, task not started from an issue: post to the PR right after creating it.
-- Plan: post to the PR right after creating it.
+ユーザーがこの作業の一部として design と plan を GitHub に記録するよう求めたときは、次の時点で
+gh-ops を使ってコメントとして投稿する。書き込みに要るユーザーの明示的な指示は gh-ops と CLAUDE.md が
+定める。この節は、その指示があるときの投稿の時点と内容だけを決める。
 
-Before posting:
+- design、issue から始めた作業: plan の承認後、実装を始める前に issue に投稿する
+- design、issue から始めていない作業: PR を作った直後に PR に投稿する
+- plan: PR を作った直後に PR に投稿する
 
-- Update the text to the final state of the file. The design and plan may have
-  changed since it was written.
-- Make it readable on its own: state the topic in the first line, and inline or
-  remove any reference to files outside git (the spec and plan files themselves,
-  scratch notes).
+投稿する前に次の 2 点を済ませる。
 
-## Common Mistakes
-
-- Starting implementation while approval of the plan is still pending because it
-  "looks fine".
-- Staging `docs/superpowers/` with `git add -A`.
-- Posting the plan with a "see docs/superpowers/plans/..." link the reader cannot
-  open.
-- Posting the design before the plan is approved.
+- 本文をファイルの最終状態に合わせる。design と plan は書いた後に変わっていることがある
+- 単体で読めるようにする。1 行目に主題を書き、git 管理外のファイル (design と plan のファイル自身、
+  作業メモ) への参照は本文に取り込むか削る
