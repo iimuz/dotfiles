@@ -9,8 +9,7 @@ description: >-
 
 ## 手順
 
-1. リポジトリ自身の文書規約(docs/design/documentation.md、CLAUDE.md の文書に
-   関する節など)を探す。あれば、その差分を以下の既定に重ねて従う
+1. リポジトリ自身の文書規約を探す。あれば、その差分を以下の既定に重ねて従う
 2. 場面に合う reference を読む
    - 文書、skill、rules、コメントを書くとき、書いた文書をレビューするときは
      [writing.md](references/writing.md) を読む
