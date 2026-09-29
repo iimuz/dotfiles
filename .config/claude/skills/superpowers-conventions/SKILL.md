@@ -15,14 +15,8 @@ description: >-
 
 ## 保存先
 
-| ファイル | 保存先                                                |
-| -------- | ----------------------------------------------------- |
-| design   | `docs/superpowers/specs/YYYY-MM-DD-{topic}-design.md` |
-| plan     | `docs/superpowers/plans/YYYY-MM-DD-{topic}.md`        |
-
-- `YYYY-MM-DD` は今日の日付、`{topic}` は作業の主題を kebab-case にしたもの。両方を必ず入れる
-- リポジトリの文書規約が作業途中の成果物の置き場所を別に定めていても、design と plan はそこに移さず
-  上の表に従う
+design と plan の保存先は brainstorming と writing-plans の既定に従う。リポジトリの文書規約が作業途中の
+成果物の置き場所を別に定めていても、そこへ移さない。
 
 ## 承認
 
@@ -38,8 +32,8 @@ description: >-
 ## GitHub への記録
 
 ユーザーがこの作業の一部として design と plan を GitHub に記録するよう求めたときは、次の時点で
-gh-ops を使ってコメントとして投稿する。書き込みに要るユーザーの明示的な指示は gh-ops と CLAUDE.md が
-定める。この節は、その指示があるときの投稿の時点と内容だけを決める。
+gh-ops を使ってコメントとして投稿する。書き込みに要るユーザーの明示的な指示は CLAUDE.md が定める。
+この節は、その指示があるときの投稿の時点と内容だけを決める。
 
 - design、issue から始めた作業: plan の承認後、実装を始める前に issue に投稿する
 - design、issue から始めていない作業: PR を作った直後に PR に投稿する
