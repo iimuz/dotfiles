@@ -69,10 +69,11 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 ## 作成
 
 本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
-あるときは、区切り文字を本文に現れない別の語に変える。
+あるときは、区切り文字を本文に現れない別の語に変える。タイトルはシングルクォートで囲み、シェルによる
+展開を避ける。タイトルに `'` を含むときは `'\''` に置き換える。
 
 ```bash
-gh pr create --draft [--base <base>] --title "<タイトル>" --body-file - <<'EOF'
+gh pr create --draft [--base <base>] --title '<タイトル>' --body-file - <<'EOF'
 <テンプレートに沿って書いた本文>
 EOF
 ```
