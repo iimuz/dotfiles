@@ -18,7 +18,7 @@ PR に pending review を作り、行ごとのコメントを付ける。
 - `path` (必須): リポジトリのルートからのファイルパス
 - `line` (必須): コメントを付ける行番号
 - `body` (必須): コメントの本文
-- `suggestion`: 提案するコード。3 連バッククォートを含めない。script が GitHub の suggestion ブロックで囲む
+- `suggestion`: 提案するコード。script が GitHub の suggestion ブロックで囲む
 - `start_line`: 複数行にまたがるコメントの開始行
 - `side`: diff の側。`LEFT` か `RIGHT`
 

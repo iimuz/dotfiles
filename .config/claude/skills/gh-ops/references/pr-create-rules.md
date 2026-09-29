@@ -38,8 +38,7 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 
 - Changes は必須で、`-` の箇条書きにする
 - Related URLs と Review Points は、中身が無ければ見出しだけ残す
-- Confirmation Results と Limitations は、中身があれば HTML コメントを中身に置き換え、無ければコメントを残す。
-  draft を後から人が書き足すときの目印になる
+- Confirmation Results と Limitations は、中身があれば HTML コメントを中身に置き換え、無ければコメントを残す
 - `{additional}` はその他の補足で、無ければ行ごと消す
 
 ```markdown
@@ -67,10 +66,6 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 ```
 
 ## 作成
-
-本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
-あるときは、区切り文字を本文に現れない別の語に変える。タイトルはシングルクォートで囲み、シェルによる
-展開を避ける。タイトルに `'` を含むときは `'\''` に置き換える。
 
 ```bash
 gh pr create --draft [--base <base>] --title '<タイトル>' --body-file - <<'EOF'

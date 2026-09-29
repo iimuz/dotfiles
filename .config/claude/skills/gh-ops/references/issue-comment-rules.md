@@ -23,9 +23,6 @@
 
 ## 投稿
 
-本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
-あるときは、区切り文字を本文に現れない別の語に変える。
-
 ```bash
 gh issue comment <number> [--repo OWNER/REPO] --body-file - <<'EOF'
 <テンプレートに沿って書いた本文>
