@@ -1,67 +1,41 @@
-# PR Review Rules
+# PR へのレビューコメント
 
-Create a pending review on a GitHub PR with inline comments via
-`scripts/create_review.sh`.
+PR に pending review を作り、行ごとのコメントを付ける。
 
-## Choosing the Script
+## script の選び方
 
-- New review (no pending review on the PR): use `scripts/create_review.sh`.
-- A pending review already exists: use `scripts/append_review.sh` to add
-  comments to it.
+- PR に pending review が無ければ `create_review.sh` で作る
+- pending review があれば `append_review.sh` でコメントを追記する
 
-`create_review.sh` detects an existing pending review and aborts with
-`{"error": "pending_review_exists", "review_id": <id>}` instead of failing
-with a raw API error. When you see this, switch to `append_review.sh`, or
-submit/discard the existing review first.
+`create_review.sh` が `{"error": "pending_review_exists", "review_id": <id>}` を返したら、再実行せずに
+`append_review.sh` に切り替える。`append_review.sh` が `{"error": "no_pending_review"}` を返したら
+`create_review.sh` を使う。
 
-## Procedure
+## コメントの項目
 
-Follow these steps in order. Stop on any failure.
+`--comments-json` には、次の項目を持つオブジェクトを 1 個以上並べた JSON 配列を渡す。2 つの script で同じ形を使う。
 
-### Step 1: Compose Comments
+- `path` (必須): リポジトリのルートからのファイルパス
+- `line` (必須): コメントを付ける行番号
+- `body` (必須): コメントの本文
+- `suggestion`: 提案するコード。3 連バッククォートを含めない。script が GitHub の suggestion ブロックで囲む
+- `start_line`: 複数行にまたがるコメントの開始行
+- `side`: diff の側。`LEFT` か `RIGHT`
 
-Prepare inline comments for the review. Each comment requires:
-
-- `path: string` – File path relative to the repository root
-- `line: number` – Line number to attach the comment to
-- `body: string` – Comment body text
-
-Optional per comment:
-
-- `suggestion: string` – Code suggestion content. Do not include triple backticks;
-  the script wraps it in a GitHub suggestion block automatically.
-- `start_line: number` – Start line for multi-line comments
-- `side: "LEFT" | "RIGHT"` – Diff side
-
-Provide `--comments-json` as a valid JSON array with at least one element.
-
-### Step 2: Create Review
-
-Required flags:
-
-- `--owner` – Repository owner
-- `--repo` – Repository name
-- `--pull-number` – PR number
-- `--comments-json` – JSON array of comment objects (at least one element required)
-
-Optional flags:
-
-- `--summary-body` – Review summary body text
+## create_review.sh
 
 ```bash
 bash "${SKILL_DIR}/scripts/create_review.sh" \
   --owner "<owner>" \
   --repo "<repo>" \
   --pull-number <number> \
-  --comments-json '<json array>' \
-  [--summary-body "<text>"]
+  --summary-body "<review 全体の要約>" \
+  --comments-json '<json array>'
 ```
 
-On success, stdout contains `{ "id": {number}, "html_url": "{url}" }`.
-On failure, stderr contains an error message and the script exits non-zero.
+成功すると標準出力に `{"id": <number>, "html_url": "<url>"}` を出す。
 
-If the script reports `pending_review_exists`, do not retry `create_review.sh`.
-Append the comments with `scripts/append_review.sh` instead:
+## append_review.sh
 
 ```bash
 bash "${SKILL_DIR}/scripts/append_review.sh" \
@@ -71,29 +45,8 @@ bash "${SKILL_DIR}/scripts/append_review.sh" \
   --comments-json '<json array>'
 ```
 
-On success, stdout contains
-`{ "review_id": "<id>", "added": <count>, "thread_ids": [ ... ] }`.
-`append_review.sh` takes the same comment objects as `create_review.sh` but
-has no `--summary-body` flag. If no pending review exists it reports
-`{"error": "no_pending_review"}`; use `create_review.sh` in that case.
+`--summary-body` は無い。成功すると標準出力に `{"review_id": "<id>", "added": <count>, "thread_ids": [...]}` を出す。
 
-### Step 3: Do Not Submit the Review
+## submit しない
 
-The review is created as a pending draft. Do not submit it via the CLI. The
-user will submit it manually via the GitHub UI when ready.
-
-## Output
-
-On success: `{ "id": {number}, "html_url": "{url}" }`
-
-On failure: error message on stderr, non-zero exit code.
-
-## Examples
-
-```bash
-bash "${SKILL_DIR}/scripts/create_review.sh" \
-  --owner "myorg" \
-  --repo "myrepo" \
-  --pull-number 42 \
-  --comments-json '[{"path":"src/auth.py","line":42,"body":"Add null check here"}]'
-```
+review は pending のまま残し、submit しない。ユーザーが GitHub の画面から submit する。

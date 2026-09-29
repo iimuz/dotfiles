@@ -1,98 +1,21 @@
-# Issue Create Rules
+# Issue の作成
 
-Create a GitHub Issue with a structured body using one of two templates:
-product-backlog (parent issue) or feature (work item).
+Issue の本文を 2 つのテンプレートのどちらかで書き、`gh issue create` で作る。
 
-## Procedure
+## 種類の選び方
 
-Follow these steps in order. Stop on any failure.
+- product-backlog: プロダクトの目標と範囲を定める親 Issue
+- feature: product-backlog にひもづく作業 Issue
 
-### Step 1: Determine Type
+文脈から明らかなら種類を推測し、そうでなければユーザーに尋ねる。
 
-Select one based on intent:
+## テンプレート
 
-- `product-backlog` – Parent issue defining a product goal and its scope. Contains
-  overview, details, goal, and notes sections.
-- `feature` – Work item issue linked to a product backlog. Contains related URLs, goal,
-  and details sections.
+`{...}` を中身に置き換える。中身のない節は見出しだけ残す。
 
-Ask the user which type to create. Infer from context when intent is clear.
+### product-backlog
 
-### Step 2: Compose Content
-
-Prepare title and body fields based on the selected template. See Body Templates below.
-
-Provide content as stdin JSON for the selected type.
-
-product-backlog:
-
-```json
-{
-  "title": "string (required)",
-  "overview": "string (required)",
-  "goal": "string (required)",
-  "details": "string",
-  "notes": "string"
-}
-```
-
-feature:
-
-```json
-{
-  "title": "string (required)",
-  "goal": "string (required)",
-  "details": "string (required)",
-  "related_urls": "string"
-}
-```
-
-### Step 3: Create Issue
-
-Optional flags:
-
-- `--repo OWNER/REPO` – Target repository (defaults to current repository)
-- `--labels` – Comma-separated labels
-- `--assignees` – Comma-separated assignees
-- `--project` – Project name
-
-JSON fields per type (required fields are validated by each script):
-
-- `product-backlog`: required `title`, `overview`, `goal`; optional `details`, `notes`
-- `feature`: required `title`, `goal`, `details`; optional `related_urls`
-
-product-backlog:
-
-```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-product-backlog.sh" [--repo OWNER/REPO] [--dry-run]
-{
-  "title": "...",
-  ...
-}
-EOF
-```
-
-feature:
-
-```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-feature.sh" [--repo OWNER/REPO] [--dry-run]
-{
-  "title": "...",
-  ...
-}
-EOF
-```
-
-The script validates the JSON, builds the body from the template, and creates the
-issue via `gh issue create`. On success it prints the issue URL to stdout.
-
-## Body Templates
-
-### Product Backlog Body Template
-
-The script builds the product-backlog issue body from this section structure.
-Each {field} is replaced with the corresponding JSON input value.
-Sections with empty content include only the header.
+必須の節は Overview と Goal。
 
 ```markdown
 ## Overview
@@ -112,11 +35,9 @@ Sections with empty content include only the header.
 {notes}
 ```
 
-### Feature Body Template
+### feature
 
-The script builds the feature issue body from this section structure.
-Each {field} is replaced with the corresponding JSON input value.
-Sections with empty content include only the header.
+必須の節は Goal と Details。
 
 ```markdown
 ## Related URLs
@@ -132,32 +53,17 @@ Sections with empty content include only the header.
 {details}
 ```
 
-## Output
+## 作成
 
-- `url: string`: URL of the created issue printed to stdout by the script.
-- With `--json`: `{ "number": number, "url": string }`.
-
-## Examples
+本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
+あるときは、区切り文字を本文に現れない別の語に変える。タイトルはシングルクォートで囲み、シェルによる
+展開を避ける。タイトルに `'` を含むときは `'\''` に置き換える。
 
 ```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-product-backlog.sh" --labels "backlog"
-{
-  "title": "User authentication system",
-  "overview": "Implement user authentication to support login and registration flows.",
-  "goal": "Users can sign up, log in, and maintain authenticated sessions.",
-  "details": "Use OAuth 2.0 with JWT tokens for session management.",
-  "notes": "Consider rate limiting for login endpoints."
-}
+gh issue create --title '<title>' --body-file - <<'EOF'
+<テンプレートに沿って書いた本文>
 EOF
 ```
 
-```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/create-issue-feature.sh" --repo "owner/repo" --labels "feature" --assignees "@me"
-{
-  "title": "Implement login endpoint",
-  "goal": "POST /api/login returns a valid JWT token for correct credentials.",
-  "details": "Validate email and password against the user store. Return 401 for invalid credentials.",
-  "related_urls": "- parent: #42"
-}
-EOF
-```
+リポジトリ、ラベル、担当者、プロジェクトを指定するときは、`gh` のフラグ `--repo`、`--label`、`--assignee`、
+`--project` をそのまま使う。

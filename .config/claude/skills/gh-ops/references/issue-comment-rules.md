@@ -1,87 +1,33 @@
-# Issue Comment Rules
+# Issue へのコメント
 
-Post a structured comment to a GitHub Issue with a visible summary and zero or more
-collapsible details sections.
+要約と、0 個以上の折りたたむ節からなるコメントを書き、`gh issue comment` で投稿する。
 
-## Procedure
+## テンプレート
 
-Follow these steps in order. Stop on any failure.
+要約のあとに、折りたたむ節を 0 個以上並べる。`{...}` を中身に置き換える。
 
-### Step 1: Compose Content
+```markdown
+{summary}
 
-Prepare summary and details from investigation results, review findings, or incident
-analysis.
+<details>
+<summary>{label}</summary>
 
-Provide content as stdin JSON:
+{content}
 
-```json
-{
-  "summary": "string (required, markdown)",
-  "details": [{ "label": "string", "content": "string" }]
-}
+</details>
 ```
 
-- `summary`: Visible summary for the comment body. Keep it self-contained so the reader
-  can understand the conclusion and next actions without expanding details.
-- `details`: Optional array of collapsible sections. Each entry requires:
-  - `label: string` – Text for the `<summary>` element
-  - `content: string` – Markdown body for the collapsible section
+- 要約だけで結論と次の行動が分かるように書く
+- `{label}` に `<` と `>` を含めない
+- 本文が 65536 文字を超えるときは、折りたたむ節を短くする
 
-If `details` is omitted or empty, a summary-only comment is posted.
+## 投稿
 
-### Step 2: Post Comment
-
-Required flags:
-
-- `--repo OWNER/REPO` – Target repository
-- `--issue NUMBER` – Target issue number
+本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
+あるときは、区切り文字を本文に現れない別の語に変える。
 
 ```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "OWNER/REPO" --issue NUMBER
-{
-  "summary": "...",
-  "details": [...]
-}
-EOF
-```
-
-The script validates the JSON, assembles the comment body, and posts it.
-On success it prints the comment URL to stdout.
-
-If the body exceeds 65536 characters, shorten the details before retrying.
-
-## Output
-
-- `url: string`: URL of the posted comment printed to stdout by the script.
-
-## Examples
-
-### Multi-Details
-
-```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "owner/repo" --issue 42
-{
-  "summary": "## Investigation Results\n\nRoot cause identified. Creating a fix PR.",
-  "details": [
-    {
-      "label": "Log Analysis",
-      "content": "Error log details..."
-    },
-    {
-      "label": "Reproduction Steps",
-      "content": "1. Step A\n2. Step B"
-    }
-  ]
-}
-EOF
-```
-
-### Summary-Only
-
-```bash
-cat <<'EOF' | bash "${SKILL_DIR}/scripts/post-comment.sh" --repo "owner/repo" --issue 42
-{
-  "summary": "## Completion Report\n\nAll checks passed successfully."
-}
+gh issue comment <number> [--repo OWNER/REPO] --body-file - <<'EOF'
+<テンプレートに沿って書いた本文>
 EOF
 ```

@@ -1,77 +1,46 @@
-# PR Create Rules
+# PR の作成
 
-Create a draft pull request with a Conventional Commits-style title and
-standardized body.
+Conventional Commits 形式のタイトルと、決まった形の本文で draft PR を作る。
 
-## Procedure
+## 手順
 
-Follow these steps in order. Stop on any failure.
+1. base ブランチを決める。ユーザーの指定がなければ origin の既定ブランチにする。worktree には base の
+   ローカルブランチが無いことがあるので、以降は `origin/<base>` と比べる
+2. まだコミットしていない変更 (`git status --short`)、`origin/<base>..HEAD` のコミット
+   (`git log origin/<base>..HEAD --oneline`)、diff の統計 (`git diff origin/<base>...HEAD --stat`) を確認する。
+   base との差分になるコミットが無ければ中止する
+3. 変更に合う type を 1 つ、下の「type の一覧」から選ぶ
+4. scope を付けるかを決める。リポジトリの規約 (CLAUDE.md、AGENTS.md、CONTRIBUTING、commitlint の設定など) に
+   scope の定めがあるときだけ付け、その定めに従う。コミットや PR の履歴からは決めない
+5. タイトルを書く。命令形で簡潔に、末尾にピリオドを付けず、ファイルパスを含めない。形は `<type>: <title>`、
+   scope を付けるときは `<type>(<scope>): <title>`
+6. 現在のブランチが origin に push されていなければ、止まってユーザーに伝える。自分では push しない
+7. 下の「本文のテンプレート」に沿って本文を書き、下の「作成」のコマンドで draft PR を作る
 
-### Step 1: Check Branch Status
+## type の一覧
 
-Run `bash "${SKILL_DIR}/scripts/check-branch-status.sh" [--base <branch>]`.
-Inspects uncommitted changes, commit history, and diff statistics.
-Abort if no commits differ from the base branch.
+- `build`: ビルドの仕組みや外部依存の変更
+- `chore`: 保守作業、script、設定の変更
+- `ci`: CI の設定と script の変更
+- `docs`: 文書の変更
+- `feat`: 新しい機能
+- `fix`: 不具合の修正
+- `i18n`: 国際化
+- `perf`: 性能の改善
+- `refactor`: 振る舞いを変えないコードの整理
+- `revert`: 以前のコミットの取り消し
+- `style`: 書式や空白など、意味を変えないコードの見た目の変更
+- `test`: テストの追加や修正
 
-### Step 2: Determine PR Type
+## 本文のテンプレート
 
-Select one based on the changes:
+`{...}` を中身に置き換える。
 
-- `build` – Build system or external dependency changes
-- `chore` – Maintenance tasks, scripts, config
-- `ci` – CI configuration and scripts
-- `docs` – Documentation changes
-- `feat` – New features
-- `fix` – Bug fixes
-- `i18n` – Internationalization
-- `perf` – Performance improvements
-- `refactor` – Code refactoring
-- `revert` – Revert previous commits
-- `style` – Code style changes (formatting, whitespace)
-- `test` – Test additions or corrections
-
-### Step 3: Compose Title
-
-Format: imperative mood, concise, no trailing period, no file paths.
-
-- Good: `"clarify PR draft skill"`, `"resolve token expiration"`
-- Bad: `"clarified the PR draft skill."`, `"update src/auth/token.ts"`
-
-### Step 4: Compose Body Content
-
-Required flags:
-
-- `--type` – PR type from Step 2
-- `--title` – Title from Step 3
-- `--changes` – Bullet lines starting with `-`
-
-Optional flags:
-
-- `--related-urls` – Related issue/PR URLs
-- `--confirmation` – Verification steps performed
-- `--review-points` – Areas needing reviewer attention
-- `--limitations` – Known limitations or follow-up needed
-- `--additional` – Any extra context
-- `--base` – Base branch (default: repo default branch)
-
-### Step 5: Create Draft PR
-
-```bash
-bash "${SKILL_DIR}/scripts/create-pr.sh" \
-  --type <type> \
-  --title "<title>" \
-  --changes "<bullet lines>" \
-  [--related-urls "<urls>"] \
-  [--confirmation "<results>"] \
-  [--review-points "<points>"] \
-  [--limitations "<limitations>"] \
-  [--additional "<context>"] \
-  [--base <branch>]
-```
-
-The script validates type and required parameters. Abort on validation errors.
-
-## PR Body Format
+- Changes は必須で、`-` の箇条書きにする
+- Related URLs と Review Points は、中身が無ければ見出しだけ残す
+- Confirmation Results と Limitations は、中身があれば HTML コメントを中身に置き換え、無ければコメントを残す。
+  draft を後から人が書き足すときの目印になる
+- `{additional}` はその他の補足で、無ければ行ごと消す
 
 ```markdown
 ## Related URLs
@@ -84,7 +53,7 @@ The script validates type and required parameters. Abort on validation errors.
 
 ## Confirmation Results
 
-{confirmation_results}
+<!-- Describe preconditions, steps, and results of confirmation if any -->
 
 ## Review Points
 
@@ -92,32 +61,19 @@ The script validates type and required parameters. Abort on validation errors.
 
 ## Limitations
 
-{limitations}
+<!-- Describe known limitations of this change or items to be addressed in a separate PR if any -->
 
 {additional}
 ```
 
-## Examples
+## 作成
 
-Minimal:
-
-```bash
-bash "${SKILL_DIR}/scripts/check-branch-status.sh" --base main
-bash "${SKILL_DIR}/scripts/create-pr.sh" --type docs --title "clarify PR draft skill" \
-  --changes "- rewrite the skill overview
-- extract the type reference
-- extract the PR body template" \
-  --base main
-```
-
-Full:
+本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。本文に行頭が `EOF` だけの行が
+あるときは、区切り文字を本文に現れない別の語に変える。タイトルはシングルクォートで囲み、シェルによる
+展開を避ける。タイトルに `'` を含むときは `'\''` に置き換える。
 
 ```bash
-bash "${SKILL_DIR}/scripts/check-branch-status.sh"
-bash "${SKILL_DIR}/scripts/create-pr.sh" --type fix --title "resolve token expiration" \
-  --changes "- update token refresh logic
-- add proper error handling for expired tokens" \
-  --confirmation "- tested token refresh flow" \
-  --review-points "- token refresh timing" \
-  --limitations "- requires frontend update for new error codes"
+gh pr create --draft [--base <base>] --title '<タイトル>' --body-file - <<'EOF'
+<テンプレートに沿って書いた本文>
+EOF
 ```

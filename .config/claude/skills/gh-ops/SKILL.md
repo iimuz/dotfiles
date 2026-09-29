@@ -1,34 +1,25 @@
 ---
 name: gh-ops
-description: >
-  Use for GitHub operations: creating issues, posting issue comments,
-  creating draft PRs, and adding PR review comments.
+description: >-
+  GitHub の Issue の作成、Issue へのコメント、draft PR の作成、PR へのレビューコメントの追加に使う。
 ---
 
-# GitHub Operations
+# gh-ops
 
-## Global Constraints
+## 共通の約束事
 
-- SKILL_DIR is the absolute path of the directory containing this SKILL.md;
-  derive it from the path at which Claude Code loaded this file
-- Execute all scripts using absolute paths: `bash "${SKILL_DIR}/scripts/<name>"`
-- Use only shipped scripts; do not run extra git or gh commands
-- Do NOT read the script; use it as a black box.
-- Write only when the user has explicitly requested the operation; do not ask
-  for pre-write content approval
-- Default language is English unless user explicitly requests otherwise
-- On script validation error or API failure: show raw error, stop
-- When referencing issues or PRs in body text, write links as `#{number}`;
-  do not use raw URLs
-- When referencing another repository's issue or PR, use the
-  `{owner}/{repository}#{number}` format
-- Use Mermaid for diagrams in body text
+- SKILL_DIR は、この SKILL.md があるディレクトリの絶対パスとする。Claude Code がこのファイルを読み込んだ
+  パスから決める
+- script は `bash "${SKILL_DIR}/scripts/<name>"` の形で、絶対パスで実行する
+- 書き込みは、ユーザーが明示的に依頼したときだけ行う
+- script や `gh` が失敗したら、エラーをそのまま見せて止まる
+- 本文で Issue や PR を参照するときは `#{number}` と書き、URL を使わない。他リポジトリのものは
+  `{owner}/{repository}#{number}` と書く
+- 本文の図は Mermaid で書く
 
-## Routing
+## 操作ごとの手順
 
-- Issue Create: [`references/issue-create-rules.md`](references/issue-create-rules.md)
-- Issue Comment: [`references/issue-comment-rules.md`](references/issue-comment-rules.md)
-- PR Create: [`references/pr-create-rules.md`](references/pr-create-rules.md)
-- PR Review: [`references/pr-review-rules.md`](references/pr-review-rules.md)
-  (new review via `create_review.sh`; append to an existing pending review via
-  `append_review.sh`)
+- Issue を作るときは [issue-create-rules.md](references/issue-create-rules.md) を読む
+- Issue にコメントするときは [issue-comment-rules.md](references/issue-comment-rules.md) を読む
+- PR を作るときは [pr-create-rules.md](references/pr-create-rules.md) を読む
+- PR にレビューコメントを付けるときは [pr-review-rules.md](references/pr-review-rules.md) を読む
