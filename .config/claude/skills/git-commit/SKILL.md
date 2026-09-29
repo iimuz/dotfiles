@@ -1,67 +1,48 @@
 ---
 name: git-commit
 description: >-
-  Use when asked to commit, and after completing each task of a plan or each
-  self-contained code change, before starting the next one.
+  コミットを頼まれたとき、plan のタスクを 1 つ終えたとき、まとまったコードの変更を 1 つ終えたときに、
+  次の作業に移る前に使う。
 ---
 
-# Git Commit
+# git-commit
 
-## Overview
+## 目的
 
-Analyze the current working tree, derive a Conventional Commits 1.0.0-compliant
-message, and commit. Always execute from the git repository root.
+作業ツリーの変更から Conventional Commits 1.0.0 に沿ったメッセージを書き、コミットする。
+コマンドはリポジトリのルートで実行する。
 
-SKILL_DIR is the absolute path of the directory containing this SKILL.md.
-Derive it from the path at which Claude Code loaded this file.
-Use it for all script references.
+## 手順
 
-## Process
+1. stage する
+   - `git diff --staged --name-only` で stage 済みのファイルを確かめる
+   - 何も stage されていなければ、`git diff --name-only` で追跡中のファイルの変更を、
+     `git ls-files --others --exclude-standard` で未追跡のファイルを挙げる。会話の文脈 (直前に終えたタスク)、
+     パス、diff の中身からタスクに関係するファイルを選び、`git add <file>...` でそれだけを stage する
+   - それでも何も stage されなければ、見つかった unstaged のファイルを挙げて止まる
+2. メッセージを書く
+   - `git --no-pager diff --staged` で diff を読む
+   - [types.md](references/types.md) から type を 1 つ選ぶ
+   - description は英語の命令形で書く。末尾にピリオドもカンマも付けず、ファイルパスだけにしない。
+     type を含めて 100 字以内にする
+   - 本文は任意で、`-` の箇条書きにする
+3. コミットする
+   - 下のテンプレートに沿ったメッセージを、クォート付きの heredoc で `git commit -F -` に渡す。
+     本文に行頭が `EOF` だけの行があるときは、区切り文字を本文に現れない別の語に変える
+   - 失敗したら、エラーをそのまま見せて止まる
 
-### 1. Stage
+## メッセージのテンプレート
 
-1. Run `git diff --staged --name-only` to check staged files.
-2. If nothing staged:
-   a. Run `git diff --name-only` to list unstaged tracked changes.
-   b. Run `git ls-files --others --exclude-standard` to list untracked files.
-   c. Using the conversation context (what task was just completed),
-   file paths, and diff content, identify task-related files.
-   d. Stage only the identified task-related files with `git add <file>...`.
-3. If still nothing staged, abort with an informative message that lists
-   the unstaged files found in step 2 (if any).
+`<...>` を中身に置き換える。本文が無ければ、`<body>` とその前の空行を消す。
 
-### 2. Analyze
+```text
+<type>: <description>
 
-1. Collect diff: `git --no-pager diff --staged`.
-2. Derive type from [`references/types.md`](references/types.md).
-3. Write description: imperative English, no trailing period, ≤100 chars including type prefix.
-4. Optionally add body with `-` bullet lines.
-
-### 3. Commit
-
-Run `bash "${SKILL_DIR}/scripts/commit.sh"` with the following options.
-Do NOT read the script; use it as a black box.
-
-- `--type <string>` (required): Commit type derived from step 2
-- `--description <string>` (required): Commit description derived from step 2
-- `--body <string>` (optional): Body text, may contain newlines
-- `--no-json` (optional): Flag. Disables JSON output. JSON output (`sha`, `message`) is on by default.
-
-Example:
-
-```bash
-bash "${SKILL_DIR}/scripts/commit.sh" \
-  --type feat \
-  --description "add user authentication endpoint" \
-  --body "- add POST /auth/login route
-- implement JWT token generation
-- add input validation middleware"
+<body>
 ```
 
-Return the JSON output as the final result.
-
-## Constraints
-
-- Abort if description is empty or is a file path.
-- Abort if type is not in [`references/types.md`](references/types.md).
-- Abort if git commit fails.
+```bash
+git commit -F - <<'EOF'
+<テンプレートに沿って書いたメッセージ>
+EOF
+```
