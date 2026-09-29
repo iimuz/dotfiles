@@ -1,10 +1,10 @@
-# Template
+# テンプレート
 
-Copy-paste templates for AWS architecture diagrams in Mermaid `flowchart LR`.
+Mermaid の `flowchart LR` で AWS の構成図を書くときに写すテンプレート。
 
-## 0. General form of the image-node extension
+## image-node 拡張の一般形
 
-Available in Mermaid v11.3.0+. Define every icon node with this form.
+アイコンのノードはすべてこの形で定義する。`img` と `label` は必須。
 
 ```text
 nodeID@{
@@ -17,15 +17,15 @@ nodeID@{
 }
 ```
 
-| Property     | Purpose                                  | Default  |
-| ------------ | ---------------------------------------- | -------- |
-| `img`        | URL of the SVG icon (Iconify, etc.)      | required |
-| `label`      | Text displayed on the node               | required |
-| `pos`        | Label position (`t` = top / `b` = below) | `b`      |
-| `w`, `h`     | Icon width / height in px                | 60 / 60  |
-| `constraint` | Layout constraint (`on` = constrained)   | `on`     |
+| プロパティ   | 用途                               |
+| ------------ | ---------------------------------- |
+| `img`        | SVG アイコンの URL (Iconify など)  |
+| `label`      | ノードに出すテキスト               |
+| `pos`        | ラベルの位置 (`t` は上、`b` は下)  |
+| `w`, `h`     | アイコンの幅と高さ (px)            |
+| `constraint` | レイアウトの制約 (`on` で制約する) |
 
-## 1. Minimum sample
+## 最小の例
 
 ```mermaid
 ---
@@ -58,10 +58,10 @@ classDef default fill:#fff
 style aws fill:#fff,color:#345,stroke:#345
 ```
 
-## 2. Subgraph nesting + invisible layout helpers
+## subgraph の入れ子と、見えない配置の補助
 
-Nest `subgraph` to express account / region / VPC / external boundaries.
-For layout polishing, combine **empty-label invisible subgraphs** with **invisible edges** `~~~`.
+アカウント、リージョン、VPC、外部の境界を入れ子の `subgraph` で表し、
+ラベルが空の見えない subgraph と見えない辺 `~~~` を組み合わせて配置を整える。
 
 ```mermaid
 ---
@@ -110,32 +110,28 @@ style aws fill:#fff,color:#345,stroke:#345
 style vpc fill:#fff,color:#0a0,stroke:#0a0
 ```
 
-## 3. Edge syntax
+## 辺の書き方
 
-| Syntax                | Meaning           | When to use                                                 |
-| --------------------- | ----------------- | ----------------------------------------------------------- |
-| `A --- B`             | synchronous call  | default                                                     |
-| `A ----\|"label"\| B` | labelled edge     | when you want hostnames / paths / protocols on the edge     |
-| `A -.-> B`            | dotted (directed) | async / config reference / OIDC / out-of-band flow          |
-| `A ~~~ B`             | invisible edge    | layout only (e.g. force a vertical order between subgraphs) |
+| 書き方                | 意味            | 使う場面                                                   |
+| --------------------- | --------------- | ---------------------------------------------------------- |
+| `A --- B`             | 同期の呼び出し  | 既定                                                       |
+| `A ----\|"label"\| B` | ラベル付きの辺  | ホスト名、パス、プロトコルを辺に書きたいとき               |
+| `A -.-> B`            | 点線 (向きあり) | 非同期、設定の参照、OIDC、帯域外の流れ                     |
+| `A ~~~ B`             | 見えない辺      | 配置のためだけに使う (subgraph 同士の縦の並びを決めるなど) |
 
-Edge length is controlled by the number of dashes:
+辺の長さはダッシュの数で決まる。
 
-- `-` short
-- `---` medium
-- `-----` long (use a longer edge when adding a label between subgraphs so the label has room)
+- `-` 短い
+- `---` 中くらい
+- `-----` 長い (subgraph の間の辺にラベルを付けるときは、ラベルが収まるよう長い辺にする)
 
-## 4. Click navigation (only when the user explicitly asks)
-
-Add `click` lines **only when the user explicitly requests** management-console navigation. Never embed by default.
+## コンソールへの click
 
 ```text
 click nodeID href "<URL>" _blank
 ```
 
-URL patterns per service live in [`console-urls.md`](console-urls.md).
-
-## 5. Styling
+## スタイル
 
 ```text
 classDef default fill:#fff
@@ -147,13 +143,13 @@ style <subgraphID> fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px  %% diff
 class <id1>,<id2> group                                    %% remove frame on empty-label subgraphs
 ```
 
-## 6. Comparison diagrams (before/after, Option A vs Option B)
+## 比較図 (before/after、案 A と案 B)
 
-To make comparisons readable:
+比較を読みやすくするために、次のようにする。
 
-1. **Reuse the same node IDs and layout positions** across both diagrams so the reader's eye lands in the same spot.
-2. Highlight only the diff nodes with `classDef diff` (pale yellow fill + orange border).
-3. Place a comparison table directly after the diagrams.
+1. 両方の図で同じノード ID と配置を使い回し、読み手の視線が同じ場所に落ちるようにする
+2. 差分のノードだけを `classDef diff` (淡い黄色の塗りとオレンジの枠) で目立たせる
+3. 図のすぐ後に比較表を置く
 
 ```mermaid
 ---

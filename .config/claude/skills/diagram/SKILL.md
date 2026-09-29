@@ -1,11 +1,11 @@
 ---
-name: mermaid-diagram-types
+name: diagram
 description: >-
-  描く内容に合った Mermaid の図種を選ぶ。Mermaid の図を書く、直す、
-  読み直すときに使う。
+  描く内容に合った図の種類を選んで図を書く。Mermaid の図、AWS の構成図、
+  マインドマップ (markmap。Mermaid ではない) を書く、直す、読み直すときに使う。
 ---
 
-# mermaid-diagram-types
+# diagram
 
 ## 目的
 
@@ -27,13 +27,16 @@ description: >-
 - 因果のループ、要素が輪になって互いを強める、または打ち消す関係: `flowchart` に
   約束事を載せる。Mermaid に専用の図種はない
 - 時系列上の変化: `timeline`
-- マインドマップ: markmap スキルに従う。Mermaid の `mindmap` は線が太く配置も雑で
-  見づらいため使わない
-- AWS の構成図: aws-mermaid スキルに従う
+- マインドマップ: [markmap.md](references/markmap.md) に従う。Mermaid の `mindmap` は
+  線が太く配置も雑で見づらいため使わない
+- AWS の構成図: [guide.md](references/aws/guide.md) に従う
+  - 骨組みや比較図を書くときは [template.md](references/aws/template.md) を読む
+  - アイコンの URL やノード ID の付け方を調べるときは [icons.md](references/aws/icons.md) を読む
+  - コンソールへの click 行を足すときは [console-urls.md](references/aws/console-urls.md) を読む
 - 入れ子や対応を並べるだけ: 図にしない。箇条書きで書く
 
 `quadrantChart`、`block`、`architecture-beta`、`venn-beta`、`ishikawa-beta`、
-`timeline`、因果のループを書く前に `references/patterns.md` を読む。それ以外の図種は
+`timeline`、因果のループを書く前に [patterns.md](references/patterns.md) を読む。それ以外の図種は
 そこに載せていない。
 
 ## 壊れやすい箇所
