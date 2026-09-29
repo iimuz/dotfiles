@@ -9,14 +9,13 @@ description: >-
 
 ## 目的
 
-毎回 `flowchart` に流れるのをやめ、描く内容の種類から図種を決める。
+描く内容の種類から図種を決める。
 
 ## 内容の種類から図種へ
 
 - 手順、依存、構成: `flowchart`。ノードは 15 個までに抑える。線がまたぐ境界を
   示したいときだけ `subgraph` を足す
-- 構成要素と、そのグループ分け、つなぎ方: `architecture-beta`。アイコンは組み込みの
-  5 つだけを使う
+- 構成要素と、そのグループ分け、つなぎ方: `architecture-beta`
 - やり取りの順序、呼び出しの往復: `sequenceDiagram`
 - 状態の遷移: `stateDiagram-v2`
 - 2 軸上の位置づけ、他との相対関係: `quadrantChart`
@@ -27,12 +26,11 @@ description: >-
 - 因果のループ、要素が輪になって互いを強める、または打ち消す関係: `flowchart` に
   約束事を載せる。Mermaid に専用の図種はない
 - 時系列上の変化: `timeline`
-- マインドマップ: [markmap.md](references/markmap.md) に従う。Mermaid の `mindmap` は
-  線が太く配置も雑で見づらいため使わない
-- AWS の構成図: [guide.md](references/aws/guide.md) に従う
-  - 骨組みや比較図を書くときは [template.md](references/aws/template.md) を読む
-  - アイコンの URL やノード ID の付け方を調べるときは [icons.md](references/aws/icons.md) を読む
-  - コンソールへの click 行を足すときは [console-urls.md](references/aws/console-urls.md) を読む
+- マインドマップ: [markmap.md](references/markmap.md) に従う。Mermaid の `mindmap` は使わない
+- AWS の構成図: [aws-guide.md](references/aws-guide.md) に従う
+  - 骨組みや比較図を書くときは [aws-template.md](references/aws-template.md) を読む
+  - アイコンの URL やノード ID の付け方を調べるときは [aws-icons.md](references/aws-icons.md) を読む
+  - コンソールへの click 行を足すときは [aws-console-urls.md](references/aws-console-urls.md) を読む
 - 入れ子や対応を並べるだけ: 図にしない。箇条書きで書く
 
 `quadrantChart`、`block`、`architecture-beta`、`venn-beta`、`ishikawa-beta`、

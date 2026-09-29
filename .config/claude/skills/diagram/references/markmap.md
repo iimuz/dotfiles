@@ -19,8 +19,8 @@ markmap がその見出しとリストの階層を読んで木を描く。
 
 ## frontmatter の設定: markmap ブロック
 
-YAML の frontmatter の `markmap:` キーの下に設定を置く。設定は書いておく。素の箇条書きでも描画はされるが、
-設定がないとすべて展開され色も付かない状態で開き、ユーザーが望む形になることはまれ。
+YAML の frontmatter の `markmap:` キーの下に設定を置く。書けるのは上流の文書
+(<https://markmap.js.org/docs/json-options>) に載るキーだけにする。
 
 ```markdown
 ---
@@ -31,38 +31,6 @@ markmap:
 
 # Title
 ```
-
-frontmatter に書けるキー:
-
-| キー                 | 型                                            | 既定値                     | 働き                                                                 |
-| -------------------- | --------------------------------------------- | -------------------------- | -------------------------------------------------------------------- |
-| `color`              | string または string[]                        | d3 category10              | 枝ごとに順に使う色のパレット                                         |
-| `colorFreezeLevel`   | number                                        | 0                          | N 段目で色を固定し、枝とその子孫すべてを同じ色にする。0 は固定しない |
-| `initialExpandLevel` | number                                        | -1                         | 開いたときに展開する最も深い段。-1 はすべて展開する                  |
-| `maxWidth`           | number                                        | 0                          | ノードの最大幅 (px)。0 は制限なし                                    |
-| `duration`           | number                                        | 500                        | 折りたたみと展開のアニメーションの時間 (ms)                          |
-| `spacingHorizontal`  | number                                        | 80                         | ノード間の横の間隔                                                   |
-| `spacingVertical`    | number                                        | 5                          | ノード間の縦の間隔                                                   |
-| `zoom`               | boolean                                       | true                       | ズームを許す                                                         |
-| `pan`                | boolean                                       | true                       | パンを許す                                                           |
-| `extraCss`           | string[]                                      | —                          | 追加のスタイルシートの URL (`npm:` の URL は CDN 経由で解決される)   |
-| `extraJs`            | string[]                                      | —                          | 追加のスクリプトの URL (`npm:` の URL は CDN 経由で解決される)       |
-| `activeNode`         | object `{ placement: 'center' \| 'visible' }` | `{ placement: 'visible' }` | フォーカスしたノードの置き方                                         |
-| `lineWidth`          | number                                        | 自動で計算                 | 枝をつなぐ線の幅 (markmap 0.18.8 以降)                               |
-
-次のキーは frontmatter に書かない。もっともらしく見えるが、`markmap:` ブロックが読まない低レベルの表示設定で、
-書いても黙って何も起きない。
-
-- `autoFit`
-- `fitRatio`
-- `paddingX`
-- `embedGlobalCSS`
-- `nodeMinHeight`
-- `scrollForPan`
-- `toggleRecursively`
-- `maxInitialScale`
-
-ユーザーがそれらを必要とするなら、それは書くファイルではなく、ユーザーが動かすビューアや描画側の設定になる。
 
 ## 折りたたみのマジックコメント
 
