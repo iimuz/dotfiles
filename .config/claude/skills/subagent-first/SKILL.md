@@ -52,6 +52,9 @@ subagent への prompt には次をすべて含める。
   仕様との明らかな食い違いのどれか
 - edits: yes か no
 - allowed files/dirs と forbidden files/dirs
+- 文書 (skill、rules、ADR、設計文書) を書く、または変える goal では、書く前に doc-conventions を読む指示を
+  必ず含める。subagent は skill を自分で呼べるが、plan の文をファイルに写すだけの task は文書を書いていると
+  は感じにくく、自分からは呼ばない。そのためこの task でも指示を省かない
 - success signal: 作業を完了とみなすために成り立つべきこと
 - return format: 下のテンプレートを prompt に貼る
 

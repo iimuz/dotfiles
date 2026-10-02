@@ -35,11 +35,26 @@ concrete change needed.
   not raise.
 - Judge whether the request is valid based on the actual code and the
   related-code investigation from step 2.
-- Classify the comment:
+- Classify the comment, checking fix first, then answer, then skip as the
+  leftover:
   - fix: the comment points to a real issue and a concrete change exists.
-  - skip: the comment is ambiguous, subjective, already addressed, or
-    no clear change can be derived.
+    A comment phrased as a question ("isn't this X?") is still fix when the
+    investigation yields a concrete change.
+  - answer: not fix, and the investigation gives a definite reason no change
+    is needed. A reply resolves it. This covers questions, confirmation
+    requests, already-addressed comments, and claims the investigation
+    disproves.
+  - skip: not fix and not answer. The comment is too ambiguous or subjective
+    for the investigation to settle, or the reviewer's intent cannot be
+    determined.
 - When in doubt, classify as skip (fail-closed).
+- For answer and skip, write the Reason as a reply to the reviewer: what was
+  checked and why no change follows. Posting the reply is a separate step that
+  needs the user's instruction.
+- When the comment cites a written convention or principle (for example a
+  doc-conventions rule or an ADR), judge the comment against that convention.
+  The same pattern existing elsewhere in the code or documents is not a reason
+  to leave it as is.
 - When a better solution than the reviewer's suggestion exists for the same
   issue, include it as an alternative in the output.
 
