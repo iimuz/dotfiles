@@ -3,7 +3,7 @@ name: superpowers-conventions
 description: >-
   superpowers の skill (brainstorming、writing-plans、subagent-driven-development、
   executing-plans) を動かすとき、それらが作る design と plan のファイルを保存する、扱うとき、
-  それらを使った作業の PR を作るときに使う。
+  plan に ADR や設計文書を作る task を書くとき、それらを使った作業の PR を作るときに使う。
 ---
 
 # superpowers-conventions
@@ -11,7 +11,8 @@ description: >-
 ## 目的
 
 作業の順序は superpowers に従う。この skill は、superpowers が作る design と plan のファイルについて、
-保存先、ユーザーの承認を待つ時点、コミットしないこと、GitHub への記録の仕方を決める。
+保存先、ユーザーの承認を待つ時点、plan に入れる文書の完成文を文書規約に照らす時点、コミットしないこと、
+GitHub への記録の仕方を決める。
 
 ## 保存先
 
@@ -23,6 +24,13 @@ design と plan の保存先は brainstorming と writing-plans の既定に従�
 - design のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで writing-plans を始めない
 - plan のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで実装を始めない
 - 承認はチャットの要約ではなくファイルに対して受ける。パスを示して待つ
+
+## 文書を作る task
+
+plan に ADR や設計文書を作る task があるときは、writing-plans の既定どおり、plan にその文書の完成文を
+入れる。承認後に実装する側は plan の文を写すので、文書の内容を規約に照らす場は plan を書く時点になる。
+plan を書く側は、完成文を書く前に doc-conventions を読み、ユーザーにレビューを頼む前に完成文を
+doc-conventions で照合する。照合の観点は doc-conventions に従い、ここには書かない。
 
 ## コミットしない
 
