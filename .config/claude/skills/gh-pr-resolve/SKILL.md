@@ -37,9 +37,21 @@ concrete change needed.
   related-code investigation from step 2.
 - Classify the comment:
   - fix: the comment points to a real issue and a concrete change exists.
-  - skip: the comment is ambiguous, subjective, already addressed, or
-    no clear change can be derived.
+    A comment phrased as a question ("isn't this X?") is still fix when the
+    investigation yields a concrete change.
+  - answer: the comment asks a question or seeks confirmation, or is already
+    addressed, and the investigation shows no change is needed. A reply
+    resolves it.
+  - skip: the comment is ambiguous or subjective, and neither a change nor an
+    answer can be derived.
 - When in doubt, classify as skip (fail-closed).
+- For answer and skip, write the Reason as a reply to the reviewer: what was
+  checked and why no change follows. Posting the reply is a separate step that
+  needs the user's instruction.
+- When the comment cites a written convention or principle (for example a
+  doc-conventions rule or an ADR), judge the comment against that convention.
+  The same pattern existing elsewhere in the code or documents is not a reason
+  to leave it as is.
 - When a better solution than the reviewer's suggestion exists for the same
   issue, include it as an alternative in the output.
 
