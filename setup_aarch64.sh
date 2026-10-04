@@ -99,14 +99,6 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
 fi
-# === OpenCode
-if type opencode >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/opencode/agents" "$HOME/.config/opencode/agents"
-  create_symlink "$SCRIPT_DIR/.config/opencode/AGENTS.md" "$HOME/.config/opencode/AGENTS.md"
-  create_symlink "$SCRIPT_DIR/.config/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
-  create_symlink "$SCRIPT_DIR/.config/opencode/skills" "$HOME/.config/opencode/skills"
-  create_symlink "$SCRIPT_DIR/.config/opencode/tui.jsonc" "$HOME/.config/opencode/tui.jsonc"
-fi
 # === gpg
 if type gpg >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.conf"
