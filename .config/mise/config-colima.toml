@@ -18,7 +18,6 @@ neovim = "0.12.5"
 node = "24.21.0"
 "npm:@aikidosec/safe-chain" = "1.5.20"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.77" # for claude code
-"npm:@github/copilot" = "1.0.86"
 "npm:ccusage" = "20.0.23" # for claude code
 "npm:context-mode" = "1.0.169" # for claude code
 "npm:neovim" = "5.5.0" # for neovim

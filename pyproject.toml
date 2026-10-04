@@ -8,7 +8,7 @@ dev = ["pytest>=8", "ruff>=0.12"]
 
 [tool.ruff]
 line-length = 100
-extend-exclude = [".config/raycast/", ".config/copilot/skills/gh-pr-review/"]
+extend-exclude = [".config/raycast/"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]

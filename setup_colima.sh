@@ -97,15 +97,6 @@ if type git >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
   create_symlink "$SCRIPT_DIR/.config/git/credential-gh-helper" "$HOME/.local/bin/credential-gh-helper"
 fi
-# === github copilot cli
-if type copilot >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
-  create_symlink "$SCRIPT_DIR/.config/copilot/lsp-config.json" "$HOME/.copilot/lsp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
-fi
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"

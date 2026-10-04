@@ -21,10 +21,6 @@ def _load_module(name: str, file_path: Path) -> None:
     spec.loader.exec_module(mod)
 
 
-_load_module(
-    "config.copilot.hooks.pre_tool_use_permission",
-    _PROJECT_ROOT / ".config" / "copilot" / "hooks" / "pre-tool-use-permission.py",
-)
 _gh_ops = types.ModuleType("gh_ops")
 sys.modules.setdefault("gh_ops", _gh_ops)
 

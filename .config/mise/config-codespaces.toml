@@ -5,10 +5,8 @@ go = "1.27.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.21.0"
 "npm:@aikidosec/safe-chain" = "1.5.20"
-"npm:mcp-remote" = "0.13.5" # for copilot
 "npm:neovim" = "5.5.0" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.1"
-"pipx:markitdown-mcp" = { version = "0.0.1a7", all = "" } # for copilot
 "pipx:pynvim" = "0.6.0" # for neovim
 pnpm = "12.4.1"
 python = "3.14.7"
