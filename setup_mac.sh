@@ -131,13 +131,3 @@ if type vim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/vim/init.vim" "$HOME/.vimrc"
   create_symlink "$SCRIPT_DIR/.config/vim" "$HOME/.config/vim"
 fi
-# === copilot cli
-if type copilot >/dev/null 2>&1; then
-  # Copilot CLI
-  create_symlink "$SCRIPT_DIR/.config/copilot/agents" "$HOME/.copilot/agents"
-  create_symlink "$SCRIPT_DIR/.config/copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
-  create_symlink "$SCRIPT_DIR/.config/copilot/lsp-config.json" "$HOME/.copilot/lsp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/mcp-config.json" "$HOME/.copilot/mcp-config.json"
-  create_symlink "$SCRIPT_DIR/.config/copilot/skills" "$HOME/.copilot/skills"
-  create_symlink "$SCRIPT_DIR/.config/copilot/hooks" "$HOME/.copilot/hooks"
-fi
