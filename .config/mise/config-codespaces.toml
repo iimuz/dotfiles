@@ -4,7 +4,7 @@ cargo-binstall = "1.23.0"
 go = "1.27.1"
 lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.21.0"
-"npm:@aikidosec/safe-chain" = "1.5.16"
+"npm:@aikidosec/safe-chain" = "1.5.20"
 "npm:neovim" = "5.5.0" # for neovim
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.1"
 "pipx:pynvim" = "0.6.0" # for neovim
@@ -13,7 +13,7 @@ python = "3.14.7"
 rust = "1.98.1"
 shellcheck = "0.11.0"
 shfmt = "3.14.1"
-uv = "0.12.13"
+uv = "0.12.17"
 
 [env]
 ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
