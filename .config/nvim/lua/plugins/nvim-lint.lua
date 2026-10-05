@@ -5,6 +5,16 @@
 -- 設定の参考例
 -- - <https://github.com/josean-dev/dev-environment-files/blob/01d6e00c681c180f302885774add1537030ebb43/.config/nvim/lua/josean/plugins/linting.lua>
 
+local function try_lint()
+	local lint = require("lint")
+	lint.try_lint()
+	-- スペルチェッカーは filetype ではなくリポジトリの設定で選ぶ。
+	-- typos はディスク上のファイルを読むので、ファイルでないバッファは対象外にする。
+	if vim.bo.buftype == "" then
+		lint.try_lint(require("spell-check").linters(0))
+	end
+end
+
 return {
 	"mfussenegger/nvim-lint",
 	event = {
@@ -18,19 +28,13 @@ return {
 		-- ファイルタイプごとのlinterの設定
 		lint.linters_by_ft = {
 			bash = { "shellcheck" },
-			css = { "cspell" },
-			html = { "cspell" },
-			javascript = { "eslint_d", "cspell" },
-			javascriptreact = { "eslint_d", "cspell" },
-			json = { "cspell" },
-			lua = { "cspell" },
-			markdown = { "cspell" },
-			python = { "ruff", "cspell" },
+			javascript = { "eslint_d" },
+			javascriptreact = { "eslint_d" },
+			python = { "ruff" },
 			sh = { "shellcheck" },
 			sql = { "sqruff" },
-			typescript = { "eslint_d", "cspell" },
-			typescriptreact = { "eslint_d", "cspell" },
-			yaml = { "cspell" },
+			typescript = { "eslint_d" },
+			typescriptreact = { "eslint_d" },
 			zsh = { "shellcheck" },
 		}
 
@@ -63,17 +67,13 @@ return {
 			"InsertLeave",
 		}, {
 			group = lint_augroup,
-			callback = function()
-				lint.try_lint()
-			end,
+			callback = try_lint,
 		})
 	end,
 	keys = {
 		{
 			"<Leader>N",
-			function()
-				require("lint").try_lint()
-			end,
+			try_lint,
 			desc = "⭐︎Lint: Trigger linting for current file",
 		},
 	},

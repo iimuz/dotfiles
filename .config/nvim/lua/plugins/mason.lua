@@ -63,6 +63,7 @@ return {
 					"sqruff", -- SQL linter and formatter
 					"stylua", -- Lua linter and formatter
 					"taplo", -- TOML LSP
+					"typos", -- Spell checker for source code
 					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
 					"vtsls", -- Javascript and Typescript LSP
 					"yamlls", -- YAML LSP
