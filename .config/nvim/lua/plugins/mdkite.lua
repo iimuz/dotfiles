@@ -34,7 +34,7 @@ return {
     enabled = true,
     cmd = { "MdKite" },
     ft = { "markdown" },
-    dependencies = { "selimacerbas/live-server.nvim" },
+    dependencies = { "selimacerbas/kitehost.nvim" },
     config = function()
         require("mdkite").setup({
             scroll_sync = false, -- iamcco 版の disable_sync_scroll = 1 に相当
