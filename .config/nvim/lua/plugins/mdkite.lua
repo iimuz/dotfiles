@@ -1,5 +1,5 @@
--- markdown-preview.nvim
--- see: <https://github.com/selimacerbas/markdown-preview.nvim>
+-- mdkite.nvim
+-- see: <https://github.com/selimacerbas/mdkite.nvim>
 --
 -- Preview markdown file.
 
@@ -29,14 +29,14 @@ local function open_in_browser(url)
 end
 
 return {
-    "selimacerbas/markdown-preview.nvim",
+    "selimacerbas/mdkite.nvim",
     lazy = true,
     enabled = true,
-    cmd = { "MarkdownPreview", "MarkdownPreviewRefresh", "MarkdownPreviewStop" },
+    cmd = { "MdKite" },
     ft = { "markdown" },
     dependencies = { "selimacerbas/live-server.nvim" },
     config = function()
-        require("markdown_preview").setup({
+        require("mdkite").setup({
             scroll_sync = false, -- iamcco 版の disable_sync_scroll = 1 に相当
             -- plugin 既定のブラウザ起動ではフォールバックを差し込めないため自前 opener を使う
             open_browser = false,
@@ -48,7 +48,7 @@ return {
                 if vim.bo[ev.buf].filetype ~= "markdown" then
                     return
                 end
-                local mp = require("markdown_preview")
+                local mp = require("mdkite")
                 if mp._server_instance or mp._takeover_port then
                     mp.start()
                 end
@@ -57,12 +57,12 @@ return {
         })
     end,
     keys = {
-        { "<Leader>ms", "<cmd>MarkdownPreview<CR>", desc = "MarkdownPreview: Start markdown preview." },
-        { "<Leader>mq", "<cmd>MarkdownPreviewStop<CR>", desc = "MarkdownPreview: Stop markdown preview." },
+        { "<Leader>ms", "<cmd>MdKite start<CR>", desc = "MarkdownPreview: Start markdown preview." },
+        { "<Leader>mq", "<cmd>MdKite stop<CR>", desc = "MarkdownPreview: Stop markdown preview." },
         {
             "<Leader>my",
             function()
-                local m = require("markdown_preview")
+                local m = require("mdkite")
                 if not (m._server_instance and m._token) then
                     vim.notify("markdown-preview: server not running", vim.log.levels.WARN)
                     return
@@ -76,7 +76,7 @@ return {
         {
             "<Leader>mt",
             function()
-                local m = require("markdown_preview")
+                local m = require("mdkite")
                 m.config.scroll_sync = not m.config.scroll_sync
                 local state = m.config.scroll_sync and "on" or "off"
                 vim.notify("MarkdownPreview scroll sync: " .. state, vim.log.levels.INFO)
