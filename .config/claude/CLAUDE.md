@@ -1,62 +1,55 @@
 # CLAUDE.md
 
-## Operational Constraints
+## 運用上の制約
 
-### Core Philosophy
+### 基本の考え方
 
-- Prioritize current requirements over future extensibility (YAGNI).
-- Prioritize maintenance ease over theoretical correctness.
-- Choose simple, readable code over clever solutions (KISS).
-- Plan before executing complex operations.
-- Match security level to project scope (personal / internal / public).
+- 将来の拡張性より今の要件を優先する (YAGNI)
+- 理論上の正しさより保守のしやすさを優先する
+- 凝った解決より、単純で読みやすいコードを選ぶ (KISS)
+- 複雑な操作は、実行する前に計画を立てる
+- セキュリティの水準をプロジェクトの範囲 (個人、社内、公開) に合わせる
 
-### Language and Communication
+### 言語とコミュニケーション
 
-Regardless of the user's input language, all user-facing output must be in Japanese.
-This is the highest-priority rule.
+ユーザーの入力の言語に関わらず、ユーザーに向けた出力はすべて日本語で書く。
+この規則はほかのすべての規則に優先する。
 
-- Use English for subagent internal communication for token efficiency.
-- Write non-implementation artifacts (ADR, reports, planning.md, design docs) in Japanese.
-- Write implementation artifacts (source code, code comments, tests) in the
-  contextually appropriate language for the codebase.
-- When ambiguous, prefer Japanese for user-facing content and English for
-  implementation content.
+- subagent との内部のやりとりは、token を節約するため英語で行う
+- 実装物でない成果物 (ADR、レポート、planning.md、設計文書) は日本語で書く
+- 実装物 (ソースコード、コードのコメント、テスト) は、そのコードベースの文脈に合った言語で書く
+- 判断に迷うときは、ユーザーに向けた内容は日本語、実装の内容は英語を選ぶ
 
-### Success Metrics
+### 成功の基準
 
-- Code is readable and maintainable.
-- User requirements are met exactly — no more, no less.
+- コードが読みやすく、保守しやすい
+- ユーザーの要件を過不足なく満たす
 
-## Style and Preferences
+## スタイルと好み
 
-- Do not use emojis in code, comments, or documentation.
-- Prefer immutability; do not mutate objects or arrays.
-- Keep files small (200–400 lines typical, 800 max) while co-locating related
-  code within the same module (Locality of Behavior).
-  Do not split cohesive logic across multiple files.
-- Use standard idioms over tricky techniques (POLA).
-- Choose boring, stable technology over experimental libraries.
-- Tolerate duplication until the 3rd occurrence, then consider abstracting
-  (Rule of Three).
+- コード、コメント、文書に絵文字を使わない
+- 不変性 (immutability) を好み、オブジェクトや配列を書き換えない
+- ファイルは小さく保ち (ふつうは 200 から 400 行、最大 800 行)、同時に関連するコードは同じモジュールに
+  まとめる (Locality of Behavior)。まとまりのあるロジックを複数のファイルに分けない
+- 凝った技法より標準的なイディオムを使う (POLA)
+- 実験的なライブラリより、枯れて安定した技術を選ぶ
+- 重複は 3 回目が現れるまで許し、3 回目で抽象化を検討する (Rule of Three)
 
-## Code Comments and Docs
+## コードのコメントと文書
 
-Judge comments by placement, not usefulness. A comment may only state
-a non-obvious WHY: hidden constraints, reasons for a workaround, or
-behavior that would surprise the reader.
+コメントは有用さではなく、置き場所で判断する。コメントに書いてよいのは、自明でない WHY だけにする。
+隠れた制約、回避策の理由、読み手が驚く振る舞いがこれにあたる。
 
-- Do not narrate WHAT the code does or restate the diff/conversation.
-- Do not write change history or migration narratives in comments;
-  that belongs in the commit message or PR description.
-- Do not reference task/issue IDs in comments.
-- Keep specification documents (README, design docs) as a snapshot of
-  the current spec; do not accumulate change history, issue references,
-  or migration notes there.
+- コードが何をするか (WHAT) を語らない。diff や会話の内容を言い直さない
+- 変更履歴や移行の経緯をコメントに書かない。それはコミットメッセージか PR の説明に書く
+- コメントで task や issue の ID を参照しない
+- 仕様の文書 (README、設計文書) は現在の仕様のスナップショットとして保つ。変更履歴、issue への参照、
+  移行の注記を積み上げない
 
-## Prohibitions
+## 禁止事項
 
-- Do not apply unnecessary design patterns (Factory, Strategy, etc.).
-- Do not create premature abstractions or interfaces.
-- Do not over-engineer for rare edge cases.
-- Do not write to GitHub Issues or Pull Requests (comments, labels, assignments)
-  unless the user explicitly instructs it.
+- 不要なデザインパターン (Factory、Strategy など) を当てはめない
+- 早すぎる抽象化やインターフェースを作らない
+- まれなエッジケースのために作り込みすぎない
+- ユーザーが明示的に指示しない限り、GitHub の Issue や Pull Request に書き込まない (コメント、ラベル、
+  担当者の割り当て)
