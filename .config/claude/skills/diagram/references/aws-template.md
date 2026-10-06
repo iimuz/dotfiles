@@ -8,11 +8,11 @@ Mermaid の `flowchart LR` で AWS の構成図を書くときに写すテンプ
 
 ```text
 nodeID@{
-  img: "<image URL>",
-  label: "<text label, <br> for line break>",
+  img: "<画像の URL>",
+  label: "<テキストのラベル。改行は <br>>",
   pos: "t" | "b",
-  w: <width px>,
-  h: <height px>,
+  w: <幅 px>,
+  h: <高さ px>,
   constraint: "on" | "off"
 }
 ```
@@ -29,7 +29,7 @@ nodeID@{
 
 ```mermaid
 ---
-title: Sample AWS architecture
+title: AWS 構成の例
 config:
   theme: neutral
   flowchart:
@@ -38,12 +38,12 @@ config:
 ---
 flowchart LR
 
-browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "Browser", pos: "b", w: 60, h: 60, constraint: "on"}
+browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "ブラウザ", pos: "b", w: 60, h: 60, constraint: "on"}
 
-subgraph aws["AWS account"]
+subgraph aws["AWS アカウント"]
   cf@{img: "https://api.iconify.design/logos/aws-cloudfront.svg", label: "CloudFront", pos: "b", w: 60, h: 60, constraint: "on"}
-  s3@{img: "https://api.iconify.design/logos/aws-s3.svg", label: "S3<br>SPA bucket", pos: "b", w: 60, h: 60, constraint: "on"}
-  alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "Internal ALB", pos: "b", w: 60, h: 60, constraint: "on"}
+  s3@{img: "https://api.iconify.design/logos/aws-s3.svg", label: "S3<br>SPA のバケット", pos: "b", w: 60, h: 60, constraint: "on"}
+  alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "内部 ALB", pos: "b", w: 60, h: 60, constraint: "on"}
   ecs@{img: "https://api.iconify.design/logos/aws-ecs.svg", label: "ECS Fargate", pos: "b", w: 60, h: 60, constraint: "on"}
   rds@{img: "https://api.iconify.design/logos/aws-rds.svg", label: "Aurora PG", pos: "b", w: 60, h: 60, constraint: "on"}
 end
@@ -65,7 +65,7 @@ style aws fill:#fff,color:#345,stroke:#345
 
 ```mermaid
 ---
-title: AWS architecture (nested subgraphs + invisible layout)
+title: AWS 構成 (入れ子の subgraph と見えない配置)
 config:
   theme: neutral
   flowchart:
@@ -74,16 +74,16 @@ config:
 ---
 flowchart LR
 
-browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "Browser", pos: "b", w: 60, h: 60, constraint: "on"}
+browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "ブラウザ", pos: "b", w: 60, h: 60, constraint: "on"}
 
-subgraph aws["AWS account"]
+subgraph aws["AWS アカウント"]
   subgraph g-cdn[" "]
     cf-spa@{img: "https://api.iconify.design/logos/aws-cloudfront.svg", label: "CloudFront<br>SPA", pos: "b", w: 60, h: 60, constraint: "on"}
-    cf-img@{img: "https://api.iconify.design/logos/aws-cloudfront.svg", label: "CloudFront<br>images", pos: "b", w: 60, h: 60, constraint: "on"}
+    cf-img@{img: "https://api.iconify.design/logos/aws-cloudfront.svg", label: "CloudFront<br>画像", pos: "b", w: 60, h: 60, constraint: "on"}
   end
 
   subgraph vpc["VPC (ap-northeast-1)"]
-    alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "Internal ALB", pos: "b", w: 60, h: 60, constraint: "on"}
+    alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "内部 ALB", pos: "b", w: 60, h: 60, constraint: "on"}
     ecs@{img: "https://api.iconify.design/logos/aws-ecs.svg", label: "ECS Fargate", pos: "b", w: 60, h: 60, constraint: "on"}
     aurora@{img: "https://api.iconify.design/logos/aws-aurora.svg", label: "Aurora PG", pos: "b", w: 60, h: 60, constraint: "on"}
   end
@@ -137,10 +137,10 @@ click nodeID href "<URL>" _blank
 classDef default fill:#fff
 classDef group fill:none,stroke:none
 style <subgraphID> fill:#fff,color:#345,stroke:#345
-style <subgraphID> fill:#fff,color:#0a0,stroke:#0a0       %% green-ish for VPC
-style <subgraphID> fill:#fff,color:#888,stroke:#888       %% grey for external services
-style <subgraphID> fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px  %% diff highlight
-class <id1>,<id2> group                                    %% remove frame on empty-label subgraphs
+style <subgraphID> fill:#fff,color:#0a0,stroke:#0a0       %% VPC は緑系
+style <subgraphID> fill:#fff,color:#888,stroke:#888       %% 外部サービスは灰色
+style <subgraphID> fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px  %% 差分の強調
+class <id1>,<id2> group                                    %% ラベルが空の subgraph の枠を消す
 ```
 
 ## 比較図 (before/after、案 A と案 B)
@@ -153,7 +153,7 @@ class <id1>,<id2> group                                    %% remove frame on em
 
 ```mermaid
 ---
-title: Option B (diff-highlighted)
+title: 案 B (差分を強調)
 config:
   theme: neutral
   flowchart:
@@ -162,13 +162,13 @@ config:
 ---
 flowchart LR
 
-browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "Browser", pos: "b", w: 60, h: 60, constraint: "on"}
+browser@{img: "https://api.iconify.design/material-symbols/globe-asia.svg", label: "ブラウザ", pos: "b", w: 60, h: 60, constraint: "on"}
 
-subgraph aws["AWS account"]
+subgraph aws["AWS アカウント"]
   alb@{img: "https://api.iconify.design/logos/aws-elb.svg", label: "ALB", pos: "b", w: 60, h: 60, constraint: "on"}
   ecs@{img: "https://api.iconify.design/logos/aws-ecs.svg", label: "ECS Fargate", pos: "b", w: 60, h: 60, constraint: "on"}
-  subgraph batch["Batch"]
-    ec2@{img: "https://api.iconify.design/logos/aws-ec2.svg", label: "EC2 worker", pos: "b", w: 60, h: 60, constraint: "on"}
+  subgraph batch["バッチ"]
+    ec2@{img: "https://api.iconify.design/logos/aws-ec2.svg", label: "EC2 ワーカー", pos: "b", w: 60, h: 60, constraint: "on"}
   end
 end
 
@@ -179,9 +179,9 @@ ecs --- ec2
 classDef default fill:#fff
 style aws fill:#fff,color:#345,stroke:#345
 
-%% A changed node: classDef diff + class
+%% 変えたノード: classDef diff と class
 classDef diff fill:#fff8c4,stroke:#a80,stroke-width:2px
 class ecs diff
-%% A whole added subgraph: style
+%% 丸ごと足した subgraph: style
 style batch fill:#fff8c4,color:#a80,stroke:#a80,stroke-width:2px
 ```

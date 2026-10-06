@@ -36,31 +36,31 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 
 `{...}` を中身に置き換える。
 
-- Changes は必須で、`-` の箇条書きにする
-- Related URLs と Review Points は、中身が無ければ見出しだけ残す
-- Confirmation Results と Limitations は、中身があれば HTML コメントを中身に置き換え、無ければコメントを残す
+- 変更点は必須で、`-` の箇条書きにする
+- 関連 URL とレビューの観点は、中身が無ければ見出しだけ残す
+- 確認結果と制限事項は、中身があれば HTML コメントを中身に置き換え、無ければコメントを残す
 - `{additional}` はその他の補足で、無ければ行ごと消す
 
 ```markdown
-## Related URLs
+## 関連 URL
 
 {related_urls}
 
-## Changes
+## 変更点
 
 {changes}
 
-## Confirmation Results
+## 確認結果
 
-<!-- Describe preconditions, steps, and results of confirmation if any -->
+<!-- 確認の前提、手順、結果があれば書く -->
 
-## Review Points
+## レビューの観点
 
 {review_points}
 
-## Limitations
+## 制限事項
 
-<!-- Describe known limitations of this change or items to be addressed in a separate PR if any -->
+<!-- この変更の既知の制限や、別の PR で扱う事項があれば書く -->
 
 {additional}
 ```

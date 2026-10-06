@@ -1,9 +1,8 @@
 ---
 name: js-page-fetch
 description: >-
-  Decide how to fetch a page whose content needs JavaScript rendering. Use when
-  WebFetch or ctx_fetch_and_index returns an empty shell or a skeleton without
-  the content, or when a site rejects a headless user agent with 403.
+  JavaScript の描画が要るページの取り方を決める。WebFetch や ctx_fetch_and_index が空のシェルや
+  内容の無い骨組みだけを返したとき、またはサイトが headless の user agent を 403 で弾いたときに使う。
 ---
 
 # JS 描画ページの取得
