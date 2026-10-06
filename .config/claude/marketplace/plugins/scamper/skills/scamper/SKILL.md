@@ -1,41 +1,42 @@
 ---
 name: scamper
-description: Facilitate structured divergent idea generation using the SCAMPER technique (Bob Eberle). An orchestrator elicits a concrete target, applies seven transformation lenses (Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse) in parallel via focused subagents, then converges into evaluated, prioritized ideas. Use when the user asks for a SCAMPER analysis, systematic ideation, or improvement ideas for an existing product, service, process, or idea.
+description: >-
+  SCAMPER の技法 (Bob Eberle) で、構造立てた発散的な案出しを進める。orchestrator が具体的な対象を聞き出し、
+  7 つの変換のレンズ (Substitute、Combine、Adapt、Modify、Put to another use、Eliminate、Reverse) を専用の
+  subagent で並列に当て、評価して優先順位を付けた案に収束させる。ユーザーが SCAMPER の分析、
+  体系立てた案出し、既存のプロダクト、サービス、プロセス、案の改善案を求めたときに使う。
 ---
 
-# SCAMPER Orchestrator (Facilitator)
+# SCAMPER の orchestrator (ファシリテーター)
 
-You facilitate a SCAMPER idea-generation session. SCAMPER (Bob Eberle, 1971) applies seven
-transformation lenses to an existing target to force new ideas. The seven lenses are independent
-and purely divergent, so you run them in parallel and then converge the results yourself.
+SCAMPER の案出しのセッションを進行する。SCAMPER (Bob Eberle、1971 年) は、既存の対象に 7 つの変換の
+レンズを当てて新しい案を引き出す。7 つのレンズは互いに独立で、純粋に発散するので、並列に動かし、結果は
+自分で収束させる。
 
-Unlike Six Thinking Hats, SCAMPER lenses are operations applied to the target (verbs), not
-personas or thinking modes. Each lens subagent is an operator, not a character.
+Six Thinking Hats と違い、SCAMPER のレンズは対象に当てる操作 (動詞) であって、人格や思考のモードではない。
+各レンズの subagent は操作を担うもので、登場人物ではない。
 
-## Language
+## 言語
 
-- User-facing framing and the final report: Japanese.
-- Internal communication with subagents: English (token efficiency).
+- ユーザーに向けた枠決めと最後の報告: 日本語
+- subagent との内部のやりとり: 英語 (token を節約するため)
 
-## Procedure
+## 手順
 
-1. Frame. Identify a concrete target (an existing product, service, process, or idea) and its
-   objective. If the target is vague or greenfield, ask the user to name one concrete target
-   before proceeding. A sharp target is mandatory; SCAMPER transforms something, it does not
-   invent from nothing.
-2. Fan out. Dispatch all seven lens subagents in parallel, each with the target and objective
-   only. Do not pass one lens's output to another; generation is independent.
-3. Collect. Gather the seven idea sets.
-4. Converge (you do this yourself). Cluster ideas into themes, remove duplicates across lenses,
-   evaluate for viability, impact, and effort, then produce a prioritized shortlist and concrete
-   next actions (what to prototype, test, or validate).
-5. Report. Present the result to the user in Japanese: the target, idea highlights per lens, the
-   prioritized shortlist, and next actions.
+1. 枠を決める。具体的な対象 (既存のプロダクト、サービス、プロセス、案) とその目的を特定する。対象が漠然と
+   しているか、ゼロからの新規 (greenfield) であるときは、先に進む前に具体的な対象を 1 つ挙げるようユーザーに
+   頼む。対象がはっきりしていることは欠かせない。SCAMPER は何かを変換する手法で、無から発明はしない
+2. 展開する。7 つのレンズの subagent をすべて並列に dispatch し、それぞれに対象と目的だけを渡す。あるレンズの
+   出力を別のレンズに渡さない。案の生成は互いに独立させる
+3. 集める。7 つの案の組を集める
+4. 収束させる (自分で行う)。案をテーマごとにまとめ、レンズをまたぐ重複を除き、実現性、効果、手間で評価し、
+   優先順位を付けた候補の一覧と、具体的な次の行動 (何を試作し、試し、検証するか) を作る
+5. 報告する。結果を日本語でユーザーに示す。対象、レンズごとの案の要点、優先順位を付けた候補の一覧、次の
+   行動を含める
 
-## Dispatching the lenses
+## レンズの dispatch
 
-Invoke each lens as its subagent, passing the target and objective. Launch all seven in one batch
-so they run concurrently:
+各レンズをその subagent として呼び、対象と目的を渡す。同時に動くよう、7 つを 1 回のまとまりで起動する。
 
 - `scamper:substitute`
 - `scamper:combine`
@@ -45,25 +46,25 @@ so they run concurrently:
 - `scamper:eliminate`
 - `scamper:reverse`
 
-## Model Policy (runtime knob)
+## model の方針 (実行時に変えてよい)
 
-All seven lenses are divergent generation. Default every lens subagent to `sonnet` for idea
-quality. For a faster or cheaper run, lower them to `haiku`. Set the model when dispatching; the
-subagents do not fix a model themselves.
+7 つのレンズはすべて発散の生成を担う。案の質のため、各レンズの subagent の既定は `sonnet` にする。速く
+安く動かしたいときは `haiku` に下げる。model は dispatch するときに指定する。subagent は自分では model を
+固定しない。
 
-## Discipline
+## 規律
 
-- Require a concrete target. Elicit or sharpen it if missing.
-- Keep divergence and convergence separate. The lens subagents only generate; you alone evaluate.
-- Use all seven lenses every session.
-- If a lens subagent fails, retry it once. If it still fails, note the gap and continue.
+- 具体的な対象を求める。欠けていれば聞き出すか、はっきりさせる
+- 発散と収束を分ける。レンズの subagent は生成だけを行い、評価は自分だけが行う
+- 毎回のセッションで 7 つのレンズをすべて使う
+- レンズの subagent が失敗したら、一度だけやり直す。それでも失敗したら、欠けを記録して先へ進む
 
-## The seven lenses (reference)
+## 7 つのレンズ (参照)
 
-- S Substitute: replace a component, material, person, rule, place, or process.
-- C Combine: merge features, steps, purposes, resources, or ideas.
-- A Adapt: adjust to a new purpose or borrow from another domain.
-- M Modify / Magnify / Minify: change, exaggerate, or shrink an attribute.
-- P Put to another use: find new applications, users, markets, or contexts.
-- E Eliminate: remove, simplify, or reduce parts.
-- R Reverse / Rearrange: invert the order or direction, or reorganize the structure.
+- S Substitute (代用): 部品、素材、人、規則、場所、プロセスを置き換える
+- C Combine (結合): 機能、手順、目的、資源、案を合わせる
+- A Adapt (適応): 新しい目的に合わせるか、別の分野から借りる
+- M Modify / Magnify / Minify (修正、拡大、縮小): 属性を変える、誇張する、縮める
+- P Put to another use (転用): 新しい用途、利用者、市場、文脈を見つける
+- E Eliminate (削減): 部分を取り除く、単純にする、減らす
+- R Reverse / Rearrange (逆転、再配置): 順序や向きを逆にするか、構造を組み替える

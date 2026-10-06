@@ -1,11 +1,11 @@
 ---
 name: sample-greeting
-description: Sample skill for verifying plugin wiring. Trigger when the user asks to run the sample greeting or test the sample plugin.
+description: plugin の配線を確かめる sample の skill。ユーザーが sample greeting の実行か、sample plugin の確認を求めたときに使う。
 ---
 
-# Sample Greeting
+# sample-greeting
 
-This skill exists only to verify that a locally-developed plugin loads correctly.
+この skill は、ローカルで開発した plugin が正しく読み込まれることを確かめるためだけにある。
 
-When invoked, respond with a short confirmation that the `sample` plugin skill loaded
-successfully (include the marker text `SAMPLE-PLUGIN-SKILL-OK`), then stop.
+呼ばれたら、`sample` plugin の skill が読み込まれたことを短く確認して返し (マーカーの文字列
+`SAMPLE-PLUGIN-SKILL-OK` を含める)、そこで止まる。

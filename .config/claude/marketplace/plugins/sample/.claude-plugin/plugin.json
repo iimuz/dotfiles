@@ -1,6 +1,6 @@
 {
   "name": "sample",
   "version": "0.1.0",
-  "description": "Sample plugin bundling a skill and an agent for wiring verification",
+  "description": "配線を確かめるための skill と agent を同梱した sample の plugin",
   "author": { "name": "iimuz" }
 }
