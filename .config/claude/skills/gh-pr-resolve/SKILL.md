@@ -1,63 +1,48 @@
 ---
 name: gh-pr-resolve
-description: Use when resolving or addressing PR review comments.
+description: PR のレビューコメントを解決する、または対応するときに使う。
 ---
 
-# Resolve PR Review Comments
+# PR のレビューコメントの解決
 
-## Purpose
+## 目的
 
-Provide a method for accurately analyzing pull request review comments.
-Determine whether each comment is actionable and, when it is, describe the
-concrete change needed.
+pull request のレビューコメントを正確に分析する方法を定める。
+各コメントが対応を要するかを判断し、要るときは必要な変更を具体的に書く。
 
-## Analysis Procedure
+## 分析の手順
 
-### 1. Collect inputs
+### 1. 入力を集める
 
-- Retrieve all unresolved review comments on the target PR.
-- For each comment, read the referenced file and surrounding code context.
-  Judge each comment from the code, not from the comment text alone.
+- 対象の PR の未解決のレビューコメントをすべて取得する
+- コメントごとに、参照先のファイルと周りのコードを読む。コメントの文面だけで判断せず、コードから判断する
 
-### 2. Investigate related code
+### 2. 関連するコードを調べる
 
-- Search the whole codebase, not only the diff hunks, for locations with the
-  same or similar pattern as the flagged code (e.g. duplicated logic, shared
-  helpers, copy-pasted blocks).
-- Identify callers, callees, and dependents of the code targeted by the comment.
-- Determine whether applying the suggested change would require cascading
-  modifications in related locations.
+- diff の hunk だけでなくコードベース全体から、指摘されたコードと同じか似たパターンの箇所 (重複した
+  ロジック、共有のヘルパー、コピーして貼ったブロックなど) を探す
+- コメントが対象とするコードの呼び出し元、呼び出し先、依存元を特定する
+- 提案された変更を当てると、関連する箇所に連鎖した変更が要るかを判断する
 
-### 3. Assess each comment
+### 3. コメントを評価する
 
-- Understand what the reviewer is requesting. Keep the reviewer's intent: do not
-  reinterpret the comment, extend its scope, or add improvements the reviewer did
-  not raise.
-- Judge whether the request is valid based on the actual code and the
-  related-code investigation from step 2.
-- Classify the comment, checking fix first, then answer, then skip as the
-  leftover:
-  - fix: the comment points to a real issue and a concrete change exists.
-    A comment phrased as a question ("isn't this X?") is still fix when the
-    investigation yields a concrete change.
-  - answer: not fix, and the investigation gives a definite reason no change
-    is needed. A reply resolves it. This covers questions, confirmation
-    requests, already-addressed comments, and claims the investigation
-    disproves.
-  - skip: not fix and not answer. The comment is too ambiguous or subjective
-    for the investigation to settle, or the reviewer's intent cannot be
-    determined.
-- When in doubt, classify as skip (fail-closed).
-- For answer and skip, write the Reason as a reply to the reviewer: what was
-  checked and why no change follows. Posting the reply is a separate step that
-  needs the user's instruction.
-- When the comment cites a written convention or principle (for example a
-  doc-conventions rule or an ADR), judge the comment against that convention.
-  The same pattern existing elsewhere in the code or documents is not a reason
-  to leave it as is.
-- When a better solution than the reviewer's suggestion exists for the same
-  issue, include it as an alternative in the output.
+- レビュアーが何を求めているかを理解する。レビュアーの意図を保ち、コメントを解釈し直したり、範囲を
+  広げたり、レビュアーが挙げていない改善を足したりしない
+- 実際のコードと、手順 2 の関連するコードの調査に基づいて、求めが妥当かを判断する
+- コメントを分類する。fix、answer の順に確かめ、残りを skip とする
+  - fix: コメントが実際の問題を指し、具体的な変更がある。「これは X では?」のような問いの形のコメントでも、
+    調査から具体的な変更が出るなら fix とする
+  - answer: fix ではなく、変更が要らない確かな理由が調査から得られる。返信で解決する。質問、確認の依頼、
+    対応済みのコメント、調査で否定される主張がこれにあたる
+  - skip: fix でも answer でもない。コメントが曖昧か主観的で調査では決着がつかないか、レビュアーの意図を
+    特定できない
+- 迷ったら skip に分類する (fail-closed)
+- answer と skip では、「理由」の節をレビュアーへの返信として書く。何を確かめ、なぜ変更が要らないかを
+  書く。返信の投稿は別の手順で、ユーザーの指示が要る
+- コメントが文書化された規約や原則 (doc-conventions の規則や ADR など) を挙げるときは、その規約に照らして
+  判断する。同じパターンがコードや文書の他の箇所にあることは、そのままにする理由にならない
+- 同じ問題にレビュアーの提案より良い解決策があるときは、代替案として出力に含める
 
-## Output Format
+## 出力の形式
 
-Use the template defined in [template](references/template.md).
+[template.md](references/template.md) のテンプレートを使う。

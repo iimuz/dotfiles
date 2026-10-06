@@ -1,30 +1,29 @@
-# Analysis Result
+# 分析結果
 
-## {Classification - Fix, Answer or Skip}: {comment_id}
+## {分類: fix、answer、skip のどれか}: {comment_id}
 
-reviewer's comment text, quoted in full.
+レビュアーのコメントの全文を引用する。
 
-### Reason
+### 理由
 
-Why this classification was chosen. Include findings from the related-code
-investigation when they influenced the decision. For answer and skip, write it
-so it can be posted as the reply to the reviewer.
+この分類を選んだ理由。関連するコードの調査で得たことが判断に効いたときは、それも書く。answer と skip では、
+レビュアーへの返信としてそのまま投稿できるように書く。
 
-### File / Location
+### ファイルと位置
 
 - `path/to/file.ext` L{start}-L{end}
 
-### Change (fix only)
+### 変更 (fix のみ)
 
-What to modify and how. Include before/after snippets or pseudo-diff.
-When multiple files must change, add a separate block per file.
+何をどう変えるか。変更前と変更後の断片か、疑似的な diff を含める。
+複数のファイルを変えるときは、ファイルごとにブロックを分ける。
 
-### Alternative (fix only, optional)
+### 代替案 (fix のみ、任意)
 
-A better approach for the same issue, if one exists.
-Explain why this is preferable.
+同じ問題に対するより良いやり方があれば書く。
+それが望ましい理由を説明する。
 
-### Impact
+### 影響
 
-- List any related files or locations that also require changes.
-- Note potential side effects or risks discovered during investigation.
+- 合わせて変更が要る関連ファイルや箇所を挙げる
+- 調査で見つかった副作用やリスクを書く

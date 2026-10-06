@@ -15,40 +15,40 @@ Issue の本文を 2 つのテンプレートのどちらかで書き、`gh issu
 
 ### product-backlog
 
-必須の節は Overview と Goal。
+必須の節は概要とゴール。
 
 ```markdown
-## Overview
+## 概要
 
 {overview}
 
-## Details
+## 詳細
 
 {details}
 
-## Goal
+## ゴール
 
 {goal}
 
-## Notes
+## 備考
 
 {notes}
 ```
 
 ### feature
 
-必須の節は Goal と Details。
+必須の節はゴールと詳細。
 
 ```markdown
-## Related URLs
+## 関連 URL
 
 {related_urls}
 
-## Goal
+## ゴール
 
 {goal}
 
-## Details
+## 詳細
 
 {details}
 ```
@@ -56,7 +56,7 @@ Issue の本文を 2 つのテンプレートのどちらかで書き、`gh issu
 ## 作成
 
 ```bash
-gh issue create --title '<title>' --body-file - <<'EOF'
+gh issue create --title '<タイトル>' --body-file - <<'EOF'
 <テンプレートに沿って書いた本文>
 EOF
 ```

@@ -11,14 +11,14 @@
 
 ```mermaid
 quadrantChart
-    title Reach vs engagement
-    x-axis Low Reach --> High Reach
-    y-axis Low Engagement --> High Engagement
-    quadrant-1 Expand
-    quadrant-2 Promote
-    quadrant-3 Re-evaluate
-    quadrant-4 Improve
-    Campaign A: [0.3, 0.6]
+    title 到達と関与
+    x-axis 到達が低い --> 到達が高い
+    y-axis 関与が低い --> 関与が高い
+    quadrant-1 広げる
+    quadrant-2 売り込む
+    quadrant-3 見直す
+    quadrant-4 改善する
+    施策 A: [0.3, 0.6]
 ```
 
 ## block
@@ -30,7 +30,7 @@ quadrantChart
 ```mermaid
 block
   columns 3
-  a["Label"] b:2 c
+  a["ラベル"] b:2 c
   block:group1:2
     columns 2
     d e
@@ -51,9 +51,9 @@ block
 architecture-beta
   group api(cloud)[API]
 
-  service db(database)[Database] in api
-  service server(server)[Server] in api
-  service disk1(disk)[Storage] in api
+  service db(database)[データベース] in api
+  service server(server)[サーバー] in api
+  service disk1(disk)[ストレージ] in api
 
   db:L -- R:server
   disk1:T -- B:server
@@ -66,12 +66,12 @@ architecture-beta
 
 ```mermaid
 venn-beta
-  title What makes a good feature
-  set Desirable
-  set Feasible
-  set Viable
-  union Desirable,Feasible["Buildable"]
-  union Desirable,Feasible,Viable["Ship it"]
+  title 良い機能の条件
+  set Desirable["望まれる"]
+  set Feasible["作れる"]
+  set Viable["続けられる"]
+  union Desirable,Feasible["作る価値がある"]
+  union Desirable,Feasible,Viable["出荷する"]
 ```
 
 ## ishikawa-beta
@@ -81,14 +81,14 @@ venn-beta
 
 ```mermaid
 ishikawa-beta
-    Blurry photo
-    Process
-        Out of focus
-    Equipment
-        LENS
-            Dirty lens
-    Environment
-        Too dark
+    写真がぼやける
+    工程
+        ピントが合っていない
+    機材
+        レンズ
+            レンズが汚れている
+    環境
+        暗すぎる
 ```
 
 ## timeline
@@ -98,7 +98,7 @@ ishikawa-beta
 
 ```mermaid
 timeline
-    title History of social media
+    title ソーシャルメディアの歴史
     2002 : LinkedIn
     2004 : Facebook
          : Google

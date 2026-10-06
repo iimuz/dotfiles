@@ -69,13 +69,13 @@ subagent はこの skill を読まない。main agent はこのテンプレー�
 
 ```yaml
 status: success | failure | blocked
-summary: # a few lines
-evidence: # file:line plus a short excerpt; only what supports the conclusion
-confirmed: # verified facts (required for read-only subagents)
-hypotheses: # ideas not yet verified (required for read-only subagents)
-rejected: # hypotheses ruled out, with the reason (required for read-only subagents)
-unverified: # checks that could not be run
-files_changed: # edit-allowed subagents only
+summary: # 数行
+evidence: # file:line と短い抜粋。結論を支えるものだけ
+confirmed: # 確かめた事実 (read-only の subagent では必須)
+hypotheses: # まだ確かめていない考え (read-only の subagent では必須)
+rejected: # 否定した仮説と、その理由 (read-only の subagent では必須)
+unverified: # 実行できなかった確認
+files_changed: # edit-allowed の subagent だけ
 next_action:
 ```
 

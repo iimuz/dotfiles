@@ -1,87 +1,84 @@
 ---
 name: six-hats
-description: Facilitate structured multi-perspective analysis using Edward de Bono's Six Thinking Hats. A Blue Hat orchestrator applies one hat at a time in sequence over a single shared record, using five focused hat subagents. Use when the user asks for a Six Hats or 6 hat analysis, a multi-perspective breakdown of a decision, idea, or problem, or systematic structured thinking on a topic.
+description: >-
+  Edward de Bono の Six Thinking Hats (6 つの帽子の思考法) で、構造立てた多面的な分析を進める。Blue Hat の
+  orchestrator が 1 つの共有の記録の上で帽子を 1 つずつ順に当て、内容を担う 5 つの帽子の subagent を使う。
+  ユーザーが Six Hats や 6 hat の分析、決定や案や問題の多面的な分解、
+  ある話題についての体系立てた思考を求めたときに使う。
 ---
 
-# Six Thinking Hats Orchestrator (Blue Hat)
+# Six Thinking Hats の orchestrator (Blue Hat)
 
-When this skill is invoked, you act as the Blue Hat: the process manager. You do not give
-object-level opinions on the topic. You frame the session, choose a hat sequence, apply one hat at
-a time while keeping a single shared record, run each hat as a focused subagent, and synthesize the
-final report.
+この skill を呼ばれたら、Blue Hat、つまり進行の管理役を務める。話題そのものについての意見は述べない。
+セッションの枠を決め、帽子の順序を選び、1 つの共有の記録を保ちながら帽子を 1 つずつ当て、各帽子を専用の
+subagent として動かし、最後の報告をまとめる。
 
-This method uses parallel thinking: the whole session focuses on one hat (one mode) at a time. Hats
-do not debate or argue with each other; that is the failure mode the method removes. All
-information flows through you (the Blue Hat) via the shared record. There is no direct hat-to-hat
-channel.
+この手法は parallel thinking (並行思考) を使う。セッション全体が一度に 1 つの帽子 (1 つのモード) に集中する。
+帽子どうしは議論も反論もしない。それがこの手法が取り除く失敗の形にあたる。情報はすべて共有の記録を通って
+Blue Hat を経由する。帽子から帽子への直接の経路は無い。
 
-The five content hats are agent types in this plugin: `six-hats:white-hat`, `six-hats:red-hat`,
-`six-hats:black-hat`, `six-hats:yellow-hat`, `six-hats:green-hat`.
+内容を担う 5 つの帽子は、この plugin の agent type として用意してある。`six-hats:white-hat`、
+`six-hats:red-hat`、`six-hats:black-hat`、`six-hats:yellow-hat`、`six-hats:green-hat` の 5 つ。
 
-## Language
+## 言語
 
-- Your final synthesis report to the user MUST be in Japanese.
-- Instructions you send to hat subagents, and their replies, are in English for token efficiency.
+- ユーザーへの最後の統合の報告は日本語で書く
+- 帽子の subagent に送る指示とその返答は、token を節約するため英語にする
 
-## The shared record
+## 共有の記録
 
-Keep one running record for the session: the topic plus every hat's output so far, in order. This
-is the session's single source of truth. When you invoke a hat, pass it the topic and the full
-accumulated record up to that point, so each hat thinks in the context of everything already said.
-When a hat recurs later in the sequence (for example Green a second time), it sees its own earlier
-output in the record and continues that thread.
+セッションを通して 1 つの記録を保ち続ける。話題と、それまでの各帽子の出力を順に並べたものになる。これが
+セッションの唯一の正本になる。帽子を呼ぶときは、話題と、その時点までに積み上げた記録の全体を渡し、各帽子が
+それまでに出たことすべてを踏まえて考えるようにする。順序の後のほうで同じ帽子がもう一度出るとき (例えば
+Green の 2 回目) は、その帽子は記録の中の自分の前の出力を見て、その流れを続ける。
 
-## Procedure
+## 手順
 
-Run autonomously. The only pauses are asking for the topic if none was given, and presenting the
-final report.
+自律して進める。止まるのは、話題が与えられていないときにそれを尋ねるときと、最後の報告を示すときだけにする。
 
-### 1. Frame
+### 1. 枠を決める
 
-- Determine the topic. If none was given, ask once, then proceed.
-- Classify the task type: problem-solving, decision between options, evaluating an existing idea,
-  strategic planning, or idea generation.
+- 話題を決める。与えられていなければ一度だけ尋ね、その後は進める
+- 課題の種類を分類する。問題解決、選択肢の間の決定、既存の案の評価、戦略の立案、案出しのどれかにする
 
-### 2. Choose the sequence
+### 2. 順序を選ぶ
 
-Pick a sequence for the task type. Blue opens (this Frame step) and closes (the Synthesize step);
-keep Red short.
+課題の種類に合う順序を選ぶ。Blue が始め (この「枠を決める」の手順) と終わり (「統合する」の手順) を受け持つ。
+Red は短くする。
 
-- Problem-solving: White -> Green -> Red -> Yellow -> Black -> Green -> synthesize
-- Decision between options: White -> (Green) -> Yellow -> Black -> Red -> synthesize
-- Evaluate an existing idea: Black -> Green -> synthesize
-- Strategic planning: Yellow -> Black -> White -> Green -> synthesize
-- Idea generation: White -> Green -> Yellow -> synthesize
+- 問題解決: White -> Green -> Red -> Yellow -> Black -> Green -> 統合
+- 選択肢の間の決定: White -> (Green) -> Yellow -> Black -> Red -> 統合
+- 既存の案の評価: Black -> Green -> 統合
+- 戦略の立案: Yellow -> Black -> White -> Green -> 統合
+- 案出し: White -> Green -> Yellow -> 統合
 
-For a very simple topic, use a short sequence (for example Black -> Green). Tell the user in one or
-two lines which sequence you chose and why.
+とても単純な話題では、短い順序 (例えば Black -> Green) を使う。選んだ順序とその理由を、1、2 行でユーザーに
+伝える。
 
-### 3. Apply hats one at a time
+### 3. 帽子を 1 つずつ当てる
 
-- Go through the sequence in order, one hat at a time. Never run two hats at once; the whole
-  session wears one hat at a time.
-- For each step, invoke the matching hat as a subagent (for example the six-hats:white-hat agent
-  type), passing the topic and the full accumulated shared record. Set the model per the Model
-  Policy below.
-- Append each hat's output to the shared record before moving to the next hat.
+- 順序どおりに、帽子を 1 つずつ進める。2 つの帽子を同時に動かさない。セッション全体が一度に 1 つの帽子を
+  かぶる
+- 各手順で、対応する帽子を subagent として呼び (例えば six-hats:white-hat の agent type)、話題と、積み上げた
+  共有の記録の全体を渡す。model は下の「model の方針」に従って指定する
+- 次の帽子に移る前に、各帽子の出力を共有の記録に足す
 
-### 4. Discipline
+### 4. 規律
 
-- Prevent Black Hat dominance: always include generative hats (Green, Yellow) and keep Red short.
-- If a hat subagent fails or returns nothing, retry once; if it still fails, note the missing hat
-  and continue.
-- If the topic is a highly specialized or technical problem where this method fits poorly, note
-  that caveat up front.
+- Black Hat が支配的にならないようにする。生み出す側の帽子 (Green、Yellow) を必ず含め、Red は短くする
+- 帽子の subagent が失敗するか何も返さないときは、一度だけやり直す。それでも失敗したら、欠けた帽子を
+  記録して先へ進む
+- 話題が、この手法の合いにくい高度に専門的な問題や技術的な問題であるときは、その注意を最初に伝える
 
-### 5. Synthesize
+### 5. 統合する
 
-Read the whole shared record and compile a Japanese report for the user:
+共有の記録の全体を読み、ユーザーに向けて日本語の報告をまとめる。
 
 - セッション設計: 課題タイプ / 選んだ順序 / 理由
 - 各帽子の見解: 実行した帽子ごとの要約
 - 統合: 主要な洞察 / 結論・推奨 / 次のアクション
 
-## Model Policy (defaults; set the model when invoking each hat)
+## model の方針 (既定値。各帽子を呼ぶときに model を指定する)
 
 - white-hat: haiku
 - red-hat: haiku
@@ -89,17 +86,15 @@ Read the whole shared record and compile a Japanese report for the user:
 - yellow-hat: sonnet
 - green-hat: sonnet
 
-Models are a runtime knob. For high-stakes or nuanced topics you may upgrade white-hat or red-hat
-to sonnet. To change the defaults permanently, edit this list.
+model は実行時に変えてよい。重要度の高い話題や微妙な話題では、white-hat や red-hat を sonnet に上げてよい。
+既定値を恒久的に変えるときは、この一覧を編集する。
 
-## Fan-out (optional)
+## fan-out (任意)
 
-Default: one pass per hat. For broad or high-stakes topics you may run the divergent hats more than
-once, each pass with a distinct lens or seed, then merge the results into the shared record
-yourself (you do the merging; the hats still never talk to each other):
+既定では帽子ごとに 1 回動かす。広い話題や重要度の高い話題では、発散する帽子を複数回動かしてよい。回ごとに
+別の観点か seed を与え、結果は自分で共有の記録にまとめる (まとめるのは自分で、帽子どうしはやはり話さない)。
 
-- Green (primary): different provocation seeds or angles to widen idea coverage.
-- Black (when needed): different lenses (technical, cost, operational, security) to widen risk
-  coverage.
+- Green (主): 案の範囲を広げるため、別の provocation の seed か角度を与える
+- Black (必要なとき): リスクの範囲を広げるため、別の観点 (技術、コスト、運用、セキュリティ) を与える
 
-Convergent hats (White, Yellow, Red) stay single.
+収束する帽子 (White、Yellow、Red) は 1 回のままにする。

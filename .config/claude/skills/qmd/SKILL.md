@@ -3,7 +3,7 @@ name: qmd
 description: >-
   QMD でローカルの Markdown のノート、文書、wiki を検索し、全文を取る。ノートを探す、文書を取り出す、
   wiki の中身を確かめる、index 済みの Markdown から答える、QMD をセットアップするときに使う。
-compatibility: Requires qmd CLI or MCP server. Install via `npm install -g @tobilu/qmd`.
+compatibility: qmd の CLI か MCP サーバーが要る。`npm install -g @tobilu/qmd` で入れる。
 allowed-tools: Bash(qmd:*), mcp__qmd__*
 ---
 
