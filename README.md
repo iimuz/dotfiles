@@ -11,27 +11,6 @@
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
 - Android/Termux: `bash setup_termux.sh`
 
-各環境におけるパッケージ管理について下記に記載します。
-
-### Windows
-
-scoop を使用します。
-
-#### インストール
-
-```ps1
-# scoopのインストール(詳細は公式ドキュメントを参照)
-irm get.scoop.sh | iex
-# scoopを利用したソフトウェアの一括インストール
-scoop import .config/scoop/scoopfile.json
-```
-
-#### エクスポート
-
-```ps1
-scoop export > .config/scoop/scoopfile.json
-```
-
 ### Claude Code 用 playwright-cli
 
 Claude Code の同梱スキル `playwright-cli` は `setup_*.sh` 実行時に
