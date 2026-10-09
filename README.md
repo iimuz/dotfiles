@@ -9,10 +9,7 @@
 - Mac: `bash setup_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
-- Android/Termux:
-  - termux: `bash setup_termux.sh`
-  - termux + proot: `bash setup_proot_arm64.sh`
-- WSL: `bash setup_wsl_ubuntu.sh`
+- Android/Termux: `bash setup_termux.sh`
 
 各環境におけるパッケージ管理について下記に記載します。
 
