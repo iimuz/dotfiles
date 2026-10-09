@@ -9,7 +9,6 @@
 - Mac: `bash setup_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
-- Colima: `bash setup_colima.sh`
 - Android/Termux:
   - termux: `bash setup_termux.sh`
   - termux + proot: `bash setup_proot_arm64.sh`
