@@ -9,33 +9,7 @@
 - Mac: `bash setup_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
-- Codespaces: `bash setup_codespaces.sh`
-- Colima: `bash setup_colima.sh`
-- Android/Termux:
-  - termux: `bash setup_termux.sh`
-  - termux + proot: `bash setup_proot_arm64.sh`
-- WSL: `bash setup_wsl_ubuntu.sh`
-
-各環境におけるパッケージ管理について下記に記載します。
-
-### Windows
-
-scoop を使用します。
-
-#### インストール
-
-```ps1
-# scoopのインストール(詳細は公式ドキュメントを参照)
-irm get.scoop.sh | iex
-# scoopを利用したソフトウェアの一括インストール
-scoop import .config/scoop/scoopfile.json
-```
-
-#### エクスポート
-
-```ps1
-scoop export > .config/scoop/scoopfile.json
-```
+- Android/Termux: `bash setup_termux.sh`
 
 ### Claude Code 用 playwright-cli
 

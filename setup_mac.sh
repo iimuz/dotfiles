@@ -16,25 +16,11 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # Load shared helper functions
 . "$SCRIPT_DIR/lib/setup-common.sh"
 
-# === Install [homebrew](https://brew.sh/index_ja)
-# if ! type brew >/dev/null 2>&1; then
-#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# fi
-
-# === Install softwaare
-# homebrewを利用するための設定を追記して再読み込み
-# set_bashrc "$CONFIG_PATH/homebrew/homebrew-bundle.sh"
-# if [[ "$SHELL" == *zsh* ]]; then
-#   # zshを利用しているので設定ファイルが異なる
-#   echo "Use zsh"
-#   source ~/.zshrc
-# else
-#   echo "Use bash"
-#   # bashを想定している
-#   source ~/.bashrc
-# fi
-# # homebrewを利用して各種ソフトウェアをインストール
-# brew bundle
+# === Require homebrew
+if [ ! -x /opt/homebrew/bin/brew ]; then
+  echo "Homebrew is required. Install it first: https://brew.sh/" >&2
+  exit 1
+fi
 
 # 各種設定ファイルの配置もしくは読み込み設定
 set_bashrc "$CONFIG_PATH/rc-settings.sh"

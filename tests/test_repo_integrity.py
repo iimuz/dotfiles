@@ -139,10 +139,7 @@ def test_toml_files_parse(toml_file: str) -> None:
 # 3. JSON files parse
 # ---------------------------------------------------------------------------
 
-# devcontainer.json allows comments by specification (JSONC), so it is
-# excluded from strict JSON validation.
-_JSON_EXCLUDES = {".devcontainer/devcontainer.json"}
-_JSON_FILES = [f for f in _git_ls_files("*.json") if f not in _JSON_EXCLUDES]
+_JSON_FILES = _git_ls_files("*.json")
 
 
 @pytest.mark.parametrize(
@@ -153,19 +150,7 @@ _JSON_FILES = [f for f in _git_ls_files("*.json") if f not in _JSON_EXCLUDES]
 def test_json_files_parse(json_file: str) -> None:
     """Every tracked ``*.json`` file is valid JSON."""
     path = _REPO_ROOT / json_file
-    raw = path.read_bytes()
-    # Try common encodings: UTF-8 is standard; UTF-8-sig handles BOM;
-    # UTF-16-LE covers files exported by Windows tools (e.g. scoop).
-    for encoding in ("utf-8", "utf-8-sig", "utf-16"):
-        try:
-            text = raw.decode(encoding)
-            break
-        except (UnicodeDecodeError, ValueError):
-            continue
-    else:
-        msg = f"{json_file}: none of UTF-8/UTF-8-sig/UTF-16 could decode the file"
-        raise AssertionError(msg)
-    json.loads(text)
+    json.loads(path.read_text(encoding="utf-8"))
 
 
 # ---------------------------------------------------------------------------
