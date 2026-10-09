@@ -9,7 +9,6 @@
 - Mac: `bash setup_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
-- Codespaces: `bash setup_codespaces.sh`
 - Colima: `bash setup_colima.sh`
 - Android/Termux:
   - termux: `bash setup_termux.sh`

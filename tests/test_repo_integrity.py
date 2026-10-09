@@ -139,10 +139,7 @@ def test_toml_files_parse(toml_file: str) -> None:
 # 3. JSON files parse
 # ---------------------------------------------------------------------------
 
-# devcontainer.json allows comments by specification (JSONC), so it is
-# excluded from strict JSON validation.
-_JSON_EXCLUDES = {".devcontainer/devcontainer.json"}
-_JSON_FILES = [f for f in _git_ls_files("*.json") if f not in _JSON_EXCLUDES]
+_JSON_FILES = _git_ls_files("*.json")
 
 
 @pytest.mark.parametrize(
