@@ -5,11 +5,11 @@ bats = "latest"
 shfmt = "3.14.1"
 shellcheck = "0.11.0"
 "cargo:taplo-cli" = "0.10.0"
-"npm:prettier" = "3.9.8"
+"npm:prettier" = "3.9.9"
 "npm:markdownlint-cli2" = "0.23.3"
 lefthook = "2.1.14"
 python = "3.14.7"
-uv = "0.12.17"
+uv = "0.12.19"
 
 [env]
 _.file = ".env"
