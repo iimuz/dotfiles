@@ -5,11 +5,9 @@
 
 return {
 	"neovim/nvim-lspconfig",
-	cond = condition,
 	event = {
 		-- バッファを開くときに読み込み
 		"BufReadPre",
 		"BufNewFile",
 	},
-	config = function() end,
 }
