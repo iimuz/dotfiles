@@ -40,14 +40,6 @@ return {
 			-- <Leader>nはlua-snipで利用しているため、ここでは利用しない
 			-- <Leader>Nはnvim-lintで利用しているため、ここでは利用しない
 			{ "<Leader>o", group = "Outline" },
-			{ "<Leader>O", group = "Octo" },
-			{ "<Leader>Oc", group = "Comment" },
-			{ "<Leader>Og", group = "Gist" },
-			{ "<Leader>Oe", group = "Repository" },
-			{ "<Leader>Oi", group = "Issue" },
-			{ "<Leader>Op", group = "PR" },
-			{ "<Leader>Or", group = "Review" },
-			{ "<Leader>Ot", group = "Thread" },
 			-- <Leader>pはFilePalletteで利用しているため、ここでは利用しない
 			-- <Leader>PはCommandPalletteで利用しているため、ここでは利用しない
 			{ "<Leader>q", group = "Quickfix and Location list" },

@@ -6,17 +6,6 @@
 -- `exe v:count1 . "ToggleTerm"`では、コマンドの前に数字を設定することで任意の端末を開くことができる。
 -- 数字を設定しなければ、最初の端末を開くことができきる。
 
--- gh dashコマンドのターミナルを開閉
-local function ghDashToggle()
-	local Terminal = require("toggleterm.terminal").Terminal
-	local ghDash = Terminal:new({
-		cmd = "gh dash",
-		direction = "float",
-		hidden = true,
-	})
-	ghDash:toggle()
-end
-
 -- lazygitコマンドのターミナルを開閉
 local function lazygitToggle()
 	local Terminal = require("toggleterm.terminal").Terminal
@@ -57,9 +46,9 @@ end
 return {
 	"akinsho/toggleterm.nvim",
 	version = "*",
+	dependencies = { "nvim-lua/plenary.nvim" },
 	opts = {},
 	keys = {
-		{ "<Leader>Ta", ghDashToggle, desc = "⭐︎ToggleTerm: Open gh dash." },
 		{
 			"<Leader>Tf",
 			"<cmd>exe v:count1 . \"ToggleTerm direction='float'\"<CR>",
