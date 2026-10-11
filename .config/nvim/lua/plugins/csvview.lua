@@ -17,6 +17,6 @@ return {
 			"<cmd>CsvViewEnable delimiter=, display_mode=border header_lnum=1<CR>",
 			desc = "CSVView: Enable.",
 		},
-		{ "<Leader>Sd", "<cmd>CsvViewDisable<CR>", desc = "CSVView: Enable." },
+		{ "<Leader>Sd", "<cmd>CsvViewDisable<CR>", desc = "CSVView: Disable." },
 	},
 }

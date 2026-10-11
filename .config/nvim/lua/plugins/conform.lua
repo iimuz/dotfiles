@@ -141,7 +141,10 @@ return {
 			"<Leader>Cs",
 			function()
 				vim.ui.input({ prompt = "Formatter: " }, function(formatter)
-					format({ formatters = { formatter } })
+					if formatter == nil or formatter == "" then
+						return
+					end
+					require("conform").format({ formatters = { formatter } })
 				end)
 			end,
 			desc = "⭐︎Conform: Specific formatter.",
