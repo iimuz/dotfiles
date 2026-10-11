@@ -12,8 +12,15 @@ return {
 			"<Leader>db",
 			function()
 				vim.ui.input({ prompt = "Enter base branch name: " }, function(branch_name)
-					local base_hash = vim.fn.system("git merge-base " .. branch_name .. " HEAD")
-					vim.cmd("DiffviewOpen " .. base_hash .. " ...HEAD --imply-local")
+					if branch_name == nil or branch_name == "" then
+						return
+					end
+					local result = vim.system({ "git", "merge-base", branch_name, "HEAD" }, { text = true }):wait()
+					if result.code ~= 0 then
+						vim.notify(vim.trim(result.stderr), vim.log.levels.ERROR)
+						return
+					end
+					vim.cmd("DiffviewOpen " .. vim.trim(result.stdout) .. "...HEAD --imply-local")
 				end)
 			end,
 			desc = "Diffview: PR for specific branch.",

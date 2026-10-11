@@ -18,6 +18,6 @@ return {
 	},
 	keys = {
 		{ "f", "<Plug>(leap)", mode = { "n", "x", "o" }, desc = "Leap: Forward search." },
-		{ "F", "<Plug>(leap-anywhere)", mode = { "n", "x", "o" }, desc = "Leap: Backward search." },
+		{ "F", "<Plug>(leap-anywhere)", mode = { "n", "x", "o" }, desc = "Leap: Search in all windows." },
 	},
 }

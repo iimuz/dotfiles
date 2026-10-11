@@ -74,7 +74,7 @@ return {
 		},
 		{
 			"<Leader>gq",
-			"<cmd>Gitsign setqflist<CR>",
+			"<cmd>Gitsigns setqflist<CR>",
 			desc = "GitSigns: Show hunks quickfix list.",
 		},
 		{

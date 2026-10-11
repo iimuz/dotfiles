@@ -55,7 +55,6 @@ vim.opt.incsearch = true -- 検索文字列入力時に順次対象文字列に�
 vim.opt.wrapscan = true -- 検索時に最後まで行ったら最初に戻る
 vim.opt.hlsearch = true -- 検索語をハイライト表示
 
-vim.opt.title = on -- タイトルを表示
 vim.cmd([[ syntax enable ]]) -- syntax
 vim.cmd([[ colorscheme pablo ]]) -- デフォルトで利用可能なカラースキーム
 vim.opt.mouse = "" -- マウス操作を無効
