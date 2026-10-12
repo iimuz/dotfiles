@@ -1,3 +1,7 @@
+# 外部から設定するスキルなので管理対象外
+loop-handoff
+loop-handoff/
+
 # playwright-cli install --skills --global が生成する。CLI のバージョンに連動するため追跡しない
 playwright-cli/
 
