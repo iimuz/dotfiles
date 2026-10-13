@@ -3,9 +3,6 @@
 --
 -- status lineの変更
 
--- vscodeから呼び出す場合は利用しない
-local condition = vim.g.vscode == nil
-
 local function diff_source()
 	local gitsigns = vim.b.gitsigns_status_dict
 	if gitsigns then
@@ -23,7 +20,6 @@ return {
 		"lewis6991/gitsigns.nvim",
 		"nvim-tree/nvim-web-devicons",
 	},
-	cond = condition,
 	event = { "VimEnter" },
 	config = function()
 		require("lualine").setup({

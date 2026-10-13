@@ -5,9 +5,6 @@
 -- ensure_installed, require("nvim-treesitter.configs").setup() は廃止。
 -- highlight/indent は FileType autocmd で有効化する。
 
--- VSCodeから利用した場合は無効化する
-local condition = vim.g.vscode == nil
-
 local parsers = {
 	"bash",
 	"c",
@@ -57,7 +54,6 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	branch = "main",
 	lazy = false,
-	cond = condition,
 	build = ":TSUpdate",
 	config = function()
 		require("nvim-treesitter").setup({})
