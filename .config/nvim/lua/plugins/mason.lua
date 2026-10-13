@@ -5,7 +5,7 @@
 return {
 	-- LSP manager - mason
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		cmd = { "Mason", "MasonUpdate" },
 		-- 循環依存を削除（同じファイル内で順序保証）
 		config = function()
@@ -19,13 +19,13 @@ return {
 		},
 	},
 	-- mason-lspconfigの設定
-	-- see: <https://github.com/williamboman/mason-lspconfig.nvim>
+	-- see: <https://github.com/mason-org/mason-lspconfig.nvim>
 	{
-		"williamboman/mason-lspconfig.nvim",
+		"mason-org/mason-lspconfig.nvim",
 		event = { "VimEnter" },
 		dependencies = {
 			"neovim/nvim-lspconfig", -- 不足していた必須依存
-			"williamboman/mason.nvim",
+			"mason-org/mason.nvim",
 		},
 		config = function()
 			require("mason-lspconfig").setup({})
@@ -34,7 +34,7 @@ return {
 	-- masonでツールを自動インストール
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		dependencies = { "williamboman/mason.nvim" },
+		dependencies = { "mason-org/mason.nvim" },
 		config = function()
 			-- よく使う LSP, Tool はインストールしておく。
 			-- formatter, linter については下記の plugin を利用する。
