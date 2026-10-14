@@ -20,6 +20,6 @@ return {
 		debounce_delay = 1000,
 	},
 	keys = {
-		{ "<Leader>u", "<cmd>ASToggle<CR>", desc = "AutoSave: Toggle auto save mode." },
+		{ "<Leader>U", "<cmd>ASToggle<CR>", desc = "AutoSave: Toggle auto save mode." },
 	},
 }

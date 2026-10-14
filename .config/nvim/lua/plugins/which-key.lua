@@ -47,10 +47,10 @@ return {
 			{ "<Leader>qq", group = "Quickfix" },
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
-			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>S", group = "Csvview" },
 			{ "<Leader>T", group = "ToggleTerm" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
+			-- <Leader>UはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
 		})
