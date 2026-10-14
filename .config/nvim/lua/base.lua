@@ -1,6 +1,3 @@
--- 文字コードをUFT-8に設定
-vim.scriptencoding = "utf-8"
-
 vim.opt.fileencodings = "utf-8,sjis"
 vim.opt.fenc = "utf-8"
 vim.opt.backup = false -- バックアップファイルを作らない
