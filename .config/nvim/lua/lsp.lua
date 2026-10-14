@@ -11,7 +11,6 @@ function M.setup()
 
 			set("n", "gd", vim.lsp.buf.definition, { desc = "⭐︎LSP: Go to definition.", buffer = ctx.buf })
 			set("n", "gD", vim.lsp.buf.declaration, { desc = "⭐︎LSP: Go to declaration.", buffer = ctx.buf })
-			set("n", "K", vim.lsp.buf.hover, { desc = "⭐︎LSP: Show hover.", buffer = ctx.buf })
 			set("n", "[d", function()
 				vim.diagnostic.jump({ count = -1, float = true })
 			end, { desc = "⭐︎LSP: Go to previous diagnostics.", buffer = ctx.buf })
