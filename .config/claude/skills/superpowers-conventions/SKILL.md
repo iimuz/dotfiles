@@ -32,6 +32,18 @@ plan に ADR や設計文書を作る task があるときは、writing-plans �
 plan を書く側は、完成文を書く前に doc-conventions を読み、ユーザーにレビューを頼む前に完成文を
 doc-conventions で照合する。照合の観点は doc-conventions に従い、ここには書かない。
 
+## 作業場所と統合
+
+plan の task、step、全体の制約、合否の基準のどこにも、作業ブランチや worktree を作る、選ぶ、切り替える
+指示を書かない。作業する checkout を指定する制約 (「primary checkout で作業する」など) と、この作業の
+ブランチの push、PR の作成、merge も書かない。
+
+作業場所は plan を実行する skill が using-git-worktrees で用意し、統合は finishing-a-development-branch が
+扱う。plan にも書くと同じ作業を二重に指示することになる。作業場所と統合を自分で決める無人の実行環境に
+plan を渡したときは、plan の指示がその契約とぶつかる。
+
+PR の本文に必ず入れる事柄があるときは、task ではない節 (「PR に書くこと」など) に書く。
+
 ## コミットしない
 
 `docs/superpowers/` と `.superpowers/` の下のファイルはコミットしない。gitignore されていない
