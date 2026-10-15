@@ -31,7 +31,6 @@ return {
 			{ "<Leader>f", group = "File" },
 			{ "<Leader>g", group = "GitSigns" },
 			-- <Leader>hはmakrdown-hop-linksで利用しているため、ここでは利用しない
-			{ "<Leader>k", group = "Kulala" },
 			{ "<Leader>K", group = "TreeSitter" }, -- Tree = 木 = [K]i
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用
 			{ "<Leader>L", "<cmd>Lazy<CR>", desc = "⭐︎Lazy: Show Lazy UI." }, -- 全体の管理なので元の所で設定する方法がわからないのでここに記載
@@ -47,10 +46,10 @@ return {
 			{ "<Leader>qq", group = "Quickfix" },
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
-			-- <Leader>uはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>S", group = "Csvview" },
 			{ "<Leader>T", group = "ToggleTerm" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
+			-- <Leader>UはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
 		})

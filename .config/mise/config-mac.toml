@@ -42,6 +42,8 @@ activate_aggressive = true
 experimental = true
 # サプライチェーン対策として公開直後のバージョンは採用しない
 minimum_release_age = "3d"
+# シェルの shim があると、shim から fallback したシェルの exec bash を mise が再帰と誤検出して失敗する
+shims.exclude = ["bash", "bashbug"]
 
 [settings.pipx]
 uvx = true
