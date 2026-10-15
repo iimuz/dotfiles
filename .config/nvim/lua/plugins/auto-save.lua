@@ -2,7 +2,6 @@
 -- see: <https://github.com/okuuva/auto-save.nvim>
 --
 -- ファイルの自動保存を行う
--- BufLeave, FocusLostで保存した場合に、format on saveなどが自動実行されないため、defer_saveを残している。
 
 return {
 	"okuuva/auto-save.nvim",
