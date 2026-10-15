@@ -38,12 +38,6 @@ local function UpdateLastmod()
 	local max_line = 10 -- 最大で読み込む行数
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, max_line, false) -- 先頭からmax_line行のみ確認する
 
-	-- auto-saveから実行するときにファイルタイプを考慮しないので、ここで確認する
-	local filetype = vim.bo[buf].filetype
-	if filetype ~= "markdown" then
-		return
-	end
-
 	-- frontmatterを見つける
 	-- ipairsは1から始まる
 	local start_line, end_line = nil, nil
@@ -72,7 +66,7 @@ local function UpdateLastmod()
 		end
 
 		if lastmod_line then
-			local lastmod_view = "lastmod: " .. lastmod .. "  # " .. lastmod_str
+			local lastmod_view = "lastmod: " .. lastmod .. " # " .. lastmod_str
 			--  zellijからnvim起動しているとnotifyで画面がチラつくので出力を抑制
 			-- vim.notify("Update lastmod: " .. lastmod_str)
 			vim.api.nvim_buf_set_lines(buf, lastmod_line - 1, lastmod_line, false, { lastmod_view })
@@ -90,11 +84,6 @@ function M.setup()
 	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		group = augroup,
 		pattern = { "*.md" },
-		callback = UpdateLastmod,
-	})
-	vim.api.nvim_create_autocmd({ "User" }, {
-		group = augroup,
-		pattern = { "AutoSaveWritePre" },
 		callback = UpdateLastmod,
 	})
 
