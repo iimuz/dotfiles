@@ -52,7 +52,7 @@ local function UpdateLastmod()
 		end
 	end
 	if end_line == nil then
-		end_line = 10
+		end_line = #lines
 	end
 
 	if start_line and end_line then
