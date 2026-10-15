@@ -50,11 +50,16 @@ local parsers = {
 	"yaml",
 }
 
+-- 引数なしの :TSUpdate は、kulala.nvim が site/parser に置く kulala_http まで更新しようとしてエラーになる。
+local function update_parsers()
+	require("nvim-treesitter").update(parsers, { summary = true })
+end
+
 return {
 	"nvim-treesitter/nvim-treesitter",
 	branch = "main",
 	lazy = false,
-	build = ":TSUpdate",
+	build = update_parsers,
 	config = function()
 		require("nvim-treesitter").setup({})
 
@@ -87,6 +92,6 @@ return {
 		vim.opt.foldenable = false -- デフォルトでは折りたたみを無効にする
 	end,
 	keys = {
-		{ "<Leader>Ku", "<cmd>TSUpdate<CR>", desc = "TreeSitter: Update Tree-Sitter" },
+		{ "<Leader>Ku", update_parsers, desc = "TreeSitter: Update Tree-Sitter" },
 	},
 }
