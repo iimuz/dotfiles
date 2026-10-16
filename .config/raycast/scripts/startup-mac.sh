@@ -16,7 +16,10 @@ SCRIPT_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 # brew
 brew update
 brew upgrade
-brew bundle cleanup --force --file="$SCRIPT_DIR/../../homebrew/Brewfile"
+BREWFILE="$SCRIPT_DIR/../../homebrew/Brewfile"
+brew bundle cleanup --force --no-mas --file="$BREWFILE"
+# Without --force, cleanup exits 1 when it only lists candidates or the prompt is declined.
+brew bundle cleanup --mas --file="$BREWFILE" || true
 
 # update mise
 mise prune -y
