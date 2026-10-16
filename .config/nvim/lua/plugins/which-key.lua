@@ -47,7 +47,6 @@ return {
 			{ "<Leader>r", group = "Project" }, -- local project固有のキーマップ用
 			{ "<Leader>R", group = "RenderMarkdown" },
 			{ "<Leader>S", group = "Csvview" },
-			{ "<Leader>T", group = "ToggleTerm" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
 			-- <Leader>UはAutoSaveで利用しているため、ここでは利用しない
 			{ "<Leader>v", group = "VSCode" },
