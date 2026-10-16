@@ -25,6 +25,7 @@ return {
 		require("lualine").setup({
 			options = {
 				globalstatus = true,
+				always_show_tabline = false,
 			},
 			sections = {
 				lualine_a = {
@@ -52,6 +53,21 @@ return {
 				},
 				lualine_y = { "progress" },
 				lualine_z = { "location" },
+			},
+			tabline = {
+				lualine_a = {
+					{
+						"tabs",
+						mode = 2,
+						show_modified_status = false,
+						-- the default (1/3 of the screen width) hides tabs that do not fit behind "..."
+						max_length = function()
+							-- lualine does not count the "..." tabs on both sides and the section
+							-- separator (12 columns in total) against max_length
+							return vim.o.columns - 12
+						end,
+					},
+				},
 			},
 		})
 	end,
