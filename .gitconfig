@@ -9,15 +9,12 @@
   quotepath = false
   autocrlf = input
 
-[credential]
-  helper = manager
-
 [credential "https://github.com"]
   helper =
   helper = !credential-gh-helper
 
 [credential "https://gist.github.com"]
-	helper =
+  helper =
   helper = !credential-gh-helper
 
 [delta]
