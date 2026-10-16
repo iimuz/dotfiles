@@ -60,9 +60,11 @@ return {
 						"tabs",
 						mode = 2,
 						show_modified_status = false,
-						-- the default (1/3 of the screen width) truncates inactive tab names to "..."
+						-- the default (1/3 of the screen width) hides tabs that do not fit behind "..."
 						max_length = function()
-							return vim.o.columns
+							-- lualine does not count the "..." tabs on both sides and the section
+							-- separator (12 columns in total) against max_length
+							return vim.o.columns - 12
 						end,
 					},
 				},
