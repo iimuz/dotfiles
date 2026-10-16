@@ -7,7 +7,7 @@ return {
 	"folke/flash.nvim",
 	opts = {
 		modes = {
-			-- 既定では char モードが t / T / ; / , を奪うので、Vim 標準のまま残すため無効にする
+			-- 既定では char モードが f / F / t / T / ; / , を奪う。t / T / ; / , を Vim 標準のまま残すため無効にする
 			char = { enabled = false },
 		},
 	},
