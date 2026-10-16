@@ -25,6 +25,7 @@ return {
 		require("lualine").setup({
 			options = {
 				globalstatus = true,
+				always_show_tabline = false,
 			},
 			sections = {
 				lualine_a = {
@@ -52,6 +53,19 @@ return {
 				},
 				lualine_y = { "progress" },
 				lualine_z = { "location" },
+			},
+			tabline = {
+				lualine_a = {
+					{
+						"tabs",
+						mode = 2,
+						show_modified_status = false,
+						-- the default (1/3 of the screen width) truncates inactive tab names to "..."
+						max_length = function()
+							return vim.o.columns
+						end,
+					},
+				},
 			},
 		})
 	end,
