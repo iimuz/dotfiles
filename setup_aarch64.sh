@@ -28,6 +28,8 @@ sudo apt-get install -y --no-install-recommends \
   zsh
 # プロセス監視 (mise になく github で pre-build binary も配布していない)
 sudo apt-get install -y --no-install-recommends htop
+# ファイラー (github で aarch64 linux 向けの pre-build binary を配布していない)
+sudo apt-get install -y --no-install-recommends vifm
 # ssh agent の管理
 sudo apt-get install -y --no-install-recommends keychain
 # password manager
