@@ -1,10 +1,11 @@
--- diffview.nvim
--- see: <https://github.com/sindrets/diffview.nvim>
+-- diffview-plus.nvim
+-- see: <https://github.com/dlyongemallo/diffview-plus.nvim>
 --
 -- gitの差分表示
 
 return {
-	"sindrets/diffview.nvim",
+	"dlyongemallo/diffview-plus.nvim",
+	version = "*",
 	enabled = true,
 	cmd = { "DiffviewOpen", "DiffviewFileHistory" },
 	keys = {
