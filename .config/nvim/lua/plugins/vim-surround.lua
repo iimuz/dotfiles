@@ -6,5 +6,6 @@
 return {
   "tpope/vim-surround",
   event = { "BufRead", "BufNewFile" },
+  dependencies = { "tpope/vim-repeat" },
 }
 
