@@ -27,10 +27,10 @@ local function insert_filename_with_ext(picker, _)
 	vim.api.nvim_put({ filename }, "c", false, true)
 end
 
--- 同じ番号の端末を、押したキーの位置で開閉する
 local function toggle_terminal(position)
+	local snacks = require("snacks")
 	local n = vim.v.count1
-	local terminal, created = require("snacks").terminal.get(nil, { count = n, win = { position = position } })
+	local terminal, created = snacks.terminal.get(nil, { count = n, win = { position = position } })
 	if created then
 		return
 	end
@@ -38,12 +38,19 @@ local function toggle_terminal(position)
 		terminal:hide()
 		return
 	end
-	-- snacksは位置で端末を見分けないので、同じ番号の端末を押したキーの位置で開くために書き換える
-	terminal.opts.position = position
+	-- snacksは位置で端末を見分けず、位置に応じた大きさや窓のオプションも窓を作るときにしか決めない。
+	-- 同じ番号の端末を押したキーの位置で開くため、snacks.terminal.openと同じ値で決め直す。
+	local float = position == "float"
+	terminal.opts = snacks.win.resolve(terminal.opts, float and "float" or "split", {
+		position = position,
+		wo = {
+			winfixheight = not float,
+			winbar = float and "" or (n .. ": %{get(b:, 'term_title', '')}"),
+		},
+	})
 	terminal:show()
 end
 
--- vifmをfloatで開き、選んだファイルを開く
 local function open_vifm()
 	local path = vim.fn.tempname()
 	local terminal = require("snacks").terminal.open(
@@ -61,6 +68,7 @@ local function open_vifm()
 				return
 			end
 			local line = vim.fn.readfile(path)[1]
+			vim.fn.delete(path)
 			if line == nil or line == "" then
 				return
 			end
