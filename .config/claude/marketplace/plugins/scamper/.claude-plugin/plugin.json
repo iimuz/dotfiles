@@ -1,6 +1,0 @@
-{
-  "name": "scamper",
-  "version": "0.1.0",
-  "description": "SCAMPER の agent チーム。orchestrator の skill と 7 つのレンズの subagent で、既存の対象について体系立てた発散的な案出しを行う",
-  "author": { "name": "iimuz" }
-}

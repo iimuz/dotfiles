@@ -1,6 +1,0 @@
-{
-  "name": "six-hats",
-  "version": "0.1.0",
-  "description": "Six Thinking Hats の agent チーム。Blue Hat の orchestrator の skill と、内容を担う 5 つの帽子の subagent で、構造立てた多面的な分析を行う",
-  "author": { "name": "iimuz" }
-}
