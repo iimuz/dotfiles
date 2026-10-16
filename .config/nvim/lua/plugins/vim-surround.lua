@@ -4,8 +4,7 @@
 -- visual modeで選択した文字列を囲む
 
 return {
-  "tpope/vim-surround",
-  event = { "BufRead", "BufNewFile" },
-  dependencies = { "tpope/vim-repeat" },
+	"tpope/vim-surround",
+	event = { "BufRead", "BufNewFile" },
+	dependencies = { "tpope/vim-repeat" },
 }
-
