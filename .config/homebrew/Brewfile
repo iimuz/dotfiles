@@ -25,7 +25,6 @@ cask "rancher"  # dockerd
 cask "font-hackgen-nerd"
 
 # === git
-tap "microsoft/git"
 brew "git"
 brew "git-lfs"
 
