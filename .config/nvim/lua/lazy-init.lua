@@ -12,6 +12,7 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local opts = {}
+-- No plugin requires luarocks, and lua/luarocks are not installed
+local opts = { rocks = { enabled = false } }
 -- Any lua file in ~/.config/nvim/lua/plugins/*.lua will be automatically merged in the main plugin spec
 require("lazy").setup("plugins", opts)

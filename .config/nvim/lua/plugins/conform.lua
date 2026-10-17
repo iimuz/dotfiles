@@ -56,7 +56,7 @@ return {
 				toml = { "taplo" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
-				typespec = { "tsp" },
+				typespec = { "typespec" },
 				yaml = { "prettier" },
 				zsh = { "shfmt" },
 			},

@@ -9,6 +9,8 @@ return {
 	opts = {
 		-- 挿入モードにおいてもカーソル行のみレンダリングしないように設定
 		render_modes = true,
+		-- latex の parser も変換ツールも入れていないため無効化
+		latex = { enabled = false },
 		-- 見出し行でアイコンを利用せずパディングしない
 		heading = {
 			width = "block",

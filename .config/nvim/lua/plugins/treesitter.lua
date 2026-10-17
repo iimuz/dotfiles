@@ -39,6 +39,7 @@ local parsers = {
 	"markdown_inline",
 	"mermaid",
 	"python",
+	"regex",
 	"rust",
 	"sql",
 	"toml",

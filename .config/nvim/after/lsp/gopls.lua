@@ -15,8 +15,6 @@ return {
 		gopls = {
 			-- 不要なディレクトリを除外
 			directoryFilters = { "-**/node_modules", "-**/vendor", "-**/.git" },
-			-- 閉じたファイルのメモリを解放（パフォーマンス向上）
-			memoryMode = "DegradeClosed",
 		},
 	},
 }

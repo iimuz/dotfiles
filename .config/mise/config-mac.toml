@@ -12,7 +12,6 @@ gh = "2.101.0"
 go = "1.27.1"
 jq = "1.8.2"
 lazygit = "v0.65.1"
-lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.21.0"
 "npm:@aikidosec/safe-chain" = "1.5.21"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.77" # for claude code
@@ -33,7 +32,6 @@ uv = "0.12.19"
 yq = "4.53.6"
 
 [env]
-ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [settings]

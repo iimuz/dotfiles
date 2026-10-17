@@ -113,7 +113,7 @@ return {
 		},
 		{
 			"<Leader>gw",
-			"<cmd>Gitsign toggle_word_diff<CR>",
+			"<cmd>Gitsigns toggle_word_diff<CR>",
 			desc = "GitSigns: Toggle word diff.",
 		},
 	},
