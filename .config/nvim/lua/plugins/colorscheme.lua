@@ -1,6 +1,4 @@
 -- Colorscheme
---
---Colorschemeは、どれか一つで良いので全てここにまとめる
 
 return {
 	-- cyberdream
@@ -8,7 +6,6 @@ return {
 	{
 		"scottmckendry/cyberdream.nvim",
 		lazy = false,
-		enabled = true,
 		priority = 1000,
 		config = function()
 			require("cyberdream").setup({})
