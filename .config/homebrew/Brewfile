@@ -60,10 +60,8 @@ cask "cmux"
 brew "gcc"
 cask "ghostty"
 brew "herdr"
-# brew "luarocks"  # for lazy.nvim plugin -> おそらく lua 導入で不要になっているはず
 brew "neovim"  # neovim
 brew "pkg-config"
-# brew "pngpaste"  # for img-clip.nvim plugin
 brew "starship"  # Shell prompt
 brew "tmux"
 brew "vifm"

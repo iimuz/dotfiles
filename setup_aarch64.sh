@@ -34,8 +34,6 @@ sudo apt-get install -y --no-install-recommends vifm
 sudo apt-get install -y --no-install-recommends keychain
 # password manager
 sudo apt-get install -y --no-install-recommends gnupg pass
-# miseからluaをインストールする際に必要
-sudo apt-get install -y --no-install-recommends libreadline-dev
 # mise から tree sitter cli の cargo build でパッケージが不足するため
 sudo apt-get install -y --no-install-recommends libclang-dev
 # claude code で sandbox 機能を利用するための前提条件

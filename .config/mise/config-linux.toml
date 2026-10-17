@@ -12,7 +12,6 @@ go = "1.27.1"
 herdr = "0.9.5"
 jq = "1.8.2"
 lazygit = "0.65.1"
-lua = "5.1.5" # neovim luarocksで要求しているバージョンが5.1
 node = "24.21.0"
 neovim = "0.12.5"
 "npm:@aikidosec/safe-chain" = "1.5.21"
@@ -34,7 +33,6 @@ uv = "0.12.19"
 yq = "4.53.6"
 
 [env]
-ASDF_LUA_LUAROCKS_VERSION = "3.12.2" # 3.13.0 has corrupted rockspec (luarocks/luarocks#1851)
 # QMD が aarch64 linux 環境で gpu なしのため強制的に cpu 動作とする(不要にビルドが走ったりするため)
 QMD_LLAMA_GPU = "false"
 # UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }

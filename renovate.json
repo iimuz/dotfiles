@@ -21,12 +21,6 @@
       "minimumReleaseAge": "0 days"
     },
     {
-      "description": "Constrain lua to 5.1.x for neovim compatibility",
-      "matchManagers": ["mise"],
-      "matchDepNames": ["lua"],
-      "allowedVersions": "/^5\\.1\\./"
-    },
-    {
       "description": "Group all mise major updates into a single PR",
       "matchManagers": ["mise"],
       "matchUpdateTypes": ["major"],

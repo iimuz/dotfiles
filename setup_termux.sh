@@ -21,7 +21,6 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 # pkgでインストール可能なコマンドはpkgでインストールする
 #
 # - build-essential: build package for neovim
-# - libreadline-dev: miseからluaをインストールする際に必要
 pkg install -y \
   build-essential \
   fzf \
