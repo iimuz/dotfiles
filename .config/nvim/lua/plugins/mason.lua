@@ -48,7 +48,6 @@ return {
 					"cspell-lsp", -- CSpell
 					"eslint_d", -- Javascript and Typescript linter
 					"gopls", -- Go lang LSP
-					"kotlin_lsp", -- Kotlin LSP (JetBrains kotlin-lsp)
 					"lua_ls", -- Lua LSP
 					"marksman", -- Markdown LSP
 					"prettier", -- Formatter for various file types
@@ -63,7 +62,7 @@ return {
 					"stylua", -- Lua linter and formatter
 					"taplo", -- TOML LSP
 					"typos", -- Spell checker for source code
-					-- "tsp-server ", -- Typespec LSP(手動でのみインストールできた)
+					"tsp-server", -- Typespec LSP
 					"vtsls", -- Javascript and Typescript LSP
 					"yamlls", -- YAML LSP
 				},
