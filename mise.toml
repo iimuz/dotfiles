@@ -9,7 +9,7 @@ shellcheck = "0.11.0"
 "npm:markdownlint-cli2" = "0.23.3"
 lefthook = "2.1.16"
 python = "3.14.8"
-uv = "0.12.22"
+uv = "0.12.23"
 
 [env]
 _.file = ".env"
