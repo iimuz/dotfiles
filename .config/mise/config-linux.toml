@@ -1,13 +1,13 @@
 [tools]
 aws-vault = "7.2.0"
 awscli = { version = "2.37.9", symlink_bins = "true" }
-cargo-binstall = "1.24.0"
+cargo-binstall = "1.25.1"
 "cargo:tree-sitter-cli" = "0.27.0" # for neovim
 claude = "2.1.296"
 delta = "0.19.2"
 fzf = "0.74.4"
-gemini-cli = "0.61.0"
-gh = "2.101.0"
+gemini-cli = "0.62.0"
+gh = "2.102.0"
 go = "1.27.1"
 herdr = "0.9.5"
 jq = "1.8.2"
@@ -23,14 +23,14 @@ neovim = "0.12.5"
 "npm:@tobilu/qmd" = "2.8.3" # 日本語 FTS には 2.5.3 以降が必要 (2.5.3-2.8.3 間の中間版は CJK 再構築にバグあり)
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.2"
 "pipx:pynvim" = "0.6.0" # for neovim
-pnpm = "12.7.0"
+pnpm = "12.9.1"
 python = "3.14.8"
-rust = "1.98.1"
+rust = "1.99.0"
 shellcheck = "0.11.0"
 shfmt = "3.14.1"
 ripgrep = "15.2.0"
 uv = "0.12.23"
-yq = "4.53.6"
+yq = "4.54.1"
 
 [env]
 # QMD が aarch64 linux 環境で gpu なしのため強制的に cpu 動作とする(不要にビルドが走ったりするため)
