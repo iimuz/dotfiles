@@ -15,15 +15,6 @@ return {
 	config = function(_, opts)
 		local conform = require("conform")
 
-		-- 同期のformatで保存を待たせないよう、保存後に非同期でformatする
-		local format_after_save_fn = function(bufnr)
-			-- Disable with a global or buffer-local variable
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
-			return { lsp_format = "fallback" }
-		end
-
 		-- ファイルタイプごとのformatterの設定
 		-- 利用するformatterはmasonで管理
 		opts = {
@@ -79,25 +70,10 @@ return {
 					end,
 				},
 			},
-			format_after_save = format_after_save_fn,
 		}
 		conform.setup(opts)
 	end,
 	keys = {
-		{
-			"<Leader>Cb",
-			function()
-				vim.b.disable_autoformat = true
-			end,
-			desc = "Conform: Disable for this buffer.",
-		},
-		{
-			"<Leader>CB",
-			function()
-				vim.b.disable_autoformat = false
-			end,
-			desc = "⭐︎Conform: Enable for this buffer.",
-		},
 		{
 			"<Leader>Cf",
 			function(opts)
@@ -105,20 +81,6 @@ return {
 				require("conform").format(opts)
 			end,
 			desc = "⭐︎Conform: Format file or range.",
-		},
-		{
-			"<Leader>Cg",
-			function()
-				vim.g.disable_autoformat = false
-			end,
-			desc = "Conform: Enable",
-		},
-		{
-			"<Leader>CG",
-			function()
-				vim.g.disable_autoformat = true
-			end,
-			desc = "Conform: Disable.",
 		},
 		{ "<Leader>Ci", "<cmd>ConformInfo<CR>", desc = "⭐︎Conform: Show information." },
 		{
