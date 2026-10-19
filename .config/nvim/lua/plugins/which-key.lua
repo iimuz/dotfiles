@@ -49,7 +49,6 @@ return {
 			{ "<Leader>S", group = "Csvview" },
 			{ "<Leader>u", group = "GitLinker" }, -- GitLinker -> URL
 			-- <Leader>UはAutoSaveで利用しているため、ここでは利用しない
-			{ "<Leader>v", group = "VSCode" },
 			{ "<Leader>w", group = "Snacks" }, -- "Snacks" -> "snack" -> "お菓子" -> "軽食"という連想から、w=軽い、w=簡単
 		})
 	end,

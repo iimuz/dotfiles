@@ -10,4 +10,3 @@ require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
 require("quickfix").setup() -- quickfixとlocation listのコマンド
 require("tab").setup() -- tab関連のコマンド
-require("vscode").setup() -- vscode関連のコマンド
