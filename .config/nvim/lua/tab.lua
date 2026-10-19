@@ -14,7 +14,8 @@ function M.tabline()
 		end
 		local modified = false
 		for _, buf in ipairs(buflist) do
-			modified = modified or vim.bo[buf].modified
+			-- picker の入力欄など、保存先の無いバッファの変更は数えない
+			modified = modified or (vim.bo[buf].buftype == "" and vim.bo[buf].modified)
 		end
 		table.insert(parts, "%" .. n .. "T")
 		table.insert(parts, n == current and "%#TabLineSel#" or "%#TabLine#")
