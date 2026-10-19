@@ -2,7 +2,32 @@
 
 local M = {}
 
+-- 'tabline' の `%!` から呼ばれる。タブが 1 つのときは showtabline の既定値で非表示になる
+function M.tabline()
+	local current = vim.fn.tabpagenr()
+	local parts = {}
+	for n = 1, vim.fn.tabpagenr("$") do
+		local buflist = vim.fn.tabpagebuflist(n)
+		local name = vim.fn.fnamemodify(vim.fn.bufname(buflist[vim.fn.tabpagewinnr(n)]), ":t")
+		if name == "" then
+			name = "[No Name]"
+		end
+		local modified = false
+		for _, buf in ipairs(buflist) do
+			modified = modified or vim.bo[buf].modified
+		end
+		table.insert(parts, "%" .. n .. "T")
+		table.insert(parts, n == current and "%#TabLineSel#" or "%#TabLine#")
+		-- '%' は書式の特殊文字なので 2 重にして 1 文字として表示させる
+		table.insert(parts, " " .. n .. " " .. name:gsub("%%", "%%%%") .. (modified and " +" or "") .. " ")
+	end
+	table.insert(parts, "%T%#TabLineFill#")
+	return table.concat(parts)
+end
+
 function M.setup()
+	vim.opt.tabline = "%!v:lua.require'tab'.tabline()"
+
 	-- キーマッピング
 	local set = vim.keymap.set
 	set("n", "<Leader>Bn", "<cmd>tabnext<CR>", { desc = "⭐︎Tab: Move next tab." })
