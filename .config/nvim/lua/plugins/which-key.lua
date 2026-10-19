@@ -23,7 +23,6 @@ return {
 		})
 		wk.add({
 			{ "<Leader>A", group = "AutoLastmod" },
-			{ "<Leader>b", group = "Trouble" },
 			{ "<Leader>B", group = "Tab" },
 			{ "<Leader>c", group = "Clipboard" },
 			{ "<Leader>C", group = "Conform" },
