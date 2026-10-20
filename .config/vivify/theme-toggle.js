@@ -8,7 +8,7 @@
   // それより先に dark の問い合わせの結果を固定する。
   const originalMatchMedia = window.matchMedia.bind(window);
   window.matchMedia = function (query) {
-    if (query.replace(/\s/g, '') === '(prefers-color-scheme:dark)') {
+    if (String(query).replace(/\s/g, '') === '(prefers-color-scheme:dark)') {
       return originalMatchMedia(isLight ? 'not all' : 'all');
     }
     return originalMatchMedia(query);
