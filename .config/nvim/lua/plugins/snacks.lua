@@ -27,30 +27,6 @@ local function insert_filename_with_ext(picker, _)
 	vim.api.nvim_put({ filename }, "c", false, true)
 end
 
-local function toggle_terminal(position)
-	local snacks = require("snacks")
-	local n = vim.v.count1
-	local terminal, created = snacks.terminal.get(nil, { count = n, win = { position = position } })
-	if created then
-		return
-	end
-	if terminal:win_valid() then
-		terminal:hide()
-		return
-	end
-	-- snacksは位置で端末を見分けず、位置に応じた大きさや窓のオプションも窓を作るときにしか決めない。
-	-- 同じ番号の端末を押したキーの位置で開くため、snacks.terminal.openと同じ値で決め直す。
-	local float = position == "float"
-	terminal.opts = snacks.win.resolve(terminal.opts, float and "float" or "split", {
-		position = position,
-		wo = {
-			winfixheight = not float,
-			winbar = float and "" or (n .. ": %{get(b:, 'term_title', '')}"),
-		},
-	})
-	terminal:show()
-end
-
 local function open_vifm()
 	local path = vim.fn.tempname()
 	local terminal = require("snacks").terminal.open(
@@ -332,21 +308,6 @@ return {
 			desc = "⭐︎Snacks: Toggle Scratch Buffer",
 		},
 		{
-			"<Leader>wxf",
-			function()
-				toggle_terminal("float")
-			end,
-			desc = "⭐︎Snacks: Toggle floating terminal",
-		},
-		{
-			"<Leader>wxh",
-			function()
-				toggle_terminal("bottom")
-			end,
-			desc = "⭐︎Snacks: Toggle bottom terminal",
-		},
-		{ "<Leader>wxv", open_vifm, desc = "⭐︎Snacks: Open vifm" },
-		{
 			"<Leader>wS",
 			function()
 				require("snacks").scratch.select()
@@ -354,14 +315,14 @@ return {
 			desc = "Snacks: Select Scratch Buffer",
 		},
 		{
-			"<Leader>wt", -- error -> Trouble
+			"<Leader>wt",
 			function()
 				require("snacks").picker.diagnostics_buffer()
 			end,
 			desc = "Snacks: Buffer Diagnostics",
 		},
 		{
-			"<Leader>wT", -- error -> Trouble
+			"<Leader>wT",
 			function()
 				require("snacks").picker.diagnostics()
 			end,
@@ -381,6 +342,7 @@ return {
 			end,
 			desc = "GitHub Issues (all)",
 		},
+		{ "<Leader>wv", open_vifm, desc = "⭐︎Snacks: Open vifm" },
 		{
 			"<Leader>wy",
 			function()
