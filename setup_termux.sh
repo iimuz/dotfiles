@@ -33,7 +33,6 @@ pkg install -y \
   rsync \
   vifm \
   vim \
-  tmux \
   yq
 
 # 各種設定ファイルの配置もしくは読み込み設定
@@ -51,11 +50,6 @@ fi
 # === neovim
 if type nvim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
-fi
-# === tmux
-if type tmux >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
-  create_symlink "$SCRIPT_DIR/.config/tmux/new-window-fzf.sh" "$HOME/.config/tmux/new-window-fzf.sh"
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then

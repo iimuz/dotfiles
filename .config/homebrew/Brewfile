@@ -63,6 +63,5 @@ brew "herdr"
 brew "neovim"  # neovim
 brew "pkg-config"
 brew "starship"  # Shell prompt
-brew "tmux"
 brew "vifm"
 brew "wget"
