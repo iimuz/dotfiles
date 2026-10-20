@@ -22,9 +22,13 @@ function M.setup()
 		end
 
 		-- 起動の直後はブラウザが未接続で、既定の10秒ではURLを貼る前に止まる
-		vim.fn.jobstart({ "vivify-server" }, { detach = true, env = { VIV_TIMEOUT = "300000" } })
+		local job = vim.fn.jobstart({ "vivify-server" }, { detach = true, env = { VIV_TIMEOUT = "300000" } })
+		if job <= 0 then
+			vim.notify("Failed to start vivify-server.", vim.log.levels.WARN)
+			return
+		end
 
-		local url = M.viewer_url(vim.fn.fnamemodify(path, ":p"))
+		local url = M.viewer_url(path)
 		vim.fn.setreg("+", url)
 		vim.notify("Copied: " .. url, vim.log.levels.INFO)
 	end, { desc = "Vivify: Copy viewer URL of current file." })
