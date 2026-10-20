@@ -8,24 +8,6 @@ vim.opt.cursorline = true -- 現在の行を強調表示
 vim.opt.showmatch = false -- 括弧入力時の対応する括弧を非表示
 vim.opt.wildmode = { "list", "longest" } -- コマンドラインの補完
 
-vim.opt.statusline = string.format(
-	"%s%s%s%s%s%s%s%s",
-	"%F", -- ファイル名表示
-	"%m", -- 変更チェック表示
-	"%r", -- 読み込み専用かどうか表示
-	"%h", -- ヘルプページなら[HELP]と表示
-	"%w", -- プレビューウインドウなら[Prevew]と表示
-	"%=", -- これ以降は右寄せ表示
-	"[FMT=%{&ff}, TYPE=%Y, ENC=%{&fileencoding}]", -- file encoding
-	"[%l/%L,%c]" -- 現在行数/全行数
-)
--- ステータスラインを表示
--- 0:表示しない
--- 1: 2つ以上ウィンドウがある時だけ表示
--- 2: 常に表示
--- 3: neovimインスタンスで一つ(splitしても別れない)
-vim.opt.laststatus = 3
-
 -- 不可視文字を可視化
 vim.opt.listchars = { nbsp = "%", tab = ">-", extends = "<", trail = "-" }
 vim.opt.list = true
