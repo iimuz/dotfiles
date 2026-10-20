@@ -354,14 +354,14 @@ return {
 			desc = "Snacks: Select Scratch Buffer",
 		},
 		{
-			"<Leader>wt", -- error -> Trouble
+			"<Leader>wt",
 			function()
 				require("snacks").picker.diagnostics_buffer()
 			end,
 			desc = "Snacks: Buffer Diagnostics",
 		},
 		{
-			"<Leader>wT", -- error -> Trouble
+			"<Leader>wT",
 			function()
 				require("snacks").picker.diagnostics()
 			end,
