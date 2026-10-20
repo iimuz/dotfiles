@@ -5,9 +5,6 @@
 # Guard if command does not exist.
 if ! type fzf >/dev/null 2>&1; then return 0; fi
 
-# tmuxを有効化するとfzfでCtrl+Rでコマンド選択した場合にtmuxウィンドウが停止する場合があったため、無効化する。
-export FZF_TMUX=0
-
 # Use fzf completion and keybindings
 . <(fzf --zsh)
 

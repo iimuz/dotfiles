@@ -51,15 +51,7 @@ esac
 # Repository (project) name.
 repo="$(basename "${CLAUDE_PROJECT_DIR:-$PWD}")"
 
-# Build subtitle with tmux context when available.
 subtitle="$repo"
-if [ -n "${TMUX:-}" ] && [ -n "${TMUX_PANE:-}" ]; then
-  session="$(tmux display-message -t "$TMUX_PANE" -p '#{session_name}' 2>/dev/null || true)"
-  window="$(tmux display-message -t "$TMUX_PANE" -p '#{window_name}' 2>/dev/null || true)"
-  if [ -n "$session" ]; then
-    subtitle="${session}:${window} (${repo})"
-  fi
-fi
 
 # Strip double quotes to keep the AppleScript string well-formed.
 subtitle="${subtitle//\"/}"

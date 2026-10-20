@@ -417,9 +417,6 @@ nnoremap q :quit<cr>
 "
 " let $VIFM_SERVER_NAME = v:servername
 
-" Activate screen/tmux support
-" screen!
-
 " ------------------------------------------------------------------------------
 " Icon decorations example
 " ------------------------------------------------------------------------------

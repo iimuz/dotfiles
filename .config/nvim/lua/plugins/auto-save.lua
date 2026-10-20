@@ -8,8 +8,6 @@ return {
 	event = { "BufEnter" },
 	opts = {
 		trigger_events = {
-			-- tmuxを利用する場合に"FocusLost"でファイルを保存するためには`set -g focus-events on`にしておく必要がある。
-			-- see: <https://qiita.com/sijiaoh/items/874cd77e083b8ab05151>
 			immediate_save = { "BufLeave", "FocusLost" },
 			-- defer_save = { "InsertLeave", "TextChanged" },
 			defer_save = {},
