@@ -80,6 +80,7 @@ return {
 				opts = vim.tbl_extend("keep", opts or {}, { lsp_format = "fallback", async = false, timeout_ms = 1000 })
 				require("conform").format(opts)
 			end,
+			mode = { "n", "x" },
 			desc = "⭐︎Conform: Format file or range.",
 		},
 		{ "<Leader>Ci", "<cmd>ConformInfo<CR>", desc = "⭐︎Conform: Show information." },
