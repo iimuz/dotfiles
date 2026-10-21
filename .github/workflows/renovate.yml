@@ -2,8 +2,9 @@ name: Renovate
 
 on:
   schedule:
-    # Run weekly on Saturday at 15:00 UTC (Sunday 00:00 JST)
-    - cron: "0 15 * * 6"
+    # Run daily at 15:00 UTC (00:00 JST) so conflicted automerge PRs get rebased by the next day;
+    # new PRs are limited to Saturday by "schedule" in renovate.json
+    - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
       log_level:
