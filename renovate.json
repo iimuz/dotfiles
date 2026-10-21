@@ -10,6 +10,8 @@
   },
   "prHourlyLimit": 5,
   "prConcurrentLimit": 10,
+  "schedule": ["* * * * 6"],
+  "assignees": ["iimuz"],
   "labels": ["dependencies"],
   "mise": {
     "managerFilePatterns": ["/\\.config/mise/config-.+\\.toml$/"]
