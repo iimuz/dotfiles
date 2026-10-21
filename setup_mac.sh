@@ -107,3 +107,7 @@ if type vim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/vim/init.vim" "$HOME/.vimrc"
   create_symlink "$SCRIPT_DIR/.config/vim" "$HOME/.config/vim"
 fi
+# === vivify
+if type vivify-server >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/vivify" "$HOME/.config/vivify"
+fi
