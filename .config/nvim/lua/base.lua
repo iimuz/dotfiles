@@ -29,7 +29,7 @@ vim.opt.smartcase = true -- 検索文字列に大文字が含まれている場�
 vim.cmd([[ colorscheme pablo ]]) -- デフォルトで利用可能なカラースキーム
 vim.opt.mouse = "" -- マウス操作を無効
 vim.opt.clipboard = "unnamedplus" -- クリップボードを共有
-if vim.fn.has("linux") == 1 and vim.env.TMUX == nil then
+if vim.fn.has("linux") == 1 then
 	-- herdrや素のSSH端末はOSC 52の読み取り問い合わせに応答しないため、
 	-- paste側は端末に問い合わせず自分のレジスタをそのまま返す
 	local osc52 = require("vim.ui.clipboard.osc52")

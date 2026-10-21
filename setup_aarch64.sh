@@ -23,7 +23,6 @@ sudo apt-get install -y --no-install-recommends \
   build-essential \
   rsync \
   vim \
-  tmux \
   unzip \
   zsh
 # プロセス監視 (mise になく github で pre-build binary も配布していない)
@@ -115,14 +114,6 @@ if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh
 # === tailscale
 # see: <https://tailscale.com/download/linux>
 if ! type tailscale >/dev/null 2>&1; then curl -fsSL https://tailscale.com/install.sh | sh; fi
-# === tmux
-if type tmux >/dev/null 2>&1; then
-  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    git clone "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm"
-  fi
-  create_symlink "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
-  create_symlink "$SCRIPT_DIR/.config/tmux/new-window-fzf.sh" "$HOME/.config/tmux/new-window-fzf.sh"
-fi
 # === vifm
 if type vifm >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/vifm/vifmrc" "$HOME/.config/vifm/vifmrc"

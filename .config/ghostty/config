@@ -8,8 +8,6 @@ font-size = 16
 # see: <https://zenn.dev/massa/articles/ghostty-usage>
 # font-feature = -dlig
 
-# command = /bin/zsh -l -c tmux new -A -s ghostty
-
 # Window
 title = " "
 window-padding-x = 5

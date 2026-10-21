@@ -26,9 +26,5 @@ function osc52copy() {
   DATA=$(cat "$@" | base64 | tr -d '\n')
   readonly DATA
 
-  if [ -n "$TMUX" ]; then
-    printf "\033Ptmux;\033\033]52;c;%s\007\033\\" "$DATA"
-  else
-    printf "\033]52;c;%s\007" "$DATA"
-  fi
+  printf "\033]52;c;%s\007" "$DATA"
 }
