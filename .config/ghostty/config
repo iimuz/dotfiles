@@ -19,6 +19,9 @@ window-padding-balance = true
 # macOS
 macos-titlebar-style = tabs
 macos-window-shadow = false
+# 既定はキーボードレイアウトで決まり、ABC 配列では Option が Alt にならず Option+w が ∑ になる
+# true にすると、どの配列でも Option での文字入力 (∑、JIS の Option+¥ によるバックスラッシュなど) は使えない
+macos-option-as-alt = true
 
 # マウス設定
 mouse-hide-while-typing = true
