@@ -1,0 +1,60 @@
+-- daliusd/ghlite.nvim
+-- see: <https://github.com/daliusd/ghlite.nvim>
+--
+-- GitHubのPRのレビュー
+
+return {
+	"daliusd/ghlite.nvim",
+	enabled = true,
+	dependencies = {
+		"lewis6991/async.nvim",
+		"dlyongemallo/diffview-plus.nvim",
+	},
+	cmd = {
+		"GHLitePRSelect",
+		"GHLitePRView",
+		"GHLitePRDiff",
+		"GHLitePRDiffview",
+		"GHLitePRLoadComments",
+		"GHLitePRAddComment",
+		"GHLitePRAddPRComment",
+		"GHLitePRUpdateComment",
+		"GHLitePRDeleteComment",
+		"GHLitePRResolveComment",
+		"GHLitePRUnresolveComment",
+		"GHLitePROpenComment",
+		"GHLitePRStartReview",
+		"GHLitePRSubmitReview",
+		"GHLitePRDiscardReview",
+		"GHLitePRApprove",
+		"GHLitePRRequestChanges",
+		"GHLitePRExportComments",
+	},
+	keys = {
+		{ "<Leader>Os", "<cmd>GHLitePRSelect<CR>", desc = "GHLite: Select PR." },
+		{ "<Leader>Ov", "<cmd>GHLitePRView<CR>", desc = "GHLite: View PR." },
+		{ "<Leader>Od", "<cmd>GHLitePRDiff<CR>", desc = "GHLite: Open PR diff." },
+		{ "<Leader>OD", "<cmd>GHLitePRDiffview<CR>", desc = "GHLite: Open PR in diffview." },
+		{ "<Leader>Ol", "<cmd>GHLitePRLoadComments<CR>", desc = "GHLite: Load review comments." },
+		{ "<Leader>Oc", "<cmd>GHLitePRAddComment<CR>", desc = "⭐︎GHLite: Comment on line." },
+		{ "<Leader>Oc", ":GHLitePRAddComment<CR>", mode = "x", desc = "⭐︎GHLite: Comment on range." },
+		{ "<Leader>OC", "<cmd>GHLitePRAddPRComment<CR>", desc = "GHLite: Comment on PR." },
+		{ "<Leader>Oe", "<cmd>GHLitePRUpdateComment<CR>", desc = "GHLite: Edit comment." },
+		{ "<Leader>Ox", "<cmd>GHLitePRDeleteComment<CR>", desc = "GHLite: Delete comment." },
+		{ "<Leader>Or", "<cmd>GHLitePRResolveComment<CR>", desc = "GHLite: Resolve thread." },
+		{ "<Leader>Ou", "<cmd>GHLitePRUnresolveComment<CR>", desc = "GHLite: Unresolve thread." },
+		{ "<Leader>Oo", "<cmd>GHLitePROpenComment<CR>", desc = "GHLite: Open comment in browser." },
+		{ "<Leader>Og", "<cmd>GHLitePRStartReview github<CR>", desc = "⭐︎GHLite: Start GitHub review." },
+		{ "<Leader>Oa", "<cmd>GHLitePRStartReview agent<CR>", desc = "⭐︎GHLite: Start agent review." },
+		{ "<Leader>OS", "<cmd>GHLitePRSubmitReview<CR>", desc = "⭐︎GHLite: Submit review." },
+		{ "<Leader>OX", "<cmd>GHLitePRDiscardReview<CR>", desc = "GHLite: Discard review." },
+		{ "<Leader>OA", "<cmd>GHLitePRApprove<CR>", desc = "GHLite: Approve PR." },
+		{ "<Leader>OR", "<cmd>GHLitePRRequestChanges<CR>", desc = "GHLite: Request changes." },
+		{ "<Leader>OE", "<cmd>GHLitePRExportComments<CR>", desc = "⭐︎GHLite: Export comments for agent." },
+	},
+	opts = {
+		pr_commands = {},
+		keymaps = { pr = { merge = false } },
+		html_comments_command = false,
+	},
+}
