@@ -38,7 +38,6 @@ return {
 			-- <Leader>nはlua-snipで利用しているため、ここでは利用しない
 			-- <Leader>Nはnvim-lintで利用しているため、ここでは利用しない
 			{ "<Leader>o", group = "Outline" },
-			{ "<Leader>O", group = "GHLite" },
 			-- <Leader>pはFilePalletteで利用しているため、ここでは利用しない
 			-- <Leader>PはCommandPalletteで利用しているため、ここでは利用しない
 			{ "<Leader>q", group = "Quickfix and Location list" },
