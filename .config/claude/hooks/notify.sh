@@ -51,11 +51,9 @@ esac
 # Repository (project) name.
 repo="$(basename "${CLAUDE_PROJECT_DIR:-$PWD}")"
 
-subtitle="$repo"
-
 # Strip double quotes to keep the AppleScript string well-formed.
-subtitle="${subtitle//\"/}"
+repo="${repo//\"/}"
 
-osascript -e "display notification \"${message}\" with title \"Claude Code\" subtitle \"${subtitle}\" sound name \"${sound}\"" >/dev/null 2>&1 || true
+osascript -e "display notification \"${message}\" with title \"Claude Code\" subtitle \"${repo}\" sound name \"${sound}\"" >/dev/null 2>&1 || true
 
 exit 0
