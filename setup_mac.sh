@@ -64,6 +64,7 @@ fi
 # === gh
 if type gh >/dev/null 2>&1; then
   gh extension install kmtym1998/gh-prowl
+  gh extension install github/gh-stack
 fi
 # === git
 if type git >/dev/null 2>&1; then
