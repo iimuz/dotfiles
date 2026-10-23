@@ -34,7 +34,6 @@ return {
 			{ "<Leader>l", group = "LSP" }, -- 全てではないが一部のLeaderキーを設定するためLSPで利用
 			{ "<Leader>L", "<cmd>Lazy<CR>", desc = "⭐︎Lazy: Show Lazy UI." }, -- 全体の管理なので元の所で設定する方法がわからないのでここに記載
 			{ "<Leader>m", group = "Markdown" },
-			{ "<Leader>M", group = "Mason" },
 			-- <Leader>nはlua-snipで利用しているため、ここでは利用しない
 			-- <Leader>Nはnvim-lintで利用しているため、ここでは利用しない
 			{ "<Leader>o", group = "Outline" },

@@ -10,4 +10,19 @@ return {
 		"BufReadPre",
 		"BufNewFile",
 	},
+	config = function()
+		-- 実行ファイルはmiseで入れており、エージェントやpre-commitからも同じものを使う。
+		-- ruff、sqruff、styluaはconformとnvim-lintから呼ぶので、LSPとしては有効にしない。
+		vim.lsp.enable({
+			"bashls",
+			"gopls",
+			"lua_ls",
+			"marksman",
+			"pyright",
+			"rust_analyzer",
+			"taplo",
+			"vtsls",
+			"yamlls",
+		})
+	end,
 }
