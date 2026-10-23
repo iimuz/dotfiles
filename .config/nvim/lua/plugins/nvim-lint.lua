@@ -26,24 +26,17 @@ return {
 		local lint = require("lint")
 
 		-- ファイルタイプごとのlinterの設定
+		-- sh と bash は bashls が内部で shellcheck を動かすので、ここでは指定しない。
+		-- zsh は shellcheck が対応しておらず、bash として読ませると zsh 固有の構文を誤検知するので、構文の検査だけにする。
+		-- zsh の入っていない環境 (Termux) では、開くたびに実行のエラーが通知されないよう外す。
 		lint.linters_by_ft = {
-			bash = { "shellcheck" },
 			javascript = { "eslint_d" },
 			javascriptreact = { "eslint_d" },
 			python = { "ruff" },
-			sh = { "shellcheck" },
 			sql = { "sqruff" },
 			typescript = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
-			zsh = { "shellcheck" },
-		}
-
-		-- shellcheckの設定カスタマイズ
-		lint.linters.shellcheck.args = {
-			"--format=json",
-			"--shell=bash", -- デフォルトシェルをbashに指定
-			-- "--exclude=SC1091,SC2034", -- 特定のエラーを除外
-			"-",
+			zsh = vim.fn.executable("zsh") == 1 and { "zsh" } or nil,
 		}
 
 		-- eslint_dの設定カスタマイズ
