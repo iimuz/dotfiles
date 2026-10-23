@@ -86,6 +86,10 @@ fi
 if type mise >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/mise/config-common.toml" "$HOME/.config/mise/config.toml"
   create_symlink "$SCRIPT_DIR/.config/mise/config-mac.toml" "$HOME/.config/mise/config.local.toml"
+  # create_symlink は既存のリンクを張り替えないので、分割前の古いリンクが残ると共通のツールが黙って外れる
+  if [ "$(readlink "$HOME/.config/mise/config.toml")" != "$SCRIPT_DIR/.config/mise/config-common.toml" ]; then
+    echo "WARNING: ~/.config/mise/config.toml does not link to config-common.toml; remove it and rerun" >&2
+  fi
 fi
 # === neovim
 if type nvim >/dev/null 2>&1; then

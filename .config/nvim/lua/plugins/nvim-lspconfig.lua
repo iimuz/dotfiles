@@ -11,7 +11,7 @@ return {
 		"BufNewFile",
 	},
 	config = function()
-		-- 実行ファイルはmiseで入れており、エージェントやpre-commitからも同じものを使う。
+		-- 実行ファイルはmiseで入れており、エージェントからも同じものを使う。
 		-- ruff、sqruff、styluaはconformとnvim-lintから呼ぶので、LSPとしては有効にしない。
 		vim.lsp.enable({
 			"bashls",
