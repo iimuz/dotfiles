@@ -108,3 +108,16 @@ def test_formats_comment_bodies(monkeypatch, capsys):
 
     _, kwargs = calls[-1]
     assert json.loads(kwargs["input"])["variables"]["body"] == "[F]x"
+
+
+def test_rejects_non_string_comment_body(monkeypatch, capsys):
+    responses = [_find_response([{"id": "REV1", "viewerDidAuthor": True}])]
+    _patch_run(monkeypatch, responses)
+    argv = _argv()
+    argv[-1] = json.dumps([{"path": "a.py", "line": 1, "body": 1}])
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        append_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_comment"

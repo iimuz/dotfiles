@@ -121,3 +121,16 @@ def test_stops_when_formatter_fails(monkeypatch, capsys):
 
     assert json.loads(capsys.readouterr().err)["error"] == "format_body_failed"
     assert calls == []
+
+
+def test_rejects_non_string_comment_body(monkeypatch, capsys):
+    calls = _patch_run(monkeypatch, _ok_responses())
+    argv = _argv()
+    argv[-1] = json.dumps([{"path": "a.py", "line": 1, "body": None}])
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        create_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_comment"
+    assert calls == []

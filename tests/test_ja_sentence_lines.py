@@ -42,6 +42,9 @@ CASES = {
     "list_item": ("- 項目の\n  本文。続き。\n", "- 項目の本文。\n  続き。\n"),
     "ordered_single_line": ("1. 一つ目。二つ目。\n", "1. 一つ目。\n   二つ目。\n"),
     "blockquote": ("> 引用の\n> 本文。次。\n", "> 引用の本文。\n> 次。\n"),
+    "lazy_blockquote": ("> 引用。次。\n続き。\n", "> 引用。\n> 次。\n> 続き。\n"),
+    "lazy_list_item": ("- 文1。文2。\n続き。\n", "- 文1。\n  文2。\n  続き。\n"),
+    "nested_list_item": ("- - 文1。文2。\n", "- - 文1。\n    文2。\n"),
     "callout": (
         "> [!NOTE]\n> 注意の\n> 本文。次。\n",
         "> [!NOTE]\n> 注意の本文。\n> 次。\n",

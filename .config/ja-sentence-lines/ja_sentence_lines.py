@@ -191,10 +191,8 @@ def _rewrite_paragraph(lines: list[str], content: str) -> list[str] | None:
         return None
 
     first_prefix = prefixes[skip]
-    if len(target) > 1:
-        rest_prefix = prefixes[skip + 1]
-    else:
-        rest_prefix = _LIST_MARKER.sub(lambda m: " " * len(m.group()), first_prefix, count=1)
+    # Later source lines may be lazy continuations without the quote marker or list indent.
+    rest_prefix = _LIST_MARKER.sub(lambda m: " " * len(m.group()), first_prefix)
     result = [(first_prefix if i == 0 else rest_prefix) + line for i, line in enumerate(new_lines)]
     return [*lines[:skip], *result]
 

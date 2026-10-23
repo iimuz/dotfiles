@@ -104,7 +104,10 @@ def main() -> None:
                 detail=f"Comment at index {index} must be an object",
             )
 
-        body = format_body(comment.get("body", ""))
+        body = comment.get("body", "")
+        if not isinstance(body, str):
+            emit_error("invalid_comment", detail=f"Comment at index {index} body must be a string")
+        body = format_body(body)
         suggestion = comment.get("suggestion")
         path = comment.get("path")
         line = comment.get("line")
