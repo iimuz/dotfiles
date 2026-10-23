@@ -21,12 +21,15 @@ job は自分用の lefthook のローカル設定 (`lefthook-local.yml`) にだ
 チーム共通の設定に足すと、道具を入れていない人の commit が失敗する。
 
 次のリポジトリには入れない。
-改行を決める整形と、整形のたびに改行が往復する。
 
 - prettier の `proseWrap` が `always` か `never` のリポジトリ
 - dprint の `textWrap` が `always` か `never` のリポジトリ
+- 行長の lint (markdownlint の MD013 など) で Markdown の行の長さに上限を決めているリポジトリ
 
+前の 2 つでは、改行を決める整形と、整形のたびに改行が往復する。
 `preserve` や `maintain` は改行を保つので一緒に使える。
+行長の lint があると、1 文 1 行の長い行が上限を超えて lint が通らない。
+lint の設定はリポジトリの決まりなので、この道具のために変えない。
 
 ### 手順
 
@@ -72,8 +75,3 @@ git が追跡していないファイル (未追跡か gitignore されたもの
 追跡されているかは、シンボリックリンクをたどった実体のパスで判定する。
 動くのは、`lefthook-local.yml` に `ja-sentence-lines` を書いたリポジトリでだけである。
 追跡されているファイルは commit 時の job に任せる。
-
-## 行長の lint
-
-1 文 1 行の行は、行長の lint (markdownlint の MD013 など) の上限を超えることがある。
-超えたときは文を切らず、そのリポジトリの lint の設定を見直す。
