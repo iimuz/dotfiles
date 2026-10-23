@@ -34,7 +34,7 @@ _PROTECTED = re.compile(
     r"|!?\[[^\]]*\]\([^)]*\)"
     r"|\[[^\]]*\]\[[^\]]*\]"
     r"|<[^>\n]+>"
-    r"|\$[^$]+\$",
+    r"|\$(?![\s$])[^$]*?(?<![\s$])\$(?!\d)",
     re.DOTALL,
 )
 
@@ -42,6 +42,8 @@ _SENTENCE_END = "。！？"
 _OPEN = "「『（【〔〈《［｛“‘("
 _CLOSE = "」』）】〕〉》］｝”’)"
 _TRAILING_MARKS = "*_~"
+_INLINE_MARKS = "*_~`[]!"
+_LINK_TAIL = re.compile(r"\](?:\([^)]*\)|\[[^\]]*\])$")
 
 
 @lru_cache(maxsize=1)
@@ -53,7 +55,7 @@ def _protected_spans(text: str) -> list[tuple[int, int]]:
     return [m.span() for m in _PROTECTED.finditer(text)]
 
 
-def _join_lines(content: str) -> str:
+def _join_lines(content: str, look_past_marks: bool) -> str:
     spans = _protected_spans(content)
     pieces: list[str] = []
     start = 0
@@ -68,10 +70,14 @@ def _join_lines(content: str) -> str:
     for piece in pieces[1:]:
         left = joined.rstrip(" \t")
         right = piece.lstrip(" \t")
+        left_char, right_char = left[-1:], right[:1]
+        if look_past_marks:
+            left_char = _LINK_TAIL.sub("", left).rstrip(_INLINE_MARKS)[-1:]
+            right_char = right.lstrip(_INLINE_MARKS)[:1]
         if (
             not left
             or not right
-            or (_JA_JOIN_CHAR.match(left[-1]) and _JA_JOIN_CHAR.match(right[0]))
+            or (_JA_JOIN_CHAR.match(left_char) and _JA_JOIN_CHAR.match(right_char))
         ):
             joined = left + right
         else:
@@ -98,13 +104,24 @@ def _split_sentences(text: str) -> list[str]:
             j = i + 1
             closed = False
             while j < len(text) and text[j] in _SENTENCE_END + _CLOSE + _TRAILING_MARKS:
+                if text[j] in _TRAILING_MARKS:
+                    # After "。" a mark run can close emphasis only before a space or the end.
+                    k = j
+                    while k < len(text) and text[k] in _TRAILING_MARKS:
+                        k += 1
+                    if k < len(text) and not text[k].isspace():
+                        break
+                    j = k
+                    continue
                 if text[j] in _CLOSE:
                     closed = True
                     depth = max(0, depth - 1)
                 j += 1
             rest = text[j:].lstrip()
+            # An opening bracket never closed later is a typo; it must not hold every later split.
+            held = depth > 0 and any(c in _CLOSE for c in text[j:])
             # A closing bracket followed by hiragana means the sentence continues.
-            if not rest or depth > 0 or (closed and _HIRAGANA.match(rest[0])):
+            if not rest or held or (closed and _HIRAGANA.match(rest[0])):
                 i = j
                 continue
             sentences.append(text[start:j])
@@ -163,12 +180,16 @@ def _kept_types(content: str) -> list[str] | None:
 
 def _new_content_lines(content_lines: list[str]) -> list[str] | None:
     before = "\n".join(content_lines)
-    after = _split_sentences(_join_lines(before))
-    new_content = "\n".join(s for s in after if s)
     kept_before = _kept_types(before)
-    if kept_before is None or _kept_types(new_content) != kept_before:
+    if kept_before is None:
         return None
-    return new_content.split("\n")
+    # Without a space, a mark next to a bracket like "**「" may no longer open or close emphasis.
+    for look_past_marks in (True, False):
+        after = _split_sentences(_join_lines(before, look_past_marks))
+        new_content = "\n".join(s for s in after if s)
+        if _kept_types(new_content) == kept_before:
+            return new_content.split("\n")
+    return None
 
 
 def _rewrite_paragraph(lines: list[str], content: str) -> list[str] | None:

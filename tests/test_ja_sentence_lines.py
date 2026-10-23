@@ -32,6 +32,27 @@ CASES = {
     "repeated_marks": ("本当？！そうだ。\n", "本当？！\nそうだ。\n"),
     # CommonMark does not close "**" between "。" and a CJK letter, so the source keeps a space
     "emphasis": ("**重要。** 次の文。\n", "**重要。**\n次の文。\n"),
+    "emphasis_after_end": ("文。*斜体*です。次の文。\n", "文。\n*斜体*です。\n次の文。\n"),
+    "markup_join": ("日本語の\n**強調**です。\n", "日本語の**強調**です。\n"),
+    "markup_join_left": ("**強調**\nです。\n", "**強調**です。\n"),
+    "code_join_ascii": ("日本語の\n`code` です。\n", "日本語の `code` です。\n"),
+    "link_join": (
+        "日本語の\n[リンク](https://x)を見る。\n",
+        "日本語の[リンク](https://x)を見る。\n",
+    ),
+    "link_join_left": ("[リンク](https://x)\nを見る。\n", "[リンク](https://x)を見る。\n"),
+    "wikilink_join": ("日本語の\n[[ノート]]を見る。\n", "日本語の[[ノート]]を見る。\n"),
+    # "**" between "の" and "「" cannot open emphasis, so this join keeps the space
+    "markup_join_keeps_space": (
+        "日本語の\n**「重要」** です。次。\n",
+        "日本語の **「重要」** です。\n次。\n",
+    ),
+    "dollar_amounts": (
+        "価格は $5 です。次は $10 です。最後。\n",
+        "価格は $5 です。\n次は $10 です。\n最後。\n",
+    ),
+    "inline_math": ("式 $a。b$ を使う。次。\n", "式 $a。b$ を使う。\n次。\n"),
+    "unclosed_paren": ("注 (詳細は後述 です。次の文。\n", "注 (詳細は後述 です。\n次の文。\n"),
     "inline_code": ("`a。b` を使う。次。\n", "`a。b` を使う。\n次。\n"),
     "code_span_newline": ("`a\nb` の\n説明。\n", "`a\nb` の説明。\n"),
     "link": (
