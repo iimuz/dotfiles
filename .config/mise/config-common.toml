@@ -1,32 +1,49 @@
 # ~/.config/mise/config.toml にリンクする、全環境で共通の設定。
 # 環境ごとの差分は config.local.toml (config-mac.toml / config-linux.toml) に置く。同じツールを両方に書かない
 [tools]
+"aqua:quarylabs/sqruff" = "0.41.0"
 awscli = { version = "2.37.9", symlink_bins = "true" }
 cargo-binstall = "1.25.1"
 "cargo:tree-sitter-cli" = "0.27.0" # for neovim
 claude = "2.1.296"
+cspell = "10.4.0"
 delta = "0.19.2"
 fzf = "0.74.4"
 gh = "2.102.0"
 go = "1.27.1"
+# aqua の登録は go install 形式で mise の aqua backend が扱えないため go backend を使う
+"go:golang.org/x/tools/gopls" = "0.24.0"
 jq = "1.8.2"
 lazygit = "0.65.1"
+lua-language-server = "3.19.2"
+marksman = "2026-02-08"
 node = "24.21.0"
 "npm:@aikidosec/safe-chain" = "1.5.24"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.78" # for claude code
 "npm:@playwright/cli" = "0.1.22" # for claude code
 "npm:@tobilu/qmd" = "2.8.3" # 日本語 FTS には 2.5.3 以降が必要 (2.5.3-2.8.3 間の中間版は CJK 再構築にバグあり)
+"npm:@vtsls/language-server" = "0.3.0"
+"npm:bash-language-server" = "5.8.1"
 "npm:ccusage" = "20.0.26" # for claude code
 "npm:context-mode" = "1.0.169" # for claude code
+"npm:eslint_d" = "15.0.3"
 "npm:neovim" = "5.5.0" # for neovim
+"npm:pyright" = "1.1.414"
+"npm:yaml-language-server" = "2.0.0"
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.2"
 "pipx:pynvim" = "0.6.0" # for neovim
 pnpm = "12.9.1"
+prettier = "3.9.10"
 python = "3.14.8"
 ripgrep = "15.2.0"
-rust = "1.99.0"
+ruff = "0.17.1"
+# rust-analyzer は rustup の proxy が PATH に先に見つかるため、aqua ではなく component で入れる
+rust = { version = "1.99.0", components = "rust-analyzer" }
 shellcheck = "0.11.0"
 shfmt = "3.14.1"
+stylua = "2.6.0"
+taplo = "0.10.0"
+typos = "1.51.1"
 uv = "0.12.23"
 yq = "4.54.1"
 
