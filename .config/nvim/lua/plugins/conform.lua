@@ -9,7 +9,7 @@ return {
 	"stevearc/conform.nvim",
 	cmd = "ConformInfo",
 	-- ファイルタイプごとのformatterの設定
-	-- 利用するformatterはmasonで管理
+	-- 利用するformatterはmiseで管理
 	opts = {
 		formatters_by_ft = {
 			bash = { "shfmt" },
@@ -20,27 +20,14 @@ return {
 			json = { "prettier" },
 			lua = { "stylua" },
 			markdown = { "prettier" },
-			python = function(bufnr)
-				local conform = require("conform")
-				if conform.get_formatter_info("ruff_format", bufnr).available then
-					-- ruff_fixまで実施しないとimportの修正が行われない
-					return { "ruff_format", "ruff_fix" }
-				else
-					return { "isort", "black" }
-				end
-			end,
+			-- ruff_fixまで実施しないとimportの修正が行われない
+			python = { "ruff_format", "ruff_fix" },
 			rust = { "rustfmt", lsp_format = "fallback" },
 			sh = { "shfmt" },
-			-- solidity pluginが必要
-			-- `npm install --save-dev prettier prettier-plugin-solidity`
-			-- インストール後に以下の設定を.prettierrcなどに設定する。
-			-- <https://github.com/prettier-solidity/prettier-plugin-solidity?tab=readme-ov-file#configuration-file>
-			solidity = { "prettier" },
 			sql = { "sqruff" },
 			toml = { "taplo" },
 			typescript = { "prettier" },
 			typescriptreact = { "prettier" },
-			typespec = { "typespec" },
 			yaml = { "prettier" },
 			zsh = { "shfmt" },
 		},

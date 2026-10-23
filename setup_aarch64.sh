@@ -46,7 +46,12 @@ set_bashrc "$CONFIG_PATH/rc-settings.sh"
 # === [mise](https://github.com/jdx/mise)
 if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
 if type mise >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-common.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.local.toml"
+  # create_symlink は既存のリンクを張り替えないので、リンクが共通のファイル以外を指していると共通のツールが読み込まれない
+  if [ "$(readlink "$HOME/.config/mise/config.toml")" != "$SCRIPT_DIR/.config/mise/config-common.toml" ]; then
+    echo "WARNING: ~/.config/mise/config.toml does not link to config-common.toml; remove it and rerun" >&2
+  fi
 fi
 
 # === claude

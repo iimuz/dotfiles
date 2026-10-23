@@ -135,6 +135,18 @@ def test_toml_files_parse(toml_file: str) -> None:
         tomllib.load(f)
 
 
+_MISE_DIR = _REPO_ROOT / ".config" / "mise"
+
+
+@pytest.mark.skipif(tomllib is None, reason="No TOML parser available (need tomllib or tomli)")
+@pytest.mark.parametrize("platform_file", ["config-mac.toml", "config-linux.toml"])
+def test_mise_platform_config_does_not_repeat_common_tools(platform_file: str) -> None:
+    """A tool in the platform file would silently replace the common entry, options included."""
+    common = tomllib.loads((_MISE_DIR / "config-common.toml").read_text())["tools"]
+    platform = tomllib.loads((_MISE_DIR / platform_file).read_text()).get("tools", {})
+    assert set(common) & set(platform) == set()
+
+
 # ---------------------------------------------------------------------------
 # 3. JSON files parse
 # ---------------------------------------------------------------------------

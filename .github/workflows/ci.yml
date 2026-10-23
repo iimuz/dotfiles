@@ -11,7 +11,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
+      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-common.toml:${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -23,7 +23,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
+      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-common.toml:${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -35,7 +35,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     env:
-      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
+      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/.config/mise/config-common.toml:${{ github.workspace }}/.config/mise/config-mac.toml:${{ github.workspace }}/.config/mise/config-linux.toml
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
