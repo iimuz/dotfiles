@@ -84,7 +84,8 @@ if type lazygit >/dev/null 2>&1; then
 fi
 # === mise
 if type mise >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/mise/config-mac.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-common.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-mac.toml" "$HOME/.config/mise/config.local.toml"
 fi
 # === neovim
 if type nvim >/dev/null 2>&1; then

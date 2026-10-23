@@ -46,7 +46,8 @@ set_bashrc "$CONFIG_PATH/rc-settings.sh"
 # === [mise](https://github.com/jdx/mise)
 if ! type mise >/dev/null 2>&1; then curl https://mise.run | sh; fi
 if type mise >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-common.toml" "$HOME/.config/mise/config.toml"
+  create_symlink "$SCRIPT_DIR/.config/mise/config-linux.toml" "$HOME/.config/mise/config.local.toml"
 fi
 
 # === claude

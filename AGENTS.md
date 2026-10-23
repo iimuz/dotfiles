@@ -24,8 +24,16 @@ Run `mise run format` and `mise run lint` after any modifications.
 ## Architecture
 
 - `.config/`: Tool configurations organized by tool name (one subdirectory per tool)
-  - `.config/mise/`: Platform-specific mise tool configs; each `setup_*.sh` symlinks the
-    matching `config-{platform}.toml` to `~/.config/mise/config.toml`
+  - `.config/mise/`: Global mise configs. Each `setup_*.sh` symlinks `config-common.toml`
+    (tools, env, and settings shared by every platform) to `~/.config/mise/config.toml`, and
+    the matching `config-{platform}.toml` (platform-only tools, settings, and env) to
+    `~/.config/mise/config.local.toml`, which mise reads with higher priority
+    - Never list the same tool in both files: the platform entry replaces the common one,
+      options included
+    - Keep the `config-` prefix: a `config.toml`, `config.<env>.toml`, `conf.d/*.toml`, or
+      `mise.toml` under `.config/mise/` is loaded as project config inside this repository
+    - `mise use -g` writes to `config-common.toml`; add platform-only tools to the platform
+      file by hand
   - `.config/claude/`: Claude Code user settings managed as dotfiles (CLAUDE.md, skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the
