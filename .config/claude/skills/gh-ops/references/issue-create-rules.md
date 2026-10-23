@@ -56,10 +56,9 @@ Issue の本文を 2 つのテンプレートのどちらかで書き、`gh issu
 ## 作成
 
 ```bash
-body="$(ja-sentence-lines <<'EOF'
+body_file="$(mktemp)" && ja-sentence-lines > "$body_file" <<'EOF' && gh issue create --title '<タイトル>' --body-file "$body_file"; rm -f "$body_file"
 <テンプレートに沿って書いた本文>
 EOF
-)" && gh issue create --title '<タイトル>' --body "$body"
 ```
 
 リポジトリ、ラベル、担当者、プロジェクトを指定するときは、`gh` のフラグ `--repo`、`--label`、`--assignee`、

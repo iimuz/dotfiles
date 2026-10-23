@@ -39,10 +39,7 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
 
 
 def format_body(text: str) -> str:
-    try:
-        result = subprocess.run(["ja-sentence-lines"], input=text, capture_output=True, text=True)
-    except FileNotFoundError as error:
-        emit_error("format_body_failed", detail=f"ja-sentence-lines not found: {error}")
+    result = subprocess.run(["ja-sentence-lines"], input=text, capture_output=True, text=True)
     if result.returncode != 0:
         emit_error(
             "format_body_failed",
