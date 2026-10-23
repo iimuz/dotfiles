@@ -45,3 +45,8 @@ _load_module(
     "config.ja_sentence_lines",
     _PROJECT_ROOT / ".config" / "ja-sentence-lines" / "ja_sentence_lines.py",
 )
+
+_load_module(
+    "config.claude.hooks.ja_sentence_lines",
+    _PROJECT_ROOT / ".config" / "claude" / "hooks" / "ja_sentence_lines.py",
+)
