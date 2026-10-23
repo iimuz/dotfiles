@@ -68,7 +68,7 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 ## 作成
 
 ```bash
-gh pr create --draft [--base <base>] --title '<タイトル>' --body-file - <<'EOF'
+body_file="$(mktemp)" && ja-sentence-lines > "$body_file" <<'EOF' && gh pr create --draft [--base <base>] --title '<タイトル>' --body-file "$body_file"; rm -f "$body_file"
 <テンプレートに沿って書いた本文>
 EOF
 ```

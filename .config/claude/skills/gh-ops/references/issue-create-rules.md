@@ -56,7 +56,7 @@ Issue の本文を 2 つのテンプレートのどちらかで書き、`gh issu
 ## 作成
 
 ```bash
-gh issue create --title '<タイトル>' --body-file - <<'EOF'
+body_file="$(mktemp)" && ja-sentence-lines > "$body_file" <<'EOF' && gh issue create --title '<タイトル>' --body-file "$body_file"; rm -f "$body_file"
 <テンプレートに沿って書いた本文>
 EOF
 ```

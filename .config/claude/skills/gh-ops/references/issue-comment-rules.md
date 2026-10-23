@@ -24,7 +24,7 @@
 ## 投稿
 
 ```bash
-gh issue comment <number> [--repo OWNER/REPO] --body-file - <<'EOF'
+body_file="$(mktemp)" && ja-sentence-lines > "$body_file" <<'EOF' && gh issue comment <number> [--repo OWNER/REPO] --body-file "$body_file"; rm -f "$body_file"
 <テンプレートに沿って書いた本文>
 EOF
 ```

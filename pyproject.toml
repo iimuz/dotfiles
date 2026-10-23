@@ -4,7 +4,7 @@ version = "0.0.0"
 requires-python = ">=3.10"
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.12"]
+dev = ["markdown-it-py>=4,<5", "pytest>=8", "ruff>=0.12"]
 
 [tool.ruff]
 line-length = 100
