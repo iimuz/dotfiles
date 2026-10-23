@@ -24,7 +24,8 @@
 ## 投稿
 
 ```bash
-gh issue comment <number> [--repo OWNER/REPO] --body-file - <<'EOF'
+body="$(ja-sentence-lines <<'EOF'
 <テンプレートに沿って書いた本文>
 EOF
+)" && gh issue comment <number> [--repo OWNER/REPO] --body "$body"
 ```

@@ -38,6 +38,20 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
     sys.exit(exit_code)
 
 
+def format_body(text: str) -> str:
+    try:
+        result = subprocess.run(["ja-sentence-lines"], input=text, capture_output=True, text=True)
+    except FileNotFoundError as error:
+        emit_error("format_body_failed", detail=f"ja-sentence-lines not found: {error}")
+    if result.returncode != 0:
+        emit_error(
+            "format_body_failed",
+            detail="ja-sentence-lines failed",
+            stderr=result.stderr.strip(),
+        )
+    return result.stdout
+
+
 def run_graphql(query: str, variables: dict[str, Any]) -> dict[str, Any]:
     payload = json.dumps({"query": query, "variables": variables})
     cmd = ["gh", "api", "graphql", "--input", "-"]
@@ -90,7 +104,7 @@ def build_comments(comments_json: str) -> list[dict[str, Any]]:
     for index, comment in enumerate(raw_comments):
         if not isinstance(comment, dict):
             emit_error("invalid_comment", detail=f"Comment at index {index} must be an object")
-        body = comment.get("body", "")
+        body = format_body(comment.get("body", ""))
         suggestion = comment.get("suggestion")
         path = comment.get("path")
         line = comment.get("line")

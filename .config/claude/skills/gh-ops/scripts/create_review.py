@@ -32,6 +32,20 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
     sys.exit(exit_code)
 
 
+def format_body(text: str) -> str:
+    try:
+        result = subprocess.run(["ja-sentence-lines"], input=text, capture_output=True, text=True)
+    except FileNotFoundError as error:
+        emit_error("format_body_failed", detail=f"ja-sentence-lines not found: {error}")
+    if result.returncode != 0:
+        emit_error(
+            "format_body_failed",
+            detail="ja-sentence-lines failed",
+            stderr=result.stderr.strip(),
+        )
+    return result.stdout
+
+
 def fetch_pending_review(owner: str, repo: str, pull_number: int) -> dict[str, Any] | None:
     endpoint = f"repos/{owner}/{repo}/pulls/{pull_number}/reviews"
     result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
@@ -72,6 +86,7 @@ def main() -> None:
     parser.add_argument("--comments-json", required=True, help="JSON string of comments array")
 
     args = parser.parse_args()
+    summary_body = format_body(args.summary_body)
 
     try:
         raw_comments = json.loads(args.comments_json)
@@ -89,7 +104,7 @@ def main() -> None:
                 detail=f"Comment at index {index} must be an object",
             )
 
-        body = comment.get("body", "")
+        body = format_body(comment.get("body", ""))
         suggestion = comment.get("suggestion")
         path = comment.get("path")
         line = comment.get("line")
@@ -148,7 +163,7 @@ def main() -> None:
         )
 
     # Construct payload for GitHub API
-    payload = {"body": args.summary_body, "comments": api_comments}
+    payload = {"body": summary_body, "comments": api_comments}
     # event is OMITTED to create a PENDING review
 
     # Call gh api

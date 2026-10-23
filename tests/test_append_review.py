@@ -24,11 +24,15 @@ def _argv() -> list[str]:
     ]
 
 
-def _patch_run(monkeypatch, responses):
+def _patch_run(monkeypatch, responses, formatter=lambda t: t, formatter_returncode=0):
     calls = []
 
     def fake_run(cmd, **kwargs):
-        calls.append(cmd)
+        if cmd[0] == "ja-sentence-lines":
+            return SimpleNamespace(
+                returncode=formatter_returncode, stdout=formatter(kwargs["input"]), stderr=""
+            )
+        calls.append((cmd, kwargs))
         return responses.pop(0)
 
     monkeypatch.setattr(append_review.subprocess, "run", fake_run)
@@ -86,3 +90,21 @@ def test_errors_when_no_pending_review(monkeypatch, capsys):
     err = json.loads(capsys.readouterr().err)
     assert err["error"] == "no_pending_review"
     assert len(calls) == 1  # only the find query, no mutation
+
+
+def test_formats_comment_bodies(monkeypatch, capsys):
+    responses = [
+        _find_response([{"id": "REV1", "viewerDidAuthor": True}]),
+        SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps({"data": {"addPullRequestReviewThread": {"thread": {"id": "TH1"}}}}),
+            stderr="",
+        ),
+    ]
+    calls = _patch_run(monkeypatch, responses, formatter=lambda t: "[F]" + t)
+    monkeypatch.setattr(sys, "argv", _argv())
+
+    append_review.main()
+
+    _, kwargs = calls[-1]
+    assert json.loads(kwargs["input"])["variables"]["body"] == "[F]x"
