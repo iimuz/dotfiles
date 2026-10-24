@@ -3,7 +3,7 @@
 aws-vault = "7.2.0"
 gemini-cli = "0.62.0"
 herdr = "0.9.5"
-neovim = "0.12.5"
+neovim = "0.12.6"
 
 [env]
 # QMD が aarch64 linux 環境で gpu なしのため強制的に cpu 動作とする(不要にビルドが走ったりするため)
