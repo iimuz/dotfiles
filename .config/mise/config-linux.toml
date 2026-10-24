@@ -1,7 +1,7 @@
 # ~/.config/mise/config.local.toml にリンクする linux だけの設定。config.toml (config-common.toml) より優先される
 [tools]
 aws-vault = "7.2.0"
-gemini-cli = "0.62.0"
+gemini-cli = "0.63.0"
 herdr = "0.9.5"
 neovim = "0.12.6"
 
