@@ -136,7 +136,7 @@ job は `lefthook.yml` に直接書く。
 git が追跡していないファイル (未追跡か gitignore されたもの) だけを、ファイル全体で揃える。
 追跡されているかは、シンボリックリンクをたどった実体のパスで判定する。
 動くのは、lefthook が読む設定ファイルのどれかに `ja-sentence-lines` を書いたリポジトリでだけである。
-設定ファイルの名前は、リポジトリの直下の `lefthook`、`.lefthook`、`.config/lefthook` と、それぞれの末尾に `-local` を付けたものである。
+設定ファイルの名前は、リポジトリのルートからの相対パスで `lefthook`、`.lefthook`、`.config/lefthook` と、それぞれの末尾に `-local` を付けたものである。
 拡張子は `.yml`、`.yaml`、`.json`、`.jsonc`、`.toml` のどれかである。
 lefthook は、メインの設定 (`-local` の付かない名前) とローカル設定 (`-local` の付く名前) のそれぞれで、最初に見つけた 1 つだけを読む。
 hook はその順を真似せず、どれか 1 つに道具の名前があれば動く。
