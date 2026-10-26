@@ -110,10 +110,6 @@ fi
 if type herdr >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/herdr/config.toml" "$HOME/.config/herdr/config.toml"
 fi
-# === ja-sentence-lines
-if type uv >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/ja-sentence-lines/ja_sentence_lines.py" "$HOME/.local/bin/ja-sentence-lines"
-fi
 # === lazygit
 if type lazygit >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
