@@ -9,11 +9,6 @@ if ! type python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! type ja-sentence-lines >/dev/null 2>&1; then
-  printf '%s\n' "Error: ja-sentence-lines is required but was not found in PATH." >&2
-  exit 1
-fi
-
 if ! type gh >/dev/null 2>&1; then
   printf '%s\n' "Error: gh is required but was not found in PATH." >&2
   exit 1

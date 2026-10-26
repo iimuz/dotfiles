@@ -48,8 +48,6 @@ bash "${SKILL_DIR}/scripts/append_review.sh" \
 
 `--summary-body` は無い。成功すると標準出力に `{"review_id": "<id>", "added": <count>, "thread_ids": [...]}` を出す。
 
-script は `--summary-body` と各 comment の `body` を `ja-sentence-lines` で文の終わりに揃えてから投稿する。
-
 ## submit しない
 
 review は pending のまま残し、submit しない。ユーザーが GitHub の画面から submit する。

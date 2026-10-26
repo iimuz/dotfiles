@@ -93,17 +93,6 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$HOME/.claude/hooks/ja_sentence_lines.py\""
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": "",
