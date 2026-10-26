@@ -13,7 +13,6 @@ return {
 		{ "<Leader>oo", "<cmd>OutlineOpen<CR>", desc = "⭐︎Outline: Open." },
 		{ "<Leader>os", "<cmd>OutlineStatus<CR>", desc = "Outline: Show status." },
 		{ "<Leader>or", "<cmd>OutlineRefresh<CR>", desc = "Outline: Refresh of symbols." },
-		-- <Leader>otは、aerialのショートカットで利用している
 		{ "<Leader>ox", "<cmd>OutlineClose<CR>", desc = "Outline: Close." },
 	},
 }
