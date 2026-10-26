@@ -86,3 +86,16 @@ def test_errors_when_no_pending_review(monkeypatch, capsys):
     err = json.loads(capsys.readouterr().err)
     assert err["error"] == "no_pending_review"
     assert len(calls) == 1  # only the find query, no mutation
+
+
+def test_rejects_non_string_comment_body(monkeypatch, capsys):
+    responses = [_find_response([{"id": "REV1", "viewerDidAuthor": True}])]
+    _patch_run(monkeypatch, responses)
+    argv = _argv()
+    argv[-1] = json.dumps([{"path": "a.py", "line": 1, "body": 1, "suggestion": "y"}])
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        append_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_comment"

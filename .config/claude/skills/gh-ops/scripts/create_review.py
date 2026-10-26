@@ -90,6 +90,8 @@ def main() -> None:
             )
 
         body = comment.get("body", "")
+        if not isinstance(body, str):
+            emit_error("invalid_comment", detail=f"Comment at index {index} body must be a string")
         suggestion = comment.get("suggestion")
         path = comment.get("path")
         line = comment.get("line")

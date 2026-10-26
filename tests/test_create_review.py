@@ -69,3 +69,17 @@ def test_creates_when_no_pending_review(monkeypatch, capsys):
     out = json.loads(capsys.readouterr().out)
     assert out["id"] == 10
     assert len(calls) == 2  # list-reviews then POST
+
+
+def test_rejects_non_string_comment_body(monkeypatch, capsys):
+    responses = [SimpleNamespace(returncode=0, stdout="[]", stderr="")]
+    calls = _patch_run(monkeypatch, responses)
+    argv = _argv()
+    argv[-1] = json.dumps([{"path": "a.py", "line": 1, "body": None, "suggestion": "y"}])
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit):
+        create_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_comment"
+    assert all("POST" not in cmd for cmd in calls)
