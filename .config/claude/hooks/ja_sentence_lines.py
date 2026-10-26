@@ -9,6 +9,28 @@ import sys
 from pathlib import Path
 
 _TOOL = "ja-sentence-lines"
+_CONFIG_NAMES = (
+    "lefthook",
+    ".lefthook",
+    ".config/lefthook",
+    "lefthook-local",
+    ".lefthook-local",
+    ".config/lefthook-local",
+)
+_CONFIG_EXTENSIONS = (".yml", ".yaml", ".json", ".jsonc", ".toml")
+
+
+def _opted_in(root: str) -> bool:
+    # lefthook reads only the first file found per kind; any file naming the tool counts here.
+    needle = _TOOL.encode()
+    for name in _CONFIG_NAMES:
+        for ext in _CONFIG_EXTENSIONS:
+            try:
+                if needle in (Path(root) / f"{name}{ext}").read_bytes():
+                    return True
+            except OSError:
+                continue
+    return False
 
 
 def _git(cwd: str, *args: str) -> subprocess.CompletedProcess[str] | None:
@@ -19,7 +41,7 @@ def _git(cwd: str, *args: str) -> subprocess.CompletedProcess[str] | None:
 
 
 def should_format(file_path: str) -> bool:
-    """Return True for files git does not track, in a repo that opted in via lefthook-local.yml."""
+    """Return True for files git does not track, in a repo whose lefthook config names the tool."""
     # Resolve symlinks first: a link to a tracked file would otherwise look untracked.
     real = os.path.realpath(file_path)
     top = _git(os.path.dirname(real), "rev-parse", "--show-toplevel")
@@ -29,10 +51,7 @@ def should_format(file_path: str) -> bool:
     tracked = _git(root, "ls-files", "--error-unmatch", "--", real)
     if tracked is None or tracked.returncode == 0:
         return False
-    try:
-        return _TOOL in (Path(root) / "lefthook-local.yml").read_text(encoding="utf-8")
-    except OSError:
-        return False
+    return _opted_in(root)
 
 
 def main() -> int:

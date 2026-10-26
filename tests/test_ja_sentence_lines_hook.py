@@ -15,6 +15,9 @@ def _clean_git_env(monkeypatch):
         monkeypatch.delenv(name)
 
 
+_ENABLING_CONFIG = "pre-commit:\n  jobs:\n    - run: ja-sentence-lines --changed {staged_files}\n"
+
+
 def _git(cwd, *args):
     subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True)
 
@@ -34,9 +37,7 @@ def make_enabled_repo(path):
     (path / "notes.md").write_text("未追跡。\n")
     (path / "docs").mkdir()
     (path / "docs" / "plan.md").write_text("無視。\n")
-    (path / "lefthook-local.yml").write_text(
-        "pre-commit:\n  jobs:\n    - run: ja-sentence-lines --changed {staged_files}\n"
-    )
+    (path / "lefthook-local.yml").write_text(_ENABLING_CONFIG)
     return path
 
 
@@ -87,8 +88,46 @@ def test_tracked_file_is_skipped(enabled_repo):
     assert not should_format(str(enabled_repo / "tracked.md"))
 
 
-def test_repo_without_local_config_is_skipped(plain_repo):
+def test_repo_without_config_is_skipped(plain_repo):
     assert not should_format(str(plain_repo / "notes.md"))
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "lefthook.yml",
+        ".lefthook.yaml",
+        ".config/lefthook.toml",
+        "lefthook-local.json",
+        ".config/lefthook-local.jsonc",
+    ],
+)
+def test_config_file_with_tool_enables_hook(plain_repo, name):
+    config = plain_repo / name
+    config.parent.mkdir(parents=True, exist_ok=True)
+    config.write_text(_ENABLING_CONFIG)
+    assert should_format(str(plain_repo / "notes.md"))
+
+
+def test_main_config_without_tool_is_skipped(plain_repo):
+    (plain_repo / "lefthook.yml").write_text("pre-commit:\n  jobs: []\n")
+    assert not should_format(str(plain_repo / "notes.md"))
+
+
+def test_local_config_enables_when_main_config_lacks_tool(enabled_repo):
+    (enabled_repo / "lefthook.yml").write_text("pre-commit:\n  jobs: []\n")
+    assert should_format(str(enabled_repo / "notes.md"))
+
+
+def test_non_utf8_config_with_tool_enables_hook(plain_repo):
+    (plain_repo / "lefthook-local.yml").write_bytes(b"# \xff\n" + _ENABLING_CONFIG.encode())
+    assert should_format(str(plain_repo / "notes.md"))
+
+
+def test_directory_with_config_name_is_passed_over(plain_repo):
+    (plain_repo / "lefthook.yml").mkdir()
+    (plain_repo / ".lefthook.yml").write_text(_ENABLING_CONFIG)
+    assert should_format(str(plain_repo / "notes.md"))
 
 
 def test_local_config_without_tool_is_skipped(plain_repo):
