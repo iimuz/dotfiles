@@ -10,20 +10,13 @@ description: >-
 
 ## 目的
 
-作業の順序は superpowers に従う。この skill は、superpowers が作る design と plan のファイルについて、
-保存先、ユーザーの承認を待つ時点、plan に入れる文書の完成文を文書規約に照らす時点、コミットしないこと、
-GitHub への記録の仕方を決める。
+作業の順序は superpowers に従う。
+この skill は、superpowers が作る design と plan のファイルの扱いのうち、superpowers の既定に無いものだけを決める。
 
 ## 保存先
 
 design と plan の保存先は brainstorming と writing-plans の既定に従う。リポジトリの文書規約が作業途中の
 成果物の置き場所を別に定めていても、そこへ移さない。
-
-## 承認
-
-- design のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで writing-plans を始めない
-- plan のファイルを書いたら止まり、ユーザーにレビューを頼む。承認されるまで実装を始めない
-- 承認はチャットの要約ではなくファイルに対して受ける。パスを示して待つ
 
 ## 文書を作る task
 
