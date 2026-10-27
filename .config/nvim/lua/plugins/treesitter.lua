@@ -84,7 +84,10 @@ return {
 		-- foldをtreesitterで行う
 		vim.opt.foldmethod = "expr"
 		vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-		vim.opt.foldenable = false -- デフォルトでは折りたたみを無効にする
+		-- octo.nvim が作る閉じた fold を見せるため、foldenable は既定のままにして foldlevel で開いておく
+		vim.opt.foldlevel = 99
+		vim.opt.foldlevelstart = 99
+		vim.opt.fillchars:append({ fold = " " })
 	end,
 	keys = {
 		{ "<Leader>Ku", "<cmd>TSUpdate<CR>", desc = "TreeSitter: Update Tree-Sitter" },
