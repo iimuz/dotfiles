@@ -6,9 +6,6 @@
 return {
 	"saghen/blink.cmp",
 	version = "1.*",
-	dependencies = {
-		"L3MON4D3/LuaSnip",
-	},
 	---@module 'blink.cmp'
 	---@type blink.cmp.Config
 	opts = {
@@ -28,8 +25,17 @@ return {
 		completion = { documentation = { auto_show = true } },
 		sources = {
 			default = { "snippets", "lsp", "path", "buffer" },
+			providers = {
+				snippets = {
+					opts = {
+						search_paths = {
+							vim.fn.stdpath("config") .. "/snippets",
+							vim.fn.getcwd() .. "/.snippets",
+						},
+					},
+				},
+			},
 		},
-		snippets = { preset = "luasnip" },
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	opts_extend = { "sources.default" },
