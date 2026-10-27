@@ -28,9 +28,10 @@ gh pr checks <PR> --json name,state,bucket,workflow,link
 ```
 
 - `bucket` は `pass`、`fail`、`pending`、`skipping`、`cancel` のどれかである
-- 終了コードは、失敗があると 1、実行中があると 8 になる。check が 1 つも無いと `no checks reported` を出して 1 で終わる。
-  これらは gh の失敗ではなく CI の結果として扱い、Merge の条件に「失敗」「実行中」「無し」と書く
-- 標準出力が JSON の配列なら、終了コードが 0 以外でも結果として読む。`no checks reported` を除き、認証の失敗 (終了コード 4) と、JSON が返らない失敗は gh のエラーとして扱う
+- 標準出力が JSON の配列なら、終了コードに関わらず `bucket` から CI の結果を読む
+- check が 1 つも無いと、JSON を出さずに `no checks reported` を出して 0 以外で終わる。
+  これは gh の失敗ではなく、Merge の条件に CI「無し」と書く
+- それ以外で JSON が返らないときは gh のエラーとして扱う
 
 ## Issue
 
@@ -43,7 +44,7 @@ gh issue view <N> -R <owner>/<repo> --json number,title,body,state,comments
 ## レビュースレッド、レビュー本文、会話欄のコメント
 
 ```bash
-gh api graphql -F owner=<owner> -F repo=<repo> -F number=<PR> -f query='
+gh api graphql -f owner=<owner> -f repo=<repo> -F number=<PR> -f query='
 query($owner: String!, $repo: String!, $number: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $number) {
@@ -54,7 +55,9 @@ query($owner: String!, $repo: String!, $number: Int!) {
           isOutdated
           path
           line
+          originalLine
           comments(first: 50) {
+            pageInfo { hasNextPage }
             nodes { author { __typename login } body createdAt }
           }
         }
@@ -72,7 +75,11 @@ query($owner: String!, $repo: String!, $number: Int!) {
 }'
 ```
 
-どれかの `pageInfo.hasNextPage` が `true` なら、101 件目以降を読んでいないことを報告のスレッドの節に書く。
+- owner と repo は `-f` で文字列として渡す。
+  `-F` は数字や `true` に見える値の型を変えるので、number だけに使う
+- どれかの `pageInfo.hasNextPage` が `true` なら、続きを読んでいないことを報告のスレッドの節に書く
+- outdated のスレッドは `line` が null になるので、場所は `originalLine` で示す。
+  outdated は指摘の行が後の commit で変わった手がかりであり、指摘に応えたかは変更を読んで決める
 
 ## bot の判定
 
