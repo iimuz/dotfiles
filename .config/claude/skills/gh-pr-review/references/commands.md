@@ -6,7 +6,7 @@ PR の確認で集める情報と、そのコマンドを示す。
 ## PR の状態
 
 ```bash
-gh pr view <PR> --json number,title,body,url,author,state,isDraft,mergeable,mergeStateStatus,reviewDecision,closingIssuesReferences,baseRefName,headRefOid,headRepository,headRepositoryOwner,isCrossRepository,files
+gh pr view <PR> --json number,title,body,url,author,state,isDraft,mergeable,mergeStateStatus,reviewDecision,closingIssuesReferences,baseRefName,headRefOid,files
 ```
 
 - `statusCheckRollup` には古い実行が混ざるので使わず、CI は後の `gh pr checks` で見る
@@ -92,5 +92,6 @@ GraphQL の bot の login には `[bot]` が付かないので、login の末尾
 gh api "repos/<owner>/<repo>/contents/<path>?ref=<headRefOid>" -H "Accept: application/vnd.github.raw"
 ```
 
-`isCrossRepository` が `true` のときは、`<owner>/<repo>` に `headRepositoryOwner.login` と `headRepository.name` を使う。
+fork から出た PR でも、`<owner>/<repo>` は PR のあるリポジトリにする。
+PR の head の commit は base のリポジトリからも SHA で読め、fork が消されても読める。
 Issue のリンクが指す同じリポジトリのファイルも、同じ API でリンクの URL にある ref を指定して読む。
