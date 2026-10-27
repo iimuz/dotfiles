@@ -28,6 +28,7 @@ return {
 			providers = {
 				snippets = {
 					opts = {
+						-- search_paths replaces the default, so the config snippets dir must be listed too.
 						search_paths = {
 							vim.fn.stdpath("config") .. "/snippets",
 							vim.fn.getcwd() .. "/.snippets",
