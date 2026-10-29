@@ -39,3 +39,12 @@ STUB
   [ "$(wc -l <"$ARGS_LOG" | tr -d ' ')" -eq 4 ]
   [ "$(sed -n 2p "$ARGS_LOG")" = "$XDG_DATA_HOME/drafts/1.md" ]
 }
+
+@test "draft: returns without opening nvim when the drafts directory cannot be created" {
+  export XDG_DATA_HOME="$BATS_TEST_TMPDIR/data"
+  mkdir -p "$XDG_DATA_HOME"
+  touch "$XDG_DATA_HOME/drafts"
+  run draft
+  [ "$status" -ne 0 ]
+  [ ! -e "$ARGS_LOG" ]
+}
