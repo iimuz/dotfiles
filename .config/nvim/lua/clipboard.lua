@@ -35,6 +35,10 @@ function M.setup()
 	set("n", "<Leader>cw", function()
 		copyToClipboard(vim.fn.expand("%:t:r"))
 	end, { desc = "⭐︎Clipboard: Copy file name without suffix." })
+	set("n", "<Leader>cb", function()
+		-- 末尾に改行を付けず、貼り付け先に余分な空行を作らない
+		copyToClipboard(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"))
+	end, { desc = "⭐︎Clipboard: Copy buffer contents." })
 end
 
 return M
