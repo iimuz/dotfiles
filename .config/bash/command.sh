@@ -28,3 +28,10 @@ function osc52copy() {
 
   printf "\033]52;c;%s\007" "$DATA"
 }
+
+# 送信前の下書きを 3 つ nvim のタブで開く。ファイルは nvim が最初の保存で作る
+function draft() {
+  local dir="${XDG_DATA_HOME:-$HOME/.local/share}/drafts"
+  mkdir -p "$dir" || return
+  nvim -p "$dir/1.md" "$dir/2.md" "$dir/3.md"
+}

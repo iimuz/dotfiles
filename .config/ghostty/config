@@ -25,10 +25,14 @@ macos-option-as-alt = true
 mouse-hide-while-typing = true
 
 # Quick terminal
-quick-terminal-position = "left"
-quick-terminal-screen = "main"
+quick-terminal-position = top
+quick-terminal-size = 30%,50%
+quick-terminal-screen = main
 quick-terminal-animation-duration = 0
-# keybind = global:cmd+backquote=toggle_quick_terminal
+# 下書きを見ながら他のアプリを操作するので、焦点が外れても隠さない
+quick-terminal-autohide = false
+# global: のキーは Ghostty にアクセシビリティの権限が無いと効かない
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
 
 # key bind は一旦全て消して必要なもののみ設定
 # keybind = clear
