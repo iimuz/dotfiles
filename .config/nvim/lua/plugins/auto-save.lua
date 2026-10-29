@@ -5,7 +5,7 @@
 
 -- Cmd+Q で終了すると BufLeave と FocusLost を受けずに終わることがあるので、
 -- 下書きのファイルだけ入力の後に遅延保存する。ほかのファイルの保存の挙動は変えない
-local drafts_pattern = (os.getenv("XDG_DATA_HOME") or (os.getenv("HOME") .. "/.local/share")) .. "/drafts/*.md"
+local drafts_pattern = vim.fs.normalize(vim.env.XDG_DATA_HOME or "~/.local/share") .. "/drafts/*.md"
 
 return {
 	"okuuva/auto-save.nvim",

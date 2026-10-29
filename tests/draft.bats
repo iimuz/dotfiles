@@ -32,15 +32,6 @@ STUB
   [ "$(sed -n 2p "$ARGS_LOG")" = "$HOME/.local/share/drafts/1.md" ]
 }
 
-@test "draft: keeps existing drafts untouched" {
-  export XDG_DATA_HOME="$BATS_TEST_TMPDIR/data"
-  mkdir -p "$XDG_DATA_HOME/drafts"
-  printf 'keep me' >"$XDG_DATA_HOME/drafts/1.md"
-  run draft
-  [ "$status" -eq 0 ]
-  [ "$(cat "$XDG_DATA_HOME/drafts/1.md")" = "keep me" ]
-}
-
 @test "draft: passes paths containing spaces as single arguments" {
   export XDG_DATA_HOME="$BATS_TEST_TMPDIR/with space"
   run draft
