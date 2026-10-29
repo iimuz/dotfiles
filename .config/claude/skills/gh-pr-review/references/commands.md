@@ -13,6 +13,15 @@ gh pr view <PR> --json number,title,body,url,author,state,isDraft,mergeable,merg
 - `mergeable` が `UNKNOWN` は、GitHub が計算していない状態である
 - `reviewDecision` が空は、必須の承認が無いリポジトリである
 
+## 作業ツリーが PR の head か
+
+```bash
+git rev-parse HEAD
+git status --porcelain --untracked-files=no
+```
+
+`HEAD` が `headRefOid` と同じで、`git status` の出力が空なら、作業ツリーは PR の head である。
+
 ## 差分
 
 ```bash
@@ -86,12 +95,11 @@ query($owner: String!, $repo: String!, $number: Int!) {
 `author.__typename` が `Bot` のものを bot とする。
 GraphQL の bot の login には `[bot]` が付かないので、login の末尾では見分けない。
 
-## PR の head のファイル
+## Issue のリンクが指すファイル
 
 ```bash
-gh api "repos/<owner>/<repo>/contents/<path>?ref=<headRefOid>" -H "Accept: application/vnd.github.raw"
+gh api "repos/<owner>/<repo>/contents/<path>?ref=<ref>" -H "Accept: application/vnd.github.raw"
 ```
 
-fork から出た PR でも、`<owner>/<repo>` は PR のあるリポジトリにする。
-PR の head の commit は base のリポジトリからも SHA で読め、fork が消されても読める。
-Issue のリンクが指す同じリポジトリのファイルも、同じ API でリンクの URL にある ref を指定して読む。
+`<ref>` はリンクの URL にある branch か commit である。
+作業ツリーは PR の head なので、リンクが指す版はこの API で読む。
