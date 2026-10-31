@@ -2,8 +2,8 @@
 # 環境ごとの差分は config.local.toml (config-mac.toml / config-linux.toml) に置く。同じツールを両方に書かない
 [tools]
 "aqua:quarylabs/sqruff" = "0.41.0"
-awscli = { version = "2.37.12", symlink_bins = "true" }
-cargo-binstall = "1.25.3"
+awscli = { version = "2.38.1", symlink_bins = "true" }
+cargo-binstall = "1.26.0"
 "cargo:tree-sitter-cli" = "0.27.1" # for neovim
 claude = "2.1.296"
 cspell = "10.4.0"
@@ -17,7 +17,7 @@ jq = "1.8.2"
 lazygit = "0.66.0"
 lua-language-server = "3.19.2"
 marksman = "2026-02-08"
-node = "24.21.0"
+node = "24.22.0"
 "npm:@aikidosec/safe-chain" = "1.5.25"
 "npm:@anthropic-ai/sandbox-runtime" = "0.0.79" # for claude code
 "npm:@playwright/cli" = "0.1.22" # for claude code
@@ -32,7 +32,7 @@ node = "24.21.0"
 "npm:yaml-language-server" = "2.0.0"
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.2"
 "pipx:pynvim" = "0.6.0" # for neovim
-pnpm = "12.11.2"
+pnpm = "12.14.0"
 prettier = "3.9.10"
 python = "3.14.8"
 ripgrep = "15.2.0"
