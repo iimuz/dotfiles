@@ -25,7 +25,6 @@ node = "24.22.0"
 "npm:@vtsls/language-server" = "0.3.0"
 "npm:bash-language-server" = "5.8.1"
 "npm:ccusage" = "20.0.35" # for claude code
-"npm:context-mode" = "1.0.169" # for claude code
 "npm:eslint_d" = "15.0.3"
 "npm:neovim" = "5.5.0" # for neovim
 "npm:pyright" = "1.1.414"

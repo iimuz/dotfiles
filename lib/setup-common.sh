@@ -53,22 +53,3 @@ function set_bashrc() {
   echo "set load setting in $rcfile: $filename"
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
 }
-
-# Add Claude Code user-scope MCP server if not already configured.
-#
-# Claude Code のユーザーレベル MCP 設定は他の情報がありリポジトリで管理できないので設定で対応する
-# Usage: add_claude_mcp <name> <cmd> [args...]
-function add_claude_mcp() {
-  local -r name=$1
-  shift
-
-  local output
-  output=$(claude mcp get "$name" 2>&1 || true)
-  if ! echo "$output" | grep -qF "No MCP server found"; then
-    echo "already exist claude mcp: $name"
-    return 0
-  fi
-
-  echo "add claude mcp: $name"
-  claude mcp add --transport stdio --scope user "$name" -- "$@"
-}
