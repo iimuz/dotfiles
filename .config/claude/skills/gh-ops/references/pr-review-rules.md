@@ -21,6 +21,9 @@ PR にレビューを作り、行ごとのコメントを付ける。
 3. ユーザーが OK と言ったら、`create_review.sh` に `--event` を付けて実行し、bot の名義でレビューを submit する。
    `--event` は、ユーザーが会話で指示した種類 (`COMMENT`、`APPROVE`、`REQUEST_CHANGES`) にし、指示が無ければ `COMMENT` にする
 
+GitHub は、PR の作成者が自分の PR に出す `APPROVE` と `REQUEST_CHANGES` を拒む。
+PR の作成者が bot (`gh pr view <number> --json author` の `author.is_bot` が true) で、ユーザーがそれらを指示したときは、`COMMENT` で出してよいかを案と一緒に確かめる。
+
 `append_review.sh` は使わない。
 
 ## 切り替わっていないセッション
