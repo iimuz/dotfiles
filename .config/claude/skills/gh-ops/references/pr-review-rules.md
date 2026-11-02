@@ -26,6 +26,10 @@ PR の作成者が bot (`gh pr view <number> --json author` の `author.is_bot` 
 
 `append_review.sh` は使わない。
 
+`create_review.sh` が `{"error": "pending_review_exists", "review_id": <id>}` を返したら、bot の下書きが PR に残っている。
+ほかの作業が使っている下書きかもしれないので、勝手に消さない。
+`review_id` をユーザーに伝え、消してよいと言われたら `gh api -X DELETE repos/<owner>/<repo>/pulls/<number>/reviews/<review_id>` で消してから、`create_review.sh` を実行し直す。
+
 ## 切り替わっていないセッション
 
 PR に pending review を作り、submit しない。ユーザーが GitHub の画面から submit する。
