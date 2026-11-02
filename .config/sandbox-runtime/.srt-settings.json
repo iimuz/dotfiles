@@ -35,7 +35,6 @@
       "/var/folders",
       "~/.aws/",
       "~/.cache",
-      "~/.claude/context-mode",
       "~/.local/share/pnpm",
       "~/.local/state/mise/trusted-configs",
       "~/.npm",

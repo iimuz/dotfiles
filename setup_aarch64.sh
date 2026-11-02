@@ -64,9 +64,6 @@ if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/claude/statusline.py" "$HOME/.claude/statusline.py"
   create_symlink "$SCRIPT_DIR/.config/sandbox-runtime/.srt-settings.json" "$HOME/.srt-settings.json"
 
-  # Setup MCP
-  add_claude_mcp context-mode sh -c "mkdir -p /tmp/claude && exec srt context-mode"
-
   # Setup Plugins
   claude plugins install --scope user gopls-lsp
   claude plugins install --scope user lua-lsp

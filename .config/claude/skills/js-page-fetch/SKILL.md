@@ -1,8 +1,8 @@
 ---
 name: js-page-fetch
 description: >-
-  JavaScript の描画が要るページの取り方を決める。WebFetch や ctx_fetch_and_index が空のシェルや
-  内容の無い骨組みだけを返したとき、またはサイトが headless の user agent を 403 で弾いたときに使う。
+  JavaScript の描画が要るページの取り方を決める。WebFetch が空のシェルや内容の無い骨組みだけを
+  返したとき、またはサイトが headless の user agent を 403 で弾いたときに使う。
 ---
 
 # JS 描画ページの取得
@@ -13,7 +13,7 @@ description: >-
 
 ## いつ使うか
 
-- `WebFetch` や `ctx_fetch_and_index` が空のシェルや骨組みだけを返した。
+- `WebFetch` が空のシェルや骨組みだけを返した。
 - 目的の内容がアコーディオンやタブの内側にあり、初期 DOM に存在しない。
 - サイトが headless の user agent を 403 で弾いた。
 
