@@ -149,14 +149,16 @@ def main() -> None:
 
     existing = fetch_pending_review(args.owner, args.repo, args.pull_number)
     if existing is not None:
-        emit_error(
-            "pending_review_exists",
-            detail=(
+        # A submitted review cannot be merged into the pending one, so append_review.sh
+        # is only a way forward when the caller wanted a pending review.
+        if args.event:
+            detail = "A pending review already exists. Submit or discard it first."
+        else:
+            detail = (
                 "A pending review already exists. Use append_review.sh to add "
                 "comments to it, or submit/discard the existing review first."
-            ),
-            review_id=existing.get("id"),
-        )
+            )
+        emit_error("pending_review_exists", detail=detail, review_id=existing.get("id"))
 
     # Construct payload for GitHub API
     payload = {"body": args.summary_body, "comments": api_comments}
@@ -175,7 +177,7 @@ def main() -> None:
     if result.returncode != 0:
         emit_error(
             "gh_api_failed",
-            detail="Failed to create pending review via gh api",
+            detail="Failed to create review via gh api",
             exit_code=1,
             gh_exit_code=result.returncode,
             http_status=extract_http_status(result.stderr),
