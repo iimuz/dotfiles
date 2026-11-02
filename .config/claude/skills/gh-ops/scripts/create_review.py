@@ -62,14 +62,23 @@ def fetch_pending_review(owner: str, repo: str, pull_number: int) -> dict[str, A
 def main() -> None:
     """
     Parses arguments, constructs a JSON payload, and calls the GitHub API
-    to create a pending review.
+    to create a review. Without --event the review stays PENDING; with it
+    the review is submitted immediately.
     """
-    parser = argparse.ArgumentParser(description="Create a pending PR review.")
+    parser = argparse.ArgumentParser(
+        description="Create a PR review (pending unless --event is given)."
+    )
     parser.add_argument("--owner", required=True, help="Repository owner")
     parser.add_argument("--repo", required=True, help="Repository name")
     parser.add_argument("--pull-number", required=True, type=int, help="PR number")
     parser.add_argument("--summary-body", required=True, help="Review summary body")
     parser.add_argument("--comments-json", required=True, help="JSON string of comments array")
+
+    parser.add_argument(
+        "--event",
+        choices=["COMMENT", "APPROVE", "REQUEST_CHANGES"],
+        help="Submit the review with this event instead of leaving it pending",
+    )
 
     args = parser.parse_args()
 
@@ -151,7 +160,9 @@ def main() -> None:
 
     # Construct payload for GitHub API
     payload = {"body": args.summary_body, "comments": api_comments}
-    # event is OMITTED to create a PENDING review
+    # Without --event the field is omitted, which creates a PENDING review
+    if args.event:
+        payload["event"] = args.event
 
     # Call gh api
     endpoint = f"repos/{args.owner}/{args.repo}/pulls/{args.pull_number}/reviews"
