@@ -51,6 +51,10 @@ Run `mise run format` and `mise run lint` after any modifications.
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,
   `lint`, `test`); tasks that need a real script go in `scripts/` and are
   referenced from `mise.toml` (none currently)
+  - Repositories under the personal account resolve `GH_CONFIG_DIR` from
+    `GH_CONFIG_DIR_PERSONAL` in their mise config, falling back to their own value (see the
+    `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch also reaches
+    `mise exec -- gh`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats

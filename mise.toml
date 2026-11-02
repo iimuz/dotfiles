@@ -11,6 +11,9 @@ uv = "0.13.1"
 
 [env]
 _.file = ".env"
+# GH_CONFIG_DIR_PERSONAL を優先するのは、Claude Code の hook が bot 用に切り替えた値を mise exec の下にも効かせるため。
+# 内側の default(value='') は、.env も引き継いだ値も無い環境 (CI) でテンプレートのエラーで止めないため。
+GH_CONFIG_DIR = "{{ get_env(name='GH_CONFIG_DIR_PERSONAL', default=env.GH_CONFIG_DIR | default(value='')) }}"
 UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [tasks.setup]
