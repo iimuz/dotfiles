@@ -49,6 +49,8 @@
       "Bash(curl * | bash)",
       "Bash(gpg)",
       "Bash(gpg *)",
+      "Bash(gh auth token)",
+      "Bash(gh auth token *)",
       "Bash(gh pr merge *)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
