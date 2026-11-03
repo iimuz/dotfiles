@@ -62,14 +62,23 @@ def fetch_pending_review(owner: str, repo: str, pull_number: int) -> dict[str, A
 def main() -> None:
     """
     Parses arguments, constructs a JSON payload, and calls the GitHub API
-    to create a pending review.
+    to create a review. Without --event the review stays PENDING; with it
+    the review is submitted immediately.
     """
-    parser = argparse.ArgumentParser(description="Create a pending PR review.")
+    parser = argparse.ArgumentParser(
+        description="Create a PR review (pending unless --event is given)."
+    )
     parser.add_argument("--owner", required=True, help="Repository owner")
     parser.add_argument("--repo", required=True, help="Repository name")
     parser.add_argument("--pull-number", required=True, type=int, help="PR number")
     parser.add_argument("--summary-body", required=True, help="Review summary body")
     parser.add_argument("--comments-json", required=True, help="JSON string of comments array")
+
+    parser.add_argument(
+        "--event",
+        choices=["COMMENT", "APPROVE", "REQUEST_CHANGES"],
+        help="Submit the review with this event instead of leaving it pending",
+    )
 
     args = parser.parse_args()
 
@@ -140,18 +149,22 @@ def main() -> None:
 
     existing = fetch_pending_review(args.owner, args.repo, args.pull_number)
     if existing is not None:
-        emit_error(
-            "pending_review_exists",
-            detail=(
+        # A submitted review cannot be merged into the pending one, so append_review.sh
+        # is only a way forward when the caller wanted a pending review.
+        if args.event:
+            detail = "A pending review already exists. Submit or discard it first."
+        else:
+            detail = (
                 "A pending review already exists. Use append_review.sh to add "
                 "comments to it, or submit/discard the existing review first."
-            ),
-            review_id=existing.get("id"),
-        )
+            )
+        emit_error("pending_review_exists", detail=detail, review_id=existing.get("id"))
 
     # Construct payload for GitHub API
     payload = {"body": args.summary_body, "comments": api_comments}
-    # event is OMITTED to create a PENDING review
+    # Without --event the field is omitted, which creates a PENDING review
+    if args.event:
+        payload["event"] = args.event
 
     # Call gh api
     endpoint = f"repos/{args.owner}/{args.repo}/pulls/{args.pull_number}/reviews"
@@ -164,7 +177,7 @@ def main() -> None:
     if result.returncode != 0:
         emit_error(
             "gh_api_failed",
-            detail="Failed to create pending review via gh api",
+            detail="Failed to create review via gh api",
             exit_code=1,
             gh_exit_code=result.returncode,
             http_status=extract_http_status(result.stderr),

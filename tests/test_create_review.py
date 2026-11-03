@@ -83,3 +83,46 @@ def test_rejects_non_string_comment_body(monkeypatch, capsys):
 
     assert json.loads(capsys.readouterr().err)["error"] == "invalid_comment"
     assert all("POST" not in cmd for cmd in calls)
+
+
+def _submit_calls(monkeypatch, extra_argv):
+    posted = []
+    responses = [
+        SimpleNamespace(returncode=0, stdout="[]", stderr=""),
+        SimpleNamespace(returncode=0, stdout=json.dumps({"id": 7, "html_url": "u"}), stderr=""),
+    ]
+
+    def fake_run(cmd, **kwargs):
+        posted.append(kwargs.get("input"))
+        return responses.pop(0)
+
+    monkeypatch.setattr(create_review.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", _argv() + extra_argv)
+    return posted
+
+
+def test_submits_review_with_event(monkeypatch, capsys):
+    posted = _submit_calls(monkeypatch, ["--event", "APPROVE"])
+
+    create_review.main()
+
+    assert json.loads(posted[1])["event"] == "APPROVE"
+    assert json.loads(capsys.readouterr().out) == {"id": 7, "html_url": "u"}
+
+
+def test_omits_event_without_flag(monkeypatch):
+    posted = _submit_calls(monkeypatch, [])
+
+    create_review.main()
+
+    assert "event" not in json.loads(posted[1])
+
+
+def test_rejects_unknown_event(monkeypatch):
+    posted = _submit_calls(monkeypatch, ["--event", "MERGE"])
+
+    with pytest.raises(SystemExit) as exc:
+        create_review.main()
+
+    assert exc.value.code != 0
+    assert posted == []

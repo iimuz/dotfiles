@@ -47,13 +47,20 @@
     "deny": [
       "Bash(curl * | sh)",
       "Bash(curl * | bash)",
+      "Bash(gpg)",
+      "Bash(gpg *)",
+      "Bash(gh auth token)",
+      "Bash(gh auth token *)",
       "Bash(gh pr merge *)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "Bash(git rebase *)",
       "Bash(git reset *)",
+      "Bash(pass)",
+      "Bash(pass *)",
       "Bash(rm -f *)",
       "Bash(rm -rf *)",
+      "Bash(security find-generic-password *)",
       "Bash(sudo *)",
       "Bash(wget * | sh)",
       "Bash(wget * | bash)",
@@ -62,8 +69,10 @@
       "Edit(./.env)",
       "Edit(./.env.*)",
       "Read(~/.config/gh/**)",
+      "Read(~/.config/gh-*/**)",
       "Read(~/.gnupg/**)",
       "Read(~/.ssh/**)",
+      "Read(**/*.pem)",
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(./.env)",
@@ -73,6 +82,17 @@
   },
   "model": "opus",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/gh-identity.sh\""
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",

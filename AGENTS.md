@@ -41,11 +41,20 @@ Run `mise run format` and `mise run lint` after any modifications.
     custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the
     current-month ccusage cost). Register that file in RunCat Neo (Settings -> Metrics ->
     Custom Metrics; macOS only).
+    `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
+    `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
+    `GH_CONFIG_DIR_PERSONAL` at `~/.config/gh-agent`, sets the git author and committer to
+    the GitHub App bot, and rewrites `github.com/iimuz` ssh URLs to https so pushes use the
+    bot token. A launcher that sets `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity.
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,
   `lint`, `test`); tasks that need a real script go in `scripts/` and are
   referenced from `mise.toml` (none currently)
+  - Repositories under the personal account resolve `GH_CONFIG_DIR` from
+    `GH_CONFIG_DIR_PERSONAL` in their mise config, falling back to their own value (see the
+    `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch also reaches
+    `mise exec -- gh`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats
