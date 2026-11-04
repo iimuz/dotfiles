@@ -15,7 +15,10 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 5. タイトルを書く。命令形で簡潔に、末尾にピリオドを付けず、ファイルパスを含めない。形は `<type>: <title>`、
    scope を付けるときは `<type>(<scope>): <title>`
 6. 現在のブランチが origin に push されていなければ、止まってユーザーに伝える。自分では push しない
-7. 下の「本文のテンプレート」に沿って本文を書き、下の「作成」のコマンドで draft PR を作る
+7. `${CLAUDE_GH_APP_SLUG:-}` が空なら何もしない。空でなければ `gh api "apps/${CLAUDE_GH_APP_SLUG}" --jq .owner.login`
+   で App の持ち主を引き、成功したら作成のコマンドに `--reviewer <持ち主>` を付ける。失敗したら、共通の約束事の
+   例外として止まらず、エラーを利用者に見せたうえで `--reviewer` を付けずに作る。assignee は付けない
+8. 下の「本文のテンプレート」に沿って本文を書き、下の「作成」のコマンドで draft PR を作る
 
 ## type の一覧
 
@@ -68,7 +71,9 @@ Conventional Commits 形式のタイトルと、決まった形の本文で draf
 ## 作成
 
 ```bash
-gh pr create --draft [--base <base>] --title '<タイトル>' --body-file - <<'EOF'
+gh pr create --draft [--base <base>] [--reviewer <App の持ち主>] --title '<タイトル>' --body-file - <<'EOF'
 <テンプレートに沿って書いた本文>
 EOF
 ```
+
+`gh pr create` が PR の URL を出したうえで `pull request update failed` で失敗したときは、PR は作られているので作り直さず、URL とエラーを見せて止まる。
