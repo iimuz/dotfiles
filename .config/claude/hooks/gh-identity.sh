@@ -6,7 +6,7 @@ set -u
 
 app_slug='iimuz-agent'
 bot_name="${app_slug}[bot]"
-bot_email='351267992+iimuz-agent[bot]@users.noreply.github.com'
+bot_email="351267992+${bot_name}@users.noreply.github.com"
 bot_gh_dir="$HOME/.config/gh-agent"
 
 [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
