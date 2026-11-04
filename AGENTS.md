@@ -44,7 +44,8 @@ Run `mise run format` and `mise run lint` after any modifications.
     `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
     `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
     `GH_CONFIG_DIR_PERSONAL` at `~/.config/gh-agent`, sets the git author and committer to
-    the GitHub App bot, and rewrites `github.com/iimuz` ssh URLs to https so pushes use the
+    the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
+    request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz` ssh URLs to https so pushes use the
     bot token. A launcher that sets `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity.
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
