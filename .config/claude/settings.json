@@ -116,6 +116,7 @@
       }
     ]
   },
+  "enableWorkflows": false,
   "statusLine": {
     "type": "command",
     "command": "\"$HOME/.claude/statusline.py\""
@@ -187,7 +188,11 @@
     "excludedCommands": ["docker *", "gh *"]
   },
   "feedbackDrafts": "off",
-  "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
   "awaySummaryEnabled": false,
   "theme": "dark",
   "teammateMode": "auto",
