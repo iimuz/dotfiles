@@ -28,6 +28,7 @@ expected_lines() {
   cat <<LINES
 export GH_CONFIG_DIR='$HOME/.config/gh-agent'
 export GH_CONFIG_DIR_PERSONAL='$HOME/.config/gh-agent'
+export CLAUDE_GH_APP_SLUG='iimuz-agent'
 export GIT_AUTHOR_NAME='iimuz-agent[bot]'
 export GIT_AUTHOR_EMAIL='351267992+iimuz-agent[bot]@users.noreply.github.com'
 export GIT_COMMITTER_NAME='iimuz-agent[bot]'
@@ -184,4 +185,12 @@ rewritten_url() {
   [ "$status" -eq 0 ]
   [ -z "$output" ]
   [ ! -e "$ENV_FILE" ]
+}
+
+@test "gh-identity.sh: leaves an existing env file untouched when CLAUDE_KEEP_GH_IDENTITY=1" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  echo "export FOO=bar" >"$ENV_FILE"
+  run_hook CLAUDE_KEEP_GH_IDENTITY=1
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ENV_FILE")" = "export FOO=bar" ]
 }

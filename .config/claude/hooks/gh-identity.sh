@@ -4,8 +4,9 @@
 
 set -u
 
-bot_name='iimuz-agent[bot]'
-bot_email='351267992+iimuz-agent[bot]@users.noreply.github.com'
+app_slug='iimuz-agent'
+bot_name="${app_slug}[bot]"
+bot_email="351267992+${bot_name}@users.noreply.github.com"
 bot_gh_dir="$HOME/.config/gh-agent"
 
 [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
@@ -28,6 +29,7 @@ esac
 cat >>"$CLAUDE_ENV_FILE" <<ENV
 export GH_CONFIG_DIR='$bot_gh_dir'
 export GH_CONFIG_DIR_PERSONAL='$bot_gh_dir'
+export CLAUDE_GH_APP_SLUG='$app_slug'
 export GIT_AUTHOR_NAME='$bot_name'
 export GIT_AUTHOR_EMAIL='$bot_email'
 export GIT_COMMITTER_NAME='$bot_name'
