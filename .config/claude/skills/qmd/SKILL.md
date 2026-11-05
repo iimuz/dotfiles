@@ -26,7 +26,8 @@ allowed-tools: Bash(qmd:*), mcp__qmd__*
 - rerank は遅いので、`qmd query` には既定で `--no-rerank` を付ける。
   MCP の `query` では `rerank: false` を渡す。
   上位の候補の並びが悪く、絞り込みたいときだけ外し、`-C` (MCP では `candidateLimit`) で rerank する候補を
-  10 件ほどに絞る
+  10 件ほどに絞る。
+  返る件数も `-C` で頭打ちになるので、`-n` は `-C` 以下にする
 - `--no-rerank` を付けてもなお遅いか、モデルの準備で失敗するときは、語を足した `qmd search` に切り替える
 
 欄の意味は次のとおり。`intent:` と、`lex:` か `vec:` の少なくとも一方を書く。
