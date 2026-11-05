@@ -23,7 +23,8 @@ allowed-tools: Bash(qmd:*), mcp__qmd__*
 - 言い換えや概念で探すときは、`intent:`、`lex:`、`vec:`、`hyde:` の欄を自分で書いた `qmd query` を使う。
   素の `qmd query "<文>"` は使わない。内蔵の query expansion はユーザーの目的を知らず、日本語の問いは
   英語に寄せられて精度が落ちる
-- `qmd query` が遅いか、モデルや GPU の準備で失敗するときは、語を足した `qmd search` に切り替える
+- rerank は遅いので、`qmd query` には既定で `--no-rerank` を付ける。上位の候補の並びが悪く、絞り込みたいときだけ外す
+- `qmd query` が遅いか、モデルの準備で失敗するときは、語を足した `qmd search` に切り替える
 
 欄の意味は次のとおり。`intent:` と、`lex:` か `vec:` の少なくとも一方を書く。
 
@@ -34,7 +35,7 @@ allowed-tools: Bash(qmd:*), mcp__qmd__*
 
 ```bash
 qmd search '"weekly review"' -c notes -n 10
-qmd query $'intent: 週次レビューの進め方を書いたノート。日次の振り返りは除く\nlex: 週次レビュー weekly review\nvec: 1 週間の作業を振り返り、次の週の計画を立てる手順'
+qmd query --no-rerank $'intent: 週次レビューの進め方を書いたノート。日次の振り返りは除く\nlex: 週次レビュー weekly review\nvec: 1 週間の作業を振り返り、次の週の計画を立てる手順'
 ```
 
 ## 取得
@@ -79,8 +80,3 @@ qmd embed
   表記の揺れ (漢字、カタカナ、英語) は、`qmd search` では別の問いとして何回かに分けて引く。
   `qmd query` では表記ごとに `lex:` の行を分けて書く。行ごとに別に引いて結果を合わせるので、1 回で済む
 - パスを取るときは `--files --full-path` を使う
-
-## GPU の判定
-
-この skill の `scripts/check_gpu.sh` を実行する。出力は `gpu` か `cpu` の 1 語になる。`cpu` のときは
-`qmd search` だけを使うか、`--no-rerank` を付ける。
