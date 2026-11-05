@@ -15,7 +15,11 @@ if ! type gh >/dev/null 2>&1; then
 fi
 
 if ! gh auth status >/dev/null 2>&1; then
-  printf '%s\n' "Error: GitHub CLI is not authenticated. Run 'gh auth login' and try again." >&2
+  if [ "${GH_CONFIG_DIR:-}" = "$HOME/.config/gh-agent" ]; then
+    printf '%s\n' "Error: GitHub CLI authentication failed in a session switched to the GitHub App bot. The bot token may have expired; 'gh auth login' does not renew it." >&2
+  else
+    printf '%s\n' "Error: GitHub CLI is not authenticated. Run 'gh auth login' and try again." >&2
+  fi
   exit 1
 fi
 
