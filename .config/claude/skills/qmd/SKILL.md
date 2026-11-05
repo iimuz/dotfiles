@@ -23,8 +23,11 @@ allowed-tools: Bash(qmd:*), mcp__qmd__*
 - 言い換えや概念で探すときは、`intent:`、`lex:`、`vec:`、`hyde:` の欄を自分で書いた `qmd query` を使う。
   素の `qmd query "<文>"` は使わない。内蔵の query expansion はユーザーの目的を知らず、日本語の問いは
   英語に寄せられて精度が落ちる
-- rerank は遅いので、`qmd query` には既定で `--no-rerank` を付ける。上位の候補の並びが悪く、絞り込みたいときだけ外す
-- `qmd query` が遅いか、モデルの準備で失敗するときは、語を足した `qmd search` に切り替える
+- rerank は遅いので、`qmd query` には既定で `--no-rerank` を付ける。
+  MCP の `query` では `rerank: false` を渡す。
+  上位の候補の並びが悪く、絞り込みたいときだけ外し、`-C` (MCP では `candidateLimit`) で rerank する候補を
+  10 件ほどに絞る
+- `--no-rerank` を付けてもなお遅いか、モデルの準備で失敗するときは、語を足した `qmd search` に切り替える
 
 欄の意味は次のとおり。`intent:` と、`lex:` か `vec:` の少なくとも一方を書く。
 
