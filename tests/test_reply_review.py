@@ -93,3 +93,15 @@ def test_reports_a_gh_failure(monkeypatch, tmp_path, capsys):
     err = json.loads(capsys.readouterr().err)
     assert err["error"] == "gh_api_failed"
     assert err["http_status"] == 422
+
+
+def test_reports_an_unreadable_body_file(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    sys.argv[sys.argv.index("--body-file") + 1] = str(tmp_path / "missing.md")
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []

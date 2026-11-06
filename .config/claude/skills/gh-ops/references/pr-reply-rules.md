@@ -19,6 +19,11 @@ PR の既存のレビュースレッドに返信する。
 返信の文面を会話で見せ、ユーザーが OK と言ってから `reply_review.sh` を `--human-checked` を付けずに実行する。
 返信はユーザーのアカウントの名義で出る。
 
+## pending review が残っているとき
+
+返信するアカウントの pending review が PR に残っていると、GitHub は返信を拒み、`reply_review.sh` は `http_status` が 422 の `gh_api_failed` を返す。
+このときは再実行せず、pending review を submit も削除もせずに、返信の文面とあわせてユーザーに伝えて止まる。
+
 ## 返信先のコメントの id
 
 `--comment-id` には、スレッドの最初のコメントの id を渡す。

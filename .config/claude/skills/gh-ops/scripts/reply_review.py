@@ -35,8 +35,11 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
 def read_body(body_file: str) -> str:
     if body_file == "-":
         return sys.stdin.read()
-    with open(body_file, encoding="utf-8") as f:
-        return f.read()
+    try:
+        with open(body_file, encoding="utf-8") as f:
+            return f.read()
+    except OSError as error:
+        emit_error("body_file_unreadable", detail=str(error))
 
 
 def main() -> None:
