@@ -10,7 +10,8 @@ from typing import Any, NoReturn
 __all__ = ["main"]
 
 # Marks a review that the user checked in the conversation before it was submitted
-# under the bot identity. gh-pr-review matches the whole line, so do not reword it.
+# under the bot identity. gh-pr-review only recognizes it as the body's last line,
+# so do not reword it or append anything after it.
 # The emoji is a deliberate exception to the no-emoji rule: it makes the mark stand
 # out in the PR UI.
 HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"

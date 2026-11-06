@@ -2,6 +2,7 @@
 
 import json
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -167,3 +168,14 @@ def test_human_checked_leaves_empty_summary_unsigned(monkeypatch):
     payload = json.loads(posted[1])
     assert payload["body"] == ""
     assert payload["comments"][0]["body"] == f"x\n\n{create_review.HUMAN_CHECKED_SIGNATURE}"
+
+
+@pytest.mark.parametrize(
+    "doc",
+    ["gh-ops/references/pr-review-rules.md", "gh-pr-review/references/commands.md"],
+)
+def test_docs_spell_the_signature_as_a_whole_line(doc):
+    skills = Path(__file__).resolve().parents[1] / ".config" / "claude" / "skills"
+    lines = (skills / doc).read_text(encoding="utf-8").splitlines()
+
+    assert create_review.HUMAN_CHECKED_SIGNATURE in lines
