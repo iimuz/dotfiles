@@ -18,8 +18,9 @@ PR にレビューを作り、行ごとのコメントを付ける。
 
 1. レビュー全体の要約と、コメントの案を会話で見せる。各コメントには `path`、`line`、本文を示す
 2. ユーザーが直しを求めたら、案を直して見せ直す
-3. ユーザーが OK と言ったら、`create_review.sh` に `--event` を付けて実行し、bot の名義でレビューを submit する。
-   `--event` は、ユーザーが会話で指示した種類 (`COMMENT`、`APPROVE`、`REQUEST_CHANGES`) にし、指示が無ければ `COMMENT` にする
+3. ユーザーが OK と言ったら、`create_review.sh` に `--event` と `--human-checked` を付けて実行し、bot の名義でレビューを submit する。
+   `--event` は、ユーザーが会話で指示した種類 (`COMMENT`、`APPROVE`、`REQUEST_CHANGES`) にし、指示が無ければ `COMMENT` にする。
+   `--human-checked` は、ユーザーが会話で確かめたことを示す署名を、要約と各コメントの本文の最後に足す
 
 GitHub は、PR の作成者が自分の PR に出す `APPROVE` と `REQUEST_CHANGES` を拒む。
 PR の作成者が bot (`gh pr view <number> --json author` の `author.is_bot` が true) で、ユーザーがそれらを指示したときは、`COMMENT` で出してよいかを案と一緒に確かめる。
@@ -62,10 +63,20 @@ bash "${SKILL_DIR}/scripts/create_review.sh" \
   --pull-number <number> \
   --summary-body "<review 全体の要約>" \
   --comments-json '<json array>' \
-  [--event COMMENT|APPROVE|REQUEST_CHANGES]
+  [--event COMMENT|APPROVE|REQUEST_CHANGES] \
+  [--human-checked]
 ```
 
 `--event` を付けると submit 済みのレビューを作り、付けないと pending review を作る。
+
+`--human-checked` を付けると、要約と各コメントの本文の最後に、空行を 1 つ挟んで次の署名の行を足す。
+suggestion のあるコメントでは、suggestion ブロックの後に足す。
+要約が空のときは、要約に署名を足さない。
+
+```text
+<sub>👤 Checked by a human · drafted by Claude Code</sub>
+```
+
 成功すると標準出力に `{"id": <number>, "html_url": "<url>"}` を出す。
 
 ## append_review.sh
