@@ -1,7 +1,7 @@
 ---
 name: gh-ops
 description: >-
-  GitHub の Issue の作成、Issue へのコメント、draft PR の作成、PR へのレビューコメントの追加に使う。
+  GitHub の Issue の作成、Issue へのコメント、draft PR の作成、PR へのレビューコメントの追加、PR のレビュースレッドへの返信に使う。
 ---
 
 # gh-ops
@@ -26,3 +26,4 @@ description: >-
 - Issue にコメントするときは [issue-comment-rules.md](references/issue-comment-rules.md) を読む
 - PR を作るときは [pr-create-rules.md](references/pr-create-rules.md) を読む
 - PR にレビューコメントを付けるときは [pr-review-rules.md](references/pr-review-rules.md) を読む
+- PR のレビュースレッドに返信するときは [pr-reply-rules.md](references/pr-reply-rules.md) を読む
