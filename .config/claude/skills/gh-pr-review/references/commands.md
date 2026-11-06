@@ -95,6 +95,14 @@ query($owner: String!, $repo: String!, $number: Int!) {
 `author.__typename` が `Bot` のものを bot とする。
 GraphQL の bot の login には `[bot]` が付かないので、login の末尾では見分けない。
 
+本文に人の確認の署名の行があるものは、`Bot` でも bot とせず、人の書き込みとして扱う。
+この署名は、bot の名義で投稿するセッションが、人が会話で確かめた書き込みに付ける。
+前後の空白を除いた行全体が次の文と一致する行だけを署名とし、引用の中の署名は数えない。
+
+```text
+<sub>👤 Checked by a human · drafted by Claude Code</sub>
+```
+
 ## Issue のリンクが指すファイル
 
 ```bash
