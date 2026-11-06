@@ -180,7 +180,11 @@ def main() -> None:
         emit_error("pending_review_exists", detail=detail, review_id=existing.get("id"))
 
     # Construct payload for GitHub API
-    summary_body = sign(args.summary_body) if args.human_checked else args.summary_body
+    # An empty summary is the line-comments-only review gh-pr-review skips;
+    # signing it would turn it into a counted review body.
+    summary_body = args.summary_body
+    if args.human_checked and summary_body.strip():
+        summary_body = sign(summary_body)
     payload = {"body": summary_body, "comments": api_comments}
     # Without --event the field is omitted, which creates a PENDING review
     if args.event:

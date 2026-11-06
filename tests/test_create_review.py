@@ -157,3 +157,13 @@ def test_omits_signature_without_human_checked(monkeypatch):
     payload = json.loads(posted[1])
     assert payload["body"] == "s"
     assert payload["comments"][0]["body"] == "x"
+
+
+def test_human_checked_leaves_empty_summary_unsigned(monkeypatch):
+    posted = _submit_calls(monkeypatch, ["--summary-body", "", "--human-checked"])
+
+    create_review.main()
+
+    payload = json.loads(posted[1])
+    assert payload["body"] == ""
+    assert payload["comments"][0]["body"] == f"x\n\n{create_review.HUMAN_CHECKED_SIGNATURE}"

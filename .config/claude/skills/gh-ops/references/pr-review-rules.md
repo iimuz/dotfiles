@@ -71,6 +71,7 @@ bash "${SKILL_DIR}/scripts/create_review.sh" \
 
 `--human-checked` を付けると、要約と各コメントの本文の最後に、空行を 1 つ挟んで次の署名の行を足す。
 suggestion のあるコメントでは、suggestion ブロックの後に足す。
+要約が空のときは、要約に署名を足さない。
 
 ```text
 <sub>👤 Checked by a human · drafted by Claude Code</sub>
