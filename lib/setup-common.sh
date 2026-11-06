@@ -53,3 +53,21 @@ function set_bashrc() {
   echo "set load setting in $rcfile: $filename"
   echo -e "if [ -f \"${filename}\" ]; then . \"${filename}\"; fi\n" >>"$rcfile"
 }
+
+# Register an MCP server at Claude Code user scope unless it already exists.
+# Usage: add_claude_mcp <name> <json>
+# User scope definitions live in ~/.claude.json, shared with other state, so they cannot be
+# distributed by symlink. Registration is detected by the exit code of `claude mcp get`
+# because the not-registered message varies by environment.
+function add_claude_mcp() {
+  local -r name="$1"
+  local -r json="$2"
+
+  if claude mcp get "$name" >/dev/null 2>&1; then
+    echo "already exist claude mcp: $name"
+    return 0
+  fi
+
+  echo "add claude mcp: $name"
+  claude mcp add-json --scope user "$name" "$json"
+}
