@@ -172,7 +172,11 @@ def test_human_checked_leaves_empty_summary_unsigned(monkeypatch):
 
 @pytest.mark.parametrize(
     "doc",
-    ["gh-ops/references/pr-review-rules.md", "gh-pr-review/references/commands.md"],
+    [
+        "gh-ops/references/pr-review-rules.md",
+        "gh-ops/references/pr-reply-rules.md",
+        "gh-pr-review/references/commands.md",
+    ],
 )
 def test_docs_spell_the_signature_as_a_whole_line(doc):
     skills = Path(__file__).resolve().parents[1] / ".config" / "claude" / "skills"

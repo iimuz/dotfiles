@@ -1,0 +1,162 @@
+"""Tests for reply_review.py."""
+
+import io
+import json
+import sys
+from types import SimpleNamespace
+
+import pytest
+from gh_ops import create_review, reply_review
+
+_SIG = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+
+
+def _run(monkeypatch, tmp_path, body, extra=(), response=None):
+    path = tmp_path / "body.md"
+    path.write_text(body, encoding="utf-8")
+    calls = []
+
+    def fake_run(cmd, **kwargs):
+        calls.append((cmd, kwargs.get("input")))
+        return response or SimpleNamespace(
+            returncode=0, stdout=json.dumps({"id": 9, "html_url": "u"}), stderr=""
+        )
+
+    monkeypatch.setattr(reply_review.subprocess, "run", fake_run)
+    argv = [
+        "reply_review.py",
+        "--owner",
+        "o",
+        "--repo",
+        "r",
+        "--pull-number",
+        "1",
+        "--comment-id",
+        "11",
+        "--body-file",
+        str(path),
+        *extra,
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    return calls
+
+
+def test_posts_reply_to_the_comment(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "x\n")
+
+    reply_review.main()
+
+    cmd, payload = calls[0]
+    assert "repos/o/r/pulls/1/comments/11/replies" in cmd
+    assert json.loads(payload) == {"body": "x\n"}
+    assert json.loads(capsys.readouterr().out) == {"id": 9, "html_url": "u"}
+
+
+def test_human_checked_appends_the_signature(monkeypatch, tmp_path):
+    calls = _run(monkeypatch, tmp_path, "x\n", ["--human-checked"])
+
+    reply_review.main()
+
+    assert reply_review.HUMAN_CHECKED_SIGNATURE == _SIG
+    assert json.loads(calls[0][1]) == {"body": f"x\n\n{_SIG}"}
+
+
+def test_signature_matches_create_review():
+    assert reply_review.HUMAN_CHECKED_SIGNATURE == create_review.HUMAN_CHECKED_SIGNATURE
+
+
+def test_reads_the_body_from_stdin(monkeypatch, tmp_path):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    sys.argv[sys.argv.index("--body-file") + 1] = "-"
+    monkeypatch.setattr(sys, "stdin", io.TextIOWrapper(io.BytesIO(b"y"), encoding="utf-8"))
+
+    reply_review.main()
+
+    assert json.loads(calls[0][1]) == {"body": "y"}
+
+
+def test_reports_a_stdin_body_that_is_not_utf8(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    sys.argv[sys.argv.index("--body-file") + 1] = "-"
+    monkeypatch.setattr(sys, "stdin", io.TextIOWrapper(io.BytesIO(b"caf\xe9"), encoding="utf-8"))
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []
+
+
+def test_rejects_an_empty_body(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, " \n")
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code != 0
+    assert json.loads(capsys.readouterr().err)["error"] == "empty_body"
+    assert calls == []
+
+
+def test_reports_a_gh_failure(monkeypatch, tmp_path, capsys):
+    failed = SimpleNamespace(returncode=1, stdout="", stderr="HTTP 422: Unprocessable")
+    _run(monkeypatch, tmp_path, "x", response=failed)
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    err = json.loads(capsys.readouterr().err)
+    assert err["error"] == "gh_api_failed"
+    assert err["http_status"] == 422
+
+
+def test_reports_an_unreadable_body_file(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    sys.argv[sys.argv.index("--body-file") + 1] = str(tmp_path / "missing.md")
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []
+
+
+def test_reports_a_body_file_that_is_not_utf8(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    body_file = tmp_path / "latin1.md"
+    body_file.write_bytes(b"caf\xe9")
+    sys.argv[sys.argv.index("--body-file") + 1] = str(body_file)
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []
+
+
+def test_reports_a_non_json_response(monkeypatch, tmp_path, capsys):
+    _run(
+        monkeypatch, tmp_path, "x", response=SimpleNamespace(returncode=0, stdout="oops", stderr="")
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_api_response"
+
+
+@pytest.mark.parametrize("data", [{"html_url": "u"}, {"id": 9}, []])
+def test_reports_a_response_without_id_or_url(monkeypatch, tmp_path, capsys, data):
+    response = SimpleNamespace(returncode=0, stdout=json.dumps(data), stderr="")
+    _run(monkeypatch, tmp_path, "x", response=response)
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_api_response"
