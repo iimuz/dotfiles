@@ -147,3 +147,62 @@ get_inode() {
   count=$(grep -cF "/some/file.sh" "$home_dir/.bashrc")
   [ "$count" -eq 1 ]
 }
+
+# --- add_claude_mcp ---
+
+QMD_MCP_JSON='{"type":"http","url":"http://localhost:8181/mcp","timeout":180000}'
+
+@test "add_claude_mcp: adds the server with add-json when claude mcp get fails" {
+  local bin_dir="$BATS_TEST_TMPDIR/bin"
+  mkdir -p "$bin_dir"
+  local args_log="$BATS_TEST_TMPDIR/claude_args.log"
+
+  # Exit 1 without any message, so the helper cannot depend on the wording.
+  cat >"$bin_dir/claude" <<STUB
+#!/bin/bash
+printf '%s\n' "\$@" >>"$args_log"
+if [ "\$1" = "mcp" ] && [ "\$2" = "get" ]; then
+  exit 1
+fi
+STUB
+  chmod +x "$bin_dir/claude"
+  PATH="$bin_dir:$PATH"
+
+  # Same shell options as the setup scripts.
+  run bash -c 'set -eu -o pipefail; . "$1"; add_claude_mcp "$2" "$3"; echo "after add_claude_mcp"' \
+    _ "$BATS_TEST_DIRNAME/../lib/setup-common.sh" qmd "$QMD_MCP_JSON"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"add claude mcp: qmd"* ]]
+  [[ "$output" == *"after add_claude_mcp"* ]]
+
+  local expected
+  expected=$(printf '%s\n' mcp get qmd mcp add-json --scope user qmd "$QMD_MCP_JSON")
+  [ "$(cat "$args_log")" = "$expected" ]
+}
+
+@test "add_claude_mcp: skips when claude mcp get succeeds even if the server is down" {
+  local bin_dir="$BATS_TEST_TMPDIR/bin"
+  mkdir -p "$bin_dir"
+  local args_log="$BATS_TEST_TMPDIR/claude_args.log"
+
+  cat >"$bin_dir/claude" <<STUB
+#!/bin/bash
+printf '%s\n' "\$@" >>"$args_log"
+if [ "\$1" = "mcp" ] && [ "\$2" = "get" ]; then
+  echo "qmd:"
+  echo "  Scope: User config (available in all your projects)"
+  echo "  Status: ✘ Failed to connect"
+  exit 0
+fi
+STUB
+  chmod +x "$bin_dir/claude"
+  PATH="$bin_dir:$PATH"
+
+  run add_claude_mcp qmd "$QMD_MCP_JSON"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist claude mcp: qmd"* ]]
+
+  local expected
+  expected=$(printf '%s\n' mcp get qmd)
+  [ "$(cat "$args_log")" = "$expected" ]
+}
