@@ -126,3 +126,34 @@ def test_rejects_unknown_event(monkeypatch):
 
     assert exc.value.code != 0
     assert posted == []
+
+
+def test_human_checked_signs_summary_and_every_comment(monkeypatch):
+    comments = json.dumps(
+        [
+            {"path": "a.py", "line": 1, "body": "x", "suggestion": "y"},
+            {"path": "b.py", "line": 2, "body": "z\n"},
+        ]
+    )
+    posted = _submit_calls(
+        monkeypatch, ["--event", "COMMENT", "--comments-json", comments, "--human-checked"]
+    )
+
+    create_review.main()
+
+    sig = create_review.HUMAN_CHECKED_SIGNATURE
+    assert sig == "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+    payload = json.loads(posted[1])
+    assert payload["body"] == f"s\n\n{sig}"
+    assert payload["comments"][0]["body"] == f"x\n\n```suggestion\ny\n```\n\n{sig}"
+    assert payload["comments"][1]["body"] == f"z\n\n{sig}"
+
+
+def test_omits_signature_without_human_checked(monkeypatch):
+    posted = _submit_calls(monkeypatch, ["--event", "COMMENT"])
+
+    create_review.main()
+
+    payload = json.loads(posted[1])
+    assert payload["body"] == "s"
+    assert payload["comments"][0]["body"] == "x"

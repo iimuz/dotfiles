@@ -9,6 +9,12 @@ from typing import Any, NoReturn
 
 __all__ = ["main"]
 
+# Marks a review that the user checked in the conversation before it was submitted
+# under the bot identity. gh-pr-review matches the whole line, so do not reword it.
+# The emoji is a deliberate exception to the no-emoji rule: it makes the mark stand
+# out in the PR UI.
+HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+
 
 @dataclass(frozen=True)
 class ReviewResult:
@@ -24,6 +30,10 @@ def extract_http_status(stderr_text: str) -> int | None:
     if match is None:
         return None
     return int(match.group(1))
+
+
+def sign(body: str) -> str:
+    return f"{body.rstrip()}\n\n{HUMAN_CHECKED_SIGNATURE}"
 
 
 def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
@@ -80,6 +90,12 @@ def main() -> None:
         help="Submit the review with this event instead of leaving it pending",
     )
 
+    parser.add_argument(
+        "--human-checked",
+        action="store_true",
+        help="Append the human-checked signature to the summary and every comment",
+    )
+
     args = parser.parse_args()
 
     try:
@@ -125,6 +141,9 @@ def main() -> None:
             suggestion_block = f"\n\n```suggestion\n{suggestion}\n```"
             body += suggestion_block
 
+        if args.human_checked:
+            body = sign(body)
+
         try:
             parsed_line = int(line)
         except (TypeError, ValueError):
@@ -161,7 +180,8 @@ def main() -> None:
         emit_error("pending_review_exists", detail=detail, review_id=existing.get("id"))
 
     # Construct payload for GitHub API
-    payload = {"body": args.summary_body, "comments": api_comments}
+    summary_body = sign(args.summary_body) if args.human_checked else args.summary_body
+    payload = {"body": summary_body, "comments": api_comments}
     # Without --event the field is omitted, which creates a PENDING review
     if args.event:
         payload["event"] = args.event
