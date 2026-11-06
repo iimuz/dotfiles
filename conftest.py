@@ -37,6 +37,12 @@ _load_module(
 _gh_ops.append_review = sys.modules["gh_ops.append_review"]
 
 _load_module(
+    "gh_ops.reply_review",
+    _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "reply_review.py",
+)
+_gh_ops.reply_review = sys.modules["gh_ops.reply_review"]
+
+_load_module(
     "config.claude.statusline",
     _PROJECT_ROOT / ".config" / "claude" / "statusline.py",
 )
