@@ -107,6 +107,20 @@ def test_reports_an_unreadable_body_file(monkeypatch, tmp_path, capsys):
     assert calls == []
 
 
+def test_reports_a_body_file_that_is_not_utf8(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    body_file = tmp_path / "latin1.md"
+    body_file.write_bytes(b"caf\xe9")
+    sys.argv[sys.argv.index("--body-file") + 1] = str(body_file)
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []
+
+
 def test_reports_a_non_json_response(monkeypatch, tmp_path, capsys):
     _run(
         monkeypatch, tmp_path, "x", response=SimpleNamespace(returncode=0, stdout="oops", stderr="")

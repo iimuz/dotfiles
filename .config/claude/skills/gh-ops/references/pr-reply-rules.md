@@ -22,7 +22,15 @@ PR の既存のレビュースレッドに返信する。
 ## pending review が残っているとき
 
 返信するアカウントの pending review が PR に残っていると、GitHub は返信を拒み、`reply_review.sh` は `http_status` が 422 の `gh_api_failed` を返す。
-このときは再実行せず、pending review を submit も削除もせずに、返信の文面とあわせてユーザーに伝えて止まる。
+422 は返信への返信や本文の検証の失敗でも返るので、原因を伝える前に `stderr` を読み、pending review が残っているかを確かめる。
+pending review は、その持ち主のアカウントにだけ見える。
+
+```bash
+gh api "repos/<owner>/<repo>/pulls/<number>/reviews" --paginate \
+  --jq '.[] | select(.state == "PENDING") | {id, user: .user.login}'
+```
+
+pending review が原因のときは、再実行せず、pending review を submit も削除もせずに、返信の文面とあわせてユーザーに伝えて止まる。
 
 ## 返信先のコメントの id
 

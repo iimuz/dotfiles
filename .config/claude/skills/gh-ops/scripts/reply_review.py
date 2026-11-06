@@ -38,7 +38,7 @@ def read_body(body_file: str) -> str:
     try:
         with open(body_file, encoding="utf-8") as f:
             return f.read()
-    except OSError as error:
+    except (OSError, UnicodeDecodeError) as error:
         emit_error("body_file_unreadable", detail=str(error))
 
 
