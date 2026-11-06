@@ -105,3 +105,27 @@ def test_reports_an_unreadable_body_file(monkeypatch, tmp_path, capsys):
     assert exc.value.code == 1
     assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
     assert calls == []
+
+
+def test_reports_a_non_json_response(monkeypatch, tmp_path, capsys):
+    _run(
+        monkeypatch, tmp_path, "x", response=SimpleNamespace(returncode=0, stdout="oops", stderr="")
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_api_response"
+
+
+@pytest.mark.parametrize("data", [{"html_url": "u"}, {"id": 9}, []])
+def test_reports_a_response_without_id_or_url(monkeypatch, tmp_path, capsys, data):
+    response = SimpleNamespace(returncode=0, stdout=json.dumps(data), stderr="")
+    _run(monkeypatch, tmp_path, "x", response=response)
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_api_response"
