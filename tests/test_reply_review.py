@@ -6,7 +6,7 @@ import sys
 from types import SimpleNamespace
 
 import pytest
-from gh_ops import reply_review
+from gh_ops import create_review, reply_review
 
 _SIG = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
 
@@ -61,14 +61,31 @@ def test_human_checked_appends_the_signature(monkeypatch, tmp_path):
     assert json.loads(calls[0][1]) == {"body": f"x\n\n{_SIG}"}
 
 
+def test_signature_matches_create_review():
+    assert reply_review.HUMAN_CHECKED_SIGNATURE == create_review.HUMAN_CHECKED_SIGNATURE
+
+
 def test_reads_the_body_from_stdin(monkeypatch, tmp_path):
     calls = _run(monkeypatch, tmp_path, "unused")
     sys.argv[sys.argv.index("--body-file") + 1] = "-"
-    monkeypatch.setattr(sys, "stdin", io.StringIO("y"))
+    monkeypatch.setattr(sys, "stdin", io.TextIOWrapper(io.BytesIO(b"y"), encoding="utf-8"))
 
     reply_review.main()
 
     assert json.loads(calls[0][1]) == {"body": "y"}
+
+
+def test_reports_a_stdin_body_that_is_not_utf8(monkeypatch, tmp_path, capsys):
+    calls = _run(monkeypatch, tmp_path, "unused")
+    sys.argv[sys.argv.index("--body-file") + 1] = "-"
+    monkeypatch.setattr(sys, "stdin", io.TextIOWrapper(io.BytesIO(b"caf\xe9"), encoding="utf-8"))
+
+    with pytest.raises(SystemExit) as exc:
+        reply_review.main()
+
+    assert exc.value.code == 1
+    assert json.loads(capsys.readouterr().err)["error"] == "body_file_unreadable"
+    assert calls == []
 
 
 def test_rejects_an_empty_body(monkeypatch, tmp_path, capsys):

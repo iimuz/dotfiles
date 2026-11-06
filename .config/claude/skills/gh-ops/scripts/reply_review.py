@@ -9,7 +9,8 @@ from typing import Any, NoReturn
 __all__ = ["main"]
 
 # Marks a reply that the user checked in the conversation before it was posted
-# under the bot identity. gh-pr-review matches the whole line, so do not reword it.
+# under the bot identity. gh-pr-review only recognizes it as the body's last line,
+# so do not reword it or append anything after it.
 # The emoji is a deliberate exception to the no-emoji rule: it makes the mark stand
 # out in the PR UI.
 HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
@@ -33,9 +34,11 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
 
 
 def read_body(body_file: str) -> str:
-    if body_file == "-":
-        return sys.stdin.read()
     try:
+        if body_file == "-":
+            # Decode the raw bytes so stdin is read as UTF-8 like a body file,
+            # whatever the locale's encoding is.
+            return sys.stdin.buffer.read().decode("utf-8")
         with open(body_file, encoding="utf-8") as f:
             return f.read()
     except (OSError, UnicodeDecodeError) as error:
