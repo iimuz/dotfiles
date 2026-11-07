@@ -8,7 +8,8 @@ if ! type claude >/dev/null 2>&1; then return 0; fi
 function claude_remote_control() {
   local name="${1:-$(basename "$PWD")}"
 
-  claude remote-control \
+  # remote control は .claude/worktrees/ の下に worktree を作り、mise は信頼していない場所の mise.toml を読まないため。
+  MISE_TRUSTED_CONFIG_PATHS="$PWD/.claude/worktrees/" claude remote-control \
     --name "$name" \
     --spawn worktree \
     --permission-mode auto \
