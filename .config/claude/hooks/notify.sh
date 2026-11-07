@@ -26,12 +26,15 @@ if [ "${HERDR_ENV:-}" = "1" ]; then
   exit 0
 fi
 
-# Claude Desktop runs claude-code with CLAUDE_CODE_ENTRYPOINT=claude-desktop and
-# surfaces session state through its own notifications, so skip osascript there
-# to avoid duplicate notifications.
-if [ "${CLAUDE_CODE_ENTRYPOINT:-}" = "claude-desktop" ]; then
-  exit 0
-fi
+case "${CLAUDE_CODE_ENTRYPOINT:-}" in
+  # Claude Desktop surfaces session state through its own notifications, so
+  # skip osascript there to avoid duplicate notifications.
+  claude-desktop) exit 0 ;;
+  # Headless sessions (claude -p) have nobody waiting on them and the launcher
+  # reports the overall outcome itself, so a notification at the end of every
+  # session only piles up.
+  sdk-cli) exit 0 ;;
+esac
 
 event="${1:-}"
 case "$event" in

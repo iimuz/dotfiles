@@ -46,6 +46,20 @@ STUB
   [ ! -f "$ARGS_LOG" ]
 }
 
+@test "notify.sh: skips osascript in headless sessions (CLAUDE_CODE_ENTRYPOINT=sdk-cli)" {
+  run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
+    CLAUDE_CODE_ENTRYPOINT=sdk-cli "$NOTIFY_SH" stop
+  [ "$status" -eq 0 ]
+  [ ! -f "$ARGS_LOG" ]
+}
+
+@test "notify.sh: skips notification events in headless sessions (CLAUDE_CODE_ENTRYPOINT=sdk-cli)" {
+  run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
+    CLAUDE_CODE_ENTRYPOINT=sdk-cli "$NOTIFY_SH" notification
+  [ "$status" -eq 0 ]
+  [ ! -f "$ARGS_LOG" ]
+}
+
 @test "notify.sh: calls osascript from the cli entrypoint" {
   run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
     CLAUDE_CODE_ENTRYPOINT=cli "$NOTIFY_SH" notification
