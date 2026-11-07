@@ -33,6 +33,13 @@ if [ "${CLAUDE_CODE_ENTRYPOINT:-}" = "claude-desktop" ]; then
   exit 0
 fi
 
+# Headless sessions (claude -p) run with CLAUDE_CODE_ENTRYPOINT=sdk-cli. Nobody
+# is waiting on them and the launcher reports the overall outcome itself, so a
+# notification at the end of every session only piles up.
+if [ "${CLAUDE_CODE_ENTRYPOINT:-}" = "sdk-cli" ]; then
+  exit 0
+fi
+
 event="${1:-}"
 case "$event" in
   notification)
