@@ -11,6 +11,10 @@
   "prHourlyLimit": 5,
   "prConcurrentLimit": 10,
   "schedule": ["* * * * 6"],
+  "lockFileMaintenance": {
+    "schedule": ["* * * * 6"],
+    "automerge": true
+  },
   "assignees": ["iimuz"],
   "labels": ["dependencies"],
   "mise": {
