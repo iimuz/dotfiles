@@ -129,8 +129,9 @@ if ! type orca-ide >/dev/null 2>&1 && type gh >/dev/null 2>&1; then
 fi
 if type orca-ide >/dev/null 2>&1; then
   # ペアリング用リンクにはこのポートがそのまま入り、mac は同じ番号で ssh の LocalForward を張る。
-  # mac の orca アプリが既定の 6768 を使うとぶつかるので別の番号にする
-  orca-ide serve service install --port 6790
+  # mac の orca アプリが既定の 6768 を使うとぶつかるので別の番号にする。
+  # 既定の bind は loopback だけで android から tailscale 経由で届かないため全 interface で待ち受ける
+  orca-ide serve service install --port 6790 --bind 0.0.0.0
   # ログアウトしても service を止めない
   loginctl enable-linger "$(whoami)"
 fi
