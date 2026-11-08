@@ -1,20 +1,16 @@
 #tap "homebrew/bundle"
 
 # === application management
-brew "mas"
 # cask "appcleaner"
-mas "RunCatNeo", id: 6757801838
 
 # === communication tools
 # cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
 cask "slack"
-mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
 
 # === desktop management
 cask "raycast"  # 検索 + rectangle
-mas "tot", id: 1491071483 # 非常に簡易なメモ
 
 # === docker
 cask "rancher"  # dockerd
@@ -27,9 +23,6 @@ cask "font-hackgen-nerd"
 # === git
 brew "git"
 brew "git-lfs"
-
-# === key management
-mas "bitwarden", id: 1352778147  # password manager(app store版を利用しないとブラウザの生体認証が利用できない)
 
 # === keyboard, mouse and trackpad management
 cask "azookey"
@@ -65,3 +58,12 @@ brew "pkg-config"
 brew "starship"  # Shell prompt
 brew "vifm"
 brew "wget"
+cask "stablyai/orca/orca", trusted: true
+
+# === Mac App Store
+# mas ではインストールせず、App Store からインストールする。
+# mas はインストールと更新に root 権限が要るが、brew bundle は mas を sudo 無しで呼ぶため失敗する。
+# mas "RunCatNeo", id: 6757801838
+# mas "velja", id: 1607635845  # linkを開く際のブラウザ選択
+# mas "tot", id: 1491071483 # 非常に簡易なメモ
+# mas "bitwarden", id: 1352778147  # password manager(app store版を利用しないとブラウザの生体認証が利用できない)

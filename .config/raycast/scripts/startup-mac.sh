@@ -17,9 +17,8 @@ SCRIPT_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 brew update
 brew upgrade
 BREWFILE="$SCRIPT_DIR/../../homebrew/Brewfile"
+# Keep --no-mas: the Brewfile lists no App Store apps, so --force would uninstall all of them whenever mas is present.
 brew bundle cleanup --force --no-mas --file="$BREWFILE"
-# Without --force, cleanup exits 1 when it only lists candidates or the prompt is declined.
-brew bundle cleanup --mas --file="$BREWFILE" || true
 
 # update mise
 mise prune -y
