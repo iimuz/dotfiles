@@ -119,6 +119,21 @@ fi
 if type nvim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
 fi
+# === orca
+# mise と apt に無い。headless で使う orca-ide CLI は deb の postinst が /usr/bin に置く
+if ! type orca-ide >/dev/null 2>&1 && type gh >/dev/null 2>&1; then
+  orca_deb=$(mktemp --suffix=.deb)
+  gh release download -R stablyai/orca -p 'orca-ide_*_arm64.deb' -O "$orca_deb" --clobber
+  sudo apt-get install -y "$orca_deb"
+  rm -f "$orca_deb"
+fi
+if type orca-ide >/dev/null 2>&1; then
+  # ペアリング用リンクにはこのポートがそのまま入り、mac は同じ番号で ssh の LocalForward を張る。
+  # mac の orca アプリが既定の 6768 を使うとぶつかるので別の番号にする
+  orca-ide serve service install --port 6790
+  # ログアウトしても service を止めない
+  loginctl enable-linger "$(whoami)"
+fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
 # === tailscale
