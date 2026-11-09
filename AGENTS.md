@@ -47,7 +47,9 @@ Run `mise run format` and `mise run lint` after any modifications.
     the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
     request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz`
     ssh URLs to https so pushes use the bot token. A launcher that sets
-    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity.
+    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; on macOS it must also set
+    `GH_CONFIG_DIR_PERSONAL` to the same directory as `GH_CONFIG_DIR`, or `mise exec` in
+    personal repositories replaces its `GH_CONFIG_DIR` with `~/.config/gh-personal`.
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,
