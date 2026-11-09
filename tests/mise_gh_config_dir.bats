@@ -11,6 +11,9 @@ setup() {
   PROJ="$BATS_TEST_TMPDIR/proj"
   mkdir -p "$PROJ"
   printf '[env]\n_.file = ".env"\n%s\n' "$line" >"$PROJ/mise.toml"
+  # Keep the host's global mise config (e.g. config-mac.toml linked as config.local.toml) out of the result.
+  export MISE_CONFIG_DIR="$BATS_TEST_TMPDIR/mise-config"
+  export MISE_GLOBAL_CONFIG_FILE="$MISE_CONFIG_DIR/config.toml"
   export MISE_TRUSTED_CONFIG_PATHS="$PROJ"
   cd "$PROJ"
 }
