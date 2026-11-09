@@ -56,7 +56,10 @@ Run `mise run format` and `mise run lint` after any modifications.
   - Repositories under the personal account resolve `GH_CONFIG_DIR` from
     `GH_CONFIG_DIR_PERSONAL` in their mise config, falling back to their own value (see the
     `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch also reaches
-    `mise exec -- gh`
+    `mise exec -- gh`. On macOS, `.config/mise/config-mac.toml` sets
+    `GH_CONFIG_DIR_PERSONAL` to `~/.config/gh-personal` unless it is already set; the
+    repository side reads it with `env.`, because `get_env` does not see values set by
+    other mise configs
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats

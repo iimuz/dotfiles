@@ -5,6 +5,12 @@ eza = "0.23.5"
 fd = "10.5.0"
 "github:jannis-baum/Vivify" = "0.15.0"
 
+[env]
+# mac の端末では、既定の ~/.config/gh に別のアカウントを置き、個人アカウントの gh の設定を ~/.config/gh-personal に置く。
+# 個人のリポジトリの mise.toml がこの値から GH_CONFIG_DIR を決める。
+# 既にある値を残すのは、Claude Code の hook が bot 用に入れた値を上書きしないため。
+GH_CONFIG_DIR_PERSONAL = "{{ get_env(name='GH_CONFIG_DIR_PERSONAL', default=env.HOME ~ '/.config/gh-personal') }}"
+
 [settings]
 # シェルの shim があると、shim から fallback したシェルの exec bash を mise が再帰と誤検出して失敗する
 shims.exclude = ["bash", "bashbug"]

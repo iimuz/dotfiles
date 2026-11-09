@@ -44,3 +44,11 @@ gh_config_dir() {
   [ "$status" -eq 0 ]
   [ "$output" = "[/agent]" ]
 }
+
+@test "mise GH_CONFIG_DIR: PERSONAL from a lower-priority mise config wins over the inherited value" {
+  printf '[env]\nGH_CONFIG_DIR_PERSONAL = "/from-parent"\n' >"$BATS_TEST_TMPDIR/mise.toml"
+  export MISE_TRUSTED_CONFIG_PATHS="$PROJ:$BATS_TEST_TMPDIR"
+  gh_config_dir -u GH_CONFIG_DIR_PERSONAL GH_CONFIG_DIR=/inherited
+  [ "$status" -eq 0 ]
+  [ "$output" = "[/from-parent]" ]
+}
