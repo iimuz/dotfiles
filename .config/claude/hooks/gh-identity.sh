@@ -28,7 +28,7 @@ esac
 # Pushes over ssh would use the human key; rewriting to https routes them through the bot token.
 cat >>"$CLAUDE_ENV_FILE" <<ENV
 export GH_CONFIG_DIR='$bot_gh_dir'
-export GH_CONFIG_DIR_PERSONAL='$bot_gh_dir'
+export GH_CONFIG_DIR_AGENT='$bot_gh_dir'
 export CLAUDE_GH_APP_SLUG='$app_slug'
 export GIT_AUTHOR_NAME='$bot_name'
 export GIT_AUTHOR_EMAIL='$bot_email'

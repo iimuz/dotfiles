@@ -27,7 +27,7 @@ expected_lines() {
   local n=$1
   cat <<LINES
 export GH_CONFIG_DIR='$HOME/.config/gh-agent'
-export GH_CONFIG_DIR_PERSONAL='$HOME/.config/gh-agent'
+export GH_CONFIG_DIR_AGENT='$HOME/.config/gh-agent'
 export CLAUDE_GH_APP_SLUG='iimuz-agent'
 export GIT_AUTHOR_NAME='iimuz-agent[bot]'
 export GIT_AUTHOR_EMAIL='351267992+iimuz-agent[bot]@users.noreply.github.com'
