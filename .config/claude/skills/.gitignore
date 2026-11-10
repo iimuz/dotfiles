@@ -5,5 +5,9 @@ loop-handoff/
 # playwright-cli install --skills --global が生成する。CLI のバージョンに連動するため追跡しない
 playwright-cli/
 
+# orca-ide skills install が symlink で置く。CLI のバージョンに連動するため追跡しない。symlink に当たるよう末尾に / を付けない
+/orca-cli
+/orchestration
+
 # ゴミファイルがあるので管理しない
 synced/

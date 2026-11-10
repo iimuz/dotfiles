@@ -170,13 +170,23 @@ def test_json_files_parse(json_file: str) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _is_ignored(path: str) -> bool:
+    result = subprocess.run(["git", "check-ignore", "-q", path], cwd=_REPO_ROOT)
+    return result.returncode == 0
+
+
 def test_generated_skill_is_ignored() -> None:
     """The bundled playwright-cli skill is generated and must stay untracked."""
     target = ".config/claude/skills/playwright-cli/"
-    result = subprocess.run(
-        ["git", "check-ignore", "-q", target],
-        cwd=_REPO_ROOT,
-    )
-    assert result.returncode == 0, (
+    assert _is_ignored(target), (
         f"{target} is not gitignored; the generated skill would be committed"
+    )
+
+
+@pytest.mark.parametrize("name", ["orca-cli", "orchestration"])
+def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
+    """orca-ide places these skills as symlinks directly under skills/."""
+    assert _is_ignored(f".config/claude/skills/{name}"), f"skills/{name} is not gitignored"
+    assert not _is_ignored(f".config/claude/skills/some-skill/{name}"), (
+        f"skills/some-skill/{name} is gitignored"
     )

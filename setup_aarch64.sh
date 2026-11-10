@@ -134,6 +134,11 @@ if type orca-ide >/dev/null 2>&1; then
   orca-ide serve service install --port 6790 --bind 0.0.0.0
   # ログアウトしても service を止めない
   loginctl enable-linger "$(whoami)"
+  # skill は CLI のバージョンに合わせて生成させる。~/.claude/skills は claude の節で symlink にするので、この節はその後に置く。
+  # ~/.claude/skills が symlink でないと、Orca の symlink がこのリポジトリの外に置かれ、普通のディレクトリを作ると後で symlink を張れないので入れない
+  if [ -L "$HOME/.claude/skills" ]; then
+    orca-ide skills install --skill orca-cli --skill orchestration
+  fi
 fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi
