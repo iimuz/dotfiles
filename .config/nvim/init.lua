@@ -8,6 +8,7 @@ require("clipboard").setup() -- Clipboardへのコピーコマンド
 require("file").setup() -- File関連のコマンド
 require("lsp").setup() -- LSP関連のコマンド
 require("markdown-hop-links").setup()
+require("orca").setup() -- Orcaのエディタで今のファイルを開く
 require("quickfix").setup() -- quickfixとlocation listのコマンド
 require("tab").setup() -- tab関連のコマンド
 require("vivify").setup() -- Vivifyで今のファイルを見るURLのコピー
