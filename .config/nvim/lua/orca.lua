@@ -54,12 +54,16 @@ function M.open_file(path)
 		return
 	end
 
-	M.run({ "file", "open", path, "--worktree", "id:" .. id })
+	M.run({ "file", "open", real_path, "--worktree", "id:" .. id })
 end
 
 function M.find_tab(tabs, prefix)
 	for _, tab in ipairs(tabs) do
-		if type(tab.url) == "string" and vim.startswith(tab.url, prefix) then
+		if
+			type(tab.url) == "string"
+			and type(tab.browserPageId) == "string"
+			and vim.startswith(tab.url, prefix)
+		then
 			return tab
 		end
 	end

@@ -4,11 +4,11 @@ local orca = require("orca")
 
 local M = {}
 
-M.VIEWER_PREFIX = "http://localhost:31622/viewer/"
-
 local PORT = 31622
 local POLL_INTERVAL_MS = 100
 local READY_TIMEOUT_MS = 5000
+
+M.VIEWER_PREFIX = "http://localhost:" .. PORT .. "/viewer/"
 
 function M.viewer_url(abs_path)
 	local encoded = abs_path:sub(2):gsub("[^A-Za-z0-9/._~!*'()-]", function(c)
