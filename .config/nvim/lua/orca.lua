@@ -54,7 +54,8 @@ function M.open_file(path)
 		return
 	end
 
-	M.run({ "file", "open", real_path, "--worktree", "id:" .. id })
+	-- Orca は登録したルートのパスで照合するので、ルートの部分は登録どおりに戻す
+	M.run({ "file", "open", root .. real_path:sub(#real_root + 1), "--worktree", "id:" .. id })
 end
 
 function M.find_tab(tabs, prefix)
