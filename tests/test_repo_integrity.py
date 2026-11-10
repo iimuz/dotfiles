@@ -180,3 +180,18 @@ def test_generated_skill_is_ignored() -> None:
     assert result.returncode == 0, (
         f"{target} is not gitignored; the generated skill would be committed"
     )
+
+
+@pytest.mark.parametrize("name", ["orca-cli", "orchestration"])
+def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
+    """orca-ide places these skills as symlinks directly under skills/."""
+    top = subprocess.run(
+        ["git", "check-ignore", "-q", f".config/claude/skills/{name}"],
+        cwd=_REPO_ROOT,
+    )
+    assert top.returncode == 0, f"skills/{name} is not gitignored"
+    nested = subprocess.run(
+        ["git", "check-ignore", "-q", f".config/claude/skills/some-skill/{name}"],
+        cwd=_REPO_ROOT,
+    )
+    assert nested.returncode == 1, f"skills/some-skill/{name} is gitignored"

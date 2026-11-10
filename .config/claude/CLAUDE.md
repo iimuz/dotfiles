@@ -79,4 +79,5 @@
 - まれなエッジケースのために作り込みすぎない
 - ユーザーが明示的に指示しない限り、GitHub の Issue や Pull Request に書き込まない (コメント、ラベル、
   担当者の割り当て)
-- Orca の handoff (orca-cli) は、ユーザーが Orca、worktree、別のエージェントを名指ししたときだけ使う。単に handoff や引き継ぎと書かれたときは使わず、/loop-handoff と混同しない
+- Orca の handoff (orca-cli) は、ユーザーが Orca、worktree、別のエージェントを名指ししたときだけ使う。
+  単に handoff や引き継ぎと書かれたときは使わず、/loop-handoff と混同しない

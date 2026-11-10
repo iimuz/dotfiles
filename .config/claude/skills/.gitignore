@@ -6,8 +6,8 @@ loop-handoff/
 playwright-cli/
 
 # orca-ide skills install が symlink で置く。CLI のバージョンに連動するため追跡しない。symlink に当たるよう末尾に / を付けない
-orca-cli
-orchestration
+/orca-cli
+/orchestration
 
 # ゴミファイルがあるので管理しない
 synced/
