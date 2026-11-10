@@ -97,6 +97,16 @@ if type nvim >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/nvim" "$HOME/.config/nvim"
   # create_symlink "$SCRIPT_DIR/.config/nvim/mcphub" "$HOME/.config/mcphub"
 fi
+# === orca
+# Brewfile の cask が入れる CLI の名前は、Linux の deb と違って orca である
+if type orca >/dev/null 2>&1; then
+  # ~/.claude/skills は claude の節で symlink にするので、この節はその後に置く。
+  # symlink でないと Orca の link がこのリポジトリの外に置かれ、普通のディレクトリを作ると後で symlink を張れないので入れない。
+  # mac には skill の update 手順を置かない。Orca アプリが自身の更新の後とウィンドウを開いたときに、手を入れていない copy を同梱版に置き換える
+  if [ -L "$HOME/.claude/skills" ]; then
+    orca skills install --skill orca-cli --skill orchestration
+  fi
+fi
 # === vifm
 if type vifm >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/vifm/vifmrc" "$HOME/.config/vifm/vifmrc"
