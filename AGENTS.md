@@ -43,25 +43,30 @@ Run `mise run format` and `mise run lint` after any modifications.
     Custom Metrics; macOS only).
     `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
     `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
-    `GH_CONFIG_DIR_PERSONAL` at `~/.config/gh-agent`, sets the git author and committer to
+    `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
     the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
     request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz`
     ssh URLs to https so pushes use the bot token. A launcher that sets
-    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity.
+    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
+    launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
+    `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,
   `lint`, `test`); tasks that need a real script go in `scripts/` and are
   referenced from `mise.toml` (none currently)
-  - Repositories under the personal account resolve `GH_CONFIG_DIR` from
-    `GH_CONFIG_DIR_PERSONAL` in their mise config, falling back to their own value (see the
-    `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch also reaches
-    `mise exec -- gh`
+  - Repositories under the personal account read `.env` first and then resolve
+    `GH_CONFIG_DIR` from `GH_CONFIG_DIR_AGENT`, falling back to the `.env` or inherited
+    value (see the `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch
+    also reaches `mise exec -- gh`. A machine whose personal gh config directory is not
+    gh's default writes `GH_CONFIG_DIR` in each repository's `.env`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats
   (shell helper functions in `lib/`); both run via `mise run test`
-- `lefthook.yml`: Pre-commit hook definition (runs format → lint + test automatically)
+- `lefthook.yml`: Git hook definitions. pre-commit runs format → lint + test automatically;
+  post-checkout copies the primary checkout's `.env` into a newly added worktree and never
+  overwrites an existing one (`.worktreeinclude` does the same for worktrees Claude Code creates)
 - `setup_*.sh` / `update_*.sh`: Platform-specific environment setup scripts at root
 
 ## Platform Setup Scripts

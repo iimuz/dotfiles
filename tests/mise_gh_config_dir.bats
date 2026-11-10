@@ -19,28 +19,42 @@ gh_config_dir() {
   run --separate-stderr env "$@" mise exec -- sh -c 'printf "[%s]" "${GH_CONFIG_DIR-unset}"'
 }
 
-@test "mise GH_CONFIG_DIR: empty without .env, inherited value, or PERSONAL" {
-  gh_config_dir -u GH_CONFIG_DIR -u GH_CONFIG_DIR_PERSONAL
+@test "mise GH_CONFIG_DIR: empty without .env, inherited value, or AGENT" {
+  gh_config_dir -u GH_CONFIG_DIR -u GH_CONFIG_DIR_AGENT
   [ "$status" -eq 0 ]
   [ "$output" = "[]" ]
 }
 
-@test "mise GH_CONFIG_DIR: keeps the inherited value without .env or PERSONAL" {
-  gh_config_dir -u GH_CONFIG_DIR_PERSONAL GH_CONFIG_DIR=/inherited
+@test "mise GH_CONFIG_DIR: keeps the inherited value without .env or AGENT" {
+  gh_config_dir -u GH_CONFIG_DIR_AGENT GH_CONFIG_DIR=/inherited
   [ "$status" -eq 0 ]
   [ "$output" = "[/inherited]" ]
 }
 
-@test "mise GH_CONFIG_DIR: .env wins over the inherited value without PERSONAL" {
+@test "mise GH_CONFIG_DIR: .env wins over the inherited value without AGENT" {
   echo "GH_CONFIG_DIR=/dotenv" >"$PROJ/.env"
-  gh_config_dir -u GH_CONFIG_DIR_PERSONAL GH_CONFIG_DIR=/inherited
+  gh_config_dir -u GH_CONFIG_DIR_AGENT GH_CONFIG_DIR=/inherited
   [ "$status" -eq 0 ]
   [ "$output" = "[/dotenv]" ]
 }
 
-@test "mise GH_CONFIG_DIR: PERSONAL wins over .env and the inherited value" {
+@test "mise GH_CONFIG_DIR: AGENT wins over .env and the inherited value" {
   echo "GH_CONFIG_DIR=/dotenv" >"$PROJ/.env"
-  gh_config_dir GH_CONFIG_DIR=/inherited GH_CONFIG_DIR_PERSONAL=/agent
+  gh_config_dir GH_CONFIG_DIR=/inherited GH_CONFIG_DIR_AGENT=/agent
   [ "$status" -eq 0 ]
   [ "$output" = "[/agent]" ]
+}
+
+@test "mise GH_CONFIG_DIR: ignores GH_CONFIG_DIR_PERSONAL" {
+  gh_config_dir -u GH_CONFIG_DIR_AGENT GH_CONFIG_DIR=/inherited GH_CONFIG_DIR_PERSONAL=/personal
+  [ "$status" -eq 0 ]
+  [ "$output" = "[/inherited]" ]
+}
+
+@test "mise GH_CONFIG_DIR: mise.toml reads .env before the GH_CONFIG_DIR line" {
+  local toml="$BATS_TEST_DIRNAME/../mise.toml" dotenv line
+  dotenv="$(grep -n '^_.file = ".env"' "$toml" | cut -d: -f1)"
+  line="$(grep -n '^GH_CONFIG_DIR = ' "$toml" | cut -d: -f1)"
+  [ -n "$dotenv" ]
+  [ "$dotenv" -lt "$line" ]
 }
