@@ -57,6 +57,45 @@ function M.open_file(path)
 	M.run({ "file", "open", path, "--worktree", "id:" .. id })
 end
 
+function M.find_tab(tabs, prefix)
+	for _, tab in ipairs(tabs) do
+		if type(tab.url) == "string" and vim.startswith(tab.url, prefix) then
+			return tab
+		end
+	end
+	return nil
+end
+
+function M.show_url(url, prefix)
+	local id = M.worktree_id()
+	if id == nil then
+		warn("Not inside an Orca terminal.")
+		return
+	end
+	local scope = { "--worktree", "id:" .. id }
+	local function with_scope(args)
+		return vim.list_extend(args, scope)
+	end
+
+	M.run(with_scope({ "tab", "list", "--json" }), function(stdout)
+		local ok, decoded = pcall(vim.json.decode, stdout)
+		local tabs = ok and type(decoded) == "table" and type(decoded.result) == "table" and decoded.result.tabs
+		if type(tabs) ~= "table" then
+			warn("orca returned unexpected output.")
+			return
+		end
+
+		local tab = M.find_tab(tabs, prefix)
+		if tab == nil then
+			M.run(with_scope({ "tab", "create", "--url", url, "--split", "right" }))
+			return
+		end
+		M.run(with_scope({ "goto", "--page", tab.browserPageId, "--url", url }), function()
+			M.run(with_scope({ "tab", "switch", "--page", tab.browserPageId }))
+		end)
+	end)
+end
+
 function M.setup()
 	vim.keymap.set("n", "<Leader>mo", function()
 		local path = vim.api.nvim_buf_get_name(0)

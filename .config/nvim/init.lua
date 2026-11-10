@@ -11,4 +11,4 @@ require("markdown-hop-links").setup()
 require("orca").setup() -- Orcaのエディタで今のファイルを開く
 require("quickfix").setup() -- quickfixとlocation listのコマンド
 require("tab").setup() -- tab関連のコマンド
-require("vivify").setup() -- Vivifyで今のファイルを見るURLのコピー
+require("vivify").setup() -- Vivifyで今のファイルを見る (URLのコピーとOrcaでの表示)
