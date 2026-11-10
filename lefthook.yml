@@ -1,3 +1,8 @@
+# lefthook は hook ごとに出力を変えられない。post-checkout がブランチを切り替えるたびに
+# 見出しを出すのを止めるため全体を絞る。落ちた job の名前と出力は残る。
+output:
+  - failure
+
 pre-commit:
   jobs:
     - name: format
@@ -36,3 +41,16 @@ pre-commit:
           - name: test
             glob: "**/*.{py,bats,sh}"
             run: mise run test
+
+post-checkout:
+  jobs:
+    # git worktree add もこのフックを通り、失敗すると worktree の作成が失敗扱いになるため、必ず 0 で終える
+    - name: copy-env
+      # output: [failure] は 0 で終わる job の警告も消すので、この job だけ絞らずに出す
+      interactive: true
+      run: |
+        [ "{1}" = 0000000000000000000000000000000000000000 ] || exit 0
+        [ -e .env ] && exit 0
+        src="$(git rev-parse --path-format=absolute --git-common-dir)/../.env"
+        cp "$src" .env 2>/dev/null || echo "warning: could not copy $src" >&2
+        exit 0
