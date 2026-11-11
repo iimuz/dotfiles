@@ -28,7 +28,7 @@ STUB
   [ ! -f "$ARGS_LOG" ]
 }
 
-@test "notify.sh: calls osascript outside cmux and herdr" {
+@test "notify.sh: calls osascript outside cmux, herdr, and Orca" {
   run "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ -f "$ARGS_LOG" ]
