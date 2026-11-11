@@ -5,7 +5,7 @@
 awscli = { version = "2.38.5", symlink_bins = "true" }
 cargo-binstall = "1.26.0"
 "cargo:tree-sitter-cli" = "0.27.1" # for neovim
-claude = "2.1.310"
+claude = "2.1.321"
 cspell = "10.4.0"
 delta = "0.20.1"
 fzf = "0.74.5"
