@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-# Tests for .config/claude/hooks/notify.sh cmux/herdr guard behavior.
+# Tests for .config/claude/hooks/notify.sh cmux/herdr/Orca guard behavior.
 
 NOTIFY_SH="$BATS_TEST_DIRNAME/../.config/claude/hooks/notify.sh"
 
@@ -26,6 +26,7 @@ STUB
 
 @test "notify.sh: calls osascript outside cmux and herdr" {
   run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
+    -u ORCA_AGENT_HOOK_PORT -u ORCA_PANE_KEY -u ORCA_AGENT_PANE \
     -u CLAUDE_CODE_ENTRYPOINT "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ -f "$ARGS_LOG" ]
@@ -62,7 +63,33 @@ STUB
 
 @test "notify.sh: calls osascript from the cli entrypoint" {
   run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
+    -u ORCA_AGENT_HOOK_PORT -u ORCA_PANE_KEY -u ORCA_AGENT_PANE \
     CLAUDE_CODE_ENTRYPOINT=cli "$NOTIFY_SH" notification
+  [ "$status" -eq 0 ]
+  [ -f "$ARGS_LOG" ]
+  grep -qF "display notification" "$ARGS_LOG"
+}
+
+@test "notify.sh: skips osascript inside Orca (ORCA_AGENT_HOOK_PORT and ORCA_PANE_KEY set)" {
+  run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV -u ORCA_AGENT_PANE \
+    CLAUDE_CODE_ENTRYPOINT=cli ORCA_AGENT_HOOK_PORT=50000 ORCA_PANE_KEY=tab:pane \
+    "$NOTIFY_SH" notification
+  [ "$status" -eq 0 ]
+  [ ! -f "$ARGS_LOG" ]
+}
+
+@test "notify.sh: skips stop events inside Orca when only ORCA_AGENT_PANE identifies the pane" {
+  run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV -u ORCA_PANE_KEY \
+    CLAUDE_CODE_ENTRYPOINT=cli ORCA_AGENT_HOOK_PORT=50000 ORCA_AGENT_PANE=tab:pane \
+    "$NOTIFY_SH" stop
+  [ "$status" -eq 0 ]
+  [ ! -f "$ARGS_LOG" ]
+}
+
+@test "notify.sh: calls osascript in an Orca terminal without Orca's hook variables" {
+  run env -u CMUX_CLAUDE_HOOK_CMUX_BIN -u HERDR_ENV \
+    -u ORCA_AGENT_HOOK_PORT -u ORCA_PANE_KEY -u ORCA_AGENT_PANE \
+    CLAUDE_CODE_ENTRYPOINT=cli TERM_PROGRAM=Orca "$NOTIFY_SH" notification
   [ "$status" -eq 0 ]
   [ -f "$ARGS_LOG" ]
   grep -qF "display notification" "$ARGS_LOG"
