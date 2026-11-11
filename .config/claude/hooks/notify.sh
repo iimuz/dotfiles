@@ -26,6 +26,15 @@ if [ "${HERDR_ENV:-}" = "1" ]; then
   exit 0
 fi
 
+# Orca receives completion and waiting events through its own Claude Code hooks
+# and shows its own notifications, so skip osascript to avoid duplicates. Those
+# hooks reach Orca only when the hook port and a pane key (ORCA_PANE_KEY, or
+# ORCA_AGENT_PANE as its fallback) are set, so check them rather than
+# TERM_PROGRAM=Orca, which only says the shell runs in an Orca terminal.
+if [ -n "${ORCA_AGENT_HOOK_PORT:-}" ] && [ -n "${ORCA_PANE_KEY:-${ORCA_AGENT_PANE:-}}" ]; then
+  exit 0
+fi
+
 case "${CLAUDE_CODE_ENTRYPOINT:-}" in
   # Claude Desktop surfaces session state through its own notifications, so
   # skip osascript there to avoid duplicate notifications.
