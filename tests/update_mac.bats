@@ -13,6 +13,7 @@ setup() {
 #!/bin/bash
 name=$(basename "$0")
 echo "$name $* MISE_CACHE_DIR=${MISE_CACHE_DIR:-} GOMODCACHE=${GOMODCACHE:-}" >>"$STUB_LOG"
+echo "$name $PWD" >>"$STUB_LOG.pwd"
 case "$name $*" in "${STUB_FAIL:-<none>}"*) exit 1 ;; esac
 exit 0
 STUB
@@ -74,6 +75,15 @@ line_of() {
   [[ "$output" == *"Free space before:"*"Free space after:"* ]]
   ! grep -q "^mise cache clean" "$STUB_LOG" || false
   ! grep -qE "^mise (self-update|install|upgrade)" "$STUB_LOG" || false
+}
+
+@test "update_mac.sh: tools run from HOME regardless of the caller's directory" {
+  write_stamp "$(date +%s)"
+  mkdir -p "$BATS_TEST_TMPDIR/project"
+  cd "$BATS_TEST_TMPDIR/project"
+  run_update
+  [ "$status" -eq 0 ]
+  ! grep -qv " $TEST_HOME\$" "$STUB_LOG.pwd" || false
 }
 
 @test "update_mac.sh: every-run failure stops the script" {

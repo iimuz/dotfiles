@@ -12,6 +12,10 @@ STAMP_FILE="$HOME/.local/state/dotfiles/update-mac-weekly-cleanup"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# mise resolves tools from the mise.toml of the current directory; one that pins an
+# uninstalled version or is untrusted would stop the run before the cleanup.
+cd "$HOME"
+
 show_free_space() {
   echo "Free space $1:"
   df -h "$HOME"
