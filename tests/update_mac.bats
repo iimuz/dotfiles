@@ -179,6 +179,13 @@ assert_untouched_survive() {
   assert_weekly_ran
 }
 
+@test "update_mac.sh: stamp with a leading zero runs weekly cleanup" {
+  write_stamp "0899"
+  run_update
+  [ "$status" -eq 0 ]
+  assert_weekly_ran
+}
+
 @test "update_mac.sh: missing targets are skipped and not created (weekly)" {
   rm -rf "$TEST_HOME/go" "$TEST_HOME/Library/Caches/mise" "$TEST_HOME/.npm" "$TEST_HOME/.cache/uv"
   run_update

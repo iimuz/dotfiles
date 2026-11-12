@@ -48,7 +48,7 @@ weekly_cleanup_due() {
     return 0
   fi
   last=$(cat "$STAMP_FILE")
-  if [[ ! "$last" =~ ^[0-9]+$ ]]; then
+  if [[ ! "$last" =~ ^[1-9][0-9]*$ ]]; then
     return 0
   fi
   [ $(($(date +%s) - last)) -ge $((7 * 86400)) ]
