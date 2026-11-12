@@ -26,7 +26,8 @@ update_tools() {
   brew upgrade
   # Keep --no-mas: the Brewfile lists no App Store apps, so --force would uninstall all of them whenever mas is present.
   brew bundle cleanup --force --no-mas --file="$SCRIPT_DIR/.config/homebrew/Brewfile"
-  mise exec -- gh extension upgrade --all
+  # Run in the repository so mise.toml resolves GH_CONFIG_DIR from .env to the personal gh config.
+  (cd "$SCRIPT_DIR" && mise exec -- gh extension upgrade --all)
 }
 
 # Targets are named under $HOME instead of read from XDG_* or tool settings: the terminal's

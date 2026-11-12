@@ -13,7 +13,7 @@ setup() {
 #!/bin/bash
 name=$(basename "$0")
 echo "$name $* MISE_CACHE_DIR=${MISE_CACHE_DIR:-} GOMODCACHE=${GOMODCACHE:-}" >>"$STUB_LOG"
-echo "$name $PWD" >>"$STUB_LOG.pwd"
+echo "$name $* @ $PWD" >>"$STUB_LOG.pwd"
 case "$name $*" in "${STUB_FAIL:-<none>}"*) exit 1 ;; esac
 exit 0
 STUB
@@ -83,7 +83,15 @@ line_of() {
   cd "$BATS_TEST_TMPDIR/project"
   run_update
   [ "$status" -eq 0 ]
-  ! grep -qv " $TEST_HOME\$" "$STUB_LOG.pwd" || false
+  ! grep -v "^mise exec -- gh " "$STUB_LOG.pwd" | grep -qv " @ $TEST_HOME\$" || false
+}
+
+@test "update_mac.sh: gh extension upgrade runs in the repository" {
+  write_stamp "$(date +%s)"
+  repo="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
+  run_update
+  [ "$status" -eq 0 ]
+  grep -qx "mise exec -- gh extension upgrade --all @ $repo" "$STUB_LOG.pwd"
 }
 
 @test "update_mac.sh: every-run failure stops the script" {
