@@ -2,7 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices", "helpers:pinGitHubActionDigests"],
   "ignorePresets": ["security:minimumReleaseAgeNpm"],
-  "dependencyDashboard": false,
+  "dependencyDashboard": {
+    "enabled": false
+  },
   "platformAutomerge": true,
   "minimumReleaseAge": "14 days",
   "statusCheckNames": {
