@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# Update packages and clean caches on macOS.
+# macOS のパッケージを更新し、キャッシュを掃除する。
 #
-# Run from a terminal right after a reboot, before opening other apps: brew asks for
-# sudo, and the processes that use the caches cleaned below are not running yet.
+# 再起動の後、ほかのアプリを開く前にターミナルから実行する。
+# brew が sudo を求めることがあり、下で掃除するキャッシュを使うプロセスがまだ動いていないため。
 
 set -eu
 set -o pipefail
@@ -12,8 +12,8 @@ STAMP_FILE="$HOME/.local/state/dotfiles/update-mac-weekly-cleanup"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-# mise resolves tools from the mise.toml of the current directory; one that pins an
-# uninstalled version or is untrusted would stop the run before the cleanup.
+# mise は今のディレクトリの mise.toml からツールを解決する。
+# 呼び出し元に未インストールのバージョンを固定したものや未信頼のものがあると、掃除の前に止まるため。
 cd "$HOME"
 
 show_free_space() {
@@ -24,20 +24,20 @@ show_free_space() {
 update_tools() {
   brew update
   brew upgrade
-  # Keep --no-mas: the Brewfile lists no App Store apps, so --force would uninstall all of them whenever mas is present.
+  # --no-mas を外さない。Brewfile は App Store のアプリを挙げていないので、mas があると --force がそれらを全部消す。
   brew bundle cleanup --force --no-mas --file="$SCRIPT_DIR/.config/homebrew/Brewfile"
-  # Run in the repository so mise.toml resolves GH_CONFIG_DIR from .env to the personal gh config.
+  # リポジトリの mise.toml が .env から GH_CONFIG_DIR を個人の gh の設定に解決するよう、リポジトリで実行する。
   (cd "$SCRIPT_DIR" && mise exec -- gh extension upgrade --all)
 }
 
-# Targets are named under $HOME instead of read from XDG_* or tool settings: the terminal's
-# values can point at other locations, and both the terminal and non-terminal locations must be cleaned.
+# 消す場所は XDG_* や各ツールの設定から読まず、$HOME の下で名指しする。
+# ターミナルの値は別の場所を指すことがあり、ターミナルとターミナルの外の両方の場所を消す必要があるため。
 clean_every_run() {
   mise prune -y
   if [ -d "$HOME/.cache/uv" ]; then
     uv cache prune --cache-dir "$HOME/.cache/uv"
   fi
-  # npm creates the cache directory when it is missing
+  # npm はキャッシュのディレクトリが無いと作ってしまう
   for dir in "$HOME/.cache/npm-arm64" "$HOME/.npm"; do
     if [ -d "$dir" ]; then
       npm cache verify --cache "$dir"
@@ -45,8 +45,8 @@ clean_every_run() {
   done
 }
 
-# Weekly cleanup is keyed on the last success, not the calendar: the script is run by hand
-# after reboots, so a fixed day would be missed, and a failed run must be retried next time.
+# 週 1 回の掃除は、曜日ではなく前回の成功からの日数で決める。
+# 再起動の後に手で実行するので決まった曜日には動かず、失敗した回は次の実行でやり直す必要があるため。
 weekly_cleanup_due() {
   local last
   if [ ! -f "$STAMP_FILE" ]; then
@@ -59,8 +59,8 @@ weekly_cleanup_due() {
   [ $(($(date +%s) - last)) -ge $((7 * 86400)) ]
 }
 
-# pnpm stores are deleted whole instead of pruned: pnpm here places files by clone, so
-# `pnpm store prune` removes packages that existing projects still use.
+# pnpm のストアは prune せず丸ごと消す。
+# この環境の pnpm はファイルを複製 (clone) で置くので、`pnpm store prune` は今あるプロジェクトが使うパッケージまで消すため。
 clean_weekly() {
   rm -rf "$HOME/.local/share/pnpm/store" "$HOME/Library/pnpm/store" \
     "$HOME/.cache/pnpm" "$HOME/Library/Caches/pnpm"
@@ -91,7 +91,7 @@ record_weekly_cleanup() {
 show_free_space before
 update_tools
 clean_every_run
-# set -e does not apply inside a condition, so only the check is conditional
+# 条件の中では set -e が効かないので、条件には判定だけを置く
 if weekly_cleanup_due; then
   clean_weekly
   record_weekly_cleanup
