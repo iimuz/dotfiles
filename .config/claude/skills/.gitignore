@@ -1,6 +1,7 @@
 # 外部から設定するスキルなので管理対象外
 loop-handoff
 loop-handoff/
+# symlink で置かれるので、symlink に当たるよう末尾に / を付けない
 /local-search
 
 # playwright-cli install --skills --global が生成する。CLI のバージョンに連動するため追跡しない
