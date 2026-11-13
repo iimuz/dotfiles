@@ -5,8 +5,9 @@
 ## 環境構築
 
 各環境での構築はインストールスクリプトを利用して下記のように実行します。
+Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使います。
 
-- Mac: `bash setup_mac.sh`
+- Mac: `bash setup_mac.sh`, `bash update_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
 - Android/Termux: `bash setup_termux.sh`
