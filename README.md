@@ -5,21 +5,12 @@
 ## 環境構築
 
 各環境での構築はインストールスクリプトを利用して下記のように実行します。
+Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使います。
 
 - Mac: `bash setup_mac.sh`, `bash update_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
 - Android/Termux: `bash setup_termux.sh`
-
-### Mac の更新とキャッシュの掃除
-
-`update_mac.sh` は、再起動の後、ほかのアプリを開く前にターミナルから実行します。
-brew の sudo に答える必要があり、掃除と同じキャッシュを使うプロセスがまだ動いていないためです。
-
-brew、gh の拡張を更新し、mise の古いバージョンと、uv と npm のキャッシュの使っていない分を毎回消します。
-前回の週 1 回の掃除が成功してから 7 日以上経っていれば、pnpm のストアとキャッシュ、Go のモジュールキャッシュ、uv、npm、mise のキャッシュと、名指しした個別のキャッシュを全部消します。
-週 1 回の掃除の成功は `~/.local/state/dotfiles/update-mac-weekly-cleanup` に記録しています。
-すぐに週 1 回の掃除を行いたいときは、このファイルを消してから実行します。
 
 ### Claude Code 用 playwright-cli
 
