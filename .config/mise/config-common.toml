@@ -1,8 +1,8 @@
 # ~/.config/mise/config.toml にリンクする、全環境で共通の設定。
 # 環境ごとの差分は config.local.toml (config-mac.toml / config-linux.toml) に置く。同じツールを両方に書かない
 [tools]
-"aqua:quarylabs/sqruff" = "0.43.0"
-awscli = { version = "2.38.5", symlink_bins = "true" }
+"aqua:quarylabs/sqruff" = "0.44.0"
+awscli = { version = "2.39.3", symlink_bins = "true" }
 cargo-binstall = "1.26.0"
 "cargo:tree-sitter-cli" = "0.27.1" # for neovim
 claude = "2.1.321"
@@ -31,7 +31,7 @@ node = "24.22.1"
 "npm:yaml-language-server" = "2.0.0"
 "pipx:awslabs.aws-documentation-mcp-server" = "1.2.3"
 "pipx:pynvim" = "0.6.0" # for neovim
-pnpm = "12.15.0"
+pnpm = "12.17.0"
 prettier = "3.9.10"
 python = "3.14.8"
 ripgrep = "15.2.0"
