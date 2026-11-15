@@ -1,47 +1,20 @@
 ---
 name: subagent-first
 description: >-
-  コードの調査や変更 (issue の依頼、機能の追加、バグの修正) と、CLI、プロセス、サービスの実機での挙動を
-  調べる作業を始めるとき、自分でコードベースを探る前、subagent を起動するときに、どの workflow から
-  頼まれたかに関わらず使う。
+  subagent を起動するとき、起動した subagent の返答を受けて次の一手を決めるときに使う。
 ---
 
 # subagent-first
 
 ## 概要
 
-main agent は orchestrator と検証者を務める。
+subagent を dispatch した main agent は、orchestrator と検証者を務める。
 計画を立て、dispatch し、返答を評価し、決定的な根拠を確かめ、次の一手を決める。
 
 この skill はすべての subagent の dispatch に掛かる契約を定める。役割は割り当てない。
 別の process skill が subagent に役割を割り当てるときは、その役割を保ったまま、各 dispatch にこの契約を当てる。
 
 subagent は read-only か edit-allowed のどちらかで、それ以外の区別は無い。
-
-## 直接やるか委譲するか
-
-main agent が直接やる作業。
-
-- 残りの手順を今すべて挙げられて、数が少ない。対象ファイルが特定済みで数回のツール操作で終わる作業は、
-  この一例にあたる
-- 会話の文脈が要る。案出し、設計の議論、要件の確認
-- 入力が計画や設計の文書 (plan、ADR) である
-
-委譲する作業。
-
-- 次の手順が前の手順の結果を見ないと決まらない。コードの調査でも、CLI、プロセス、サービスの実機検証でも
-  同じに扱う
-- 対象ファイルが未特定で、広く探す必要がある
-- 変更が複数のファイルにまたがる
-- 独立した作業を並列にできる
-- コマンドの出力が main の context を埋める。この場合は read-only の subagent を使う
-
-次の時点で判断する。
-
-- 依頼の中身が分かった時点。Issue を指定された依頼では、Issue 本文を読んだ時点がこれにあたる
-- 直接実行した手順の結果が予想と違い、別のやり方を試そうとした時点。ここで止まり、残りを委譲する
-
-途中から委譲するときは、それまでに確かめた事実と否定した仮説を dispatch の evidence に書いて渡す。
 
 ## dispatch の契約
 
@@ -61,6 +34,7 @@ subagent への prompt には次をすべて含める。
 1 つの subagent には 1 つの goal と 1 つの scope を渡す。
 edit-allowed の subagent は、自分の変更に絞ったテストを足して実行してよい。
 根拠の無い defect fix は dispatch しない。先に read-only の subagent で原因を特定するか、ユーザーに尋ねる。
+作業の途中から委譲するときは、それまでに確かめた事実と否定した仮説を dispatch の evidence に書いて渡す。
 
 ## 返答形式
 
