@@ -69,6 +69,11 @@
       "automerge": true
     },
     {
+      "description": "Automerge minor / patch / pin / digest / pinDigest updates of every manager. The mise Python minor rule below keeps those updates disabled; major updates are not matched",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest"],
+      "automerge": true
+    },
+    {
       "description": "Node.js major-line updates are decided manually",
       "matchManagers": ["mise"],
       "matchDepNames": ["node"],
