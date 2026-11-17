@@ -16,6 +16,21 @@ __all__ = ["main"]
 # out in the PR UI.
 HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
 
+# GraphQL instead of the REST reviews list: that list is paginated and its first page
+# can miss the pending review on a PR with many reviews. databaseId is the numeric ID
+# the REST DELETE endpoint takes.
+PENDING_REVIEW_QUERY = """
+query($owner: String!, $repo: String!, $number: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $number) {
+      reviews(first: 100, states: [PENDING]) {
+        nodes { databaseId viewerDidAuthor }
+      }
+    }
+  }
+}
+"""
+
 
 @dataclass(frozen=True)
 class ReviewResult:
@@ -43,30 +58,54 @@ def emit_error(message: str, *, exit_code: int = 1, **details: Any) -> NoReturn:
     sys.exit(exit_code)
 
 
-def fetch_pending_review(owner: str, repo: str, pull_number: int) -> dict[str, Any] | None:
-    endpoint = f"repos/{owner}/{repo}/pulls/{pull_number}/reviews"
-    result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
+def fetch_pending_review_id(owner: str, repo: str, pull_number: int) -> int | None:
+    request = {
+        "query": PENDING_REVIEW_QUERY,
+        "variables": {"owner": owner, "repo": repo, "number": pull_number},
+    }
+    result = subprocess.run(
+        ["gh", "api", "graphql", "--input", "-"],
+        input=json.dumps(request),
+        capture_output=True,
+        text=True,
+    )
     if result.returncode != 0:
         emit_error(
             "gh_api_failed",
-            detail="Failed to list reviews via gh api",
+            detail="Failed to look up pending reviews via gh api graphql",
             gh_exit_code=result.returncode,
             http_status=extract_http_status(result.stderr),
             stderr=result.stderr.strip(),
         )
     try:
-        reviews = json.loads(result.stdout)
+        response = json.loads(result.stdout)
     except json.JSONDecodeError as error:
         emit_error(
             "invalid_api_response",
-            detail=f"Failed to parse reviews response as JSON: {error}",
+            detail=f"Failed to parse pending reviews response as JSON: {error}",
             stdout=result.stdout.strip(),
         )
-    if not isinstance(reviews, list):
-        emit_error("invalid_api_response", detail="Reviews response is not a list")
-    for review in reviews:
-        if isinstance(review, dict) and review.get("state") == "PENDING":
-            return review
+    if not isinstance(response, dict):
+        emit_error("invalid_api_response", detail="Pending reviews response is not an object")
+    if response.get("errors"):
+        emit_error("graphql_error", errors=response["errors"])
+    data = response.get("data")
+    if not isinstance(data, dict):
+        emit_error("invalid_api_response", detail="Pending reviews response has no data object")
+    repository = data.get("repository") or {}
+    pull_request = repository.get("pullRequest") or {}
+    nodes = (pull_request.get("reviews") or {}).get("nodes") or []
+    for review in nodes:
+        if isinstance(review, dict) and review.get("viewerDidAuthor"):
+            database_id = review.get("databaseId")
+            # bool is an int subclass; a bare True would reach the DELETE URL as "True"
+            if not isinstance(database_id, int) or isinstance(database_id, bool):
+                emit_error(
+                    "invalid_api_response",
+                    detail="Pending review has no numeric databaseId",
+                    review=review,
+                )
+            return database_id
     return None
 
 
@@ -167,8 +206,8 @@ def main() -> None:
 
         api_comments.append(api_comment)
 
-    existing = fetch_pending_review(args.owner, args.repo, args.pull_number)
-    if existing is not None:
+    pending_review_id = fetch_pending_review_id(args.owner, args.repo, args.pull_number)
+    if pending_review_id is not None:
         # A submitted review cannot be merged into the pending one, so append_review.sh
         # is only a way forward when the caller wanted a pending review.
         if args.event:
@@ -178,7 +217,7 @@ def main() -> None:
                 "A pending review already exists. Use append_review.sh to add "
                 "comments to it, or submit/discard the existing review first."
             )
-        emit_error("pending_review_exists", detail=detail, review_id=existing.get("id"))
+        emit_error("pending_review_exists", detail=detail, review_id=pending_review_id)
 
     # Construct payload for GitHub API
     # An empty summary is the line-comments-only review gh-pr-review skips;
