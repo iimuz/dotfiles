@@ -50,9 +50,11 @@ Run `mise run format` and `mise run lint` after any modifications.
     `hooks/gh-identity.sh --print <dir>` prints the same export lines to stdout, judged by the
     `origin` of `<dir>`, and ignores `CLAUDE_ENV_FILE` and `CLAUDE_KEEP_GH_IDENTITY`.
   - `.config/codex/`: `bin/agent-codex` evals the `gh-identity.sh --print <dir>` lines, where
-    `<dir>` is the `-C`/`--cd` value when given and `$PWD` otherwise, and then runs `codex` with the given arguments, so Codex works as the GitHub App bot (Codex hooks cannot
-    set session environment variables). Setup symlinks it to `~/.local/bin/agent-codex`; a plain
-    `codex` keeps running as the human.
+    `<dir>` is the `-C`/`--cd` value when given (`-C <dir>`, `-C<dir>`, `-C=<dir>`, `--cd <dir>`,
+    or `--cd=<dir>`, before any `--`) and `$PWD` otherwise, and then runs `codex` with the given
+    arguments, so Codex works as the GitHub App bot (Codex hooks cannot set session environment
+    variables). Setup symlinks it to `~/.local/bin/agent-codex`; a plain `codex` keeps running as
+    the human.
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the
