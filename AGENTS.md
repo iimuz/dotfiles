@@ -36,18 +36,9 @@ Run `mise run format` and `mise run lint` after any modifications.
       file by hand
   - `.config/agents/`: 複数のコーディングエージェントが共有するファイルを置く。
     ツールごとに 1 ディレクトリとする規則の例外で、1 つのエージェントだけの設定はそのエージェントのディレクトリに置く。
-    `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る
-    Setup also symlinks `~/.config/agents` to this directory, and Claude Code's SessionStart hook
-    calls `~/.config/agents/hooks/gh-identity.sh`.
-    `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
-    `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
-    `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
-    the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
-    request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz`
-    ssh URLs to https so pushes use the bot token. A launcher that sets
-    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
-    launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
-    `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
+    `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る。
+    `CLAUDE_KEEP_GH_IDENTITY=1` で `hooks/gh-identity.sh` を止めて bot の名義で動く launcher は、`GH_CONFIG_DIR_AGENT` も bot の gh の設定ディレクトリに向ける。
+    向けないと、個人のリポジトリの `mise exec -- gh` は `.env` の `GH_CONFIG_DIR` を使う
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the
