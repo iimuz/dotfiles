@@ -2,9 +2,15 @@
 # Shared helper functions sourced by setup scripts.
 
 # Create symlink if link does not exist.
+# A broken symlink (target missing) is replaced; anything that exists is left alone.
 function create_symlink() {
   local -r src=$1
   local -r dst=$2
+
+  if [ -L "$dst" ] && [ ! -e "$dst" ]; then
+    echo "replace broken symlink $dst"
+    rm "$dst"
+  fi
 
   if [ -e "$dst" ]; then
     echo "already exist $dst"
