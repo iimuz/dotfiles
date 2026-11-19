@@ -127,6 +127,44 @@ get_inode() {
   [ "$(cat "$dst")" = "existing" ]
 }
 
+# --- create_copy ---
+
+@test "create_copy: copies src to a missing dst and creates its parents" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local dst="$BATS_TEST_TMPDIR/a/b/dst_file"
+  echo "content" >"$src"
+
+  run create_copy "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [ ! -L "$dst" ]
+  [ "$(cat "$dst")" = "content" ]
+}
+
+@test "create_copy: keeps an existing dst" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local dst="$BATS_TEST_TMPDIR/dst_file"
+  echo "content" >"$src"
+  echo "existing" >"$dst"
+
+  run create_copy "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist"* ]]
+  [ "$(cat "$dst")" = "existing" ]
+}
+
+@test "create_copy: does not write through a symlink at dst" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local target="$BATS_TEST_TMPDIR/target_file"
+  local dst="$BATS_TEST_TMPDIR/dst_link"
+  echo "content" >"$src"
+  echo "target" >"$target"
+  ln -s "$target" "$dst"
+
+  run create_copy "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [ "$(cat "$target")" = "target" ]
+}
+
 # --- set_bashrc ---
 
 @test "set_bashrc: appends source line to .bashrc when SHELL=/bin/bash" {
