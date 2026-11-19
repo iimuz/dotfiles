@@ -11,13 +11,13 @@ setup() {
 assert_forbidden() {
   run codex execpolicy check --rules "$RULES" "$@"
   [ "$status" -eq 0 ]
-  [[ "$output" == *'"decision":"forbidden"'* ]]
+  [ "$(jq -r '.decision' <<<"$output")" = forbidden ]
 }
 
 assert_unmatched() {
   run codex execpolicy check --rules "$RULES" "$@"
   [ "$status" -eq 0 ]
-  [[ "$output" == *'"matchedRules":[]'* ]]
+  [ "$(jq '.matchedRules | length' <<<"$output")" -eq 0 ]
 }
 
 @test "rules: forbid reading credentials" {
