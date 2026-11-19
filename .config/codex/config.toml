@@ -24,6 +24,7 @@ extends = ":workspace"
 
 # 読み取りだけで動かすとき (レビューなど) に -c default_permissions で選ぶ。
 # -s / --sandbox を付けると permission profile が使われず deny が外れるので、-s は使わない
+# deny の一覧は dotfiles の profile の写しなので、片方を変えたらもう片方も揃える
 [permissions.dotfiles-read-only]
 extends = ":read-only"
 
