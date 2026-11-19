@@ -165,6 +165,19 @@ get_inode() {
   [ "$(cat "$target")" = "target" ]
 }
 
+@test "create_copy: does not write through a dangling symlink at dst" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local target="$BATS_TEST_TMPDIR/missing_target"
+  local dst="$BATS_TEST_TMPDIR/dst_link"
+  echo "content" >"$src"
+  ln -s "$target" "$dst"
+
+  run create_copy "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist"* ]]
+  [ ! -e "$target" ]
+}
+
 # --- set_bashrc ---
 
 @test "set_bashrc: appends source line to .bashrc when SHELL=/bin/bash" {
