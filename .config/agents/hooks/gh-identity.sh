@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Claude Code SessionStart hook: switches gh and git to the GitHub App bot for sessions
-# started in a repository under github.com/iimuz. Appends exports to CLAUDE_ENV_FILE.
+# Switches gh and git to the GitHub App bot for sessions in a repository under github.com/iimuz.
+#
+# gh-identity.sh          Claude Code SessionStart hook. Appends exports to CLAUDE_ENV_FILE.
+# gh-identity.sh --print <dir>
+#                         Prints the same exports to stdout, judged by the origin of <dir>.
+#                         Ignores CLAUDE_ENV_FILE and CLAUDE_KEEP_GH_IDENTITY: the caller
+#                         (agent-codex) asks for the bot identity by running this.
 
 set -u
 
@@ -9,12 +14,23 @@ bot_name="${app_slug}[bot]"
 bot_email="351267992+${bot_name}@users.noreply.github.com"
 bot_gh_dir="$HOME/.config/gh-agent"
 
-[ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
-[ "${CLAUDE_KEEP_GH_IDENTITY:-}" = "1" ] && exit 0
+print_mode=0
+if [ "${1:-}" = "--print" ]; then
+  print_mode=1
+  [ -n "${2:-}" ] || {
+    echo "usage: gh-identity.sh --print <dir>" >&2
+    exit 2
+  }
+  target_dir="$2"
+else
+  [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
+  [ "${CLAUDE_KEEP_GH_IDENTITY:-}" = "1" ] && exit 0
+  target_dir="${CLAUDE_PROJECT_DIR:-$PWD}"
+fi
 [ -d "$bot_gh_dir" ] || exit 0
 
 # An inherited GIT_CONFIG_COUNT that is non-numeric or lacks its KEY/VALUE pairs makes git abort.
-origin="$(env -u GIT_CONFIG_COUNT git -C "${CLAUDE_PROJECT_DIR:-$PWD}" remote get-url origin 2>/dev/null)" || exit 0
+origin="$(env -u GIT_CONFIG_COUNT git -C "$target_dir" remote get-url origin 2>/dev/null)" || exit 0
 case "$origin" in
   https://github.com/iimuz/* | git@github.com:iimuz/* | ssh://git@github.com/iimuz/*) ;;
   *) exit 0 ;;
@@ -26,7 +42,8 @@ case "$n" in
 esac
 
 # Pushes over ssh would use the human key; rewriting to https routes them through the bot token.
-cat >>"$CLAUDE_ENV_FILE" <<ENV
+print_exports() {
+  cat <<ENV
 export GH_CONFIG_DIR='$bot_gh_dir'
 export GH_CONFIG_DIR_AGENT='$bot_gh_dir'
 export CLAUDE_GH_APP_SLUG='$app_slug'
@@ -41,5 +58,12 @@ export GIT_CONFIG_VALUE_$((n + 1))='ssh://git@github.com/iimuz/'
 export GIT_CONFIG_COUNT=$((n + 2))
 unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN
 ENV
+}
+
+if [ "$print_mode" = 1 ]; then
+  print_exports
+else
+  print_exports >>"$CLAUDE_ENV_FILE"
+fi
 
 exit 0
