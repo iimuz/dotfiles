@@ -36,14 +36,8 @@ Run `mise run format` and `mise run lint` after any modifications.
       file by hand
   - `.config/agents/`: Source of truth shared by Claude Code and Codex, named after neither.
     `AGENTS.md` holds the global instructions; setup symlinks `~/.claude/CLAUDE.md` and
-    `~/.codex/AGENTS.md` to it
-  - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
-    settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
-    the Claude Code process). `statusline.py` is the statusLine command: it renders the
-    terminal status line from statusLine stdin JSON, and on macOS also writes a RunCat Neo
-    custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the
-    current-month ccusage cost). Register that file in RunCat Neo (Settings -> Metrics ->
-    Custom Metrics; macOS only).
+    `~/.codex/AGENTS.md` to it. Setup also symlinks `~/.config/agents` to this directory,
+    and Claude Code's SessionStart hook calls `~/.config/agents/hooks/gh-identity.sh`.
     `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
     `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
     `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
@@ -53,6 +47,13 @@ Run `mise run format` and `mise run lint` after any modifications.
     `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
     launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
     `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
+  - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
+    settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
+    the Claude Code process). `statusline.py` is the statusLine command: it renders the
+    terminal status line from statusLine stdin JSON, and on macOS also writes a RunCat Neo
+    custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the
+    current-month ccusage cost). Register that file in RunCat Neo (Settings -> Metrics ->
+    Custom Metrics; macOS only).
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,

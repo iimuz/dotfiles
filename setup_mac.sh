@@ -30,6 +30,9 @@ if type bash >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.inputrc" "$HOME/.inputrc"
 fi
 
+# === agents
+create_symlink "$SCRIPT_DIR/.config/agents" "$HOME/.config/agents"
+
 # === claude
 if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
