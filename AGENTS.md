@@ -34,9 +34,9 @@ Run `mise run format` and `mise run lint` after any modifications.
       `mise.toml` under `.config/mise/` is loaded as project config inside this repository
     - `mise use -g` writes to `config-common.toml`; add platform-only tools to the platform
       file by hand
-  - `.config/agents/`: Source of truth shared by Claude Code and Codex, named after neither.
-    `AGENTS.md` holds the global instructions; setup symlinks `~/.claude/CLAUDE.md` and
-    `~/.codex/AGENTS.md` to it, and `~/.config/agents` to this directory.
+  - `.config/agents/`: 複数のコーディングエージェントが共有するファイルを置く。
+    ツールごとに 1 ディレクトリとする規則の例外で、1 つのエージェントだけの設定はそのエージェントのディレクトリに置く。
+    `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the

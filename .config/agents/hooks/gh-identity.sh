@@ -23,8 +23,8 @@ if [ "${1:-}" = "--print" ]; then
   target_dir="$2"
 else
   [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
-  # CLAUDE_KEEP_GH_IDENTITY=1 で名義を自分で決める launcher は、その名義が bot なら GH_CONFIG_DIR_AGENT も
-  # 設定する。さもないと、個人のリポジトリの mise exec -- gh が .env の GH_CONFIG_DIR に戻る。
+  # 名義を自分で決める launcher は、CLAUDE_KEEP_GH_IDENTITY=1 でこの hook を止める。
+  # bot の名義で動く launcher は GH_CONFIG_DIR_AGENT も設定する。mise.toml が GH_CONFIG_DIR を GH_CONFIG_DIR_AGENT から解決するので、無いと mise exec -- gh は .env の GH_CONFIG_DIR を使う
   [ "${CLAUDE_KEEP_GH_IDENTITY:-}" = "1" ] && exit 0
   target_dir="${CLAUDE_PROJECT_DIR:-$PWD}"
 fi
