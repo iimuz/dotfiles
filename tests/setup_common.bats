@@ -232,3 +232,161 @@ STUB
   expected=$(printf '%s\n' mcp get qmd)
   [ "$(cat "$args_log")" = "$expected" ]
 }
+
+# --- sync_skill_links ---
+
+# fixture: checkout / src (alpha, beta) / dst の変数を作る
+make_skill_fixture() {
+  checkout="$BATS_TEST_TMPDIR/checkout"
+  src="$checkout/.config/claude/skills"
+  dst="$BATS_TEST_TMPDIR/home/.claude/skills"
+  mkdir -p "$src/alpha" "$src/beta" "$(dirname "$dst")"
+  : >"$src/alpha/SKILL.md"
+  : >"$src/beta/SKILL.md"
+}
+
+run_sync() {
+  run bash -c 'set -eu -o pipefail; . "$1"; shift; sync_skill_links "$@"' \
+    _ "$BATS_TEST_DIRNAME/../lib/setup-common.sh" "$checkout" "$src" "$dst" "$@"
+}
+
+@test "sync_skill_links: creates dst dir and links only the listed names" {
+  make_skill_fixture
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ -d "$dst" ] && [ ! -L "$dst" ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
+  [ ! -e "$dst/beta" ]
+}
+
+@test "sync_skill_links: replaces a symlinked dst dir that points into the source dir" {
+  make_skill_fixture
+  mkdir "$src/other"
+  : >"$src/note.txt"
+  ln -s "$src" "$dst"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ -d "$dst" ] && [ ! -L "$dst" ]
+  [ -d "$src/alpha" ] && [ -d "$src/beta" ] && [ -d "$src/other" ] && [ -f "$src/note.txt" ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
+  [[ "$output" == *"replace symlink"* ]]
+  [[ "$output" == *"$src"* ]]
+}
+
+@test "sync_skill_links: replaces a symlinked dst dir that points outside the checkout" {
+  make_skill_fixture
+  mkdir -p "$BATS_TEST_TMPDIR/outside/x"
+  ln -s "$BATS_TEST_TMPDIR/outside" "$dst"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ -d "$dst" ] && [ ! -L "$dst" ]
+  [ -d "$BATS_TEST_TMPDIR/outside/x" ]
+  [[ "$output" == *"replace symlink"* ]]
+  [[ "$output" == *"$BATS_TEST_TMPDIR/outside"* ]]
+}
+
+@test "sync_skill_links: relinks its own link that points to an old location still present" {
+  make_skill_fixture
+  mkdir -p "$checkout/old/alpha" "$dst"
+  ln -s "$checkout/old/alpha" "$dst/alpha"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
+  [ -d "$checkout/old/alpha" ]
+}
+
+@test "sync_skill_links: relinks its own broken link" {
+  make_skill_fixture
+  mkdir -p "$dst"
+  ln -s "$checkout/old/missing" "$dst/alpha"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
+}
+
+@test "sync_skill_links: removes its own links for names not listed and its own broken links" {
+  make_skill_fixture
+  mkdir -p "$dst"
+  ln -s "$src/beta" "$dst/beta"
+  ln -s "$checkout/x/gone" "$dst/gone"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ ! -L "$dst/beta" ] && [ ! -L "$dst/gone" ]
+  [ -d "$src/beta" ]
+}
+
+@test "sync_skill_links: keeps entries setup did not place" {
+  make_skill_fixture
+  mkdir -p "$dst" "$BATS_TEST_TMPDIR/elsewhere/orca-cli" "${checkout}2/sib" "$dst/synced" "$dst/playwright-cli"
+  ln -s "$BATS_TEST_TMPDIR/elsewhere/orca-cli" "$dst/orca-cli"
+  ln -s "$BATS_TEST_TMPDIR/nowhere" "$dst/ext-broken"
+  ln -s "${checkout}2/sib" "$dst/sib"
+  ln -s "../rel-target" "$dst/rel"
+  : >"$dst/file.txt"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/orca-cli")" = "$BATS_TEST_TMPDIR/elsewhere/orca-cli" ]
+  [ "$(readlink "$dst/ext-broken")" = "$BATS_TEST_TMPDIR/nowhere" ]
+  [ "$(readlink "$dst/sib")" = "${checkout}2/sib" ]
+  [ "$(readlink "$dst/rel")" = "../rel-target" ]
+  [ -d "$dst/synced" ] && [ ! -L "$dst/synced" ]
+  [ -d "$dst/playwright-cli" ] && [ ! -L "$dst/playwright-cli" ]
+  [ -f "$dst/file.txt" ]
+}
+
+@test "sync_skill_links: skips a same-name entry that is not a symlink" {
+  make_skill_fixture
+  mkdir -p "$dst/alpha"
+  : >"$dst/alpha/mine"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ ! -L "$dst/alpha" ]
+  [ -f "$dst/alpha/mine" ]
+  [[ "$output" == *"skip"* ]]
+}
+
+@test "sync_skill_links: skips a same-name symlink that points outside the checkout" {
+  make_skill_fixture
+  mkdir -p "$dst" "$BATS_TEST_TMPDIR/elsewhere/alpha"
+  ln -s "$BATS_TEST_TMPDIR/elsewhere/alpha" "$dst/alpha"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/alpha")" = "$BATS_TEST_TMPDIR/elsewhere/alpha" ]
+  [[ "$output" == *"skip"* ]]
+}
+
+@test "sync_skill_links: warns and continues when a listed skill is missing" {
+  make_skill_fixture
+  run_sync ghost alpha
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"skill not found"* ]]
+  [ ! -e "$dst/ghost" ] && [ ! -L "$dst/ghost" ]
+  [ -L "$dst/alpha" ]
+}
+
+@test "sync_skill_links: accepts an empty list under set -u" {
+  make_skill_fixture
+  mkdir -p "$dst"
+  ln -s "$src/alpha" "$dst/alpha"
+  run_sync
+  [ "$status" -eq 0 ]
+  [ ! -L "$dst/alpha" ]
+  run_sync
+  [ "$status" -eq 0 ]
+}
+
+@test "sync_skill_links: is idempotent" {
+  make_skill_fixture
+  run_sync alpha beta
+  [ "$status" -eq 0 ]
+  local first_a first_b
+  first_a=$(readlink "$dst/alpha")
+  first_b=$(readlink "$dst/beta")
+  run_sync alpha beta
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist"* ]]
+  [[ "$output" != *"relink"* ]]
+  [[ "$output" != *"remove"* ]]
+  [ "$(readlink "$dst/alpha")" = "$first_a" ]
+  [ "$(readlink "$dst/beta")" = "$first_b" ]
+}

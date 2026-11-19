@@ -77,3 +77,70 @@ function add_claude_mcp() {
   echo "add claude mcp: $name"
   claude mcp add-json --scope user "$name" "$json"
 }
+
+# 1 つの張り先ディレクトリを、一覧の skill だけを skill 単位の symlink で張った状態にする。
+# Usage: sync_skill_links <checkout_dir> <src_dir> <dst_dir> [<name>...]
+# 自分の link とみなすのは checkout の中を指す symlink だけで、Orca や playwright-cli など
+# ほかの道具が置いたものには触らない。readlink の生の文字列で比べ、正規化しない。
+# 自分の link は、指す先が残っていても実体の場所と違えば張り直す。古い skill の
+# ディレクトリに gitignore されたものが残り、link が壊れないことがあるため。
+function sync_skill_links() {
+  local -r checkout_dir=$1
+  local -r src_dir=$2
+  local -r dst_dir=$3
+  shift 3
+  local entry name target
+
+  if [ -L "$dst_dir" ]; then
+    echo "replace symlink $dst_dir (-> $(readlink "$dst_dir")) with a directory"
+    rm "$dst_dir"
+  fi
+  mkdir -p "$dst_dir"
+
+  for entry in "$dst_dir"/*; do
+    [ -L "$entry" ] || continue
+    target=$(readlink "$entry")
+    [[ "$target" == "$checkout_dir/"* ]] || continue
+    name=$(basename "$entry")
+    if [ ! -e "$entry" ] || ! _skill_listed "$name" "$@"; then
+      echo "remove $entry"
+      rm "$entry"
+    fi
+  done
+
+  for name in "$@"; do
+    if [ ! -d "$src_dir/$name" ]; then
+      echo "skill not found: $src_dir/$name"
+      continue
+    fi
+    entry="$dst_dir/$name"
+    if [ ! -e "$entry" ] && [ ! -L "$entry" ]; then
+      echo "symlink $src_dir/$name to $entry"
+      ln -s "$src_dir/$name" "$entry"
+      continue
+    fi
+    target=""
+    [ -L "$entry" ] && target=$(readlink "$entry")
+    if [[ "$target" != "$checkout_dir/"* ]]; then
+      echo "skip $entry: not a link placed by setup"
+    elif [ "$target" = "$src_dir/$name" ]; then
+      echo "already exist $entry"
+    else
+      echo "relink $entry to $src_dir/$name"
+      rm "$entry"
+      ln -s "$src_dir/$name" "$entry"
+    fi
+  done
+  return 0
+}
+
+# 先頭の名前が、続く名前の中にあるかを返す。
+function _skill_listed() {
+  local -r want=$1
+  shift
+  local n
+  for n in "$@"; do
+    [ "$n" = "$want" ] && return 0
+  done
+  return 1
+}
