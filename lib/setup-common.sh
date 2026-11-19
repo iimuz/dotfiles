@@ -144,3 +144,28 @@ function _skill_listed() {
   done
   return 1
 }
+
+# Claude Code と Codex が読む skill を、それぞれの一覧のとおりに張る。
+# Usage: link_agent_skills <checkout_dir>
+function link_agent_skills() {
+  local -r checkout_dir=$1
+  local -r src_dir="$checkout_dir/.config/claude/skills"
+
+  # 新しい skill は、見せたい側の一覧に名前を足すまでどちらからも見えない。
+  local -r claude_skills=(
+    diagram
+    doc-conventions
+    gh-ops
+    gh-pr-resolve
+    gh-pr-review
+    git-commit
+    js-page-fetch
+    subagent-first
+    superpowers-conventions
+  )
+  local -r codex_skills=()
+
+  sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.claude/skills" "${claude_skills[@]}"
+  sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.agents/skills" ${codex_skills[@]+"${codex_skills[@]}"}
+  return 0
+}

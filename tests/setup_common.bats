@@ -390,3 +390,40 @@ run_sync() {
   [ "$(readlink "$dst/alpha")" = "$first_a" ]
   [ "$(readlink "$dst/beta")" = "$first_b" ]
 }
+
+# --- link_agent_skills ---
+
+run_link_agent_skills() {
+  local -r shell=$1
+  local -r repo="$BATS_TEST_DIRNAME/.."
+  HOME="$BATS_TEST_TMPDIR/home" run "$shell" -c 'set -eu -o pipefail; . "$1"; link_agent_skills "$2"' \
+    _ "$repo/lib/setup-common.sh" "$repo"
+}
+
+@test "link_agent_skills: every tracked skill is on a list and every listed name exists" {
+  local -r repo="$BATS_TEST_DIRNAME/.."
+  run_link_agent_skills bash
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"skill not found"* ]]
+  local h="$BATS_TEST_TMPDIR/home" name found link
+  [ -d "$h/.claude/skills" ] && [ ! -L "$h/.claude/skills" ]
+  [ -d "$h/.agents/skills" ] && [ ! -L "$h/.agents/skills" ]
+  while IFS= read -r name; do
+    found=0
+    for d in "$h/.claude/skills" "$h/.agents/skills"; do
+      [ -L "$d/$name" ] && found=1
+    done
+    [ "$found" -eq 1 ]
+  done < <(git -C "$repo" ls-files .config/claude/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  for link in "$h/.claude/skills"/* "$h/.agents/skills"/*; do
+    [ -L "$link" ] || continue
+    [ -e "$link" ]
+  done
+}
+
+@test "link_agent_skills: runs under /bin/bash" {
+  [ -x /bin/bash ] || skip "no /bin/bash"
+  run_link_agent_skills /bin/bash
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"skill not found"* ]]
+}
