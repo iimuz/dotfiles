@@ -68,6 +68,7 @@ fi
 # === codex
 if type codex >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
+  create_copy "$SCRIPT_DIR/.config/codex/config.toml" "$HOME/.codex/config.toml"
   create_symlink "$SCRIPT_DIR/.config/codex/bin/agent-codex" "$HOME/.local/bin/agent-codex"
 fi
 # === gh
