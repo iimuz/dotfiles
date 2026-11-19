@@ -56,7 +56,7 @@ fi
 
 # === claude
 if type claude >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
   create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
@@ -87,6 +87,10 @@ if type claude >/dev/null 2>&1; then
     # Linux には Google Chrome がないので playwright 管理の chromium を使う
     playwright-cli install-browser chromium --with-deps
   fi
+fi
+# === codex
+if type codex >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
 fi
 # === docker
 if ! type docker >/dev/null 2>&1; then

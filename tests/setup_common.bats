@@ -20,6 +20,32 @@ setup() {
   [ "$(readlink "$dst")" = "$src" ]
 }
 
+@test "create_symlink: replaces a broken symlink at dst" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local dst="$BATS_TEST_TMPDIR/broken_link"
+  echo "content" >"$src"
+  ln -s "$BATS_TEST_TMPDIR/missing_target" "$dst"
+
+  run create_symlink "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [ -L "$dst" ]
+  [ "$(readlink "$dst")" = "$src" ]
+}
+
+@test "create_symlink: keeps a symlink that points to an existing file" {
+  local src="$BATS_TEST_TMPDIR/src_file"
+  local other="$BATS_TEST_TMPDIR/other_file"
+  local dst="$BATS_TEST_TMPDIR/live_link"
+  echo "content" >"$src"
+  echo "other" >"$other"
+  ln -s "$other" "$dst"
+
+  run create_symlink "$src" "$dst"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist"* ]]
+  [ "$(readlink "$dst")" = "$other" ]
+}
+
 @test "create_symlink: auto-creates missing parent directories of dst" {
   local src="$BATS_TEST_TMPDIR/src_file"
   local dst="$BATS_TEST_TMPDIR/a/b/c/dst_link"
