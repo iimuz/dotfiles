@@ -51,9 +51,10 @@ Run `mise run format` and `mise run lint` after any modifications.
   referenced from `mise.toml` (none currently)
   - Repositories under the personal account read `.env` first and then resolve
     `GH_CONFIG_DIR` from `GH_CONFIG_DIR_AGENT`, falling back to the `.env` or inherited
-    value (see the `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch
-    also reaches `mise exec -- gh`. A machine whose personal gh config directory is not
-    gh's default writes `GH_CONFIG_DIR` in each repository's `.env`
+    value (see the `GH_CONFIG_DIR` line in `mise.toml`), so the bot switch by
+    `.config/agents/hooks/gh-identity.sh` also reaches `mise exec -- gh`. A machine whose
+    personal gh config directory is not gh's default writes `GH_CONFIG_DIR` in each
+    repository's `.env`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats
