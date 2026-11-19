@@ -138,6 +138,7 @@ get_inode() {
   [ "$status" -eq 0 ]
   [ ! -L "$dst" ]
   [ "$(cat "$dst")" = "content" ]
+  [ "$(get_inode "$src")" != "$(get_inode "$dst")" ]
 }
 
 @test "create_copy: keeps an existing dst" {
