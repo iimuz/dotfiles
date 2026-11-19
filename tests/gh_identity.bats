@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 
-# Tests for .config/claude/hooks/gh-identity.sh.
+# Tests for .config/agents/hooks/gh-identity.sh.
 
-HOOK="$BATS_TEST_DIRNAME/../.config/claude/hooks/gh-identity.sh"
+HOOK="$BATS_TEST_DIRNAME/../.config/agents/hooks/gh-identity.sh"
 
 setup() {
   # Under a git hook these point at the outer repository and would redirect `git init` there.

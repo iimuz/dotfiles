@@ -190,3 +190,61 @@ def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
     assert not _is_ignored(f".config/claude/skills/some-skill/{name}"), (
         f"skills/some-skill/{name} is gitignored"
     )
+
+
+# ---------------------------------------------------------------------------
+# 5. Claude Code settings.json script references
+# ---------------------------------------------------------------------------
+
+# setup_*.sh が張る link を通して、settings.json の $HOME 配下のパスをリポジトリのパスに読み替える
+_HOME_LINKS = {
+    "$HOME/.config/agents/": ".config/agents/",
+    "$HOME/.claude/hooks/": ".config/claude/hooks/",
+    "$HOME/.claude/statusline.py": ".config/claude/statusline.py",
+}
+_HOME_PATH_RE = re.compile(r"""\$HOME/[a-zA-Z0-9_./-]+""")
+
+
+def _settings_commands(settings: dict) -> list[str]:
+    commands = [
+        hook["command"]
+        for groups in settings.get("hooks", {}).values()
+        for group in groups
+        for hook in group.get("hooks", [])
+        if "command" in hook
+    ]
+    if "command" in settings.get("statusLine", {}):
+        commands.append(settings["statusLine"]["command"])
+    return commands
+
+
+def _settings_script_references() -> list[str]:
+    settings_path = _REPO_ROOT / ".config/claude/settings.json"
+    settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    return [
+        match
+        for command in _settings_commands(settings)
+        for match in _HOME_PATH_RE.findall(command)
+    ]
+
+
+@pytest.mark.parametrize("script", ["setup_mac.sh", "setup_aarch64.sh"])
+@pytest.mark.parametrize("home_prefix, repo_prefix", list(_HOME_LINKS.items()))
+def test_setup_creates_home_links(script: str, home_prefix: str, repo_prefix: str) -> None:
+    """The setup scripts that install Claude Code create every link in ``_HOME_LINKS``."""
+    expected = f'create_symlink "$SCRIPT_DIR/{repo_prefix.rstrip("/")}" "{home_prefix.rstrip("/")}"'
+    content = (_REPO_ROOT / script).read_text(encoding="utf-8")
+    assert expected in content, f"{script} does not run: {expected}"
+
+
+@pytest.mark.parametrize("home_path", _settings_script_references())
+def test_settings_command_references_exist(home_path: str) -> None:
+    """Every ``$HOME/...`` script in settings.json maps to a tracked repository path."""
+    for prefix, repo_prefix in _HOME_LINKS.items():
+        if home_path.startswith(prefix):
+            repo_path = repo_prefix + home_path[len(prefix) :]
+            assert _git_ls_files(repo_path) == [repo_path], (
+                f"{home_path} -> {repo_path} is not tracked"
+            )
+            return
+    pytest.fail(f"{home_path} is not under a path that setup_*.sh links into the repository")

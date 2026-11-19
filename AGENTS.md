@@ -44,15 +44,6 @@ Run `mise run format` and `mise run lint` after any modifications.
     custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the
     current-month ccusage cost). Register that file in RunCat Neo (Settings -> Metrics ->
     Custom Metrics; macOS only).
-    `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
-    `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
-    `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
-    the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
-    request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz`
-    ssh URLs to https so pushes use the bot token. A launcher that sets
-    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
-    launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
-    `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
   - Other tool configs follow the same one-directory-per-tool pattern
 - `.claude/`: Claude Code runtime directory (settings.json, agents, commands/)
 - `mise.toml`: Tool versions and inline task definitions (`setup`, `format`,
