@@ -36,25 +36,7 @@ Run `mise run format` and `mise run lint` after any modifications.
       file by hand
   - `.config/agents/`: Source of truth shared by Claude Code and Codex, named after neither.
     `AGENTS.md` holds the global instructions; setup symlinks `~/.claude/CLAUDE.md` and
-    `~/.codex/AGENTS.md` to it. Setup also symlinks `~/.config/agents` to this directory,
-    and Claude Code's SessionStart hook calls `~/.config/agents/hooks/gh-identity.sh`.
-    `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
-    `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
-    `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
-    the GitHub App bot, exports the App slug as `CLAUDE_GH_APP_SLUG` (gh-ops reads it to
-    request the App owner's review on the PRs it creates), and rewrites `github.com/iimuz`
-    ssh URLs to https so pushes use the bot token. A launcher that sets
-    `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
-    launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
-    `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
-    `hooks/gh-identity.sh --print <dir>` prints the same export lines to stdout, judged by the
-    `origin` of `<dir>`, and ignores `CLAUDE_ENV_FILE` and `CLAUDE_KEEP_GH_IDENTITY`.
-  - `.config/codex/`: `bin/agent-codex` evals the `gh-identity.sh --print <dir>` lines, where
-    `<dir>` is the `-C`/`--cd` value when given (`-C <dir>`, `-C<dir>`, `-C=<dir>`, `--cd <dir>`,
-    or `--cd=<dir>`, before any `--`) and `$PWD` otherwise, and then runs `codex` with the given
-    arguments, so Codex works as the GitHub App bot (Codex hooks cannot set session environment
-    variables). Setup symlinks it to `~/.local/bin/agent-codex`; a plain `codex` keeps running as
-    the human.
+    `~/.codex/AGENTS.md` to it, and `~/.config/agents` to this directory.
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the
@@ -69,9 +51,10 @@ Run `mise run format` and `mise run lint` after any modifications.
   referenced from `mise.toml` (none currently)
   - Repositories under the personal account read `.env` first and then resolve
     `GH_CONFIG_DIR` from `GH_CONFIG_DIR_AGENT`, falling back to the `.env` or inherited
-    value (see the `GH_CONFIG_DIR` line in `mise.toml`), so the SessionStart hook's switch
-    also reaches `mise exec -- gh`. A machine whose personal gh config directory is not
-    gh's default writes `GH_CONFIG_DIR` in each repository's `.env`
+    value (see the `GH_CONFIG_DIR` line in `mise.toml`), so the bot switch by
+    `.config/agents/hooks/gh-identity.sh` also reaches `mise exec -- gh`. A machine whose
+    personal gh config directory is not gh's default writes `GH_CONFIG_DIR` in each
+    repository's `.env`
 - `docs/`: Design documents and ADRs
 - `lib/`: Shared shell libraries sourced by setup scripts (e.g. `setup-common.sh`)
 - `tests/`: Test suites — pytest (hook scripts, repository integrity) and bats

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Switches gh and git to the GitHub App bot for sessions in a repository under github.com/iimuz.
+# github.com/iimuz の下のリポジトリで、gh と git を GitHub App の bot の名義に切り替える。
 #
-# gh-identity.sh          Claude Code SessionStart hook. Appends exports to CLAUDE_ENV_FILE.
-# gh-identity.sh --print <dir>
-#                         Prints the same exports to stdout, judged by the origin of <dir>.
-#                         Ignores CLAUDE_ENV_FILE and CLAUDE_KEEP_GH_IDENTITY: the caller
-#                         (agent-codex) asks for the bot identity by running this.
+# gh-identity.sh                Claude Code の SessionStart hook。export を CLAUDE_ENV_FILE に追記する。
+# gh-identity.sh --print <dir>  <dir> の origin で判定し、同じ export を標準出力に出す。agent-codex が呼ぶ。
+#                               agent-codex を通すこと自体が bot の名義を選ぶ操作なので、
+#                               CLAUDE_ENV_FILE と CLAUDE_KEEP_GH_IDENTITY を読まない。
 
 set -u
 
@@ -24,12 +23,14 @@ if [ "${1:-}" = "--print" ]; then
   target_dir="$2"
 else
   [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
+  # CLAUDE_KEEP_GH_IDENTITY=1 で名義を自分で決める launcher は、その名義が bot なら GH_CONFIG_DIR_AGENT も
+  # 設定する。さもないと、個人のリポジトリの mise exec -- gh が .env の GH_CONFIG_DIR に戻る。
   [ "${CLAUDE_KEEP_GH_IDENTITY:-}" = "1" ] && exit 0
   target_dir="${CLAUDE_PROJECT_DIR:-$PWD}"
 fi
 [ -d "$bot_gh_dir" ] || exit 0
 
-# An inherited GIT_CONFIG_COUNT that is non-numeric or lacks its KEY/VALUE pairs makes git abort.
+# 引き継いだ GIT_CONFIG_COUNT が数でないか、KEY と VALUE の組が欠けていると git が止まる。
 origin="$(env -u GIT_CONFIG_COUNT git -C "$target_dir" remote get-url origin 2>/dev/null)" || exit 0
 case "$origin" in
   https://github.com/iimuz/* | git@github.com:iimuz/* | ssh://git@github.com/iimuz/*) ;;
@@ -41,7 +42,8 @@ case "$n" in
   '' | *[!0-9]*) n=0 ;;
 esac
 
-# Pushes over ssh would use the human key; rewriting to https routes them through the bot token.
+# ssh の push は人の鍵を使うので、https に書き換えて bot の token を通す。
+# CLAUDE_GH_APP_SLUG は、gh-ops が作った PR に App の owner のレビューを頼むときに読む。
 print_exports() {
   cat <<ENV
 export GH_CONFIG_DIR='$bot_gh_dir'

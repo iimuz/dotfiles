@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Codex を GitHub App の bot の名義で起動する。作業するディレクトリについて gh-identity.sh --print が
-# 出す gh と git の名義の export を当ててから、受け取った引数のまま codex を呼ぶ。
-# 素の `codex` は人の名義のまま動く。
+# Codex を GitHub App の bot の名義で起動する。Codex の hook はセッションに環境変数を入れられないので、
+# 起動の前に、作業するディレクトリについて gh-identity.sh --print が出す gh と git の名義の export を当て、
+# 受け取った引数のまま codex を呼ぶ。素の `codex` は人の名義のまま動く。
 
 set -euo pipefail
 
