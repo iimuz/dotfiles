@@ -34,10 +34,11 @@ Run `mise run format` and `mise run lint` after any modifications.
       `mise.toml` under `.config/mise/` is loaded as project config inside this repository
     - `mise use -g` writes to `config-common.toml`; add platform-only tools to the platform
       file by hand
-  - `.config/agents/`: Source of truth shared by Claude Code and Codex, named after neither.
-    `AGENTS.md` holds the global instructions; setup symlinks `~/.claude/CLAUDE.md` and
-    `~/.codex/AGENTS.md` to it. Setup also symlinks `~/.config/agents` to this directory,
-    and Claude Code's SessionStart hook calls `~/.config/agents/hooks/gh-identity.sh`.
+  - `.config/agents/`: 複数のコーディングエージェントが共有するファイルを置く。
+    ツールごとに 1 ディレクトリとする規則の例外で、1 つのエージェントだけの設定はそのエージェントのディレクトリに置く。
+    `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る
+    Setup also symlinks `~/.config/agents` to this directory, and Claude Code's SessionStart hook
+    calls `~/.config/agents/hooks/gh-identity.sh`.
     `hooks/gh-identity.sh` is a SessionStart hook: when a session starts in a repository whose
     `origin` is under `github.com/iimuz` (https or ssh), it points `GH_CONFIG_DIR` and
     `GH_CONFIG_DIR_AGENT` at `~/.config/gh-agent`, sets the git author and committer to
