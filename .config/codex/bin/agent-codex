@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Starts Codex as the GitHub App bot: applies the gh and git identity exports from
+# gh-identity.sh --print for the current directory, then runs codex with the given arguments.
+# A plain `codex` keeps running as the human.
+
+set -euo pipefail
+
+# 失敗したときに人の名義で黙って起動しないよう、eval の前に出力を変数で受けて終了コードを見る。
+exports="$("$HOME/.config/agents/hooks/gh-identity.sh" --print "$PWD")" || {
+  echo "agent-codex: failed to run $HOME/.config/agents/hooks/gh-identity.sh" >&2
+  exit 1
+}
+eval "$exports"
+exec codex "$@"

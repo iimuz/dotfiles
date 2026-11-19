@@ -47,6 +47,12 @@ Run `mise run format` and `mise run lint` after any modifications.
     `CLAUDE_KEEP_GH_IDENTITY=1` keeps its own identity; when that identity is a bot, the
     launcher sets `GH_CONFIG_DIR_AGENT` to the bot's gh config directory as well, or
     `mise exec -- gh` in personal repositories resolves to the `GH_CONFIG_DIR` in their `.env`.
+    `hooks/gh-identity.sh --print <dir>` prints the same export lines to stdout, judged by the
+    `origin` of `<dir>`, and ignores `CLAUDE_ENV_FILE` and `CLAUDE_KEEP_GH_IDENTITY`.
+  - `.config/codex/`: `bin/agent-codex` evals the `gh-identity.sh --print "$PWD"` lines and then
+    runs `codex` with the given arguments, so Codex works as the GitHub App bot (Codex hooks cannot
+    set session environment variables). Setup symlinks it to `~/.local/bin/agent-codex`; a plain
+    `codex` keeps running as the human.
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process). `statusline.py` is the statusLine command: it renders the
