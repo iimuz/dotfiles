@@ -10,6 +10,8 @@ bot_email="351267992+${bot_name}@users.noreply.github.com"
 bot_gh_dir="$HOME/.config/gh-agent"
 
 [ -n "${CLAUDE_ENV_FILE:-}" ] || exit 0
+# 名義を自分で決める launcher は、CLAUDE_KEEP_GH_IDENTITY=1 でこの hook を止める。
+# bot の名義で動く launcher は GH_CONFIG_DIR_AGENT も設定する。mise.toml が GH_CONFIG_DIR を GH_CONFIG_DIR_AGENT から解決するので、無いと mise exec -- gh は .env の GH_CONFIG_DIR を使う
 [ "${CLAUDE_KEEP_GH_IDENTITY:-}" = "1" ] && exit 0
 [ -d "$bot_gh_dir" ] || exit 0
 
