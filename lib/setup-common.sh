@@ -149,7 +149,7 @@ function _skill_listed() {
 # Usage: link_agent_skills <checkout_dir>
 function link_agent_skills() {
   local -r checkout_dir=$1
-  local -r src_dir="$checkout_dir/.config/claude/skills"
+  local -r src_dir="$checkout_dir/.config/agents/skills"
 
   # 新しい skill は、見せたい側の一覧に名前を足すまでどちらからも見えない。
   local -r claude_skills=(

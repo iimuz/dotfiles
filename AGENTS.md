@@ -37,13 +37,12 @@ Run `mise run format` and `mise run lint` after any modifications.
   - `.config/agents/`: 複数のコーディングエージェントが共有するファイルを置く。
     ツールごとに 1 ディレクトリとする規則の例外で、1 つのエージェントだけの設定はそのエージェントのディレクトリに置く。
     `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る
-  - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
-    settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
+    `skills/` は skill の実体の置き場所で、`~/.claude/skills` と `~/.agents/skills` を普通のディレクトリにし、
+    `link_agent_skills` (`lib/setup-common.sh`) のエージェントごとの一覧に載せた skill だけを skill 単位の symlink で張る。
+    新しい skill は、名前を一覧に足すまでどのエージェントからも見えない
+  - `.config/claude/`: Claude Code user settings managed as dotfiles (settings.json,
+    statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process).
-    `skills/` holds the skill sources: setup makes `~/.claude/skills` and `~/.agents/skills`
-    plain directories and symlinks into them, one link per skill, only the skills named in the
-    Claude Code and Codex lists in `link_agent_skills` (`lib/setup-common.sh`). A new skill is
-    visible to neither agent until its name is added to a list.
     `statusline.py` is the statusLine command: it renders the
     terminal status line from statusLine stdin JSON, and on macOS also writes a RunCat Neo
     custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the

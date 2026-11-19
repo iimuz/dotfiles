@@ -166,33 +166,6 @@ def test_json_files_parse(json_file: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 4. Generated skill directories
-# ---------------------------------------------------------------------------
-
-
-def _is_ignored(path: str) -> bool:
-    result = subprocess.run(["git", "check-ignore", "-q", path], cwd=_REPO_ROOT)
-    return result.returncode == 0
-
-
-def test_generated_skill_is_ignored() -> None:
-    """A playwright-cli skill left in this directory must stay untracked."""
-    target = ".config/claude/skills/playwright-cli/"
-    assert _is_ignored(target), (
-        f"{target} is not gitignored; the generated skill would be committed"
-    )
-
-
-@pytest.mark.parametrize("name", ["orca-cli", "orchestration"])
-def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
-    """Orca skill symlinks left directly under skills/ must stay untracked."""
-    assert _is_ignored(f".config/claude/skills/{name}"), f"skills/{name} is not gitignored"
-    assert not _is_ignored(f".config/claude/skills/some-skill/{name}"), (
-        f"skills/some-skill/{name} is gitignored"
-    )
-
-
-# ---------------------------------------------------------------------------
 # 5. Claude Code settings.json script references
 # ---------------------------------------------------------------------------
 

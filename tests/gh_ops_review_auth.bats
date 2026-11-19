@@ -4,7 +4,7 @@
 
 bats_require_minimum_version 1.5.0
 
-SCRIPTS="$BATS_TEST_DIRNAME/../.config/claude/skills/gh-ops/scripts"
+SCRIPTS="$BATS_TEST_DIRNAME/../.config/agents/skills/gh-ops/scripts"
 
 setup() {
   local stub_bin="$BATS_TEST_TMPDIR/bin"

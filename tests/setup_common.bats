@@ -238,7 +238,7 @@ STUB
 # fixture: checkout / src (alpha, beta) / dst の変数を作る
 make_skill_fixture() {
   checkout="$BATS_TEST_TMPDIR/checkout"
-  src="$checkout/.config/claude/skills"
+  src="$checkout/.config/agents/skills"
   dst="$BATS_TEST_TMPDIR/home/.claude/skills"
   mkdir -p "$src/alpha" "$src/beta" "$(dirname "$dst")"
   : >"$src/alpha/SKILL.md"
@@ -414,7 +414,7 @@ run_link_agent_skills() {
       [ -L "$d/$name" ] && found=1
     done
     [ "$found" -eq 1 ]
-  done < <(git -C "$repo" ls-files .config/claude/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  done < <(git -C "$repo" ls-files .config/agents/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
   for link in "$h/.claude/skills"/* "$h/.agents/skills"/*; do
     [ -L "$link" ] || continue
     [ -e "$link" ]

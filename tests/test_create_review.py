@@ -179,7 +179,7 @@ def test_human_checked_leaves_empty_summary_unsigned(monkeypatch):
     ],
 )
 def test_docs_spell_the_signature_as_a_whole_line(doc):
-    skills = Path(__file__).resolve().parents[1] / ".config" / "claude" / "skills"
+    skills = Path(__file__).resolve().parents[1] / ".config" / "agents" / "skills"
     lines = (skills / doc).read_text(encoding="utf-8").splitlines()
 
     assert create_review.HUMAN_CHECKED_SIGNATURE in lines
