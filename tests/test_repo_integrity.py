@@ -166,7 +166,7 @@ def test_json_files_parse(json_file: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 5. Claude Code settings.json script references
+# 4. Claude Code settings.json script references
 # ---------------------------------------------------------------------------
 
 # setup_*.sh が張る link を通して、settings.json の $HOME 配下のパスをリポジトリのパスに読み替える
