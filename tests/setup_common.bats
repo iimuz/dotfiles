@@ -162,6 +162,8 @@ get_inode() {
 
   run create_copy "$src" "$dst"
   [ "$status" -eq 0 ]
+  [[ "$output" == *"already exist"* ]]
+  [ -L "$dst" ]
   [ "$(cat "$target")" = "target" ]
 }
 
