@@ -39,7 +39,12 @@ Run `mise run format` and `mise run lint` after any modifications.
     `AGENTS.md` は全体の指示で、各エージェントが全体の指示を読むパスに `setup_*.sh` がこのファイルへの symlink を張る
   - `.config/claude/`: Claude Code user settings managed as dotfiles (skills/,
     settings.json, statusline.py); distinct from `.claude/` (runtime directory used by
-    the Claude Code process). `statusline.py` is the statusLine command: it renders the
+    the Claude Code process).
+    `skills/` holds the skill sources: setup makes `~/.claude/skills` and `~/.agents/skills`
+    plain directories and symlinks into them, one link per skill, only the skills named in the
+    Claude Code and Codex lists in `link_agent_skills` (`lib/setup-common.sh`). A new skill is
+    visible to neither agent until its name is added to a list.
+    `statusline.py` is the statusLine command: it renders the
     terminal status line from statusLine stdin JSON, and on macOS also writes a RunCat Neo
     custom-metrics snapshot (`~/.claude/runcat-usage.json`: 5h / 7d rate limits and the
     current-month ccusage cost). Register that file in RunCat Neo (Settings -> Metrics ->

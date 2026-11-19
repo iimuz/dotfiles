@@ -176,7 +176,7 @@ def _is_ignored(path: str) -> bool:
 
 
 def test_generated_skill_is_ignored() -> None:
-    """The bundled playwright-cli skill is generated and must stay untracked."""
+    """A playwright-cli skill left in this directory must stay untracked."""
     target = ".config/claude/skills/playwright-cli/"
     assert _is_ignored(target), (
         f"{target} is not gitignored; the generated skill would be committed"
@@ -185,7 +185,7 @@ def test_generated_skill_is_ignored() -> None:
 
 @pytest.mark.parametrize("name", ["orca-cli", "orchestration"])
 def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
-    """orca-ide places these skills as symlinks directly under skills/."""
+    """Orca skill symlinks left directly under skills/ must stay untracked."""
     assert _is_ignored(f".config/claude/skills/{name}"), f"skills/{name} is not gitignored"
     assert not _is_ignored(f".config/claude/skills/some-skill/{name}"), (
         f"skills/some-skill/{name} is gitignored"

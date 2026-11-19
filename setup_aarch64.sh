@@ -56,11 +56,11 @@ fi
 
 # === agents
 create_symlink "$SCRIPT_DIR/.config/agents" "$HOME/.config/agents"
+link_agent_skills "$SCRIPT_DIR"
 
 # === claude
 if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
-  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
   create_symlink "$SCRIPT_DIR/.config/claude/hooks" "$HOME/.claude/hooks"
@@ -142,11 +142,8 @@ if type orca-ide >/dev/null 2>&1; then
   orca-ide serve service install --port 6790 --bind 0.0.0.0
   # ログアウトしても service を止めない
   loginctl enable-linger "$(whoami)"
-  # skill は CLI のバージョンに合わせて生成させる。~/.claude/skills は claude の節で symlink にするので、この節はその後に置く。
-  # ~/.claude/skills が symlink でないと、Orca の symlink がこのリポジトリの外に置かれ、普通のディレクトリを作ると後で symlink を張れないので入れない
-  if [ -L "$HOME/.claude/skills" ]; then
-    orca-ide skills install --skill orca-cli --skill orchestration
-  fi
+  # skill は CLI のバージョンに合わせて生成させる。skill を置く ~/.claude/skills と ~/.agents/skills は agents の節で作るので、この節はその後に置く。
+  orca-ide skills install --skill orca-cli --skill orchestration
 fi
 # === starship
 if ! type starship >/dev/null 2>&1; then curl -sS https://starship.rs/install.sh | sudo sh; fi

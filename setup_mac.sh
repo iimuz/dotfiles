@@ -32,11 +32,11 @@ fi
 
 # === agents
 create_symlink "$SCRIPT_DIR/.config/agents" "$HOME/.config/agents"
+link_agent_skills "$SCRIPT_DIR"
 
 # === claude
 if type claude >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
-  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
   create_symlink "$SCRIPT_DIR/.config/claude/hooks" "$HOME/.claude/hooks"
@@ -108,12 +108,9 @@ fi
 # === orca
 # Brewfile の cask が入れる CLI の名前は、Linux の deb と違って orca である
 if type orca >/dev/null 2>&1; then
-  # ~/.claude/skills は claude の節で symlink にするので、この節はその後に置く。
-  # symlink でないと Orca の link がこのリポジトリの外に置かれ、普通のディレクトリを作ると後で symlink を張れないので入れない。
+  # skill を置く ~/.claude/skills と ~/.agents/skills は agents の節で作るので、この節はその後に置く。
   # mac には skill の update 手順を置かない。Orca アプリが自身の更新の後とウィンドウを開いたときに、手を入れていない copy を同梱版に置き換える
-  if [ -L "$HOME/.claude/skills" ]; then
-    orca skills install --skill orca-cli --skill orchestration
-  fi
+  orca skills install --skill orca-cli --skill orchestration
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then
