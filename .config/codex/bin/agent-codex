@@ -13,8 +13,11 @@ for arg in "$@"; do
   case "$prev" in
     -C | --cd) target_dir="$arg" ;;
   esac
+  # codex の引数の解析は -C<dir> と -C=<dir> も受け付ける。
   case "$arg" in
     --cd=*) target_dir="${arg#--cd=}" ;;
+    -C=*) target_dir="${arg#-C=}" ;;
+    -C?*) target_dir="${arg#-C}" ;;
   esac
   prev="$arg"
 done

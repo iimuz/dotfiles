@@ -87,4 +87,27 @@ run_agent_codex() {
   run_agent_codex --cd "$MINE" hello
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "GH_CONFIG_DIR=$HOME/.config/gh-agent" ]
+  [ "${lines[2]}" = "args=--cd $MINE hello" ]
+}
+
+@test "agent-codex: judges the identity by the directory attached to -C" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  OTHER="$BATS_TEST_TMPDIR/other"
+  git init -q "$OTHER"
+  git -C "$OTHER" remote add origin https://github.com/other/dotfiles.git
+  run_agent_codex -C"$OTHER" hello
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "GH_CONFIG_DIR=" ]
+  [ "${lines[2]}" = "args=-C$OTHER hello" ]
+}
+
+@test "agent-codex: judges the identity by the directory given with -C=" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  OTHER="$BATS_TEST_TMPDIR/other"
+  git init -q "$OTHER"
+  git -C "$OTHER" remote add origin https://github.com/other/dotfiles.git
+  run_agent_codex -C="$OTHER" hello
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "GH_CONFIG_DIR=" ]
+  [ "${lines[2]}" = "args=-C=$OTHER hello" ]
 }
