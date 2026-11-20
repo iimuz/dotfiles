@@ -108,7 +108,6 @@ fi
 # === orca
 # Brewfile の cask が入れる CLI の名前は、Linux の deb と違って orca である
 if type orca >/dev/null 2>&1; then
-  # agents の節は symlink の skill のディレクトリを普通のディレクトリに置き換えるので、この節はその後に置く。先に置くと Orca の link が symlink の指す先に入り、見えなくなる
   # mac には skill の update 手順を置かない。Orca アプリが自身の更新の後とウィンドウを開いたときに、手を入れていない copy を同梱版に置き換える
   orca skills install --skill orca-cli --skill orchestration
 fi

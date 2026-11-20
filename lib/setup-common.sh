@@ -89,10 +89,6 @@ function sync_skill_links() {
   shift 3
   local entry name target
 
-  if [ -L "$dst_dir" ]; then
-    echo "replace symlink $dst_dir (-> $(readlink "$dst_dir")) with a directory"
-    rm "$dst_dir"
-  fi
   mkdir -p "$dst_dir"
 
   for entry in "$dst_dir"/*; do

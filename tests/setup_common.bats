@@ -259,30 +259,16 @@ run_sync() {
   [ ! -e "$dst/beta" ]
 }
 
-@test "sync_skill_links: replaces a symlinked dst dir that points into the source dir" {
+@test "sync_skill_links: leaves a dst dir symlinked to the source dir and its contents as they are" {
   make_skill_fixture
   mkdir "$src/other"
   : >"$src/note.txt"
   ln -s "$src" "$dst"
   run_sync alpha
   [ "$status" -eq 0 ]
-  [ -d "$dst" ] && [ ! -L "$dst" ]
-  [ -d "$src/alpha" ] && [ -d "$src/beta" ] && [ -d "$src/other" ] && [ -f "$src/note.txt" ]
-  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
-  [[ "$output" == *"replace symlink"* ]]
-  [[ "$output" == *"$src"* ]]
-}
-
-@test "sync_skill_links: replaces a symlinked dst dir that points outside the checkout" {
-  make_skill_fixture
-  mkdir -p "$BATS_TEST_TMPDIR/outside/x"
-  ln -s "$BATS_TEST_TMPDIR/outside" "$dst"
-  run_sync alpha
-  [ "$status" -eq 0 ]
-  [ -d "$dst" ] && [ ! -L "$dst" ]
-  [ -d "$BATS_TEST_TMPDIR/outside/x" ]
-  [[ "$output" == *"replace symlink"* ]]
-  [[ "$output" == *"$BATS_TEST_TMPDIR/outside"* ]]
+  [ "$(readlink "$dst")" = "$src" ]
+  [ -d "$src/alpha" ] && [ ! -L "$src/alpha" ]
+  [ -d "$src/beta" ] && [ -d "$src/other" ] && [ -f "$src/note.txt" ]
 }
 
 @test "sync_skill_links: relinks its own broken link" {
