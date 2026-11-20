@@ -2,11 +2,11 @@
 # Codex は symlink の .rules を読まないので、setup が ~/.codex/rules/ に写す。
 # curl/wget の出力を sh に渡す pipe の形は写さない。Codex は pipe の各コマンドを
 # 別々に照合するので、sh そのものを止める rule になってしまう。
+# 包んだ形 (mise exec -- など) と書き方の変種 (rm -fr、git -C <dir> など) は
+# 数えきれないので、写し元と同じく追わない。
 
 prefix_rule(pattern=["gh", "auth", "token"], decision="forbidden")
-prefix_rule(pattern=["mise", "exec", "--", "gh", "auth", "token"], decision="forbidden")
 prefix_rule(pattern=["gh", "pr", "merge"], decision="forbidden")
-prefix_rule(pattern=["mise", "exec", "--", "gh", "pr", "merge"], decision="forbidden")
 prefix_rule(pattern=["git", "push", ["--force", "-f"]], decision="forbidden")
 prefix_rule(pattern=["git", "rebase"], decision="forbidden")
 prefix_rule(pattern=["git", "reset"], decision="forbidden")

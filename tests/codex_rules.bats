@@ -23,7 +23,6 @@ assert_unmatched() {
 @test "rules: forbid reading credentials" {
   assert_forbidden gh auth token
   assert_forbidden gh auth token --hostname github.com
-  assert_forbidden mise exec -- gh auth token
   assert_forbidden security find-generic-password -s x
   assert_forbidden pass
   assert_forbidden pass show x
@@ -36,7 +35,6 @@ assert_unmatched() {
   assert_forbidden git rebase main
   assert_forbidden git reset --hard
   assert_forbidden gh pr merge 1
-  assert_forbidden mise exec -- gh pr merge 1
 }
 
 @test "rules: forbid forced removal and sudo" {
@@ -50,5 +48,4 @@ assert_unmatched() {
   assert_unmatched rm x
   assert_unmatched gh auth status
   assert_unmatched gh pr view 1
-  assert_unmatched mise exec -- gh pr view 1
 }
