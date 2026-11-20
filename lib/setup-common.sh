@@ -126,7 +126,6 @@ function sync_skill_links() {
   return 0
 }
 
-# 先頭の名前が、続く名前の中にあるかを返す。
 function _skill_listed() {
   local -r want=$1
   shift

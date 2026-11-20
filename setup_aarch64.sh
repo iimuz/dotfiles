@@ -142,7 +142,7 @@ if type orca-ide >/dev/null 2>&1; then
   orca-ide serve service install --port 6790 --bind 0.0.0.0
   # ログアウトしても service を止めない
   loginctl enable-linger "$(whoami)"
-  # skill は CLI のバージョンに合わせて生成させる。skill を置く ~/.claude/skills と ~/.agents/skills は agents の節で作るので、この節はその後に置く。
+  # skill は CLI のバージョンに合わせて生成させる。agents の節は symlink の skill のディレクトリを普通のディレクトリに置き換えるので、この節はその後に置く。先に置くと Orca の link が symlink の指す先に入り、見えなくなる
   orca-ide skills install --skill orca-cli --skill orchestration
 fi
 # === starship
