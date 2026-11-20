@@ -7,6 +7,7 @@ actually exist, and that committed TOML / JSON files are parseable.
 import json
 import re
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -145,6 +146,25 @@ def test_mise_platform_config_does_not_repeat_common_tools(platform_file: str) -
     common = tomllib.loads((_MISE_DIR / "config-common.toml").read_text())["tools"]
     platform = tomllib.loads((_MISE_DIR / platform_file).read_text()).get("tools", {})
     assert set(common) & set(platform) == set()
+
+
+def _leaf_values(node: object) -> Iterator[object]:
+    if isinstance(node, dict):
+        for value in node.values():
+            yield from _leaf_values(value)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _leaf_values(item)
+    else:
+        yield node
+
+
+@pytest.mark.skipif(tomllib is None, reason="No TOML parser available (need tomllib or tomli)")
+def test_codex_template_has_no_deny_and_no_model() -> None:
+    """Any deny keeps approved escalation inside the sandbox; the model is left to Codex."""
+    config = tomllib.loads((_REPO_ROOT / ".config/codex/config.toml").read_text())
+    assert "model" not in config
+    assert "deny" not in _leaf_values(config.get("permissions", {}))
 
 
 # ---------------------------------------------------------------------------
