@@ -1,0 +1,47 @@
+# Codex の設定の雛形。setup は ~/.codex/config.toml が無いときだけ写す。
+# Codex が端末の記録を書き込むので link せず、端末の設定との差分は人が移す。
+model = "gpt-6.2-sol"
+model_reasoning_effort = "high"
+# 承認を求める操作だけを、別の reviewer のエージェントに判定させる
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+default_permissions = "dotfiles"
+
+[permissions.dotfiles]
+extends = ":workspace"
+
+# glob は workspace の外では効かないので、workspace の外はパスで書く
+[permissions.dotfiles.filesystem]
+"~/.ssh" = "deny"
+"~/.gnupg" = "deny"
+"~/.config/gh" = "deny"
+"~/.config/gh-agent" = "deny"
+# sandbox の中の lint と test で、uv と mise が workspace の外の cache に書くので許す
+"~/.cache" = "write"
+
+[permissions.dotfiles.filesystem.":workspace_roots"]
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"**/*.pem" = "deny"
+
+# 読み取りだけで動かすとき (レビューなど) に -c default_permissions で選ぶ。
+# -s / --sandbox を付けると permission profile が使われず deny が外れるので、-s は使わない
+# deny の一覧は dotfiles の profile の写しなので、片方を変えたらもう片方も揃える
+[permissions.dotfiles-read-only]
+extends = ":read-only"
+
+[permissions.dotfiles-read-only.filesystem]
+"~/.ssh" = "deny"
+"~/.gnupg" = "deny"
+"~/.config/gh" = "deny"
+"~/.config/gh-agent" = "deny"
+
+[permissions.dotfiles-read-only.filesystem.":workspace_roots"]
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"**/*.pem" = "deny"
+
+# rerank を使う検索は既定の時間を超えるので延ばす
+[mcp_servers.qmd]
+url = "http://localhost:8181/mcp"
+tool_timeout_sec = 180

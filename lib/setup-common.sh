@@ -37,6 +37,23 @@ function create_hardlink() {
   ln "$src" "$dst"
 }
 
+# Copy src to dst only if dst does not exist.
+# エージェントが書き込む設定の雛形用。link にすると端末ごとの記録が dotfiles に入る。
+# -e だけだと指す先の無い symlink を無いものとみなし、その先に書いてしまう。
+function create_copy() {
+  local -r src=$1
+  local -r dst=$2
+
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    echo "already exist $dst"
+    return 0
+  fi
+
+  echo "copy $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  cp "$src" "$dst"
+}
+
 # Add loading file in .bashrc or .zshrc.
 function set_bashrc() {
   local -r filename="$1"
