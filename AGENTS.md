@@ -42,8 +42,6 @@ Run `mise run format` and `mise run lint` after any modifications.
     新しい skill は、名前を一覧に足すまでどのエージェントからも見えない
   - `.config/codex/`: Codex の設定。`config.toml` は設定の雛形で、
     setup が `~/.codex/config.toml` の無いときだけ写す
-    `rules/dotfiles.rules` は Claude Code の `Bash(...)` の deny を写した Codex の rules の雛形で、
-    setup が `~/.codex/rules/dotfiles.rules` の無いときだけ写す。symlink にすると Codex が読まない
   - `.config/claude/`: Claude Code user settings managed as dotfiles (settings.json,
     statusline.py); distinct from `.claude/` (runtime directory used by
     the Claude Code process).
