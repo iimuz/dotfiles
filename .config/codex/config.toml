@@ -16,6 +16,8 @@ extends = ":workspace"
 "~/.gnupg" = "deny"
 "~/.config/gh" = "deny"
 "~/.config/gh-agent" = "deny"
+# sandbox の中の lint と test で、uv と mise が workspace の外の cache に書くので許す
+"~/.cache" = "write"
 
 [permissions.dotfiles.filesystem.":workspace_roots"]
 "**/.env" = "deny"
