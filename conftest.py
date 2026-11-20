@@ -26,19 +26,19 @@ sys.modules.setdefault("gh_ops", _gh_ops)
 
 _load_module(
     "gh_ops.create_review",
-    _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "create_review.py",
+    _PROJECT_ROOT / ".config" / "agents" / "skills" / "gh-ops" / "scripts" / "create_review.py",
 )
 _gh_ops.create_review = sys.modules["gh_ops.create_review"]
 
 _load_module(
     "gh_ops.append_review",
-    _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "append_review.py",
+    _PROJECT_ROOT / ".config" / "agents" / "skills" / "gh-ops" / "scripts" / "append_review.py",
 )
 _gh_ops.append_review = sys.modules["gh_ops.append_review"]
 
 _load_module(
     "gh_ops.reply_review",
-    _PROJECT_ROOT / ".config" / "claude" / "skills" / "gh-ops" / "scripts" / "reply_review.py",
+    _PROJECT_ROOT / ".config" / "agents" / "skills" / "gh-ops" / "scripts" / "reply_review.py",
 )
 _gh_ops.reply_review = sys.modules["gh_ops.reply_review"]
 

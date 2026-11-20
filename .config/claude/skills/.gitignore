@@ -1,9 +1,0 @@
-# ほかの道具が置いた skill の残りで、人が消すまで作業ツリーに残る。lint と format が対象から外すよう追跡しない。
-# symlink で置かれたものは、symlink に当たるよう末尾に / を付けない
-loop-handoff
-loop-handoff/
-/local-search
-playwright-cli/
-/orca-cli
-/orchestration
-synced/

@@ -238,7 +238,7 @@ STUB
 # fixture: checkout / src (alpha, beta) / dst の変数を作る
 make_skill_fixture() {
   checkout="$BATS_TEST_TMPDIR/checkout"
-  src="$checkout/.config/claude/skills"
+  src="$checkout/.config/agents/skills"
   dst="$BATS_TEST_TMPDIR/home/.claude/skills"
   mkdir -p "$src/alpha" "$src/beta" "$(dirname "$dst")"
   : >"$src/alpha/SKILL.md"
@@ -334,7 +334,7 @@ run_sync() {
 @test "sync_skill_links: relinks a same-name broken symlink that points outside the checkout" {
   make_skill_fixture
   mkdir -p "$dst"
-  ln -s "$BATS_TEST_TMPDIR/deleted-worktree/.config/claude/skills/alpha" "$dst/alpha"
+  ln -s "$BATS_TEST_TMPDIR/deleted-worktree/.config/agents/skills/alpha" "$dst/alpha"
   run_sync alpha
   [ "$status" -eq 0 ]
   [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
@@ -389,14 +389,17 @@ run_link_agent_skills() {
   run_link_agent_skills bash
   [ "$status" -eq 0 ]
   [[ "$output" != *"skill not found"* ]]
-  local h="$BATS_TEST_TMPDIR/home" name link missing=""
+  local h="$BATS_TEST_TMPDIR/home" name link missing="" seen=0
   [ -d "$h/.claude/skills" ] && [ ! -L "$h/.claude/skills" ]
   [ -d "$h/.agents/skills" ] && [ ! -L "$h/.agents/skills" ]
   while IFS= read -r name; do
+    seen=$((seen + 1))
     if [ ! -L "$h/.claude/skills/$name" ] && [ ! -L "$h/.agents/skills/$name" ]; then
       missing="$missing $name"
     fi
-  done < <(git -C "$repo" ls-files .config/claude/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  done < <(git -C "$repo" ls-files .config/agents/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  # 置き場所のパスを誤ると一覧の照合が空回りして通るので、skill を 1 つ以上見たことを確かめる
+  [ "$seen" -gt 0 ]
   if [ -n "$missing" ]; then
     echo "add these skills to a list in link_agent_skills (lib/setup-common.sh):$missing"
     return 1
