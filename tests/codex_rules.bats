@@ -3,6 +3,7 @@
 # Tests for .config/codex/rules/dotfiles.rules.
 
 RULES="$BATS_TEST_DIRNAME/../.config/codex/rules/dotfiles.rules"
+SETTINGS="$BATS_TEST_DIRNAME/../.config/claude/settings.json"
 
 setup() {
   command -v codex >/dev/null 2>&1 || skip "codex is not installed"
@@ -18,6 +19,24 @@ assert_unmatched() {
   run codex execpolicy check --rules "$RULES" "$@"
   [ "$status" -eq 0 ]
   [ "$(jq '.matchedRules | length' <<<"$output")" -eq 0 ]
+}
+
+# settings.json に deny を足して rules に写し忘れたときに、ここで落ちる。
+# pipe の形は rules に写さないので除き、末尾の " *" を落とした語の並びで判定させる。
+@test "rules: forbid every Bash command the Claude Code settings deny" {
+  local -a denies=() words
+  local deny
+  while IFS= read -r deny; do
+    denies+=("$deny")
+  done < <(jq -r '.permissions.deny[]
+    | select(startswith("Bash(") and (contains("|") | not))
+    | ltrimstr("Bash(") | rtrimstr(")") | rtrimstr(" *")' "$SETTINGS")
+  [ "${#denies[@]}" -gt 0 ]
+  for deny in "${denies[@]}"; do
+    echo "checking: $deny"
+    read -r -a words <<<"$deny"
+    assert_forbidden "${words[@]}"
+  done
 }
 
 @test "rules: forbid reading credentials" {
