@@ -414,16 +414,18 @@ run_link_agent_skills() {
   run_link_agent_skills bash
   [ "$status" -eq 0 ]
   [[ "$output" != *"skill not found"* ]]
-  local h="$BATS_TEST_TMPDIR/home" name found link
+  local h="$BATS_TEST_TMPDIR/home" name link missing=""
   [ -d "$h/.claude/skills" ] && [ ! -L "$h/.claude/skills" ]
   [ -d "$h/.agents/skills" ] && [ ! -L "$h/.agents/skills" ]
   while IFS= read -r name; do
-    found=0
-    for d in "$h/.claude/skills" "$h/.agents/skills"; do
-      [ -L "$d/$name" ] && found=1
-    done
-    [ "$found" -eq 1 ]
+    if [ ! -L "$h/.claude/skills/$name" ] && [ ! -L "$h/.agents/skills/$name" ]; then
+      missing="$missing $name"
+    fi
   done < <(git -C "$repo" ls-files .config/claude/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  if [ -n "$missing" ]; then
+    echo "add these skills to a list in link_agent_skills (lib/setup-common.sh):$missing"
+    return 1
+  fi
   for link in "$h/.claude/skills"/* "$h/.agents/skills"/*; do
     [ -L "$link" ] || continue
     [ -e "$link" ]
