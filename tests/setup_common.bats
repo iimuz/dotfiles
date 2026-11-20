@@ -285,16 +285,6 @@ run_sync() {
   [[ "$output" == *"$BATS_TEST_TMPDIR/outside"* ]]
 }
 
-@test "sync_skill_links: relinks its own link that points to an old location still present" {
-  make_skill_fixture
-  mkdir -p "$checkout/old/alpha" "$dst"
-  ln -s "$checkout/old/alpha" "$dst/alpha"
-  run_sync alpha
-  [ "$status" -eq 0 ]
-  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
-  [ -d "$checkout/old/alpha" ]
-}
-
 @test "sync_skill_links: relinks its own broken link" {
   make_skill_fixture
   mkdir -p "$dst"
@@ -394,7 +384,6 @@ run_sync() {
   run_sync alpha beta
   [ "$status" -eq 0 ]
   [[ "$output" == *"already exist"* ]]
-  [[ "$output" != *"relink"* ]]
   [[ "$output" != *"remove"* ]]
   [ "$(readlink "$dst/alpha")" = "$first_a" ]
   [ "$(readlink "$dst/beta")" = "$first_b" ]

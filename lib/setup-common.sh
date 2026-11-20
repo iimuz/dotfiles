@@ -82,8 +82,6 @@ function add_claude_mcp() {
 # Usage: sync_skill_links <checkout_dir> <src_dir> <dst_dir> [<name>...]
 # 片づけで消すのは checkout の中を指す symlink だけで、Orca や playwright-cli など
 # ほかの道具が置いたものは消さない。一覧の名前の壊れた link は、指す先を問わず張り直す。
-# checkout の中を指す link は、指す先が残っていても実体の場所と違えば張り直す。古い skill の
-# ディレクトリに gitignore されたものが残り、link が壊れないことがあるため。
 function sync_skill_links() {
   local -r checkout_dir=$1
   local -r src_dir=$2
@@ -113,15 +111,7 @@ function sync_skill_links() {
       echo "skill not found: $src_dir/$name"
       continue
     fi
-    entry="$dst_dir/$name"
-    if [ -L "$entry" ] && [ -e "$entry" ]; then
-      target=$(readlink "$entry")
-      if [[ "$target" == "$checkout_dir/"* ]] && [ "$target" != "$src_dir/$name" ]; then
-        echo "relink $entry to $src_dir/$name"
-        rm "$entry"
-      fi
-    fi
-    create_symlink "$src_dir/$name" "$entry"
+    create_symlink "$src_dir/$name" "$dst_dir/$name"
   done
   return 0
 }
