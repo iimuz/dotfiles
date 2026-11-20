@@ -334,7 +334,7 @@ run_sync() {
   [ -f "$dst/file.txt" ]
 }
 
-@test "sync_skill_links: skips a same-name entry that is not a symlink" {
+@test "sync_skill_links: keeps a same-name entry that is not a symlink" {
   make_skill_fixture
   mkdir -p "$dst/alpha"
   : >"$dst/alpha/mine"
@@ -342,17 +342,26 @@ run_sync() {
   [ "$status" -eq 0 ]
   [ ! -L "$dst/alpha" ]
   [ -f "$dst/alpha/mine" ]
-  [[ "$output" == *"skip"* ]]
+  [[ "$output" == *"already exist $dst/alpha"* ]]
 }
 
-@test "sync_skill_links: skips a same-name symlink that points outside the checkout" {
+@test "sync_skill_links: keeps a same-name live symlink that points outside the checkout" {
   make_skill_fixture
   mkdir -p "$dst" "$BATS_TEST_TMPDIR/elsewhere/alpha"
   ln -s "$BATS_TEST_TMPDIR/elsewhere/alpha" "$dst/alpha"
   run_sync alpha
   [ "$status" -eq 0 ]
   [ "$(readlink "$dst/alpha")" = "$BATS_TEST_TMPDIR/elsewhere/alpha" ]
-  [[ "$output" == *"skip"* ]]
+  [[ "$output" == *"already exist $dst/alpha"* ]]
+}
+
+@test "sync_skill_links: relinks a same-name broken symlink that points outside the checkout" {
+  make_skill_fixture
+  mkdir -p "$dst"
+  ln -s "$BATS_TEST_TMPDIR/deleted-worktree/.config/claude/skills/alpha" "$dst/alpha"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
 }
 
 @test "sync_skill_links: warns and continues when a listed skill is missing" {

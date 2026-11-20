@@ -80,9 +80,9 @@ function add_claude_mcp() {
 
 # 1 つの張り先ディレクトリを、一覧の skill だけを skill 単位の symlink で張った状態にする。
 # Usage: sync_skill_links <checkout_dir> <src_dir> <dst_dir> [<name>...]
-# 自分の link とみなすのは checkout の中を指す symlink だけで、Orca や playwright-cli など
-# ほかの道具が置いたものには触らない。readlink の生の文字列で比べ、正規化しない。
-# 自分の link は、指す先が残っていても実体の場所と違えば張り直す。古い skill の
+# 片づけで消すのは checkout の中を指す symlink だけで、Orca や playwright-cli など
+# ほかの道具が置いたものは消さない。一覧の名前の壊れた link は、指す先を問わず張り直す。
+# checkout の中を指す link は、指す先が残っていても実体の場所と違えば張り直す。古い skill の
 # ディレクトリに gitignore されたものが残り、link が壊れないことがあるため。
 function sync_skill_links() {
   local -r checkout_dir=$1
@@ -114,22 +114,14 @@ function sync_skill_links() {
       continue
     fi
     entry="$dst_dir/$name"
-    if [ ! -e "$entry" ] && [ ! -L "$entry" ]; then
-      echo "symlink $src_dir/$name to $entry"
-      ln -s "$src_dir/$name" "$entry"
-      continue
+    if [ -L "$entry" ] && [ -e "$entry" ]; then
+      target=$(readlink "$entry")
+      if [[ "$target" == "$checkout_dir/"* ]] && [ "$target" != "$src_dir/$name" ]; then
+        echo "relink $entry to $src_dir/$name"
+        rm "$entry"
+      fi
     fi
-    target=""
-    [ -L "$entry" ] && target=$(readlink "$entry")
-    if [[ "$target" != "$checkout_dir/"* ]]; then
-      echo "skip $entry: not a link placed by setup"
-    elif [ "$target" = "$src_dir/$name" ]; then
-      echo "already exist $entry"
-    else
-      echo "relink $entry to $src_dir/$name"
-      rm "$entry"
-      ln -s "$src_dir/$name" "$entry"
-    fi
+    create_symlink "$src_dir/$name" "$entry"
   done
   return 0
 }
