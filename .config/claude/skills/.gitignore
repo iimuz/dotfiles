@@ -1,15 +1,9 @@
-# 外部から設定するスキルなので管理対象外
+# ほかの道具が置いた skill の残りで、人が消すまで作業ツリーに残る。lint と format が対象から外すよう追跡しない。
+# symlink で置かれたものは、symlink に当たるよう末尾に / を付けない
 loop-handoff
 loop-handoff/
-# symlink で置かれるので、symlink に当たるよう末尾に / を付けない
 /local-search
-
-# ほかの道具が置く skill で、このディレクトリに残っていても追跡しない
 playwright-cli/
-
-# ほかの道具が置く skill で、このディレクトリに残っていても追跡しない。symlink に当たるよう末尾に / を付けない
 /orca-cli
 /orchestration
-
-# ゴミファイルがあるので管理しない
 synced/
