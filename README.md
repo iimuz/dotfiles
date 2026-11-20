@@ -15,7 +15,7 @@ Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使い�
 ### Claude Code 用 playwright-cli
 
 Claude Code の同梱スキル `playwright-cli` は `setup_*.sh` 実行時に
-`playwright-cli install --skills --global` で生成しており、リポジトリでは追跡しません。
+`playwright-cli install --skills --global` で生成し、リポジトリには置きません。
 CLI は同梱スキルが古くなっても警告しません。renovate が `@playwright/cli` の
 minor 更新を自動マージするため、0.x 系のバージョンアップは気づかないうちに適用されます。
 バージョンが上がったら `setup_mac.sh` (Linux は `setup_aarch64.sh` または
