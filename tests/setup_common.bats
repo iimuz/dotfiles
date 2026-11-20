@@ -259,40 +259,16 @@ run_sync() {
   [ ! -e "$dst/beta" ]
 }
 
-@test "sync_skill_links: replaces a symlinked dst dir that points into the source dir" {
+@test "sync_skill_links: leaves a dst dir symlinked to the source dir and its contents as they are" {
   make_skill_fixture
   mkdir "$src/other"
   : >"$src/note.txt"
   ln -s "$src" "$dst"
   run_sync alpha
   [ "$status" -eq 0 ]
-  [ -d "$dst" ] && [ ! -L "$dst" ]
-  [ -d "$src/alpha" ] && [ -d "$src/beta" ] && [ -d "$src/other" ] && [ -f "$src/note.txt" ]
-  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
-  [[ "$output" == *"replace symlink"* ]]
-  [[ "$output" == *"$src"* ]]
-}
-
-@test "sync_skill_links: replaces a symlinked dst dir that points outside the checkout" {
-  make_skill_fixture
-  mkdir -p "$BATS_TEST_TMPDIR/outside/x"
-  ln -s "$BATS_TEST_TMPDIR/outside" "$dst"
-  run_sync alpha
-  [ "$status" -eq 0 ]
-  [ -d "$dst" ] && [ ! -L "$dst" ]
-  [ -d "$BATS_TEST_TMPDIR/outside/x" ]
-  [[ "$output" == *"replace symlink"* ]]
-  [[ "$output" == *"$BATS_TEST_TMPDIR/outside"* ]]
-}
-
-@test "sync_skill_links: relinks its own link that points to an old location still present" {
-  make_skill_fixture
-  mkdir -p "$checkout/old/alpha" "$dst"
-  ln -s "$checkout/old/alpha" "$dst/alpha"
-  run_sync alpha
-  [ "$status" -eq 0 ]
-  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
-  [ -d "$checkout/old/alpha" ]
+  [ "$(readlink "$dst")" = "$src" ]
+  [ -d "$src/alpha" ] && [ ! -L "$src/alpha" ]
+  [ -d "$src/beta" ] && [ -d "$src/other" ] && [ -f "$src/note.txt" ]
 }
 
 @test "sync_skill_links: relinks its own broken link" {
@@ -334,7 +310,7 @@ run_sync() {
   [ -f "$dst/file.txt" ]
 }
 
-@test "sync_skill_links: skips a same-name entry that is not a symlink" {
+@test "sync_skill_links: keeps a same-name entry that is not a symlink" {
   make_skill_fixture
   mkdir -p "$dst/alpha"
   : >"$dst/alpha/mine"
@@ -342,17 +318,26 @@ run_sync() {
   [ "$status" -eq 0 ]
   [ ! -L "$dst/alpha" ]
   [ -f "$dst/alpha/mine" ]
-  [[ "$output" == *"skip"* ]]
+  [[ "$output" == *"already exist $dst/alpha"* ]]
 }
 
-@test "sync_skill_links: skips a same-name symlink that points outside the checkout" {
+@test "sync_skill_links: keeps a same-name live symlink that points outside the checkout" {
   make_skill_fixture
   mkdir -p "$dst" "$BATS_TEST_TMPDIR/elsewhere/alpha"
   ln -s "$BATS_TEST_TMPDIR/elsewhere/alpha" "$dst/alpha"
   run_sync alpha
   [ "$status" -eq 0 ]
   [ "$(readlink "$dst/alpha")" = "$BATS_TEST_TMPDIR/elsewhere/alpha" ]
-  [[ "$output" == *"skip"* ]]
+  [[ "$output" == *"already exist $dst/alpha"* ]]
+}
+
+@test "sync_skill_links: relinks a same-name broken symlink that points outside the checkout" {
+  make_skill_fixture
+  mkdir -p "$dst"
+  ln -s "$BATS_TEST_TMPDIR/deleted-worktree/.config/agents/skills/alpha" "$dst/alpha"
+  run_sync alpha
+  [ "$status" -eq 0 ]
+  [ "$(readlink "$dst/alpha")" = "$src/alpha" ]
 }
 
 @test "sync_skill_links: warns and continues when a listed skill is missing" {
@@ -385,7 +370,6 @@ run_sync() {
   run_sync alpha beta
   [ "$status" -eq 0 ]
   [[ "$output" == *"already exist"* ]]
-  [[ "$output" != *"relink"* ]]
   [[ "$output" != *"remove"* ]]
   [ "$(readlink "$dst/alpha")" = "$first_a" ]
   [ "$(readlink "$dst/beta")" = "$first_b" ]
@@ -405,16 +389,18 @@ run_link_agent_skills() {
   run_link_agent_skills bash
   [ "$status" -eq 0 ]
   [[ "$output" != *"skill not found"* ]]
-  local h="$BATS_TEST_TMPDIR/home" name found link
+  local h="$BATS_TEST_TMPDIR/home" name link missing=""
   [ -d "$h/.claude/skills" ] && [ ! -L "$h/.claude/skills" ]
   [ -d "$h/.agents/skills" ] && [ ! -L "$h/.agents/skills" ]
   while IFS= read -r name; do
-    found=0
-    for d in "$h/.claude/skills" "$h/.agents/skills"; do
-      [ -L "$d/$name" ] && found=1
-    done
-    [ "$found" -eq 1 ]
+    if [ ! -L "$h/.claude/skills/$name" ] && [ ! -L "$h/.agents/skills/$name" ]; then
+      missing="$missing $name"
+    fi
   done < <(git -C "$repo" ls-files .config/agents/skills | awk -F/ 'NF >= 5 { print $4 }' | sort -u)
+  if [ -n "$missing" ]; then
+    echo "add these skills to a list in link_agent_skills (lib/setup-common.sh):$missing"
+    return 1
+  fi
   for link in "$h/.claude/skills"/* "$h/.agents/skills"/*; do
     [ -L "$link" ] || continue
     [ -e "$link" ]

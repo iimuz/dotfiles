@@ -108,7 +108,6 @@ fi
 # === orca
 # Brewfile の cask が入れる CLI の名前は、Linux の deb と違って orca である
 if type orca >/dev/null 2>&1; then
-  # skill を置く ~/.claude/skills と ~/.agents/skills は agents の節で作るので、この節はその後に置く。
   # mac には skill の update 手順を置かない。Orca アプリが自身の更新の後とウィンドウを開いたときに、手を入れていない copy を同梱版に置き換える
   orca skills install --skill orca-cli --skill orchestration
 fi
