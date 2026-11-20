@@ -147,6 +147,22 @@ def test_mise_platform_config_does_not_repeat_common_tools(platform_file: str) -
     assert set(common) & set(platform) == set()
 
 
+def _leaf_values(node: object):
+    if isinstance(node, dict):
+        for value in node.values():
+            yield from _leaf_values(value)
+    else:
+        yield node
+
+
+@pytest.mark.skipif(tomllib is None, reason="No TOML parser available (need tomllib or tomli)")
+def test_codex_template_has_no_deny_and_no_model() -> None:
+    """Any deny keeps approved escalation inside the sandbox; the model is left to Codex."""
+    config = tomllib.loads((_REPO_ROOT / ".config/codex/config.toml").read_text())
+    assert "model" not in config
+    assert "deny" not in list(_leaf_values(config.get("permissions", {})))
+
+
 # ---------------------------------------------------------------------------
 # 3. JSON files parse
 # ---------------------------------------------------------------------------
