@@ -141,8 +141,10 @@ fi
 if type orca-ide >/dev/null 2>&1; then
   # ペアリング用リンクにはこのポートがそのまま入り、mac は同じ番号で ssh の LocalForward を張る。
   # mac の orca アプリが既定の 6768 を使うとぶつかるので別の番号にする。
-  # 既定の bind は loopback だけで android から tailscale 経由で届かないため全 interface で待ち受ける
-  orca-ide serve service install --port 6790 --bind 0.0.0.0
+  # bind は指定しない。loopback で始まり、`orca-ide pair --mobile` か、ネットワーク越しにつながった
+  # 端末があると全 interface で待ち受ける。tailscale の IP に絞ると `orca-ide pair` が失敗する。
+  # 公開 IP を持つ VM なので、公開アドレスからの接続はどんな場合も断る
+  orca-ide serve service install --port 6790 --refuse-public
   # ログアウトしても service を止めない
   loginctl enable-linger "$(whoami)"
   # skill は CLI のバージョンに合わせて生成させる

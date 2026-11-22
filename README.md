@@ -10,6 +10,9 @@ Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使い�
 - Mac: `bash setup_mac.sh`, `bash update_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
+    - Orca のクライアントは、service を止めずに `orca-ide pair` でペアリングします。
+      Android は `orca-ide pair --mobile --address "$(tailscale ip -4)"`、
+      Mac は ssh で LocalForward を張ってから `orca-ide pair --address 127.0.0.1` です。
 - Android/Termux: `bash setup_termux.sh`
 
 ### Claude Code 用 playwright-cli
