@@ -3,6 +3,8 @@
 # Tests for lib/setup-common.sh shared helper functions.
 
 setup() {
+  # git hook の下では、これらが外側のリポジトリを指して一時リポジトリの判定を変える。
+  unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX
   source "$BATS_TEST_DIRNAME/../lib/setup-common.sh"
 }
 
@@ -469,4 +471,93 @@ run_link_agent_skills() {
   run_link_agent_skills /bin/bash
   [ "$status" -eq 0 ]
   [[ "$output" != *"skill not found"* ]]
+}
+
+# --- refuse_linked_worktree ---
+
+make_primary_and_worktree() {
+  git init -q "$BATS_TEST_TMPDIR/primary"
+  git -C "$BATS_TEST_TMPDIR/primary" -c user.name=t -c user.email=t@example.com \
+    commit -q --allow-empty -m init
+  git -C "$BATS_TEST_TMPDIR/primary" worktree add -q "$BATS_TEST_TMPDIR/wt"
+  PRIMARY_REAL=$(cd "$BATS_TEST_TMPDIR/primary" && pwd -P)
+}
+
+@test "refuse_linked_worktree: fails for a linked worktree and names the primary checkout" {
+  make_primary_and_worktree
+  cd "$BATS_TEST_TMPDIR"
+  run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"linked worktree"* ]]
+  [[ "$output" == *"$PRIMARY_REAL"* ]]
+}
+
+@test "refuse_linked_worktree: passes for the primary checkout even when cwd is inside a linked worktree" {
+  make_primary_and_worktree
+  cd "$BATS_TEST_TMPDIR/wt"
+  run refuse_linked_worktree "$BATS_TEST_TMPDIR/primary"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "refuse_linked_worktree: passes for the primary checkout reached through a symlink" {
+  make_primary_and_worktree
+  ln -s "$BATS_TEST_TMPDIR/primary" "$BATS_TEST_TMPDIR/link"
+  run refuse_linked_worktree "$BATS_TEST_TMPDIR/link"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "refuse_linked_worktree: passes for a directory that is not a git checkout" {
+  mkdir "$BATS_TEST_TMPDIR/plain"
+  run refuse_linked_worktree "$BATS_TEST_TMPDIR/plain"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "refuse_linked_worktree: passes when git fails" {
+  make_primary_and_worktree
+  mkdir "$BATS_TEST_TMPDIR/bin"
+  printf '#!/bin/sh\nexit 127\n' >"$BATS_TEST_TMPDIR/bin/git"
+  chmod +x "$BATS_TEST_TMPDIR/bin/git"
+  PATH="$BATS_TEST_TMPDIR/bin:$PATH" run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "refuse_linked_worktree: passes when git echoes --path-format back (old git)" {
+  make_primary_and_worktree
+  mkdir "$BATS_TEST_TMPDIR/bin"
+  printf '#!/bin/sh\nprintf "%%s\\n" --path-format=absolute .git\n' >"$BATS_TEST_TMPDIR/bin/git"
+  chmod +x "$BATS_TEST_TMPDIR/bin/git"
+  PATH="$BATS_TEST_TMPDIR/bin:$PATH" run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "refuse_linked_worktree: does not trip set -euo pipefail outside a checkout" {
+  mkdir "$BATS_TEST_TMPDIR/plain"
+  run bash -c 'set -euo pipefail; . "$1"; refuse_linked_worktree "$2"; echo reached' _ \
+    "$BATS_TEST_DIRNAME/../lib/setup-common.sh" "$BATS_TEST_TMPDIR/plain"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *reached* ]]
+}
+
+@test "refuse_linked_worktree: writes nothing under HOME when it refuses" {
+  make_primary_and_worktree
+  mkdir "$BATS_TEST_TMPDIR/home"
+  HOME="$BATS_TEST_TMPDIR/home" run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
+  [ "$status" -ne 0 ]
+  [ -z "$(ls -A "$BATS_TEST_TMPDIR/home")" ]
+}
+
+@test "setup scripts: call refuse_linked_worktree right after sourcing setup-common.sh" {
+  local count=0 f next
+  for f in "$BATS_TEST_DIRNAME"/../setup_*.sh; do
+    echo "$f"
+    next=$(awk 'f && !/^[[:space:]]*(#|$)/ {gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print; exit} /^\. "\$SCRIPT_DIR\/lib\/setup-common.sh"/ {f=1}' "$f")
+    [ "$next" = 'refuse_linked_worktree "$SCRIPT_DIR" || exit 1' ]
+    count=$((count + 1))
+  done
+  [ "$count" -ge 3 ]
 }

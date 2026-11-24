@@ -67,6 +67,8 @@ Run `mise run format` and `mise run lint` after any modifications.
 ## Platform Setup Scripts
 
 Platform-specific setup scripts follow the `setup_*.sh` pattern; update scripts follow `update_*.sh`.
+Run `setup_*.sh` from the primary checkout: from a linked worktree they stop at `refuse_linked_worktree`
+(`lib/setup-common.sh`), because the `$HOME` config they write would point into the worktree and outlive it.
 
 ## CI
 

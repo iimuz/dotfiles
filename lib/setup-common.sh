@@ -163,3 +163,21 @@ function link_agent_skills() {
   sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.agents/skills" ${codex_skills[@]+"${codex_skills[@]}"}
   return 0
 }
+
+# setup は <dir> を指す設定 (rc の source 行や symlink) を $HOME に残す。linked worktree は
+# 後で消えるので正本にしてはいけない。古い git は未知の --path-format をそのまま出力して
+# 0 を返すため、2 つの値が絶対パスでなければ判定しない。
+# Usage: refuse_linked_worktree <dir>
+function refuse_linked_worktree() {
+  local -r dir="$1"
+  local git_dir common_dir
+  git_dir=$(git -C "$dir" rev-parse --path-format=absolute --git-dir 2>/dev/null) || return 0
+  common_dir=$(git -C "$dir" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 0
+  case "$git_dir" in /*) ;; *) return 0 ;; esac
+  case "$common_dir" in /*) ;; *) return 0 ;; esac
+  [ "$git_dir" = "$common_dir" ] && return 0
+
+  echo "error: run setup from the primary checkout, not a linked worktree: $dir" >&2
+  echo "primary checkout: ${common_dir%/*}" >&2
+  return 1
+}
