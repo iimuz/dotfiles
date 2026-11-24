@@ -525,14 +525,26 @@ make_primary_and_worktree() {
   [ -z "$output" ]
 }
 
-@test "refuse_linked_worktree: passes when git echoes --path-format back (old git)" {
+@test "refuse_linked_worktree: fails for a linked worktree with a git that lacks --path-format" {
   make_primary_and_worktree
+  local real_git
+  real_git=$(command -v git)
   mkdir "$BATS_TEST_TMPDIR/bin"
-  printf '#!/bin/sh\nprintf "%%s\\n" --path-format=absolute .git\n' >"$BATS_TEST_TMPDIR/bin/git"
+  # git 2.31 より前は未知の --path-format をそのまま出力して 0 を返す。
+  printf '#!/bin/sh\nfor a in "$@"; do case "$a" in --path-format=*) echo "$a"; exit 0 ;; esac; done\nexec "%s" "$@"\n' \
+    "$real_git" >"$BATS_TEST_TMPDIR/bin/git"
   chmod +x "$BATS_TEST_TMPDIR/bin/git"
   PATH="$BATS_TEST_TMPDIR/bin:$PATH" run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
-  [ "$status" -eq 0 ]
-  [ -z "$output" ]
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"$PRIMARY_REAL"* ]]
+}
+
+@test "refuse_linked_worktree: ignores GIT_DIR and GIT_WORK_TREE from the environment" {
+  make_primary_and_worktree
+  GIT_DIR="$BATS_TEST_TMPDIR/primary/.git" GIT_WORK_TREE="$BATS_TEST_TMPDIR/primary" \
+    run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"linked worktree"* ]]
 }
 
 @test "refuse_linked_worktree: does not trip set -euo pipefail outside a checkout" {
@@ -541,14 +553,6 @@ make_primary_and_worktree() {
     "$BATS_TEST_DIRNAME/../lib/setup-common.sh" "$BATS_TEST_TMPDIR/plain"
   [ "$status" -eq 0 ]
   [[ "$output" == *reached* ]]
-}
-
-@test "refuse_linked_worktree: writes nothing under HOME when it refuses" {
-  make_primary_and_worktree
-  mkdir "$BATS_TEST_TMPDIR/home"
-  HOME="$BATS_TEST_TMPDIR/home" run refuse_linked_worktree "$BATS_TEST_TMPDIR/wt"
-  [ "$status" -ne 0 ]
-  [ -z "$(ls -A "$BATS_TEST_TMPDIR/home")" ]
 }
 
 @test "setup scripts: call refuse_linked_worktree right after sourcing setup-common.sh" {

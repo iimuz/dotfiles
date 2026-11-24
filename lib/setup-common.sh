@@ -165,16 +165,21 @@ function link_agent_skills() {
 }
 
 # setup は <dir> を指す設定 (rc の source 行や symlink) を $HOME に残す。linked worktree は
-# 後で消えるので正本にしてはいけない。古い git は未知の --path-format をそのまま出力して
-# 0 を返すため、2 つの値が絶対パスでなければ判定しない。
+# 後で消えるので正本にしてはいけない。
+# --path-format=absolute は git 2.31 より前では黙って無視されるため使わず、出力を cd && pwd -P
+# で絶対化する。環境の GIT_DIR などは <dir> ではなく別のリポジトリを判定させるので外す。
 # Usage: refuse_linked_worktree <dir>
 function refuse_linked_worktree() {
   local -r dir="$1"
   local git_dir common_dir
-  git_dir=$(git -C "$dir" rev-parse --path-format=absolute --git-dir 2>/dev/null) || return 0
-  common_dir=$(git -C "$dir" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 0
-  case "$git_dir" in /*) ;; *) return 0 ;; esac
-  case "$common_dir" in /*) ;; *) return 0 ;; esac
+  git_dir=$(
+    unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR CDPATH
+    cd "$dir" 2>/dev/null && p=$(git rev-parse --git-dir 2>/dev/null) && cd "$p" 2>/dev/null && pwd -P
+  ) || return 0
+  common_dir=$(
+    unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR CDPATH
+    cd "$dir" 2>/dev/null && p=$(git rev-parse --git-common-dir 2>/dev/null) && cd "$p" 2>/dev/null && pwd -P
+  ) || return 0
   [ "$git_dir" = "$common_dir" ] && return 0
 
   echo "error: run setup from the primary checkout, not a linked worktree: $dir" >&2
