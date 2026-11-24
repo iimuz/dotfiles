@@ -171,15 +171,17 @@ function link_agent_skills() {
 # Usage: refuse_linked_worktree <dir>
 function refuse_linked_worktree() {
   local -r dir="$1"
-  local git_dir common_dir
-  git_dir=$(
+  local paths git_dir common_dir
+  paths=$(
     unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR CDPATH
-    cd "$dir" 2>/dev/null && p=$(git rev-parse --git-dir 2>/dev/null) && cd "$p" 2>/dev/null && pwd -P
+    cd "$dir" 2>/dev/null || exit 1
+    out=$(git rev-parse --git-dir --git-common-dir 2>/dev/null) || exit 1
+    [ "$out" != "${out#*$'\n'}" ] || exit 1
+    (cd "${out%%$'\n'*}" 2>/dev/null && pwd -P) || exit 1
+    (cd "${out#*$'\n'}" 2>/dev/null && pwd -P) || exit 1
   ) || return 0
-  common_dir=$(
-    unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR CDPATH
-    cd "$dir" 2>/dev/null && p=$(git rev-parse --git-common-dir 2>/dev/null) && cd "$p" 2>/dev/null && pwd -P
-  ) || return 0
+  git_dir=${paths%%$'\n'*}
+  common_dir=${paths#*$'\n'}
   [ "$git_dir" = "$common_dir" ] && return 0
 
   echo "error: run setup from the primary checkout, not a linked worktree: $dir" >&2
