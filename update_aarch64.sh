@@ -9,6 +9,18 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt clean
 sudo apt autoremove -y
+sudo journalctl --vacuum-size=500M
+
+# 無効な snap の判定は Notes 列だけで行う。名前に disabled を含む snap を消さないため。
+# 一覧を先に変数へ取り出すのは、snap list を読みながら同じ snap を消さないため。
+if type snap >/dev/null 2>&1; then
+  disabled_snaps=$(snap list --all | awk 'NR > 1 && $NF ~ /(^|,)disabled(,|$)/ { print $1, $3 }')
+  while read -r name rev; do
+    if [ -n "$name" ]; then
+      sudo snap remove "$name" --revision="$rev"
+    fi
+  done <<<"$disabled_snaps"
+fi
 
 if type gh >/dev/null 2>&1; then
   gh extension upgrade --all
