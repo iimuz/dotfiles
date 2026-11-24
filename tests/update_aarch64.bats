@@ -98,3 +98,13 @@ LIST
   [ "$status" -ne 0 ]
   grep -qx "sudo snap remove core20 --revision=2182" "$STUB_LOG"
 }
+
+@test "update_aarch64.sh: root cleanup runs after the tool updates" {
+  run_update STUB_FAIL="sudo snap remove"
+  [ "$status" -ne 0 ]
+  grep -qx "gh extension upgrade --all" "$STUB_LOG"
+  grep -qx "mise install" "$STUB_LOG"
+  grep -qx "playwright-cli install-browser chromium --with-deps" "$STUB_LOG"
+  [ "$(line_of 'playwright-cli install-browser')" -lt "$(line_of 'sudo journalctl --vacuum-size=500M$')" ]
+  [ "$(line_of 'sudo journalctl --vacuum-size=500M$')" -lt "$(line_of 'snap list --all$')" ]
+}
