@@ -30,10 +30,13 @@ if type bash >/dev/null 2>&1; then
   create_symlink "$SCRIPT_DIR/.inputrc" "$HOME/.inputrc"
 fi
 
+# === agents
+create_symlink "$SCRIPT_DIR/.config/agents" "$HOME/.config/agents"
+link_agent_skills "$SCRIPT_DIR"
+
 # === claude
 if type claude >/dev/null 2>&1; then
-  create_symlink "$SCRIPT_DIR/.config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-  create_symlink "$SCRIPT_DIR/.config/claude/skills" "$HOME/.claude/skills"
+  create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
   # settings.json は sandbox を on にした場合に symlink だと bubblewrap が起動できなくなるので hard link
   create_hardlink "$SCRIPT_DIR/.config/claude/settings.json" "$HOME/.claude/settings.json"
   create_symlink "$SCRIPT_DIR/.config/claude/hooks" "$HOME/.claude/hooks"
@@ -61,6 +64,14 @@ if type claude >/dev/null 2>&1; then
   if type playwright-cli >/dev/null 2>&1; then
     playwright-cli install --skills --global
   fi
+fi
+# === codex
+if type codex >/dev/null 2>&1; then
+  create_symlink "$SCRIPT_DIR/.config/agents/AGENTS.md" "$HOME/.codex/AGENTS.md"
+  create_copy "$SCRIPT_DIR/.config/codex/config.toml" "$HOME/.codex/config.toml"
+  # symlink の .rules は Codex が読まないので写す
+  create_copy "$SCRIPT_DIR/.config/codex/rules/dotfiles.rules" "$HOME/.codex/rules/dotfiles.rules"
+  create_symlink "$SCRIPT_DIR/.config/codex/bin/agent-codex" "$HOME/.local/bin/agent-codex"
 fi
 # === gh
 if type gh >/dev/null 2>&1; then
@@ -100,12 +111,8 @@ fi
 # === orca
 # Brewfile の cask が入れる CLI の名前は、Linux の deb と違って orca である
 if type orca >/dev/null 2>&1; then
-  # ~/.claude/skills は claude の節で symlink にするので、この節はその後に置く。
-  # symlink でないと Orca の link がこのリポジトリの外に置かれ、普通のディレクトリを作ると後で symlink を張れないので入れない。
   # mac には skill の update 手順を置かない。Orca アプリが自身の更新の後とウィンドウを開いたときに、手を入れていない copy を同梱版に置き換える
-  if [ -L "$HOME/.claude/skills" ]; then
-    orca skills install --skill orca-cli --skill orchestration
-  fi
+  orca skills install --skill orca-cli --skill orchestration
 fi
 # === vifm
 if type vifm >/dev/null 2>&1; then

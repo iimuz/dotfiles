@@ -7,6 +7,7 @@ actually exist, and that committed TOML / JSON files are parseable.
 import json
 import re
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -147,6 +148,25 @@ def test_mise_platform_config_does_not_repeat_common_tools(platform_file: str) -
     assert set(common) & set(platform) == set()
 
 
+def _leaf_values(node: object) -> Iterator[object]:
+    if isinstance(node, dict):
+        for value in node.values():
+            yield from _leaf_values(value)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _leaf_values(item)
+    else:
+        yield node
+
+
+@pytest.mark.skipif(tomllib is None, reason="No TOML parser available (need tomllib or tomli)")
+def test_codex_template_has_no_deny_and_no_model() -> None:
+    """Any deny keeps approved escalation inside the sandbox; the model is left to Codex."""
+    config = tomllib.loads((_REPO_ROOT / ".config/codex/config.toml").read_text())
+    assert "model" not in config
+    assert "deny" not in _leaf_values(config.get("permissions", {}))
+
+
 # ---------------------------------------------------------------------------
 # 3. JSON files parse
 # ---------------------------------------------------------------------------
@@ -166,27 +186,58 @@ def test_json_files_parse(json_file: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 4. Generated skill directories
+# 4. Claude Code settings.json script references
 # ---------------------------------------------------------------------------
 
-
-def _is_ignored(path: str) -> bool:
-    result = subprocess.run(["git", "check-ignore", "-q", path], cwd=_REPO_ROOT)
-    return result.returncode == 0
-
-
-def test_generated_skill_is_ignored() -> None:
-    """The bundled playwright-cli skill is generated and must stay untracked."""
-    target = ".config/claude/skills/playwright-cli/"
-    assert _is_ignored(target), (
-        f"{target} is not gitignored; the generated skill would be committed"
-    )
+# setup_*.sh が張る link を通して、settings.json の $HOME 配下のパスをリポジトリのパスに読み替える
+_HOME_LINKS = {
+    "$HOME/.config/agents/": ".config/agents/",
+    "$HOME/.claude/hooks/": ".config/claude/hooks/",
+    "$HOME/.claude/statusline.py": ".config/claude/statusline.py",
+}
+_HOME_PATH_RE = re.compile(r"""\$HOME/[a-zA-Z0-9_./-]+""")
 
 
-@pytest.mark.parametrize("name", ["orca-cli", "orchestration"])
-def test_orca_skill_symlink_is_ignored_only_at_top_level(name: str) -> None:
-    """orca-ide places these skills as symlinks directly under skills/."""
-    assert _is_ignored(f".config/claude/skills/{name}"), f"skills/{name} is not gitignored"
-    assert not _is_ignored(f".config/claude/skills/some-skill/{name}"), (
-        f"skills/some-skill/{name} is gitignored"
-    )
+def _settings_commands(settings: dict) -> list[str]:
+    commands = [
+        hook["command"]
+        for groups in settings.get("hooks", {}).values()
+        for group in groups
+        for hook in group.get("hooks", [])
+        if "command" in hook
+    ]
+    if "command" in settings.get("statusLine", {}):
+        commands.append(settings["statusLine"]["command"])
+    return commands
+
+
+def _settings_script_references() -> list[str]:
+    settings_path = _REPO_ROOT / ".config/claude/settings.json"
+    settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    return [
+        match
+        for command in _settings_commands(settings)
+        for match in _HOME_PATH_RE.findall(command)
+    ]
+
+
+@pytest.mark.parametrize("script", ["setup_mac.sh", "setup_aarch64.sh"])
+@pytest.mark.parametrize("home_prefix, repo_prefix", list(_HOME_LINKS.items()))
+def test_setup_creates_home_links(script: str, home_prefix: str, repo_prefix: str) -> None:
+    """The setup scripts that install Claude Code create every link in ``_HOME_LINKS``."""
+    expected = f'create_symlink "$SCRIPT_DIR/{repo_prefix.rstrip("/")}" "{home_prefix.rstrip("/")}"'
+    content = (_REPO_ROOT / script).read_text(encoding="utf-8")
+    assert expected in content, f"{script} does not run: {expected}"
+
+
+@pytest.mark.parametrize("home_path", _settings_script_references())
+def test_settings_command_references_exist(home_path: str) -> None:
+    """Every ``$HOME/...`` script in settings.json maps to a tracked repository path."""
+    for prefix, repo_prefix in _HOME_LINKS.items():
+        if home_path.startswith(prefix):
+            repo_path = repo_prefix + home_path[len(prefix) :]
+            assert _git_ls_files(repo_path) == [repo_path], (
+                f"{home_path} -> {repo_path} is not tracked"
+            )
+            return
+    pytest.fail(f"{home_path} is not under a path that setup_*.sh links into the repository")

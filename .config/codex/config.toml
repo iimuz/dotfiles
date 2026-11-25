@@ -1,0 +1,21 @@
+# Codex の設定の雛形。setup は ~/.codex/config.toml が無いときだけ写す。
+# Codex が端末の記録を書き込むので link せず、端末の設定との差分は人が移す。
+model_reasoning_effort = "high"
+# 承認を求める操作だけを、別の reviewer のエージェントに判定させる
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+default_permissions = "dotfiles"
+
+# deny を 1 つでも書くと、承認した sandbox の外での実行も sandbox の中に残り、
+# ネットワークが止まったままになって gh などが動かないので、deny は書かない
+[permissions.dotfiles]
+extends = ":workspace"
+
+[permissions.dotfiles.filesystem]
+# sandbox の中の lint と test で、uv と mise が workspace の外の cache に書くので許す
+"~/.cache" = "write"
+
+# rerank を使う検索は既定の時間を超えるので延ばす
+[mcp_servers.qmd]
+url = "http://localhost:8181/mcp"
+tool_timeout_sec = 180

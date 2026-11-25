@@ -10,12 +10,15 @@ Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使い�
 - Mac: `bash setup_mac.sh`, `bash update_mac.sh`
 - Linux
   - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
+    - Orca のクライアントは、service を止めずに `orca-ide pair` でペアリングします。
+      Android は `orca-ide pair --mobile --address "$(tailscale ip -4)"`、
+      Mac は ssh で LocalForward を張ってから `orca-ide pair --address 127.0.0.1` です。
 - Android/Termux: `bash setup_termux.sh`
 
 ### Claude Code 用 playwright-cli
 
 Claude Code の同梱スキル `playwright-cli` は `setup_*.sh` 実行時に
-`playwright-cli install --skills --global` で生成しており、リポジトリでは追跡しません。
+`playwright-cli install --skills --global` で生成し、リポジトリには置きません。
 CLI は同梱スキルが古くなっても警告しません。renovate が `@playwright/cli` の
 minor 更新を自動マージするため、0.x 系のバージョンアップは気づかないうちに適用されます。
 バージョンが上がったら `setup_mac.sh` (Linux は `setup_aarch64.sh` または

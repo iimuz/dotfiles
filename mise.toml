@@ -7,7 +7,7 @@ shellcheck = "0.11.0"
 "npm:markdownlint-cli2" = "0.24.0"
 lefthook = "2.2.2"
 python = "3.14.8"
-uv = "0.13.6"
+uv = "0.13.7"
 
 [env]
 _.file = ".env"
@@ -106,7 +106,7 @@ usage = '''
 arg "[files]" var=#true
 '''
 run = '''
-files=${usage_files:-$(git ls-files -co --exclude-standard '*.sh' | tr '\n' ' ')}
+files=${usage_files:-$(git ls-files -co --exclude-standard '*.sh' '.config/codex/bin/*' | tr '\n' ' ')}
 if [ -z "$files" ]; then exit 0; fi
 eval "set -- $files"
 shellcheck --severity=error -- "$@"

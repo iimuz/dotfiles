@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 
-# Tests for .config/claude/hooks/gh-identity.sh.
+# Tests for .config/agents/hooks/gh-identity.sh.
 
-HOOK="$BATS_TEST_DIRNAME/../.config/claude/hooks/gh-identity.sh"
+HOOK="$BATS_TEST_DIRNAME/../.config/agents/hooks/gh-identity.sh"
 
 setup() {
   # Under a git hook these point at the outer repository and would redirect `git init` there.
@@ -193,4 +193,57 @@ rewritten_url() {
   run_hook CLAUDE_KEEP_GH_IDENTITY=1
   [ "$status" -eq 0 ]
   [ "$(cat "$ENV_FILE")" = "export FOO=bar" ]
+}
+
+run_print() {
+  run env -u CLAUDE_KEEP_GH_IDENTITY -u GIT_CONFIG_COUNT -u CLAUDE_ENV_FILE "$@" \
+    HOME="$HOME" "$HOOK" --print "$REPO" </dev/null
+}
+
+@test "gh-identity.sh --print: prints exports for an origin under iimuz" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  run_print
+  [ "$status" -eq 0 ]
+  diff <(expected_lines 0) <(printf '%s\n' "$output")
+}
+
+@test "gh-identity.sh --print: prints even when CLAUDE_KEEP_GH_IDENTITY=1" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  run_print CLAUDE_KEEP_GH_IDENTITY=1
+  [ "$status" -eq 0 ]
+  diff <(expected_lines 0) <(printf '%s\n' "$output")
+}
+
+@test "gh-identity.sh --print: continues after the inherited GIT_CONFIG_COUNT" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  run_print GIT_CONFIG_COUNT=3
+  [ "$status" -eq 0 ]
+  diff <(expected_lines 3) <(printf '%s\n' "$output")
+}
+
+@test "gh-identity.sh --print: does not write CLAUDE_ENV_FILE" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  run env -u CLAUDE_KEEP_GH_IDENTITY HOME="$HOME" CLAUDE_ENV_FILE="$ENV_FILE" "$HOOK" --print "$REPO" </dev/null
+  [ "$status" -eq 0 ]
+  [ ! -e "$ENV_FILE" ]
+}
+
+@test "gh-identity.sh --print: prints nothing for another owner" {
+  make_repo https://github.com/other/dotfiles.git
+  run_print
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "gh-identity.sh --print: prints nothing when the agent gh config dir is missing" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  rmdir "$HOME/.config/gh-agent"
+  run_print
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "gh-identity.sh --print: fails without a directory" {
+  run env HOME="$HOME" "$HOOK" --print </dev/null
+  [ "$status" -ne 0 ]
 }

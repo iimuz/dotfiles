@@ -12,6 +12,9 @@ setup() {
   mkdir -p "$PROJ"
   printf '[env]\n_.file = ".env"\n%s\n' "$line" >"$PROJ/mise.toml"
   export MISE_TRUSTED_CONFIG_PATHS="$PROJ"
+  # mise は MISE_TRUSTED_CONFIG_PATHS で信頼した設定も state のディレクトリに記録する。
+  # 一時のディレクトリに向け、利用者の state を汚さず、home に書けない sandbox の中でも動くようにする。
+  export MISE_STATE_DIR="$BATS_TEST_TMPDIR/state"
   cd "$PROJ"
 }
 

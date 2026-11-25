@@ -2,9 +2,15 @@
 # Shared helper functions sourced by setup scripts.
 
 # Create symlink if link does not exist.
+# A broken symlink (target missing) is replaced; anything that exists is left alone.
 function create_symlink() {
   local -r src=$1
   local -r dst=$2
+
+  if [ -L "$dst" ] && [ ! -e "$dst" ]; then
+    echo "replace broken symlink $dst"
+    rm "$dst"
+  fi
 
   if [ -e "$dst" ]; then
     echo "already exist $dst"
@@ -29,6 +35,23 @@ function create_hardlink() {
   echo "symlink $src to $dst"
   mkdir -p "$(dirname "$dst")"
   ln "$src" "$dst"
+}
+
+# Copy src to dst only if dst does not exist.
+# エージェントが書き込む設定の雛形用。link にすると端末ごとの記録が dotfiles に入る。
+# -e だけだと指す先の無い symlink を無いものとみなし、その先に書いてしまう。
+function create_copy() {
+  local -r src=$1
+  local -r dst=$2
+
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    echo "already exist $dst"
+    return 0
+  fi
+
+  echo "copy $src to $dst"
+  mkdir -p "$(dirname "$dst")"
+  cp "$src" "$dst"
 }
 
 # Add loading file in .bashrc or .zshrc.
@@ -70,4 +93,73 @@ function add_claude_mcp() {
 
   echo "add claude mcp: $name"
   claude mcp add-json --scope user "$name" "$json"
+}
+
+# 1 つの張り先ディレクトリを、一覧の skill だけを skill 単位の symlink で張った状態にする。
+# Usage: sync_skill_links <checkout_dir> <src_dir> <dst_dir> [<name>...]
+# 片づけで消すのは checkout の中を指す symlink だけで、Orca や playwright-cli など
+# ほかの道具が置いたものは消さない。一覧の名前の壊れた link は、指す先を問わず張り直す。
+function sync_skill_links() {
+  local -r checkout_dir=$1
+  local -r src_dir=$2
+  local -r dst_dir=$3
+  shift 3
+  local entry name target
+
+  mkdir -p "$dst_dir"
+
+  for entry in "$dst_dir"/*; do
+    [ -L "$entry" ] || continue
+    target=$(readlink "$entry")
+    [[ "$target" == "$checkout_dir/"* ]] || continue
+    name=$(basename "$entry")
+    if [ ! -e "$entry" ] || ! _skill_listed "$name" "$@"; then
+      echo "remove $entry"
+      rm "$entry"
+    fi
+  done
+
+  for name in "$@"; do
+    if [ ! -d "$src_dir/$name" ]; then
+      echo "skill not found: $src_dir/$name"
+      continue
+    fi
+    create_symlink "$src_dir/$name" "$dst_dir/$name"
+  done
+  return 0
+}
+
+function _skill_listed() {
+  local -r want=$1
+  shift
+  local n
+  for n in "$@"; do
+    [ "$n" = "$want" ] && return 0
+  done
+  return 1
+}
+
+# Claude Code と Codex が読む skill を、それぞれの一覧のとおりに張る。
+# Usage: link_agent_skills <checkout_dir>
+function link_agent_skills() {
+  local -r checkout_dir=$1
+  local -r src_dir="$checkout_dir/.config/agents/skills"
+
+  # 新しい skill は、見せたい側の一覧に名前を足すまでどちらからも見えない。
+  local -r claude_skills=(
+    diagram
+    doc-conventions
+    gh-ops
+    gh-pr-resolve
+    gh-pr-review
+    git-commit
+    js-page-fetch
+    subagent-first
+    superpowers-conventions
+  )
+  local -r codex_skills=()
+
+  sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.claude/skills" "${claude_skills[@]}"
+  sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.agents/skills" ${codex_skills[@]+"${codex_skills[@]}"}
+  return 0
 }
