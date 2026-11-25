@@ -6,10 +6,11 @@
 
 各環境での構築はインストールスクリプトを利用して下記のように実行します。
 Mac と aarch64 では、構築した環境の更新に `update_*.sh` を使います。
+aarch64 では、再取得や再生成ができるキャッシュを `cleanup_aarch64.sh` で sudo なしに掃除します。
 
 - Mac: `bash setup_mac.sh`, `bash update_mac.sh`
 - Linux
-  - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`
+  - aarch64: `bash setup_aarch64.sh`, `bash update_aarch64.sh`, `bash cleanup_aarch64.sh`
     - Orca のクライアントは、service を止めずに `orca-ide pair` でペアリングします。
       Android は `orca-ide pair --mobile --address "$(tailscale ip -4)"`、
       Mac は ssh で LocalForward を張ってから `orca-ide pair --address 127.0.0.1` です。

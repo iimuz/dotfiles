@@ -62,7 +62,7 @@ Run `mise run format` and `mise run lint` after any modifications.
 - `lefthook.yml`: Git hook definitions. pre-commit runs format → lint + test automatically;
   post-checkout copies the primary checkout's `.env` into a newly added worktree and never
   overwrites an existing one (`.worktreeinclude` does the same for worktrees Claude Code creates)
-- `setup_*.sh` / `update_*.sh`: Platform-specific environment setup scripts at root
+- `setup_*.sh` / `update_*.sh` / `cleanup_*.sh`: Platform-specific environment setup, update, and cleanup scripts at root
 
 ## Platform Setup Scripts
 
