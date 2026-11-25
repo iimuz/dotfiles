@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 
-# Tests for .config/codex/bin/agent-codex.
+# Tests for the agent-codex function in .config/codex/codex.sh.
 
-AGENT_CODEX="$BATS_TEST_DIRNAME/../.config/codex/bin/agent-codex"
+CODEX_SH="$BATS_TEST_DIRNAME/../.config/codex/codex.sh"
 
 setup() {
   unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX
@@ -10,15 +10,6 @@ setup() {
   mkdir -p "$HOME/.config/gh-agent"
   ln -s "$BATS_TEST_DIRNAME/../.config/agents" "$HOME/.config/agents"
   REPO="$BATS_TEST_TMPDIR/repo"
-  BIN="$BATS_TEST_TMPDIR/bin"
-  mkdir -p "$BIN"
-  cat >"$BIN/codex" <<'SH'
-#!/usr/bin/env bash
-echo "GH_CONFIG_DIR=${GH_CONFIG_DIR:-}"
-echo "GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}"
-echo "args=$*"
-SH
-  chmod +x "$BIN/codex"
 }
 
 make_repo() {
@@ -26,9 +17,21 @@ make_repo() {
   git -C "$REPO" remote add origin "$1"
 }
 
+# Orca がペインのシェルに codex 関数を定義する状況に合わせ、codex は関数で置き換える。
+# 呼び出しの後に GH_CONFIG_DIR を出し、名義が呼んだシェルに残らないことを確かめる。
 run_agent_codex() {
   cd "$REPO"
-  run env -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" PATH="$BIN:$PATH" "$AGENT_CODEX" "$@"
+  run env -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" CODEX_SH="$CODEX_SH" \
+    "${AGENT_SHELL:-bash}" -c '
+      codex() {
+        echo "GH_CONFIG_DIR=${GH_CONFIG_DIR:-}"
+        echo "GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}"
+        echo "args=$*"
+      }
+      . "$CODEX_SH"
+      agent-codex "$@" || exit
+      echo "after=${GH_CONFIG_DIR:-}"
+    ' agent-codex "$@"
 }
 
 @test "agent-codex: switches to the bot and passes arguments through" {
@@ -38,6 +41,17 @@ run_agent_codex() {
   [ "${lines[0]}" = "GH_CONFIG_DIR=$HOME/.config/gh-agent" ]
   [ "${lines[1]}" = "GIT_AUTHOR_NAME=iimuz-agent[bot]" ]
   [ "${lines[2]}" = "args=--no-daemon -c disable_paste_burst=true do it" ]
+  [ "${lines[3]}" = "after=" ]
+}
+
+@test "agent-codex: works the same in zsh" {
+  command -v zsh >/dev/null || skip "zsh is not installed"
+  make_repo https://github.com/iimuz/dotfiles.git
+  AGENT_SHELL=zsh run_agent_codex -C"$REPO" "do it"
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "GH_CONFIG_DIR=$HOME/.config/gh-agent" ]
+  [ "${lines[2]}" = "args=-C$REPO do it" ]
+  [ "${lines[3]}" = "after=" ]
 }
 
 @test "agent-codex: keeps the environment for another owner" {

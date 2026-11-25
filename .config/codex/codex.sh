@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Codex settings.
+
+# Codex を GitHub App の bot の名義で起動する。Codex の hook はセッションに環境変数を入れられないので、
+# 起動の前に、作業するディレクトリについて gh-identity.sh --print が出す gh と git の名義の export を当て、
+# 受け取った引数のまま codex を呼ぶ。素の `codex` は人の名義のまま動く。
+#
+# スクリプトにせず関数にするのは、Orca がペインのシェルに定義する codex 関数を通すため。この関数は
+# 起動のたびに --no-daemon などを足し、スクリプトの中から codex を呼ぶとそれが付かず、別のリポジトリの
+# codex とサーバーを共有して Orca の表示が混ざる。subshell で当てるのは、bot の名義を人のシェルに
+# 残さないため。
+function agent-codex() {
+  # codex は -C/--cd のディレクトリで作業するので、名義もそのディレクトリの origin で決める。
+  local target_dir="$PWD" prev='' arg exports
+  for arg in "$@"; do
+    [ "$arg" = "--" ] && break
+    case "$prev" in
+      -C | --cd) target_dir="$arg" ;;
+    esac
+    # codex の引数の解析は -C<dir> と -C=<dir> も受け付ける。
+    case "$arg" in
+      --cd=*) target_dir="${arg#--cd=}" ;;
+      -C=*) target_dir="${arg#-C=}" ;;
+      -C?*) target_dir="${arg#-C}" ;;
+    esac
+    prev="$arg"
+  done
+
+  # 失敗したときに人の名義で黙って起動しないよう、eval の前に出力を変数で受けて終了コードを見る。
+  exports="$("$HOME/.config/agents/hooks/gh-identity.sh" --print "$target_dir")" || {
+    echo "agent-codex: failed to run $HOME/.config/agents/hooks/gh-identity.sh" >&2
+    return 1
+  }
+  (eval "$exports" && codex "$@")
+}
