@@ -12,8 +12,10 @@
 set -u
 
 print_exports() {
+  # source と eval の両方で HOME の単一引用符が値を切らないよう、' を '\'' に置き換える。
+  local config="$HOME/.aws/agent/config"
   cat <<ENV
-export AWS_CONFIG_FILE='$HOME/.aws/agent/config'
+export AWS_CONFIG_FILE='${config//\'/\'\\\'\'}'
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_CREDENTIAL_EXPIRATION
 ENV
 }

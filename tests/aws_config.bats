@@ -71,3 +71,12 @@ LINES
   run bash -c '. "$1"; echo "$AWS_CONFIG_FILE"' _ "$ENV_FILE"
   [ "$output" = "$BATS_TEST_TMPDIR/my home/.aws/agent/config" ]
 }
+
+@test "aws-config.sh: quotes a HOME that contains a single quote" {
+  HOME="$BATS_TEST_TMPDIR/it's home"
+  mkdir -p "$HOME"
+  run_hook
+  run bash -c '. "$1"; echo "$AWS_CONFIG_FILE"' _ "$ENV_FILE"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$BATS_TEST_TMPDIR/it's home/.aws/agent/config" ]
+}
