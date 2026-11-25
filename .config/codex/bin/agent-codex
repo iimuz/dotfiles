@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Codex を GitHub App の bot の名義で起動する。Codex の hook はセッションに環境変数を入れられないので、
 # 起動の前に、作業するディレクトリについて gh-identity.sh --print が出す gh と git の名義の export を当て、
-# 受け取った引数のまま codex を呼ぶ。素の `codex` は人の名義のまま動く。
+# 受け取った引数のまま codex を呼ぶ。AWS の config もエージェント用に切り替える。素の `codex` は人の名義のまま動く。
 
 set -euo pipefail
 
@@ -28,4 +28,9 @@ exports="$("$HOME/.config/agents/hooks/gh-identity.sh" --print "$target_dir")" |
   exit 1
 }
 eval "$exports"
+aws_exports="$("$HOME/.config/agents/hooks/aws-config.sh" --print)" || {
+  echo "agent-codex: failed to run $HOME/.config/agents/hooks/aws-config.sh" >&2
+  exit 1
+}
+eval "$aws_exports"
 exec codex "$@"

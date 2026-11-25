@@ -17,6 +17,8 @@ setup() {
 echo "GH_CONFIG_DIR=${GH_CONFIG_DIR:-}"
 echo "GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}"
 echo "args=$*"
+echo "AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-}"
+echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-unset}"
 SH
   chmod +x "$BIN/codex"
 }
@@ -28,7 +30,7 @@ make_repo() {
 
 run_agent_codex() {
   cd "$REPO"
-  run env -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" PATH="$BIN:$PATH" "$AGENT_CODEX" "$@"
+  run env -u AWS_CONFIG_FILE -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" PATH="$BIN:$PATH" "$AGENT_CODEX" "$@"
 }
 
 @test "agent-codex: switches to the bot and passes arguments through" {
@@ -110,4 +112,29 @@ run_agent_codex() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "GH_CONFIG_DIR=" ]
   [ "${lines[2]}" = "args=-C=$OTHER hello" ]
+}
+
+@test "agent-codex: points AWS at the agent config for any owner" {
+  make_repo https://github.com/other/dotfiles.git
+  run_agent_codex hello
+  [ "$status" -eq 0 ]
+  [ "${lines[3]}" = "AWS_CONFIG_FILE=$HOME/.aws/agent/config" ]
+}
+
+@test "agent-codex: clears inherited AWS keys" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  export AWS_ACCESS_KEY_ID=dummy
+  run_agent_codex hello
+  [ "$status" -eq 0 ]
+  [ "${lines[4]}" = "AWS_ACCESS_KEY_ID=unset" ]
+}
+
+@test "agent-codex: fails without starting codex when the aws hook fails" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  rm "$HOME/.config/agents"
+  mkdir -p "$HOME/.config/agents/hooks"
+  ln -s "$BATS_TEST_DIRNAME/../.config/agents/hooks/gh-identity.sh" "$HOME/.config/agents/hooks/gh-identity.sh"
+  run_agent_codex hello
+  [ "$status" -ne 0 ]
+  [[ "$output" != *"args="* ]]
 }
