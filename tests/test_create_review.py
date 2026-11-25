@@ -27,22 +27,27 @@ def _argv() -> list[str]:
     ]
 
 
+def _pending(nodes):
+    data = {"data": {"repository": {"pullRequest": {"reviews": {"nodes": nodes}}}}}
+    return SimpleNamespace(returncode=0, stdout=json.dumps(data), stderr="")
+
+
 def _patch_run(monkeypatch, responses):
     calls = []
+    inputs = []
 
     def fake_run(cmd, **kwargs):
         calls.append(cmd)
+        inputs.append(kwargs.get("input"))
         return responses.pop(0)
 
     monkeypatch.setattr(create_review.subprocess, "run", fake_run)
-    return calls
+    return calls, inputs
 
 
 def test_aborts_when_pending_review_exists(monkeypatch, capsys):
-    responses = [
-        SimpleNamespace(returncode=0, stdout=json.dumps([{"id": 5, "state": "PENDING"}]), stderr="")
-    ]
-    calls = _patch_run(monkeypatch, responses)
+    responses = [_pending([{"id": "PRR_x", "databaseId": 5, "viewerDidAuthor": True}])]
+    calls, inputs = _patch_run(monkeypatch, responses)
     monkeypatch.setattr(sys, "argv", _argv())
 
     with pytest.raises(SystemExit) as exc:
@@ -52,17 +57,67 @@ def test_aborts_when_pending_review_exists(monkeypatch, capsys):
     err = json.loads(capsys.readouterr().err)
     assert err["error"] == "pending_review_exists"
     assert err["review_id"] == 5
-    assert len(calls) == 1  # only the list-reviews call, no POST
+    assert calls == [["gh", "api", "graphql", "--input", "-"]]
+    request = json.loads(inputs[0])
+    assert "states: [PENDING]" in request["query"]
+    assert "databaseId" in request["query"]
+    assert request["variables"] == {"owner": "o", "repo": "r", "number": 1}
 
 
-def test_creates_when_no_pending_review(monkeypatch, capsys):
+def test_ignores_pending_review_of_another_user(monkeypatch, capsys):
     responses = [
-        SimpleNamespace(returncode=0, stdout="[]", stderr=""),
+        _pending([{"databaseId": 5, "viewerDidAuthor": False}]),
         SimpleNamespace(
             returncode=0, stdout=json.dumps({"id": 10, "html_url": "http://x"}), stderr=""
         ),
     ]
-    calls = _patch_run(monkeypatch, responses)
+    calls, _ = _patch_run(monkeypatch, responses)
+    monkeypatch.setattr(sys, "argv", _argv())
+
+    create_review.main()
+
+    assert json.loads(capsys.readouterr().out)["id"] == 10
+    assert len(calls) == 2
+
+
+def test_stops_on_graphql_errors(monkeypatch, capsys):
+    responses = [
+        SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps({"errors": [{"message": "Could not resolve"}]}),
+            stderr="",
+        )
+    ]
+    calls, _ = _patch_run(monkeypatch, responses)
+    monkeypatch.setattr(sys, "argv", _argv())
+
+    with pytest.raises(SystemExit):
+        create_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "graphql_error"
+    assert len(calls) == 1
+
+
+def test_stops_when_pending_review_has_no_database_id(monkeypatch, capsys):
+    responses = [_pending([{"id": "PRR_x", "viewerDidAuthor": True}])]
+    calls, _ = _patch_run(monkeypatch, responses)
+    monkeypatch.setattr(sys, "argv", _argv())
+
+    with pytest.raises(SystemExit):
+        create_review.main()
+
+    assert json.loads(capsys.readouterr().err)["error"] == "invalid_api_response"
+    assert len(calls) == 1
+
+
+def test_creates_when_no_pending_review(monkeypatch, capsys):
+    responses = [
+        _pending([]),
+        SimpleNamespace(
+            returncode=0, stdout=json.dumps({"id": 10, "html_url": "http://x"}), stderr=""
+        ),
+    ]
+    calls, _ = _patch_run(monkeypatch, responses)
     monkeypatch.setattr(sys, "argv", _argv())
 
     create_review.main()
@@ -73,8 +128,8 @@ def test_creates_when_no_pending_review(monkeypatch, capsys):
 
 
 def test_rejects_non_string_comment_body(monkeypatch, capsys):
-    responses = [SimpleNamespace(returncode=0, stdout="[]", stderr="")]
-    calls = _patch_run(monkeypatch, responses)
+    responses = [_pending([])]
+    calls, _ = _patch_run(monkeypatch, responses)
     argv = _argv()
     argv[-1] = json.dumps([{"path": "a.py", "line": 1, "body": None, "suggestion": "y"}])
     monkeypatch.setattr(sys, "argv", argv)
@@ -89,7 +144,7 @@ def test_rejects_non_string_comment_body(monkeypatch, capsys):
 def _submit_calls(monkeypatch, extra_argv):
     posted = []
     responses = [
-        SimpleNamespace(returncode=0, stdout="[]", stderr=""),
+        _pending([]),
         SimpleNamespace(returncode=0, stdout=json.dumps({"id": 7, "html_url": "u"}), stderr=""),
     ]
 
