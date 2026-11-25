@@ -114,11 +114,16 @@ run_agent_codex() {
   [ "${lines[2]}" = "args=-C=$OTHER hello" ]
 }
 
+# stub の出力から NAME= で始まる行を返す。stub の echo の順に依らず比べるため。
+stub_line() {
+  printf '%s\n' "${lines[@]}" | grep "^$1=" || true
+}
+
 @test "agent-codex: points AWS at the agent config for any owner" {
   make_repo https://github.com/other/dotfiles.git
   run_agent_codex hello
   [ "$status" -eq 0 ]
-  [ "${lines[3]}" = "AWS_CONFIG_FILE=$HOME/.aws/agent/config" ]
+  [ "$(stub_line AWS_CONFIG_FILE)" = "AWS_CONFIG_FILE=$HOME/.aws/agent/config" ]
 }
 
 @test "agent-codex: clears inherited AWS keys" {
@@ -126,7 +131,7 @@ run_agent_codex() {
   export AWS_ACCESS_KEY_ID=dummy
   run_agent_codex hello
   [ "$status" -eq 0 ]
-  [ "${lines[4]}" = "AWS_ACCESS_KEY_ID=unset" ]
+  [ "$(stub_line AWS_ACCESS_KEY_ID)" = "AWS_ACCESS_KEY_ID=unset" ]
 }
 
 @test "agent-codex: fails without starting codex when the aws hook fails" {

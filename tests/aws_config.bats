@@ -80,3 +80,14 @@ LINES
   [ "$status" -eq 0 ]
   [ "$output" = "$BATS_TEST_TMPDIR/it's home/.aws/agent/config" ]
 }
+
+@test "aws-config.sh: quotes a single quote the same way under the system bash" {
+  [ -x /bin/bash ] || skip "no /bin/bash"
+  HOME="$BATS_TEST_TMPDIR/it's home"
+  mkdir -p "$HOME"
+  run env HOME="$HOME" /bin/bash "$HOOK" --print
+  [ "$status" -eq 0 ]
+  run bash -c 'eval "$1"; echo "$AWS_CONFIG_FILE"' _ "$output"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$BATS_TEST_TMPDIR/it's home/.aws/agent/config" ]
+}

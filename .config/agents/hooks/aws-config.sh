@@ -13,9 +13,12 @@ set -u
 
 print_exports() {
   # source と eval の両方で HOME の単一引用符が値を切らないよう、' を '\'' に置き換える。
+  # 置換を heredoc の中で展開すると bash 3.2 (macOS の /bin/bash) は \ を残すため、変数で受ける。
   local config="$HOME/.aws/agent/config"
+  local q="'"
+  local quoted="${config//$q/$q\\$q$q}"
   cat <<ENV
-export AWS_CONFIG_FILE='${config//\'/\'\\\'\'}'
+export AWS_CONFIG_FILE='$quoted'
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN AWS_CREDENTIAL_EXPIRATION
 ENV
 }
