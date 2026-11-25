@@ -72,7 +72,6 @@ if type codex >/dev/null 2>&1; then
   create_copy "$SCRIPT_DIR/.config/codex/config.toml" "$HOME/.codex/config.toml"
   # symlink の .rules は Codex が読まないので写す
   create_copy "$SCRIPT_DIR/.config/codex/rules/dotfiles.rules" "$HOME/.codex/rules/dotfiles.rules"
-  create_symlink "$SCRIPT_DIR/.config/codex/bin/agent-codex" "$HOME/.local/bin/agent-codex"
 fi
 # === gh
 if type gh >/dev/null 2>&1; then
