@@ -15,6 +15,7 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 
 # Load shared helper functions
 . "$SCRIPT_DIR/lib/setup-common.sh"
+refuse_linked_worktree "$SCRIPT_DIR" || exit 1
 
 # Installが確認できていないツール
 # - eza
