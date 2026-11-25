@@ -43,7 +43,6 @@ record_weekly_cleanup() {
   date +%s >"$STAMP_FILE"
 }
 
-# 消す場所は XDG_* や各ツールの設定から読まず、$HOME の下で名指しする。
 # uv cache prune に --force を付けない。使用中のキャッシュを壊さないため。
 clean_uv() {
   local lock="$HOME/.cache/uv/.lock"
@@ -70,15 +69,17 @@ clean_uv() {
   uv cache prune --cache-dir "$HOME/.cache/uv"
 }
 
-# ビルドキャッシュを --all で全件消すのを週 1 回に限るのは、
-# dangling だけでは参照の残るキャッシュが上限なく溜まり、全件消すと次のビルドが遅くなるため。
-# _npx は消さない。いつでも実行するので、npx で動いている常駐のツールが置き場所を失わないようにするため。
 # mise prune と Playwright はここで扱わない。update_aarch64.sh が扱い、
 # Playwright はリビジョン番号では使用中かどうかを判断できないため。
 clean_weekly() {
   if type docker >/dev/null 2>&1; then
+    # --all で全件消すのを週 1 回に限るのは、dangling だけでは参照の残るキャッシュが上限なく溜まり、
+    # 全件消すと次のビルドが遅くなるため。
     docker builder prune --all --force
   fi
+  # 消す場所は XDG_* や各ツールの設定から読まず、$HOME の下で名指しする (uv の --cache-dir も同じ)。
+  # ターミナルは npmrc で ~/.cache/npm を、シェルの設定を読まないプロセスは既定の ~/.npm を使うので、両方を消す。
+  # _npx は消さない。いつでも実行するので、npx で動いている常駐のツールが置き場所を失わないようにするため。
   for dir in "$HOME/.npm" "$HOME/.cache/npm"; do
     rm -rf "$dir/_cacache"
   done

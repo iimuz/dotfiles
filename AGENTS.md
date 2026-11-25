@@ -67,8 +67,6 @@ Run `mise run format` and `mise run lint` after any modifications.
 ## Platform Setup Scripts
 
 Platform-specific setup scripts follow the `setup_*.sh` pattern; update scripts follow `update_*.sh`.
-Cleanup scripts follow `cleanup_*.sh`: they remove data that can be re-fetched or regenerated, run
-without sudo, and leave anything that needs root to the matching `update_*.sh`.
 
 ## CI
 
