@@ -89,6 +89,10 @@
           {
             "type": "command",
             "command": "\"$HOME/.config/agents/hooks/gh-identity.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agents/hooks/aws-config.sh\""
           }
         ]
       }

@@ -4,15 +4,15 @@
 
 # Codex を GitHub App の bot の名義で起動する。Codex の hook はセッションに環境変数を入れられないので、
 # 起動の前に、作業するディレクトリについて gh-identity.sh --print が出す gh と git の名義の export を当て、
-# 受け取った引数のまま codex を呼ぶ。素の `codex` は人の名義のまま動く。
+# 受け取った引数のまま codex を呼ぶ。AWS の config もエージェント用に切り替える。素の `codex` は人の名義のまま動く。
 #
 # スクリプトにせず関数にするのは、Orca がペインのシェルに定義する codex 関数を通すため。この関数は
 # 起動のたびに --no-daemon などを足し、スクリプトの中から codex を呼ぶとそれが付かず、別のリポジトリの
-# codex とサーバーを共有して Orca の表示が混ざる。subshell で当てるのは、bot の名義を人のシェルに
-# 残さないため。
+# codex とサーバーを共有して Orca の表示が混ざる。subshell で当てるのは、bot の名義と AWS の切り替えを
+# 人のシェルに残さないため。
 function agent-codex() {
   # codex は -C/--cd のディレクトリで作業するので、名義もそのディレクトリの origin で決める。
-  local target_dir="$PWD" prev='' arg exports
+  local target_dir="$PWD" prev='' arg exports aws_exports
   for arg in "$@"; do
     [ "$arg" = "--" ] && break
     case "$prev" in
@@ -32,5 +32,9 @@ function agent-codex() {
     echo "agent-codex: failed to run $HOME/.config/agents/hooks/gh-identity.sh" >&2
     return 1
   }
-  (eval "$exports" && codex "$@")
+  aws_exports="$("$HOME/.config/agents/hooks/aws-config.sh" --print)" || {
+    echo "agent-codex: failed to run $HOME/.config/agents/hooks/aws-config.sh" >&2
+    return 1
+  }
+  (eval "$exports" && eval "$aws_exports" && codex "$@")
 }

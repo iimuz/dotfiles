@@ -18,20 +18,28 @@ make_repo() {
 }
 
 # Orca がペインのシェルに codex 関数を定義する状況に合わせ、codex は関数で置き換える。
-# 呼び出しの後に GH_CONFIG_DIR を出し、名義が呼んだシェルに残らないことを確かめる。
+# 呼び出しの後に GH_CONFIG_DIR と AWS の変数を出し、名義と AWS の切り替えが呼んだシェルに残らないことを確かめる。
 run_agent_codex() {
   cd "$REPO"
-  run env -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" CODEX_SH="$CODEX_SH" \
+  run env -u AWS_CONFIG_FILE -u GH_CONFIG_DIR -u GIT_AUTHOR_NAME -u GIT_CONFIG_COUNT HOME="$HOME" CODEX_SH="$CODEX_SH" \
     "${AGENT_SHELL:-bash}" -c '
       codex() {
         echo "GH_CONFIG_DIR=${GH_CONFIG_DIR:-}"
         echo "GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}"
         echo "args=$*"
+        echo "AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-}"
+        echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-unset}"
       }
       . "$CODEX_SH"
       agent-codex "$@" || exit
       echo "after=${GH_CONFIG_DIR:-}"
+      echo "after_aws=${AWS_CONFIG_FILE:-} ${AWS_ACCESS_KEY_ID-unset}"
     ' agent-codex "$@"
+}
+
+# stub の出力から NAME= で始まる行を返す。stub の echo の順に依らず比べるため。
+stub_line() {
+  printf '%s\n' "${lines[@]}" | grep "^$1=" || true
 }
 
 @test "agent-codex: switches to the bot and passes arguments through" {
@@ -41,7 +49,7 @@ run_agent_codex() {
   [ "${lines[0]}" = "GH_CONFIG_DIR=$HOME/.config/gh-agent" ]
   [ "${lines[1]}" = "GIT_AUTHOR_NAME=iimuz-agent[bot]" ]
   [ "${lines[2]}" = "args=--no-daemon -c disable_paste_burst=true do it" ]
-  [ "${lines[3]}" = "after=" ]
+  [ "$(stub_line after)" = "after=" ]
 }
 
 @test "agent-codex: works the same in zsh" {
@@ -51,7 +59,8 @@ run_agent_codex() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "GH_CONFIG_DIR=$HOME/.config/gh-agent" ]
   [ "${lines[2]}" = "args=-C$REPO do it" ]
-  [ "${lines[3]}" = "after=" ]
+  [ "$(stub_line AWS_CONFIG_FILE)" = "AWS_CONFIG_FILE=$HOME/.aws/agent/config" ]
+  [ "$(stub_line after)" = "after=" ]
 }
 
 @test "agent-codex: keeps the environment for another owner" {
@@ -124,4 +133,30 @@ run_agent_codex() {
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "GH_CONFIG_DIR=" ]
   [ "${lines[2]}" = "args=-C=$OTHER hello" ]
+}
+
+@test "agent-codex: points AWS at the agent config for any owner" {
+  make_repo https://github.com/other/dotfiles.git
+  run_agent_codex hello
+  [ "$status" -eq 0 ]
+  [ "$(stub_line AWS_CONFIG_FILE)" = "AWS_CONFIG_FILE=$HOME/.aws/agent/config" ]
+}
+
+@test "agent-codex: clears inherited AWS keys only for codex" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  export AWS_ACCESS_KEY_ID=dummy
+  run_agent_codex hello
+  [ "$status" -eq 0 ]
+  [ "$(stub_line AWS_ACCESS_KEY_ID)" = "AWS_ACCESS_KEY_ID=unset" ]
+  [ "$(stub_line after_aws)" = "after_aws= dummy" ]
+}
+
+@test "agent-codex: fails without starting codex when the aws hook fails" {
+  make_repo https://github.com/iimuz/dotfiles.git
+  rm "$HOME/.config/agents"
+  mkdir -p "$HOME/.config/agents/hooks"
+  ln -s "$BATS_TEST_DIRNAME/../.config/agents/hooks/gh-identity.sh" "$HOME/.config/agents/hooks/gh-identity.sh"
+  run_agent_codex hello
+  [ "$status" -ne 0 ]
+  [[ "$output" != *"args="* ]]
 }
