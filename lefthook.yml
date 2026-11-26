@@ -10,9 +10,7 @@ pre-commit:
         parallel: true
         jobs:
           - name: format-sh
-            glob:
-              - "**/*.sh"
-              - ".config/codex/bin/*"
+            glob: "**/*.sh"
             stage_fixed: true
             run: mise run format:sh -- {staged_files}
           - name: format-toml
@@ -32,9 +30,7 @@ pre-commit:
         parallel: true
         jobs:
           - name: lint-sh
-            glob:
-              - "**/*.sh"
-              - ".config/codex/bin/*"
+            glob: "**/*.sh"
             run: mise run lint:sh -- {staged_files}
           - name: lint-md
             glob: "**/*.md"
@@ -43,9 +39,7 @@ pre-commit:
             glob: "**/*.py"
             run: mise run lint:py -- {staged_files}
           - name: test
-            glob:
-              - "**/*.{py,bats,sh}"
-              - ".config/codex/bin/*"
+            glob: "**/*.{py,bats,sh}"
             run: mise run test
 
 post-checkout:

@@ -62,11 +62,13 @@ Run `mise run format` and `mise run lint` after any modifications.
 - `lefthook.yml`: Git hook definitions. pre-commit runs format → lint + test automatically;
   post-checkout copies the primary checkout's `.env` into a newly added worktree and never
   overwrites an existing one (`.worktreeinclude` does the same for worktrees Claude Code creates)
-- `setup_*.sh` / `update_*.sh`: Platform-specific environment setup scripts at root
+- `setup_*.sh` / `update_*.sh` / `cleanup_*.sh`: Platform-specific environment setup, update, and cleanup scripts at root
 
 ## Platform Setup Scripts
 
 Platform-specific setup scripts follow the `setup_*.sh` pattern; update scripts follow `update_*.sh`.
+Run `setup_*.sh` from the primary checkout: from a linked worktree they stop at `refuse_linked_worktree`
+(`lib/setup-common.sh`), because the `$HOME` config they write would point into the worktree and outlive it.
 
 ## CI
 

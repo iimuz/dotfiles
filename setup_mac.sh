@@ -15,6 +15,7 @@ readonly CONFIG_PATH=$SCRIPT_DIR/.config
 
 # Load shared helper functions
 . "$SCRIPT_DIR/lib/setup-common.sh"
+refuse_linked_worktree "$SCRIPT_DIR" || exit 1
 
 # === Require homebrew
 if [ ! -x /opt/homebrew/bin/brew ]; then
@@ -71,7 +72,6 @@ if type codex >/dev/null 2>&1; then
   create_copy "$SCRIPT_DIR/.config/codex/config.toml" "$HOME/.codex/config.toml"
   # symlink の .rules は Codex が読まないので写す
   create_copy "$SCRIPT_DIR/.config/codex/rules/dotfiles.rules" "$HOME/.codex/rules/dotfiles.rules"
-  create_symlink "$SCRIPT_DIR/.config/codex/bin/agent-codex" "$HOME/.local/bin/agent-codex"
 fi
 # === gh
 if type gh >/dev/null 2>&1; then

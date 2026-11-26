@@ -2,7 +2,8 @@
 # github.com/iimuz の下のリポジトリで、gh と git を GitHub App の bot の名義に切り替える。
 #
 # gh-identity.sh                Claude Code の SessionStart hook。export を CLAUDE_ENV_FILE に追記する。
-# gh-identity.sh --print <dir>  <dir> の origin で判定し、同じ export を標準出力に出す。agent-codex が呼ぶ。
+# gh-identity.sh --print <dir>  <dir> の origin で判定し、同じ export を標準出力に出す。関数 agent-codex
+#                               (.config/codex/codex.sh) が呼ぶ。
 #                               agent-codex を通すこと自体が bot の名義を選ぶ操作なので、
 #                               CLAUDE_ENV_FILE と CLAUDE_KEEP_GH_IDENTITY を読まない。
 

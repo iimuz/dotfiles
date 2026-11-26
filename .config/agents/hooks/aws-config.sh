@@ -3,7 +3,8 @@
 # 起動元のシェルの AWS のキーの環境変数を外す。
 #
 # aws-config.sh          Claude Code の SessionStart hook。export を CLAUDE_ENV_FILE に追記する。
-# aws-config.sh --print  同じ export を標準出力に出す。agent-codex が呼ぶ。CLAUDE_ENV_FILE を読まない。
+# aws-config.sh --print  同じ export を標準出力に出す。関数 agent-codex (.config/codex/codex.sh) が呼ぶ。
+#                        CLAUDE_ENV_FILE を読まない。
 #
 # gh-identity.sh と違って origin で絞らない。仕事のリポジトリで一番要るため。
 # ファイルが無い端末でも向ける。無いときに全部入りの config へ黙って戻さないため。
