@@ -74,7 +74,7 @@ suggestion のあるコメントでは、suggestion ブロックの後に足す�
 要約が空のときは、要約に署名を足さない。
 
 ```text
-<sub>👤 Checked by a human · drafted by Claude Code</sub>
+<sub>👤 Checked by a human · drafted by an AI agent</sub>
 ```
 
 成功すると標準出力に `{"id": <number>, "html_url": "<url>"}` を出す。

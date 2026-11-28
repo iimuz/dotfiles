@@ -4,10 +4,16 @@
 
 - README.md: 人間の入口。目的、ディレクトリの地図、代表的なコマンド。
   値、手順、エージェント向けの指示は置かない
-- ルート CLAUDE.md: エージェント向けのルーティングと、環境固有で推論できない落とし穴。
-  ファイルを読めば分かることは書かない
-- ディレクトリ直下の CLAUDE.md: そのディレクトリのファイルを触るときだけ必要な規約。
-  起動時には読まれず、そのディレクトリのファイルを読んだときに読み込まれる
+- ルートの指示ファイル (Claude Code は CLAUDE.md、Codex は AGENTS.md): エージェント向けのルーティングと、
+  環境固有で推論できない落とし穴。ファイルを読めば分かることは書かない
+- ディレクトリ直下の指示ファイル (Claude Code は CLAUDE.md、Codex は AGENTS.md): そのディレクトリのファイルを
+  触るときだけ必要な規約。
+  読み込まれる時機はエージェントによる。Claude Code では起動時には読まれず、そのディレクトリのファイルを
+  読んだときに読み込まれる。Codex は起動時に、リポジトリのルートから作業ディレクトリまでの指示ファイルだけを
+  読み込む。起動した場所にかかわらず、触る前に、ルートから対象のディレクトリまでの経路で未読の階層があれば
+  上位から順に読む。対象のディレクトリの指示ファイルだけでは、中間のディレクトリの規約が抜ける。
+  各階層で読むのは、エージェントがその階層で採用するファイル 1 つだけにする
+  (Codex は AGENTS.override.md があればそれを採り、同じ階層の AGENTS.md は読まない)
 - ディレクトリ直下の README.md: その構成物を人間が操作する手順。セットアップ、
   実行例、エラーパターン、ロールバック
 - docs/design/: 意図、不変条件、境界、契約、理由。1 ファイル 1 ドメイン。
@@ -17,15 +23,20 @@
   (`YYYY-MM-DD-{topic}.md`)
   - 中身の行き先が決まったら「層と役割」に従って移し、ファイルを消す。主な行き先は、決定なら docs/adr/、
     意図と理由なら docs/design/、値ならコードと設定、操作の手順とエラーパターンならディレクトリ直下の
-    README.md、繰り返す 3 ステップ以上の手順なら .claude/skills/
+    README.md、繰り返す 3 ステップ以上の手順なら skill の置き場所
   - 消す前に参照元を直す。参照元が ADR のときは [adr.md](adr.md) を読み、編集を許す範囲でだけ直す。
     直せないリンクは残してよい
 - docs/tmp/: 使い捨てのスクリプトと出力、別のリポジトリに渡すための書き出し。コミットしない
-- .claude/rules/: ファイル拡張子やファイル名 prefix のように、ディレクトリ単位で
-  表せないスコープ条件が要るルールだけ。paths frontmatter を付ける。
-  paths の無いファイルは起動時に無条件でロードされる
-- .claude/skills/: 3 ステップ以上の手順。SKILL.md は概要と目次にし、詳細は
-  references/ へ 1 段だけ下げる。SKILL.md は 500 行以下
+- スコープ条件付きのルール (Claude Code は `.claude/rules/`): ファイル拡張子やファイル名 prefix のように、
+  ディレクトリ単位で表せないスコープ条件が要るルールだけ
+  - 本文は `.claude/rules/` の 1 ファイルに置き、正本はそれだけにする。paths frontmatter を付ける。
+    Claude Code は対象のファイルを扱うときにこれを読み込む。paths の無いファイルは、Claude Code では
+    起動時に無条件でロードされる
+  - paths で読み分ける仕組みの無いエージェント (Codex など) のために、ルートの指示ファイルに
+    「この条件のファイルを扱うときは、このファイルを読む」という 1 行の案内を置く。案内には条件とパスだけを
+    書き、ルールの中身を写さない
+- skill の置き場所 (Claude Code は `.claude/skills/`、Codex は `.agents/skills/`): 3 ステップ以上の手順。
+  SKILL.md は概要と目次にし、詳細は references/ へ 1 段だけ下げる。SKILL.md は 500 行以下
 - コードと設定: 値そのもの。コメントにはその値である理由だけを書く
 - コミットメッセージと PR: 変更履歴、移行の経緯、issue 番号への参照
 
@@ -43,24 +54,29 @@
 ```mermaid
 flowchart LR
   Readme["README.md"]
-  ClaudeMd["CLAUDE.md"]
-  Rules[".claude/rules/"]
-  Skills[".claude/skills/"]
+  RootInstr["ルートの指示ファイル"]
+  DirInstr["ディレクトリ直下の指示ファイル"]
+  Rules["スコープ条件付きのルール"]
+  Skills["skill の置き場所"]
   Design["docs/design/"]
   Adr["docs/adr/"]
   Impl["実装と定義ファイル"]
 
   Readme --> Design
-  ClaudeMd --> Design
+  RootInstr --> Design
+  DirInstr --> Design
+  RootInstr --> Rules
   Rules --> Design
   Skills --> Design
   Design --> Adr
   Design --> Impl
   Readme --> Impl
-  ClaudeMd --> Impl
+  RootInstr --> Impl
+  DirInstr --> Impl
 ```
 
-逆向きのリンクは張らない。README.md とルート CLAUDE.md の相互リンクも張らない。
+逆向きのリンクは張らない。README.md とルートの指示ファイルの相互リンクも張らない。
+スコープ条件付きのルールへの案内はルートの指示ファイルにだけ置き、ディレクトリ直下の指示ファイルには置かない。
 
 ## 実装への参照
 

@@ -8,8 +8,8 @@ description: >-
 
 ## 共通の約束事
 
-- SKILL_DIR は、この SKILL.md があるディレクトリの絶対パスとする。Claude Code がこのファイルを読み込んだ
-  パスから決める
+- SKILL_DIR は、この SKILL.md があるディレクトリの絶対パスとする。エージェントが示すこの skill の
+  ディレクトリか、この SKILL.md のパスから決める。示されたのが SKILL.md のパスなら、その親のディレクトリにする
 - script は `bash "${SKILL_DIR}/scripts/<name>"` の形で、絶対パスで実行する
 - script や `gh` が失敗したら、エラーをそのまま見せて止まる
 - 本文はクォート付きの heredoc で標準入力に流し、`--body-file -` で渡す。

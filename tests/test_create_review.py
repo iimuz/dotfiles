@@ -8,6 +8,9 @@ from types import SimpleNamespace
 import pytest
 from gh_ops import create_review
 
+_SIG = "<sub>👤 Checked by a human · drafted by an AI agent</sub>"
+_LEGACY_SIG = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+_SKILLS = Path(__file__).resolve().parents[1] / ".config" / "agents" / "skills"
 _COMMENTS = json.dumps([{"path": "a.py", "line": 1, "body": "x"}])
 
 
@@ -198,7 +201,7 @@ def test_human_checked_signs_summary_and_every_comment(monkeypatch):
     create_review.main()
 
     sig = create_review.HUMAN_CHECKED_SIGNATURE
-    assert sig == "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+    assert sig == _SIG
     payload = json.loads(posted[1])
     assert payload["body"] == f"s\n\n{sig}"
     assert payload["comments"][0]["body"] == f"x\n\n```suggestion\ny\n```\n\n{sig}"
@@ -234,7 +237,26 @@ def test_human_checked_leaves_empty_summary_unsigned(monkeypatch):
     ],
 )
 def test_docs_spell_the_signature_as_a_whole_line(doc):
-    skills = Path(__file__).resolve().parents[1] / ".config" / "agents" / "skills"
-    lines = (skills / doc).read_text(encoding="utf-8").splitlines()
+    lines = (_SKILLS / doc).read_text(encoding="utf-8").splitlines()
 
-    assert create_review.HUMAN_CHECKED_SIGNATURE in lines
+    assert _SIG in lines
+
+
+def test_bot_check_reads_both_signatures():
+    lines = (
+        (_SKILLS / "gh-pr-review/references/commands.md").read_text(encoding="utf-8").splitlines()
+    )
+
+    assert _SIG in lines
+    assert _LEGACY_SIG in lines
+
+
+def test_gh_ops_no_longer_spells_the_legacy_signature():
+    offenders = [
+        str(p.relative_to(_SKILLS))
+        for p in sorted((_SKILLS / "gh-ops").rglob("*"))
+        if p.suffix in {".md", ".py", ".sh"}
+        and "drafted by Claude Code" in p.read_text(encoding="utf-8")
+    ]
+
+    assert offenders == []
