@@ -157,7 +157,11 @@ function link_agent_skills() {
     subagent-first
     superpowers-conventions
   )
-  local -r codex_skills=()
+  local -r codex_skills=(
+    doc-conventions
+    gh-ops
+    git-commit
+  )
 
   sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.claude/skills" "${claude_skills[@]}"
   sync_skill_links "$checkout_dir" "$src_dir" "$HOME/.agents/skills" ${codex_skills[@]+"${codex_skills[@]}"}
