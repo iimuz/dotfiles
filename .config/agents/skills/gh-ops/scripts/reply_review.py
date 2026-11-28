@@ -13,7 +13,7 @@ __all__ = ["main"]
 # so do not reword it or append anything after it.
 # The emoji is a deliberate exception to the no-emoji rule: it makes the mark stand
 # out in the PR UI.
-HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+HUMAN_CHECKED_SIGNATURE = "<sub>👤 Checked by a human · drafted by an AI agent</sub>"
 
 
 def extract_http_status(stderr_text: str) -> int | None:

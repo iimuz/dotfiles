@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 from gh_ops import create_review, reply_review
 
-_SIG = "<sub>👤 Checked by a human · drafted by Claude Code</sub>"
+_SIG = "<sub>👤 Checked by a human · drafted by an AI agent</sub>"
 
 
 def _run(monkeypatch, tmp_path, body, extra=(), response=None):

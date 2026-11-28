@@ -11,7 +11,7 @@ PR の既存のレビュースレッドに返信する。
 
 - ユーザーの指摘、指示、判断を伝える返信は、文面を会話で見せ、ユーザーが OK と言ってから `reply_review.sh` に `--human-checked` を付けて実行する。
   `--human-checked` は、ユーザーが会話で確かめたことを示す署名を本文の最後に足す
-- Claude Code が自分の作業を報告する返信 (直した内容、変更しない理由) は、文面を見せずに `reply_review.sh` を `--human-checked` を付けずに実行する。
+- エージェントが自分の作業を報告する返信 (直した内容、変更しない理由) は、文面を見せずに `reply_review.sh` を `--human-checked` を付けずに実行する。
   ユーザーが返信を頼んだときだけ出す
 
 ## 切り替わっていないセッション
@@ -59,7 +59,7 @@ EOF
 `--human-checked` を付けると、本文の最後に、空行を 1 つ挟んで次の署名の行を足す。
 
 ```text
-<sub>👤 Checked by a human · drafted by Claude Code</sub>
+<sub>👤 Checked by a human · drafted by an AI agent</sub>
 ```
 
 成功すると標準出力に `{"id": <number>, "html_url": "<url>"}` を出す。
