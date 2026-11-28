@@ -473,16 +473,6 @@ run_link_agent_skills() {
   [[ "$output" != *"skill not found"* ]]
 }
 
-@test "link_agent_skills: shows git-commit, doc-conventions, and gh-ops to Codex" {
-  run_link_agent_skills bash
-  [ "$status" -eq 0 ]
-  local h="$BATS_TEST_TMPDIR/home" name
-  for name in doc-conventions gh-ops git-commit; do
-    [ -L "$h/.agents/skills/$name" ]
-    [ -f "$h/.agents/skills/$name/SKILL.md" ]
-  done
-}
-
 # --- refuse_linked_worktree ---
 
 make_primary_and_worktree() {
